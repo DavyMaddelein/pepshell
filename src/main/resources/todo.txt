@@ -1,0 +1,17 @@
+proteins
+----------
+
+isoforms?
+irrelevant uniprot entries?
+protein info?
+only show proteins with peptides that map in both projects? separate list of non matching proteins?
+
+
+--------------
+statistics?
+
+--------------
+
+searchbar?
+sorters?
+clickable 2D figures?
