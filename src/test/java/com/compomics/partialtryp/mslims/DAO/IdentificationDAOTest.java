@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.compomics.partialtryp.mslims.DAO;
+package com.compomics.peppi.mslims.DAO;
 
-import com.compomics.partialtryp.controllers.DAO.MsLimsDAO;
-import com.compomics.partialtryp.controllers.DAO.ProjectDAO;
-import com.compomics.partialtryp.controllers.objectcontrollers.DbConnectionController;
-import com.compomics.partialtryp.model.Project;
+import com.compomics.peppi.controllers.DAO.MsLimsDAO;
+import com.compomics.peppi.controllers.DAO.ProjectDAO;
+import com.compomics.peppi.controllers.objectcontrollers.DbConnectionController;
+import com.compomics.peppi.model.Project;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -26,7 +22,7 @@ public class IdentificationDAOTest {
     Project testProject;
 
     @Before
-    public void setup() throws NullPointerException, URISyntaxException, MalformedURLException, MalformedURLException, IOException, SQLException {
+    public void setUp() throws NullPointerException, URISyntaxException, MalformedURLException, MalformedURLException, IOException, SQLException {
 
             DbConnectionController.createConnection("Davy", "aerodynamic", "muppet03.ugent.be", "projects");
             ProjectDAO projects = new ProjectDAO();
