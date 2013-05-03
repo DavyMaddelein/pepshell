@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class MsLimsDAO {
 
-    public static void fetchProteins(Project project) throws SQLException, URISyntaxException, IOException {
+    public static void fetchPeptidesAndProteins(Project project) throws SQLException, URISyntaxException, IOException {
         Protein protToAdd;
         List<Protein> fetchedProteins = new ArrayList<Protein>();
         PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllProteins());
@@ -40,7 +40,7 @@ public class MsLimsDAO {
         project.setProteins(fetchedProteins);
     }
 
-    public static void fetchProteins(QuantedProject project) throws SQLException, URISyntaxException, IOException {
+    public static void fetchPeptidesAndProteins(QuantedProject project) throws SQLException, URISyntaxException, IOException {
         Protein protToAdd;
         List<Protein> fetchedProteins = new ArrayList<Protein>();
         PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllProteins());
@@ -95,9 +95,17 @@ public class MsLimsDAO {
         stat.close();
     }
 
-    public static boolean projectHasQuant(Project project) {
-        boolean projectHasQuant = false;
-
+    //rand() return 4 //guaranteed to be random by dice roll 
+    public static boolean projectHasQuant(Project project) throws SQLException {
+        boolean projectHasQuant;
+        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.QuantedCheck());
+        stat.setInt(1, project.getProjectId());
+        ResultSet rs = stat.executeQuery();
+        if (rs.isAfterLast() && rs.isBeforeFirst()) {
+            projectHasQuant = false;
+        } else {
+            projectHasQuant = true;
+        }
         return projectHasQuant;
 
     }

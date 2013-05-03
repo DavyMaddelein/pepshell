@@ -6,7 +6,6 @@ import com.compomics.peppi.model.Project;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +18,7 @@ import java.util.List;
  */
 public class ProjectDAO {
 
-    public List<Project> getProjects() throws SQLException {
+    public static List<Project> getProjects() throws SQLException {
         List<Project> projects = new ArrayList<Project>();
         PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllProjects());
         ResultSet rs = stat.executeQuery();
@@ -31,7 +30,7 @@ public class ProjectDAO {
         return projects;
     }
 
-    public Project getProject(int projectid, boolean addProteins) throws SQLException, NullPointerException, URISyntaxException, MalformedURLException, IOException {
+    public static Project getProject(int projectid, boolean addProteins) throws SQLException, NullPointerException, URISyntaxException, MalformedURLException, IOException {
         Project project = null;
         PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectASingleProject());
         stat.setInt(1, projectid);
@@ -40,7 +39,7 @@ public class ProjectDAO {
             project = new Project(projectid, projectid + " - " + rs.getString("title"));
         }
         if (addProteins) {
-            MsLimsDAO.fetchProteins(project);
+            MsLimsDAO.fetchPeptidesAndProteins(project);
         }
         rs.close();
         stat.close();

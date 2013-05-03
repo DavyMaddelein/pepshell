@@ -48,9 +48,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             initComponents();
             this.setLocationRelativeTo(null);
             this.setVisible(true);
-            MsLimsDAO.fetchProteins(referenceProject);
+            MsLimsDAO.fetchPeptidesAndProteins(referenceProject);
             for (Project aProjectToCompareWith : toCompareProjects) {
-                MsLimsDAO.fetchProteins(aProjectToCompareWith);
+                MsLimsDAO.fetchPeptidesAndProteins(aProjectToCompareWith);
             }
             jScrollPane1.setViewportView(proteinList);
             proteinList.setListData((referenceProject.getProteins().toArray()));
