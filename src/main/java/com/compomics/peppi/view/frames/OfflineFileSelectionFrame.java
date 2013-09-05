@@ -1,10 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.peppi.view.frames;
 
+import com.compomics.peppi.controllers.DataModes.FastaDataMode;
+import com.compomics.peppi.model.Project;
 import java.io.File;
+import java.util.Set;
 import javax.swing.JFileChooser;
 
 /**
@@ -31,7 +30,7 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        launchMainWindowButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -42,10 +41,10 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         jTextField1.setEditable(false);
         jTextField1.setText("jTextField1");
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        launchMainWindowButton.setText("go");
+        launchMainWindowButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                launchMainWindowButtonActionPerformed(evt);
             }
         });
 
@@ -83,7 +82,7 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
                 .addGap(48, 48, 48))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(launchMainWindowButton)
                 .addGap(155, 155, 155))
         );
         layout.setVerticalGroup(
@@ -101,7 +100,7 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
                         .addGap(27, 27, 27)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(launchMainWindowButton)
                 .addGap(45, 45, 45))
         );
 
@@ -110,10 +109,10 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         JFileChooser fastaChooser = new JFileChooser();
-        //fastaChooser.setFileFilter(null); fastafilefilter
+        //fastaChooser.setFileFilter(); fastafilefilter
         fastaChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fastaChooser.setMultiSelectionEnabled(false);
         this.fastaFile = fastaChooser.getSelectedFile();
-        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -121,9 +120,9 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         peptideFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void launchMainWindowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_launchMainWindowButtonActionPerformed
+        new FastaDataMode(fastaFile);
+    }//GEN-LAST:event_launchMainWindowButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -160,11 +159,19 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton launchMainWindowButton;
     // End of variables declaration//GEN-END:variables
+
+    public Project getReferenceProject() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Set<Project> getProjectsToCompare() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -9,6 +9,7 @@ public class QuantedPeptideGroup extends PeptideGroup {
     int ratio;
     private int timesHeavyFound = 0;
     private int timesLightFound = 0;
+    private ProjectInfo projectInfo;
     
     public int getRatio(){
         return ratio;
@@ -36,6 +37,10 @@ public class QuantedPeptideGroup extends PeptideGroup {
 
     public void incrementTimesLightFound() {
         timesLightFound++;
+    }
+
+    public ProjectInfo getProjectInfo() {
+        return this.projectInfo;
     }
     
 }

@@ -1,9 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.peppi;
 
+import com.compomics.peppi.controllers.DataModes.AbstractDataMode;
+import com.compomics.peppi.controllers.DataModes.CoLimsDataMode;
+import com.compomics.peppi.controllers.DataModes.ElienDbDataMode;
+import com.compomics.peppi.controllers.DataModes.MsLimsDataMode;
 import com.compomics.peppi.controllers.objectcontrollers.DbConnectionController;
 
 import java.sql.PreparedStatement;
@@ -20,21 +20,39 @@ public class DbSchemeController {
 
     public enum DbScheme {
 
-        MSLIMS, COLIMS,ELIENDB
+        MSLIMS(new MsLimsDataMode()), COLIMS(new CoLimsDataMode()), ELIENDB(new ElienDbDataMode());
+        private final AbstractDataMode dataMode;
+
+        DbScheme(AbstractDataMode aDataMode) {
+            this.dataMode = aDataMode;
+        }
+
+        public AbstractDataMode getDataMode() {
+            return dataMode;
+        }
     }
 
     public static void checkDbScheme() throws SQLException, NullPointerException {
-        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS);
-        ResultSet rs = stat.executeQuery();
-        if (rs.next()) {
-            SQLStatements.instantiateColimsStatements();
-            iScheme = DbScheme.COLIMS;
-        } else {
-            SQLStatements.instantiateMslimsStatements();
-            iScheme = DbScheme.MSLIMS;
+        PreparedStatement stat = null;
+        try {
+            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS);
+            ResultSet rs = stat.executeQuery();
+            try {
+                if (rs.next()) {
+                    SQLStatements.instantiateColimsStatements();
+                    iScheme = DbScheme.COLIMS;
+                } else {
+                    SQLStatements.instantiateMslimsStatements();
+                    iScheme = DbScheme.MSLIMS;
+                }
+            } finally {
+                rs.close();
+            }
+        } finally {
+            if (stat != null) {
+                stat.close();
+            }
         }
-        rs.close();
-        stat.close();
     }
 
     public static DbScheme getDbScheme() throws SQLException {

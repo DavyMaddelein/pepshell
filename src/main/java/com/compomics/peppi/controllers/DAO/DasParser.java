@@ -14,7 +14,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class DasParser {
-    //TODO convert to saxparser
+    //TODO convert to staxparser
 
     public static List<DasFeature> getAllDasFeatures (String dasXMLFile) {
         List<DasFeature> allFeatures = new ArrayList<DasFeature>();

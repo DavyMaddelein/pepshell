@@ -1,6 +1,5 @@
 package com.compomics.peppi.model.DAS.PDBDAS;
 
-import com.compomics.peppi.model.DAS.PDBDAS.DasBlock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

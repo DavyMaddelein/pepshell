@@ -19,10 +19,12 @@ import java.util.List;
 public class DomainFinder {
 
     public enum DomainWebSites {
-
+        //todo, add website specific strings to enum to iterate over them and add them
         PFAM,
         SMART,
         PROSITE
+        
+        
     }
 
     public static List<Domain> getDomainsForSwissprotAccessionFromSingleSource(String aUniProtAccession, DomainWebSites aDomainWebSite) throws IOException {

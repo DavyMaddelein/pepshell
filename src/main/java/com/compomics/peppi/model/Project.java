@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.peppi.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -15,7 +11,7 @@ public class Project {
 
     private int projectId;
     private String projectName;
-    private List<Protein> projectProteins = new ArrayList<Protein>();
+    private Set<Protein> projectProteins = new HashSet<Protein>();
 
     public Project(int projectId, String projectName) {
         this.projectId = projectId;
@@ -26,11 +22,11 @@ public class Project {
         return projectId;
     }
 
-    public void setProteins(List<Protein> fetchedProteins) {
+    public void setProteins(Set<Protein> fetchedProteins) {
         this.projectProteins = fetchedProteins;
     }
 
-    public List<Protein> getProteins() {
+    public Set<Protein> getProteins() {
         return this.projectProteins;
     }
 

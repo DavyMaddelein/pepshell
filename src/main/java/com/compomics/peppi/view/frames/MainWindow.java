@@ -1,25 +1,22 @@
 package com.compomics.peppi.view.frames;
 
+import com.compomics.peppi.DbSchemeController;
 import com.compomics.peppi.FaultBarrier;
-import com.compomics.peppi.controllers.DAO.MsLimsDAO;
-import com.compomics.peppi.controllers.DAO.PDBDAO;
-import com.compomics.peppi.controllers.DAO.ProjectDAO;
 import com.compomics.peppi.controllers.DAO.WebDAO;
 import com.compomics.peppi.model.Project;
 import com.compomics.peppi.model.Protein;
-import com.compomics.peppi.model.QuantedProject;
 import com.compomics.peppi.model.exceptions.ConversionException;
-import com.compomics.peppi.view.panels.InfoPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,54 +24,36 @@ import java.util.Set;
  */
 public class MainWindow extends javax.swing.JFrame implements Observer {
 
-    private Set<Project> toCompareProjects;
-    private Project referenceProject;
     private static FaultBarrier faultBarrier;
 
-    MainWindow(Project toCompareWithProject, Set<Project> toCompareProjects) {
+    public MainWindow() {
+        faultBarrier = FaultBarrier.getInstance();
+        initComponents();
+        faultBarrier.addObserver(errorReporterPanel1);
+    }
+
+    public void showData(Project toCompareWithProject, Set<Project> toCompareProjects) {
         try {
-            faultBarrier = FaultBarrier.getInstance();
-            for (Project project : toCompareProjects) {
-                if (ProjectDAO.ProjectIsQuanted(project)) {
-                    project = new QuantedProject(project);
-                }
-            }
-            this.toCompareProjects = toCompareProjects;
-            if (ProjectDAO.ProjectIsQuanted(toCompareWithProject)) {
-                this.referenceProject = new QuantedProject(toCompareWithProject);
-            } else {
-                this.referenceProject = toCompareWithProject;
-            }
-            initComponents();
             this.setLocationRelativeTo(null);
             this.setVisible(true);
-            MsLimsDAO.fetchPeptidesAndProteins(referenceProject);
-            for (Project aProjectToCompareWith : toCompareProjects) {
-                MsLimsDAO.fetchPeptidesAndProteins(aProjectToCompareWith);
-            }
+            Protein[] proteinsToDisplay = DbSchemeController.getDbScheme().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(toCompareWithProject, toCompareProjects, false).toArray(new Protein[0]);
             jScrollPane1.setViewportView(proteinList);
-            proteinList.setListData((referenceProject.getProteins().toArray()));
+            proteinList.setListData(proteinsToDisplay);
             jScrollPane2.setViewportView(pdbProteinList);
-            pdbProteinList.setListData(referenceProject.getProteins().toArray());
-            //todo filter proteins on found
+            pdbProteinList.setListData(proteinsToDisplay);
+            proteinInfoPanel.setProjectsToDisplay(toCompareProjects);
         } catch (SQLException ex) {
-            faultBarrier.handleError(ex);
-        } catch (URISyntaxException ex) {
-            faultBarrier.handleError(ex);
-        } catch (MalformedURLException ex) {
-            faultBarrier.handleError(ex);
-        } catch (IOException ex) {
-            faultBarrier.handleError(ex);
-            JOptionPane.showMessageDialog(null, "there has been a connection error while retrieving the protein sequence:\n" + ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
-
+            faultBarrier.handleException(ex);
         }
     }
 
-    public void update(Observable faultBarrier, Object o1) {
-        tabsPane.setFont(new Font(null, Font.BOLD, 12));
-        tabsPane.setIconAt(tabsPane.getTabCount() - 1, UIManager.getIcon("OptionPane.warningIcon"));
-        //TODO show in error pane
-        //o1.printStackTrace();
+    public void update(Observable o, Object o1) {
+        if (o1 != null && o1 instanceof Exception) {
+            tabsPane.setFont(new Font(null, Font.BOLD, 12));
+            tabsPane.setIconAt(tabsPane.getTabCount() - 1, UIManager.getIcon("OptionPane.warningIcon"));
+            //TODO show in error pane
+            ((Exception) o1).printStackTrace();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -87,13 +66,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         proteinList = new javax.swing.JList();
         accessionLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        infoPanel1 = new InfoPanel(toCompareProjects);
-        pDBPanel1 = new com.compomics.peppi.view.panels.JmolPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        pdbProteinList = new javax.swing.JList();
-        pdbComboBox = new javax.swing.JComboBox();
-        jSeparator3 = new javax.swing.JSeparator();
+        proteinInfoPanel = new com.compomics.peppi.view.panels.InfoPanel();
         exportPanel = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
@@ -106,11 +79,18 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         exportButton = new javax.swing.JButton();
         jCheckBox7 = new javax.swing.JCheckBox();
         jTextField1 = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        jmolPanel1 = new com.compomics.peppi.view.panels.JmolPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        pdbProteinList = new javax.swing.JList();
+        jSeparator2 = new javax.swing.JSeparator();
         errorReporterPanel1 = new com.compomics.peppi.view.panels.ErrorReporterPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Comparison window");
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
+        tabsPane.setMinimumSize(new java.awt.Dimension(1573, 571));
         tabsPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tabsPaneStateChanged(evt);
@@ -155,77 +135,27 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                     .addComponent(accessionLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(infoPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 982, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(proteinInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(408, 408, 408))
         );
         mainViewPanelLayout.setVerticalGroup(
             mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainViewPanelLayout.createSequentialGroup()
+            .addGroup(mainViewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainViewPanelLayout.createSequentialGroup()
+                .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainViewPanelLayout.createSequentialGroup()
+                        .addComponent(proteinInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(87, 87, 87))
+                    .addGroup(mainViewPanelLayout.createSequentialGroup()
                         .addComponent(accessionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(mainViewPanelLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(infoPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         tabsPane.addTab("Protein Comparison", mainViewPanel);
-
-        pDBPanel1.setMinimumSize(new java.awt.Dimension(50, 3));
-        pDBPanel1.setPreferredSize(new java.awt.Dimension(50, 3));
-
-        jLabel2.setText("found reference proteins");
-
-        pdbProteinList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                pdbProteinListMouseReleased(evt);
-            }
-        });
-        jScrollPane2.setViewportView(pdbProteinList);
-
-        jSeparator3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jSeparator3.setMinimumSize(new java.awt.Dimension(50, 3));
-        jSeparator3.setPreferredSize(new java.awt.Dimension(50, 3));
-
-        javax.swing.GroupLayout pDBPanel1Layout = new javax.swing.GroupLayout(pDBPanel1);
-        pDBPanel1.setLayout(pDBPanel1Layout);
-        pDBPanel1Layout.setHorizontalGroup(
-            pDBPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pDBPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pDBPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(pdbComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(964, 964, 964))
-        );
-        pDBPanel1Layout.setVerticalGroup(
-            pDBPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pDBPanel1Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(pdbComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDBPanel1Layout.createSequentialGroup()
-                .addContainerGap(29, Short.MAX_VALUE)
-                .addGroup(pDBPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDBPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-
-        tabsPane.addTab("PDB information", pDBPanel1);
 
         jCheckBox1.setText("export all projects");
 
@@ -284,7 +214,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                         .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 686, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(exportButton))))
-                .addContainerGap(370, Short.MAX_VALUE))
+                .addContainerGap(764, Short.MAX_VALUE))
         );
         exportPanelLayout.setVerticalGroup(
             exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -314,21 +244,56 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addComponent(exportButton)
                 .addGap(18, 18, 18)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(246, Short.MAX_VALUE))
+                .addContainerGap(264, Short.MAX_VALUE))
         );
 
         tabsPane.addTab("exportPanel", exportPanel);
-        tabsPane.addTab("Error Reporter", errorReporterPanel1);
+
+        pdbProteinList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(pdbProteinList);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jmolPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1400, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jmolPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+                    .addComponent(jSeparator2)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addGap(13, 13, 13)))
+                .addContainerGap())
+        );
+
+        tabsPane.addTab("tab3", jPanel1);
+        tabsPane.addTab("tab4", errorReporterPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabsPane)
+            .addComponent(tabsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabsPane)
+            .addComponent(tabsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -338,17 +303,21 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private void proteinListMouseReleased(java.awt.event.MouseEvent evt) {
         try {
             Protein proteinOfInterest = (Protein) proteinList.getSelectedValue();
-            proteinOfInterest.setSequence(WebDAO.fetchSequence(proteinOfInterest.getProteinAccession()));
-            infoPanel1.updateProteinGraphics(proteinOfInterest);
+            if (proteinOfInterest.getProteinSequence().isEmpty()) {
+                proteinOfInterest.setSequence(WebDAO.fetchSequence(proteinOfInterest.getProteinAccession()));
+            }
+            proteinInfoPanel.updateProteinGraphics(proteinOfInterest);
         } catch (MalformedURLException ex) {
-            faultBarrier.handleError(ex);
+            faultBarrier.handleException(ex);
         } catch (IOException ex) {
-            faultBarrier.handleError(ex);
+            faultBarrier.handleException(ex);
         } catch (SQLException ex) {
-            faultBarrier.handleError(ex);
-        } catch (ConversionException ex) {
-            faultBarrier.handleError(ex);
+            faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(null, "there has been a connection error while retrieving the protein sequence:\n" + ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+        } catch (ConversionException ex) {
+            faultBarrier.handleException(ex);
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -375,23 +344,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
          * export(saveLocation,ExcelFileExportCheckbox.get)
          */
     }//GEN-LAST:event_exportButtonActionPerformed
-
-    private void pdbProteinListMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pdbProteinListMouseReleased
-        try {
-            Protein proteinOfInterest = (Protein) proteinList.getSelectedValue();
-            pdbComboBox = new JComboBox(PDBDAO.getPDBFileAccessionsForProtein(proteinOfInterest).toArray());
-        } catch (MalformedURLException ex) {
-            faultBarrier.handleError(ex);
-        } catch (IOException ex) {
-            faultBarrier.handleError(ex);
-        }
-    }//GEN-LAST:event_pdbProteinListMouseReleased
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel accessionLabel;
     private com.compomics.peppi.view.panels.ErrorReporterPanel errorReporterPanel1;
     private javax.swing.JButton exportButton;
     private javax.swing.JPanel exportPanel;
-    private com.compomics.peppi.view.panels.InfoPanel infoPanel1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
@@ -400,17 +357,17 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JCheckBox jCheckBox6;
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
+    private com.compomics.peppi.view.panels.JmolPanel jmolPanel1;
     private javax.swing.JPanel mainViewPanel;
-    private com.compomics.peppi.view.panels.JmolPanel pDBPanel1;
-    private javax.swing.JComboBox pdbComboBox;
     private javax.swing.JList pdbProteinList;
+    private com.compomics.peppi.view.panels.InfoPanel proteinInfoPanel;
     private javax.swing.JList proteinList;
     private javax.swing.JTabbedPane tabsPane;
     // End of variables declaration//GEN-END:variables

@@ -4,8 +4,6 @@ import com.compomics.peppi.view.frames.ProteinInfoFrame;
 import com.compomics.peppi.model.PeptideGroup;
 import com.compomics.peppi.model.Project;
 import com.compomics.peppi.model.Protein;
-import com.compomics.peppi.model.QuantedPeptideGroup;
-import com.compomics.peppi.view.DrawModes.PeptideProteinDrawMode;
 import com.compomics.peppi.view.DrawModes.StandardPeptideProteinDrawMode;
 
 import java.awt.*;
@@ -23,9 +21,9 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
     private int proteinBarHeight = 15;
     private Protein protein;
     private float transparency = 1;
-    private PeptideProteinDrawMode drawMode = new StandardPeptideProteinDrawMode();
-    private int maxRatio = 1;
     private Project project;
+    private StandardPeptideProteinDrawMode peptideDrawMode = new StandardPeptideProteinDrawMode();
+    private StandardPeptideProteinDrawMode proteinDrawMode = new StandardPeptideProteinDrawMode();
 
     /**
      * Creates new form PeptidesProteinsOverlapGUI
@@ -33,10 +31,7 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
     public PeptidesProteinsOverlapPanel(Project project) {
         this.project = project;
         initComponents();
-    }
-
-    public void setRatio(int ratio) {
-        maxRatio = ratio;
+        projectNameLabel.setText(project.getProjectName());
     }
 
     public void setProtein(Protein protein) {
@@ -101,31 +96,29 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_formMouseMoved
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel projectNameLabel;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void paintComponent(Graphics g) {
-        horizontalOffset = this.getX() + projectNameLabel.getX()+projectNameLabel.getWidth()+25;
-        verticalOffset = this.getY()+ 50;
+        horizontalOffset = this.getX() + projectNameLabel.getX() + projectNameLabel.getWidth() + 25;
+        verticalOffset = this.getY() + 50;
         proteinBarSize = this.getWidth() - 10;
         super.paintComponent(g);
         if (protein != null) {
-            drawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight);
+            proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight);
             ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
-            for (PeptideGroup peptideGroup : protein.getPeptideGroupsForProtein()) {
-                if (peptideGroup instanceof QuantedPeptideGroup) {
-                    drawMode.drawPeptide(peptideGroup, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight,proteinBarSize, ((QuantedPeptideGroup) peptideGroup).getRatio() / maxRatio);
-                } else {
-                    drawMode.drawPeptide(peptideGroup, g, horizontalOffset, verticalOffset, protein.getProteinSequence().length(), proteinBarHeight,proteinBarSize, maxRatio);
-                }
-            }
+            peptideDrawMode.drawPeptides(protein.getPeptideGroupsForProtein(), g, horizontalOffset, verticalOffset, protein.getProteinSequence().length(), proteinBarHeight, proteinBarSize);
         }
     }
 
-    public void setDrawMode(PeptideProteinDrawMode drawMode) {
-        this.drawMode = drawMode;
+    //TODO might bring back the interface just for better naming
+    public void setPeptideDrawMode(StandardPeptideProteinDrawMode drawMode) {
+        this.peptideDrawMode = drawMode;
+    }
+
+    public void setProteinDrawMode(StandardPeptideProteinDrawMode drawMode) {
+        this.proteinDrawMode = drawMode;
     }
 }

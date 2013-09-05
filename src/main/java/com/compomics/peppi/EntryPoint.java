@@ -1,5 +1,7 @@
 package com.compomics.peppi;
 
+import com.compomics.peppi.view.frames.MainWindow;
+
 /**
  * Hello world!
  *
@@ -8,6 +10,7 @@ public class EntryPoint
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        //TODO replace with compomics wrapper
+        new MainWindow();
     }
 }

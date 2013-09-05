@@ -1,13 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.peppi.view.panels;
 
 import com.compomics.peppi.FaultBarrier;
 import com.compomics.peppi.controllers.DAO.PDBDAO;
 import com.compomics.peppi.controllers.DAO.URLController;
 import com.compomics.peppi.model.Protein;
+import com.compomics.peppi.model.exceptions.ConversionException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.swing.DefaultComboBoxModel;
@@ -53,10 +50,8 @@ public class JmolPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(PDBFileComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
+                    .addComponent(PDBFileComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -76,7 +71,7 @@ public class JmolPanel extends javax.swing.JPanel {
         viewer.renderScreenImage(this.getGraphics(), this.getSize(), this.getGraphics().getClipBounds());
        } catch (IOException ioe) {
            JOptionPane.showMessageDialog(this, "the PDB file for accession :" + (String)PDBFileComboBox.getSelectedItem() + " could not be downloaded");
-           faultBarrier.handleError(ioe);
+           faultBarrier.handleException(ioe);
        }
     }//GEN-LAST:event_PDBFileComboBoxActionPerformed
 
@@ -86,14 +81,14 @@ public class JmolPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     
-    public void preparePDBPanelForProtein(Protein protein) {
+    public void preparePDBPanelForProtein(Protein protein) throws ConversionException {
         try {
             PDBFileComboBox.setModel(new DefaultComboBoxModel(PDBDAO.getPDBFileAccessionsForProtein(protein).toArray()));
         } catch (MalformedURLException ex) {
-            faultBarrier.handleError(ex);
+            faultBarrier.handleException(ex);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "there has been a problem trying to retieve the pdb file accessions for this protein: "+protein.getProteinAccession());
-            faultBarrier.handleError(ex);
+            JOptionPane.showMessageDialog(this, "there has been a problem trying to retrieve the pdb file accessions for this protein: "+protein.getProteinAccession());
+            faultBarrier.handleException(ex);
         }
     }
 }

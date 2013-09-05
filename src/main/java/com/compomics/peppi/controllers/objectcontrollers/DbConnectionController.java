@@ -17,7 +17,6 @@ public class DbConnectionController {
             new DbConnectionController(username, password, url, database);
         }
         return DbConnectionController.getConnection();
-
     }
 
     private DbConnectionController(String username, String password, String url, String database) throws SQLException {
@@ -32,7 +31,7 @@ public class DbConnectionController {
     public static Connection getConnection() throws SQLException{
         if (connection == null){
             throw new SQLException("No connection has been made yet");
-        }
+        } 
         return connection;
     }
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.peppi.view.frames;
 
 import com.compomics.peppi.DbSchemeController;
@@ -236,7 +232,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_loginButtonMouseReleased
 
     private void cancelButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseReleased
-        System.exit(0);
+        this.dispose();
     }//GEN-LAST:event_cancelButtonMouseReleased
 
     public static void main(String args[]) {

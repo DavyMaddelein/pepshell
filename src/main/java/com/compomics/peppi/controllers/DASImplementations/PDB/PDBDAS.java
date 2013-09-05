@@ -11,6 +11,8 @@ import java.util.List;
  * @author Davy
  */
 public class PDBDAS extends DasParser {
+
+    //TODO redo this with an xml parser
     
         public static List<DasAlignment> getAllAlignments(String dasXMLFile){
         int lastFeatureEndPosition = 0;

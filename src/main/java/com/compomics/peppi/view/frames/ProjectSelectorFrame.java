@@ -1,7 +1,7 @@
 package com.compomics.peppi.view.frames;
 
 import com.compomics.peppi.FaultBarrier;
-import com.compomics.peppi.controllers.DAO.ProjectDAO;
+import com.compomics.peppi.controllers.DAO.DbDAO;
 import com.compomics.peppi.controllers.comparators.CompareProjects;
 import com.compomics.peppi.model.Project;
 import java.awt.event.KeyEvent;
@@ -20,7 +20,6 @@ import javax.swing.JOptionPane;
  */
 public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer {
 
-    private ProjectDAO projects = new ProjectDAO();
     private Set<Project> selectedProjectsSet = new TreeSet<Project>(new CompareProjects());
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Project referenceProject;
@@ -30,16 +29,17 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
      */
     public ProjectSelectorFrame() {
         initComponents();
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         errorLabel.setVisible(false);
         this.setVisible(true);
         try {
             fillProjectList();
         } catch (Exception ex) {
-            faultBarrier.handleError(ex);
+            faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(null, "something went wrong while retrieving the list of projects:\n" + ex.getMessage());
         }
+        //TODO add shutdown hook that opens an empty mainwindow
     }
 
     @SuppressWarnings("unchecked")
@@ -58,6 +58,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
         errorLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         selectedProjectsList = new JList(selectedProjectsSet.toArray());
+        onlyRefProjectPeptidesCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("select projects");
@@ -133,6 +134,8 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
         });
         jScrollPane2.setViewportView(selectedProjectsList);
 
+        onlyRefProjectPeptidesCheckBox.setText("Only show peptides found in reference project");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -147,17 +150,17 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
                             .addComponent(projectRemovalButton)
                             .addComponent(projectSelectorButton)
                             .addComponent(referenceProjectRemovalButton)
-                            .addComponent(referenceProjectSelectorButton))
-                        .addGap(56, 56, 56)
+                            .addComponent(referenceProjectSelectorButton)
+                            .addComponent(onlyRefProjectPeptidesCheckBox))
+                        .addGap(17, 17, 17)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(errorLabel)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(launchMainWindowButton)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(referenceProjectTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)))))
+                                .addComponent(errorLabel)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(referenceProjectTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel1))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,26 +170,28 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
                         .addGap(44, 44, 44))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(referenceProjectTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(referenceProjectSelectorButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(referenceProjectTextField)
+                            .addComponent(referenceProjectSelectorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(11, 11, 11)
                         .addComponent(referenceProjectRemovalButton)
-                        .addGap(45, 45, 45)
+                        .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(projectSelectorButton)
                                 .addGap(18, 18, 18)
                                 .addComponent(projectRemovalButton))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(23, 23, 23)
                         .addComponent(errorLabel)
                         .addGap(18, 18, 18)
-                        .addComponent(launchMainWindowButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(launchMainWindowButton)
+                            .addComponent(onlyRefProjectPeptidesCheckBox))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
@@ -221,9 +226,12 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
         if (selectedProjectsSet.isEmpty() || referenceProject == null) {
             JOptionPane.showMessageDialog(this, "please select a project of interest and at least one project to compare with");
         } else {
-            MainWindow mainWindow = new MainWindow(referenceProject, selectedProjectsSet);
-            FaultBarrier.getInstance().addObserver(mainWindow);
-            this.dispose();
+            try {
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.showData(referenceProject, selectedProjectsSet);
+            } finally {
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_launchMainWindowButtonMouseReleased
 
@@ -241,7 +249,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     }//GEN-LAST:event_selectedProjectsListMouseClicked
 
     private void fillProjectList() throws SQLException {
-        projectList.setListData(projects.getProjects().toArray());
+        projectList.setListData(DbDAO.getProjects().toArray());
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel errorLabel;
@@ -249,6 +257,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton launchMainWindowButton;
+    private javax.swing.JCheckBox onlyRefProjectPeptidesCheckBox;
     private javax.swing.JList projectList;
     private javax.swing.JButton projectRemovalButton;
     private javax.swing.JButton projectSelectorButton;
@@ -276,13 +285,13 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
 
     private void projectSelected() {
         Project selectedProject = (Project) projectList.getSelectedValue();
-        //if (!selectedProject.equals(referenceProject)) {
-        selectedProjectsSet.add(selectedProject);
-        selectedProjectsList.setListData(selectedProjectsSet.toArray());
-        errorLabel.setVisible(false);
-        //} else {
-        //    errorLabel.setVisible(true);
-        // }
+        if (!selectedProject.equals(referenceProject)) {
+            selectedProjectsSet.add(selectedProject);
+            selectedProjectsList.setListData(selectedProjectsSet.toArray(new Project[0]));
+            errorLabel.setVisible(false);
+        } else {
+            errorLabel.setVisible(true);
+        }
     }
 
     private void automatedSelection() {

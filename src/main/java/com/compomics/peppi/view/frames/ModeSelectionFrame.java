@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.peppi.view.frames;
 
 /**
@@ -26,47 +22,69 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jButton1 = new javax.swing.JButton();
+        dataSourceSelectionGroup = new javax.swing.ButtonGroup();
+        dataCollectionFrameButton = new javax.swing.JButton();
+        dbSelectionRadioButton = new javax.swing.JRadioButton();
+        fastaSelectionRadioButton = new javax.swing.JRadioButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Continue...");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        dataCollectionFrameButton.setText("Continue...");
+        dataCollectionFrameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                dataCollectionFrameButtonActionPerformed(evt);
             }
         });
+
+        dbSelectionRadioButton.setText("Database Connection");
+
+        fastaSelectionRadioButton.setText("Offline Mode");
+
+        jLabel1.setText("select data source");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(128, 128, 128)
-                .addComponent(jButton1)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fastaSelectionRadioButton)
+                    .addComponent(dbSelectionRadioButton)
+                    .addComponent(dataCollectionFrameButton)
+                    .addComponent(jLabel1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(236, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(41, 41, 41))
+                .addContainerGap(46, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(dbSelectionRadioButton)
+                .addGap(18, 18, 18)
+                .addComponent(fastaSelectionRadioButton)
+                .addGap(27, 27, 27)
+                .addComponent(dataCollectionFrameButton)
+                .addGap(15, 15, 15))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void dataCollectionFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dataCollectionFrameButtonActionPerformed
         //JRadioGroup.getSelection();
-        //if (){}
+
+        if (dbSelectionRadioButton.isSelected()) {
             new LoginFrame();
             this.dispose();
-        //else{}
+        } else if (fastaSelectionRadioButton.isSelected()) {
             new OfflineFileSelectionFrame();
             this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        }
+
+    }//GEN-LAST:event_dataCollectionFrameButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -103,7 +121,10 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton dataCollectionFrameButton;
+    private javax.swing.ButtonGroup dataSourceSelectionGroup;
+    private javax.swing.JRadioButton dbSelectionRadioButton;
+    private javax.swing.JRadioButton fastaSelectionRadioButton;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

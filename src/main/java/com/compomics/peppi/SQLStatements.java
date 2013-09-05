@@ -7,7 +7,7 @@ package com.compomics.peppi;
 public class SQLStatements {
 
     public static final String CHECKIFCOLIMS = "show tables like 'analytical_run'";
-    public static final String CHECKIFELIENDB = "show tables like '?'";
+    public static final String CHECKIFELIENDB = "show tables like 'pdb'";
     private static String SELECT_PROTEINS;
     private static String SELECT_PEPTIDEGROUPS;
     private static String SELECT_PROJECTS;
@@ -69,7 +69,7 @@ public class SQLStatements {
     public static String selectAllProteins() {
         return SELECT_PROTEINS;
     }
-
+    
     public static String selectAllPeptidesGrouped() {
         return SELECT_PEPTIDEGROUPS;
     }

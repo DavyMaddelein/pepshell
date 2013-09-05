@@ -1,8 +1,10 @@
 package com.compomics.peppi.controllers.DAO;
 
+import com.compomics.peppi.controllers.AccessionConverter;
 import com.compomics.peppi.model.DAS.DasFeature;
 import com.compomics.peppi.model.PdbInfo;
 import com.compomics.peppi.model.Protein;
+import com.compomics.peppi.model.exceptions.ConversionException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,10 +26,10 @@ import java.util.Set;
  */
 public class PDBDAO {
 
-    public static Set<String> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException {
+    public static Set<String> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
         String pdbLine;
         Set<String> pdbFilesToReturn = new HashSet<String>();
-        URL pdbURL = new URL("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + protein.getProteinAccession());
+        URL pdbURL = new URL("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.GIToUniprot(protein.getProteinAccession()));
         URLConnection pdbFileConnection = pdbURL.openConnection();
         BufferedReader br = new BufferedReader(new LineNumberReader(new InputStreamReader(pdbFileConnection.getInputStream(), "UTF-8")));
         while ((pdbLine = br.readLine()) != null) {
@@ -57,7 +59,9 @@ public class PDBDAO {
     }
     
     public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException {
-        List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(URLController.readUrl("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment="+pdbAccession));
+        List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(URLController.readUrl(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)));
+        
+        //List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(new URL("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment="+pdbAccession).openStream());
         
         for(DasFeature pdbFeature : pdbFeatures){
             pdbFeature.getMethod();

@@ -82,4 +82,10 @@ public class AccessionConverter {
             throw new ConversionException("Could not convert GI number");
         }
     }
+    //TODO finish this, needs to take any accession and try to convert to uniprot
+    public static String ToUniprot(String accession){
+    String tempaccession = ";";
+    return tempaccession;
+            
+    }
 }
