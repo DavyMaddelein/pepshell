@@ -31,7 +31,7 @@ public class FastaDAO {
         projectToAddProteinsTo.setProteins(getListOfProteinsFromFastaFile(fastaFile));
     }
 /**
- * sets the {@code protein}s in a project to the projects contained in the {@code List} of fasta files
+ * sets the {@code Protein}s in a project to the projects contained in the {@code List} of fasta files
  * @param fastaFiles the fasta files to read the {@code Protein}s from
  * @param projectToAddProteinsTo the project to add the {@code Protein}s to
  * @throws IOException if there was a problem with the file reader

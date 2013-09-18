@@ -85,7 +85,8 @@ public class AccessionConverter {
     //TODO finish this, needs to take any accession and try to convert to uniprot
     public static String ToUniprot(String accession){
     String tempaccession = ";";
-    return tempaccession;
+    throw new UnsupportedOperationException("not yet implemented");
+    //return tempaccession;
             
     }
 }

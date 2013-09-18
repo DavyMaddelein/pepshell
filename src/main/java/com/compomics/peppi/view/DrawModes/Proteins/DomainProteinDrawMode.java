@@ -9,7 +9,10 @@ import com.compomics.peppi.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.xml.stream.XMLStreamException;
 
 /**
  *
@@ -25,7 +28,11 @@ public class DomainProteinDrawMode extends StandardPeptideProteinDrawMode {
             int proteinLength = protein.getProteinSequence().length();
             g.drawLine(horizontalOffset, verticalOffset + 7, horizontalOffset + proteinLength, verticalOffset + 7);
             if (protein.getDomains().isEmpty()) {
-                DomainFinder.addDomainsToProtein(protein);
+                try {
+                    DomainFinder.addDomainsToProtein(protein);
+                } catch (XMLStreamException ex) {
+                    Logger.getLogger(DomainProteinDrawMode.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             for (Domain domain : protein.getDomains()) {
                 g.setColor(Color.LIGHT_GRAY);

@@ -7,8 +7,14 @@ import com.compomics.peppi.controllers.comparators.CompareDasFeatures;
 import com.compomics.peppi.model.DAS.DasFeature;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Created with IntelliJ IDEA. User: Davy Date: 3/6/13 Time: 1:11 PM To change
@@ -20,7 +26,13 @@ public class UniprotSecondaryStructurePrediction extends SecondaryStructurePredi
     public String getPrediction(String anUniprotAccession) throws IOException {
 
         StringBuilder predictionResult = new StringBuilder();
-        List<DasFeature> features = DasParser.getAllDasFeatures(URLController.readUrl("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + anUniprotAccession));
+        XMLInputFactory xmlParseFactory = XMLInputFactory.newInstance();
+        List<DasFeature> features = new ArrayList<DasFeature>();
+        try {
+            features = DasParser.getAllDasFeatures(xmlParseFactory.createXMLEventReader(new URL("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + anUniprotAccession).openStream()));
+        } catch (XMLStreamException ex) {
+            Logger.getLogger(UniprotSecondaryStructurePrediction.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Collections.sort(features, new CompareDasFeatures());
         int aminoAcidLocation = 0;
         for (DasFeature feature : features) {

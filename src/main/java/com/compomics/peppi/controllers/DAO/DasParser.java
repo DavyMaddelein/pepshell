@@ -5,6 +5,9 @@ import com.compomics.peppi.model.DAS.DasMethod;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,16 +17,18 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class DasParser {
-    //TODO convert to staxparser
-
-    public static List<DasFeature> getAllDasFeatures (String dasXMLFile) {
+    
+    public static List<DasFeature> getAllDasFeatures (XMLEventReader dasXMLFile) throws XMLStreamException {
+        XMLEvent dasEvent;
         List<DasFeature> allFeatures = new ArrayList<DasFeature>();
-        int lastFeatureEndPosition = 0;
-        while(dasXMLFile.indexOf("<FEATURE",lastFeatureEndPosition + 9) != -1){
-            String feature = dasXMLFile.substring(dasXMLFile.indexOf("<FEATURE",lastFeatureEndPosition + 9),dasXMLFile.indexOf("</FEATURE>",lastFeatureEndPosition + 9) +10 );
-            lastFeatureEndPosition = dasXMLFile.indexOf("</FEATURE>",lastFeatureEndPosition + 9);
-            if(feature.indexOf("<NOTE>No features found for the segment</NOTE>")< 0){
-                allFeatures.add(new DasFeature(feature));
+        while(dasXMLFile.hasNext()){
+            if ((dasEvent = dasXMLFile.nextEvent()).isStartElement()){
+                if(dasEvent.asStartElement().getName().getLocalPart().equalsIgnoreCase("FEATURE")){
+                    dasEvent = dasXMLFile.nextEvent();
+                    if(dasEvent.isCharacters()){
+                        allFeatures.add(new DasFeature(dasEvent.asCharacters().getData()));
+                    }
+                }
             }
         }
     return allFeatures;

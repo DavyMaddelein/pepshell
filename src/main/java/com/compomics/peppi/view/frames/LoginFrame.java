@@ -3,9 +3,13 @@ package com.compomics.peppi.view.frames;
 import com.compomics.peppi.DbSchemeController;
 import com.compomics.peppi.FaultBarrier;
 import com.compomics.peppi.controllers.objectcontrollers.DbConnectionController;
+import com.compomics.peppi.controllers.properties.DatabaseProperties;
+import com.compomics.peppi.model.enums.DataBasePropertyEnum;
+import com.compomics.peppi.model.Property;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -18,9 +22,14 @@ import org.apache.log4j.Logger;
 public class LoginFrame extends javax.swing.JFrame {
 
     final static Logger logger = Logger.getLogger(LoginFrame.class);
+    DatabaseProperties databasePropertiesInstance;
 
     public LoginFrame() {
+        this.databasePropertiesInstance = DatabaseProperties.getInstance();
         initComponents();
+        usernameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getValue()));
+        urlTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBURL.getValue()));
+        databaseNameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBNAME.getValue()));
         passwordField.setFocusTraversalKeysEnabled(false);
         urlTextField.setFocusTraversalKeysEnabled(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,14 +52,14 @@ public class LoginFrame extends javax.swing.JFrame {
                     passwordField.requestFocus();
                     passwordField.selectAll();
                 } else if (e.getKeyChar() == KeyEvent.VK_ENTER || e.getKeyChar() == KeyEvent.VK_TAB) {
-                    databaseName.requestFocus();
-                    databaseName.selectAll();
+                    databaseNameTextField.requestFocus();
+                    databaseNameTextField.selectAll();
                 } else {
                     super.keyTyped(e);
                 }
             }
         });
-        databaseName.addKeyListener(new KeyAdapter() {
+        databaseNameTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == KeyEvent.VK_ENTER) {
@@ -106,13 +115,11 @@ public class LoginFrame extends javax.swing.JFrame {
         loginButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         passwordField = new javax.swing.JPasswordField();
-        databaseName = new javax.swing.JTextField();
+        databaseNameTextField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
-
-        urlTextField.setText("muppet03.ugent.be");
 
         usernameLabel.setText("Username");
 
@@ -135,8 +142,6 @@ public class LoginFrame extends javax.swing.JFrame {
                 cancelButtonMouseReleased(evt);
             }
         });
-
-        databaseName.setText("projects");
 
         jLabel1.setText("database name");
 
@@ -171,7 +176,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(databaseName, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(databaseNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(52, 52, 52)
@@ -197,7 +202,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     .addComponent(urlLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(databaseName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(databaseNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -274,7 +279,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
-    private javax.swing.JTextField databaseName;
+    private javax.swing.JTextField databaseNameTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton loginButton;
@@ -288,11 +293,18 @@ public class LoginFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void executeLogin() {
-        if (usernameTextField.getText().equals("") || new String(passwordField.getPassword()).equals("") || urlTextField.getText().equals("") || databaseName.getText().equals("")) {
+        if (usernameTextField.getText().equals("") || new String(passwordField.getPassword()).equals("") || urlTextField.getText().equals("") || databaseNameTextField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide all the fields");
         } else {
             try {
-                DbConnectionController.createConnection(usernameTextField.getText(), new String(passwordField.getPassword()), urlTextField.getText(), databaseName.getText());
+                DbConnectionController.createConnection(usernameTextField.getText(), new String(passwordField.getPassword()), urlTextField.getText(), databaseNameTextField.getText());
+                DatabaseProperties.getInstance().setProperties(new ArrayList<Property>() {
+                    {
+                        this.add(new Property(DataBasePropertyEnum.DBUSERNAME, usernameTextField.getText()));
+                        this.add(new Property(DataBasePropertyEnum.DBURL, urlTextField.getText()));
+                        this.add(new Property(DataBasePropertyEnum.DBNAME, databaseNameTextField.getText()));
+                    }
+                });
                 DbSchemeController.checkDbScheme();
                 launchProjectSelectorWindow();
             } catch (SQLException sqle) {

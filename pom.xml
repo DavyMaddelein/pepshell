@@ -101,7 +101,6 @@
             <groupId>org.biojava</groupId>
             <artifactId>biojava</artifactId>
             <version>1.5</version>
-            <scope>test</scope>
             <type>jar</type>
         </dependency>
         <dependency>

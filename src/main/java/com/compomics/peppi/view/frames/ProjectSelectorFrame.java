@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author Davy
+ *  2435, 2499, 2500, 2501, 2502, 2503
  */
 public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer {
 
@@ -39,7 +40,18 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
             faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(null, "something went wrong while retrieving the list of projects:\n" + ex.getMessage());
         }
-        //TODO add shutdown hook that opens an empty mainwindow
+    }
+
+    public void dispose(boolean showMainWindow) {
+        super.dispose();
+        if (showMainWindow) {
+            new MainWindow();
+        }
+    }
+
+    @Override
+    public void dispose() {
+        this.dispose(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -230,7 +242,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.showData(referenceProject, selectedProjectsSet);
             } finally {
-                this.dispose();
+                this.dispose(false);
             }
         }
     }//GEN-LAST:event_launchMainWindowButtonMouseReleased

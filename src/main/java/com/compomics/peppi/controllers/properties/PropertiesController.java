@@ -1,0 +1,100 @@
+package com.compomics.peppi.controllers.properties;
+
+import com.compomics.peppi.model.Property;
+import com.compomics.peppi.model.enums.PropertyEnum;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Properties;
+
+/**
+ *
+ * @author Davy
+ */
+abstract class PropertiesController implements Observer {
+
+    protected Properties properties = new Properties();
+    protected EnumSet propertyEnum;
+
+    protected PropertiesController(File aPropertyFile, final EnumSet aPropertyEnum) throws IOException {
+        FileReader propertiesFileReader = null;
+        try {
+            if (aPropertyFile.exists()) {
+                propertiesFileReader = new FileReader(aPropertyFile);
+                properties.load(propertiesFileReader);
+                this.propertyEnum = aPropertyEnum;
+            } else {
+                if (!aPropertyFile.getParentFile().exists()) {
+                    aPropertyFile.getParentFile().mkdirs();
+                }
+                if (!aPropertyFile.createNewFile()) {
+                    throw new IOException("property file could not be created");
+                } else {
+                    this.propertyEnum = aPropertyEnum;
+                    setPropertiesFromEnumSet(aPropertyEnum);
+                }
+            }
+        } finally {
+            if (propertiesFileReader != null) {
+                propertiesFileReader.close();
+            }
+        }
+    }
+
+    protected PropertiesController(EnumSet aProperyEnum) {
+        this.propertyEnum = aProperyEnum;
+        setPropertiesFromEnumSet(aProperyEnum);
+    }
+
+    private void setPropertiesFromEnumSet(EnumSet aPropertyEnum) {
+        Iterator<PropertyEnum> propIter = aPropertyEnum.iterator();
+        while (propIter.hasNext()) {
+            properties.put(propIter.next().getValue(), "");
+        }
+    }
+
+    public void update(Observable o, Object property) throws IllegalArgumentException {
+        if (property != null && property instanceof Property) {
+            properties.setProperty(((Property) property).getName().getValue(), ((Property) property).getValue());
+        }
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public String getProperty(String propertyKey) throws IllegalArgumentException {
+        String property = "";
+        try {
+            if (propertyKey != null && properties.containsKey(propertyKey)) {
+                property = properties.getProperty(propertyKey);
+            }
+        } finally {
+            return property;
+        }
+    }
+
+    public boolean setProperty(Property aProperty) throws IllegalArgumentException {
+        boolean stored = false;
+        if (propertyEnum.contains(aProperty.getName())) {
+            properties.setProperty(aProperty.getName().getValue(), aProperty.getValue());
+        }
+        stored = true;
+
+        return stored;
+    }
+
+    public boolean setProperties(List<Property> propertiesList) throws IllegalArgumentException {
+        for (Property aPropertyEntry : propertiesList) {
+            if (propertyEnum.contains(aPropertyEntry.getName())) {
+                properties.setProperty(aPropertyEntry.getName().getValue(), aPropertyEntry.getValue());
+            }
+        }
+        return true;
+    }
+}

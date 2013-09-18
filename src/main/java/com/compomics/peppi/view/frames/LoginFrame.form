@@ -83,7 +83,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="databaseName" min="-2" pref="213" max="-2" attributes="0"/>
+                          <Component id="databaseNameTextField" min="-2" pref="213" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -117,7 +117,7 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="databaseName" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="databaseNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -132,11 +132,14 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JTextField" name="usernameTextField">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextField()"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JTextField" name="urlTextField">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="muppet03.ugent.be"/>
-          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextField()"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="usernameLabel">
           <Properties>
@@ -176,10 +179,10 @@
         </Component>
         <Component class="javax.swing.JPasswordField" name="passwordField">
         </Component>
-        <Component class="javax.swing.JTextField" name="databaseName">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="projects"/>
-          </Properties>
+        <Component class="javax.swing.JTextField" name="databaseNameTextField">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextField()"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>

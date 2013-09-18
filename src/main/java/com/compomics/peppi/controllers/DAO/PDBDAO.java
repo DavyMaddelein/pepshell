@@ -13,12 +13,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 
 /**
  *
@@ -34,7 +38,7 @@ public class PDBDAO {
         BufferedReader br = new BufferedReader(new LineNumberReader(new InputStreamReader(pdbFileConnection.getInputStream(), "UTF-8")));
         while ((pdbLine = br.readLine()) != null) {
             if (pdbLine.contains("Uniprot to PDB mapping")) {
-                pdbFilesToReturn = startUniprotParsing(br);
+                pdbFilesToReturn = startUniprotPDBParsing(br);
             }
         }
         return pdbFilesToReturn;
@@ -44,22 +48,31 @@ public class PDBDAO {
         File pdbFile = File.createTempFile(aPdbAccession, ".pdb");
         pdbFile.deleteOnExit();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdbFile), "UTF-8"));
-        bw.write(URLController.readUrl("http://www.rcsb.org/pdb/files/" + aPdbAccession));
+        bw.write(URLController.readUrl("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession+".ent"));
         bw.close();
         return pdbFile;
     }
 
-    private static Set<String> startUniprotParsing(BufferedReader br) throws IOException {
+    public static String getPdbFileInMem(String aPdbAccession) throws IOException{
+        StringWriter pdbFile = new StringWriter();
+        BufferedWriter bw = new BufferedWriter(pdbFile);
+        bw.write(URLController.readUrl("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession+".ent"));
+        return pdbFile.toString();
+    }
+    
+    private static Set<String> startUniprotPDBParsing(BufferedReader br) throws IOException {
         Set<String> pdbFilesToReturn = new HashSet<String>();
-        String pdbLine;
-        while ((pdbLine = br.readLine()) != null && !pdbLine.contains("#")) {
+        String pdbLine = "#";
+        while ((pdbLine = br.readLine()) != null && !pdbLine.startsWith("#")) {
             pdbFilesToReturn.add(pdbLine.split("\t")[3]);
         }
         return pdbFilesToReturn;
     }
     
-    public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException {
-        List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(URLController.readUrl(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)));
+    public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException {
+        List<DasFeature>pdbFeatures = new ArrayList<DasFeature>();
+        XMLInputFactory xmlParseFactory = XMLInputFactory.newInstance();
+        DasParser.getAllDasFeatures(xmlParseFactory.createXMLEventReader(new URL(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)).openStream()));
         
         //List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(new URL("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment="+pdbAccession).openStream());
         

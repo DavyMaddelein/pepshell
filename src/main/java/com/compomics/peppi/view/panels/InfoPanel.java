@@ -24,7 +24,6 @@ public class InfoPanel extends javax.swing.JPanel {
     private List<PeptidesProteinsOverlapPanel> projectOverlapPanels = new ArrayList<PeptidesProteinsOverlapPanel>();
 
     public InfoPanel() {
-
         initComponents();
     }
 
@@ -43,7 +42,7 @@ public class InfoPanel extends javax.swing.JPanel {
         transparencySlider = new javax.swing.JSlider();
         sequenceCoveragePanel = new com.compomics.peppi.view.panels.SequenceCoveragePanel();
         quantCheckBox = new javax.swing.JCheckBox();
-        jPanel1 = new javax.swing.JPanel();
+        jInternalFrame1 = new javax.swing.JInternalFrame();
 
         peptidesProteinsOverlapBarChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "standard", "hydrophobicity", "secondary structure", "domain" }));
         peptidesProteinsOverlapBarChooser.setMinimumSize(new java.awt.Dimension(122, 20));
@@ -86,7 +85,9 @@ public class InfoPanel extends javax.swing.JPanel {
             }
         });
 
-        jPanel1.setMinimumSize(new java.awt.Dimension(100, 50));
+        jInternalFrame1.setBorder(null);
+        jInternalFrame1.setVisible(true);
+        jInternalFrame1.getContentPane().setLayout(new java.awt.FlowLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -95,20 +96,18 @@ public class InfoPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jInternalFrame1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(peptidesProteinsOverlapBarChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(quantCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addComponent(transparencySliderValueTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(transparencySlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 976, Short.MAX_VALUE)))
+                    .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -123,10 +122,9 @@ public class InfoPanel extends javax.swing.JPanel {
                         .addComponent(quantCheckBox))
                     .addComponent(transparencySlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                .addGap(20, 20, 20)
-                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jInternalFrame1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
+                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -222,8 +220,8 @@ public class InfoPanel extends javax.swing.JPanel {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JComboBox peptidesProteinsOverlapBarChooser;
     private javax.swing.JCheckBox quantCheckBox;
     private com.compomics.peppi.view.panels.SequenceCoveragePanel sequenceCoveragePanel;
@@ -235,9 +233,10 @@ public class InfoPanel extends javax.swing.JPanel {
         for (Project project : toCompareProjects) {
             PeptidesProteinsOverlapPanel aPanel = new PeptidesProteinsOverlapPanel(project);
             projectOverlapPanels.add(aPanel);
-            jPanel1.add(projectOverlapPanels.get(projectOverlapPanels.size() - 1));
-            jPanel1.setSize(jPanel1.getHeight(), jPanel1.getWidth() + aPanel.getWidth());
+            jInternalFrame1.getContentPane().add(aPanel);
         }
+        jInternalFrame1.revalidate();
+        jInternalFrame1.repaint();
         this.revalidate();
         this.repaint();
     }

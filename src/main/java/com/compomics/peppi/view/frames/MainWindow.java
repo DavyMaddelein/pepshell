@@ -136,7 +136,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(proteinInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(proteinInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1040, Short.MAX_VALUE)
                 .addGap(408, 408, 408))
         );
         mainViewPanelLayout.setVerticalGroup(
@@ -244,7 +244,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addComponent(exportButton)
                 .addGap(18, 18, 18)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(264, Short.MAX_VALUE))
+                .addContainerGap(393, Short.MAX_VALUE))
         );
 
         tabsPane.addTab("exportPanel", exportPanel);
@@ -253,6 +253,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
+        });
+        pdbProteinList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pdbProteinListMouseClicked(evt);
+            }
         });
         jScrollPane2.setViewportView(pdbProteinList);
 
@@ -266,7 +271,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jmolPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1400, Short.MAX_VALUE)
+                .addComponent(jmolPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1464, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -274,7 +279,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jmolPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+                    .addComponent(jmolPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
                     .addComponent(jSeparator2)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane2)
@@ -282,8 +287,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap())
         );
 
-        tabsPane.addTab("tab3", jPanel1);
-        tabsPane.addTab("tab4", errorReporterPanel1);
+        tabsPane.addTab("pdb view panel", jPanel1);
+        tabsPane.addTab("error panel", errorReporterPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -337,13 +342,26 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
         //TODO extract export pane
-        /*File saveLocation = new File(PropertiesManager.getPreferredSaveLocation());
-         * JFileChooser saveLocationChooser = new JFileChooser(saveLocation,new DirectoryFilter()); --> set only directory mode
-         * saveLocationChooser.setVisible(true); --> this is different
-         * saveLocation = saveLocationChooser.getSelectedFile();
-         * export(saveLocation,ExcelFileExportCheckbox.get)
+        /**File saveLocation = new File(PropertiesManager.getPreferredSaveLocation());
+          JFileChooser saveLocationChooser = new JFileChooser(saveLocation,new DirectoryFilter()); --> set only directory mode
+          saveLocationChooser.setVisible(true); --> this is different
+          saveLocation = saveLocationChooser.getSelectedFile();
+          export(saveLocation,ExcelFileExportCheckbox.get)
          */
     }//GEN-LAST:event_exportButtonActionPerformed
+
+    private void pdbProteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pdbProteinListMouseClicked
+        try {
+            jmolPanel1.setPDBProtein((Protein)pdbProteinList.getSelectedValue());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ConversionException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_pdbProteinListMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel accessionLabel;
     private com.compomics.peppi.view.panels.ErrorReporterPanel errorReporterPanel1;

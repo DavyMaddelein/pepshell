@@ -32,6 +32,7 @@ public class QuantedPeptideDrawMode extends StandardPeptideProteinDrawMode {
 
     public int calculateRatioColor(QuantedPeptideGroup aQuantedPeptideGroup) {
         int returnValue = 0;
+        //log quant code from rover
         if (aQuantedPeptideGroup.getRatio() > ((aQuantedPeptideGroup.getProjectInfo().getMaxRatio() + aQuantedPeptideGroup.getProjectInfo().getMinRatio()) / 2)) {
         } else {
         }

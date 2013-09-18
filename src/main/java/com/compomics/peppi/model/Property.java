@@ -1,21 +1,23 @@
 package com.compomics.peppi.model;
 
+import com.compomics.peppi.model.enums.PropertyEnum;
+
 /**
  *
  * @author Davy
  */
 public final class Property {
     
-    private String name;
+    private PropertyEnum nameEnum;
     private String value;
     
-    public Property(String aName, String aValue) {
-        this.name = aName;
+    public Property(PropertyEnum aName, String aValue) {
+        this.nameEnum = aName;
         this.value = aValue;
     }
 
-    final public String getName() {
-        return name;
+    final public PropertyEnum getName() {
+        return nameEnum;
     }
 
     final public String getValue() {

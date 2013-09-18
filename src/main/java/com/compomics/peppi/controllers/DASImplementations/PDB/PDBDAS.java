@@ -5,6 +5,12 @@ import com.compomics.peppi.model.DAS.PDBDAS.DasAlignment;
 import com.compomics.peppi.model.DAS.PDBDAS.DasBlock;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.XMLEvent;
+import org.biojava.bio.program.ssbind.AlignmentStAXHandler;
 
 /**
  *
@@ -13,20 +19,37 @@ import java.util.List;
 public class PDBDAS extends DasParser {
 
     //TODO redo this with an xml parser
-    
-        public static List<DasAlignment> getAllAlignments(String dasXMLFile){
-        int lastFeatureEndPosition = 0;
+    public static List<DasAlignment> getAllAlignments(XMLEventReader dasXMLFile) throws XMLStreamException {
         List<DasAlignment> alignments = new ArrayList<DasAlignment>();
-        while(dasXMLFile.indexOf("<alignment alignType=\"PDB_SP\">",lastFeatureEndPosition + 30) != -1){
-            String alignment = dasXMLFile.substring(dasXMLFile.indexOf("<alignment alignType=\"PDB_SP\">",lastFeatureEndPosition),dasXMLFile.indexOf("</alignment>",lastFeatureEndPosition) +12 );
-            lastFeatureEndPosition = dasXMLFile.indexOf("</alignment>",lastFeatureEndPosition) + 5;
-            alignments.add(new DasAlignment(alignment));
+        XMLEvent dasEvent;
+        while (dasXMLFile.hasNext()) {
+            if ((dasEvent = dasXMLFile.nextEvent()).isStartElement()) {
+                if (dasEvent.asStartElement().getName().getLocalPart().equalsIgnoreCase("alignment")) {
+                    if (dasEvent.asStartElement().getAttributeByName(new QName("alignType")).getValue().equalsIgnoreCase("PDB_SP")) {
+                        dasEvent = dasXMLFile.nextEvent();
+                        alignments.add(new DasAlignment(dasEvent.asCharacters().getData()));
+                    }
+                }
+            }
         }
         return alignments;
     }
-    
-        public static List<DasBlock> getAllBlocks(String dasXMLFile){
+
+    public static List<DasBlock> getAllBlocks(XMLEventReader dasXMLFile) throws XMLStreamException {
         List<DasBlock> blocks = new ArrayList<DasBlock>();
+        XMLEvent dasEvent;
+        
+        while(dasXMLFile.hasNext()){
+            if((dasEvent = dasXMLFile.nextEvent()).isStartElement()){
+                if(dasEvent.asStartElement().getName().getLocalPart().equalsIgnoreCase("block")){
+                    while(dasXMLFile.hasNext()){
+                    
+                    }
+                }
+            }
+        }
+        
+        /**
         int startBlock = 0;
         while (dasXMLFile.indexOf("<block", startBlock) > -1) {
             String blockStr = dasXMLFile.substring(dasXMLFile.indexOf(">", dasXMLFile.indexOf("<block", startBlock)), dasXMLFile.indexOf("</block", startBlock));
@@ -47,8 +70,8 @@ public class PDBDAS extends DasParser {
 
             DasBlock align = new DasBlock(startPdb, endPdb, startSp, endSp, pdbA, spA);
             blocks.add(align);
-        }
+        }*/
 
         return blocks;
-    }    
+    }
 }

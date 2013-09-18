@@ -14,7 +14,7 @@ import javax.swing.JLabel;
  * @author Davy
  */
 public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
-
+ 
     private int horizontalOffset = 115;
     private int verticalOffset = 50;
     private int proteinBarSize = 1000;
@@ -95,6 +95,7 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
                 }
             }
         }
+        
     }//GEN-LAST:event_formMouseMoved
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel projectNameLabel;
