@@ -8,15 +8,21 @@ import java.util.EnumSet;
  */
 public enum PDBPropertyEnum implements PropertyEnum {
 
-    FILELOCATION("pdb.filelocation");
+    FILELOCATION("pdb.filelocation",System.getProperty("user.home"));
     private final String keyName;
+    private final String defaultValue;
 
-    private PDBPropertyEnum(String keyName) {
+    private PDBPropertyEnum(String keyName,String aDefaultValue) {
         this.keyName = keyName;
+        this.defaultValue = aDefaultValue;
     }
 
-    public String getValue() {
+    public String getKey() {
         return this.keyName;
+    }
+    
+    public String getDefaultValue(){
+        return defaultValue;
     }
     
     public static final EnumSet<PDBPropertyEnum> allEnumValues = EnumSet.allOf(PDBPropertyEnum.class);

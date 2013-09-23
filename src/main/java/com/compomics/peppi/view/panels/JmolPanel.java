@@ -35,10 +35,10 @@ public class JmolPanel extends javax.swing.JPanel {
     public JmolPanel() {
         this.faultBarrier = FaultBarrier.getInstance();
         initComponents();
-        if (PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getValue()).isEmpty()) {
+        if (PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getKey()).isEmpty()) {
             pdbr.setPath(System.getProperty("java.io.tmpdir"));
         } else {
-            pdbr.setPath(PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getValue()));
+            pdbr.setPath(PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getKey()));
         }
     }
 
@@ -108,7 +108,7 @@ public class JmolPanel extends javax.swing.JPanel {
         try {
             viewer = JmolViewer.allocateViewer(pdbViewPanel, jMolAdapter);
             //if (offlineMode){
-            //viewer.openFile(PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getValue())+"/"+((String)PDBFileComboBox.getSelectedItem()));
+            //viewer.openFile(PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getKey())+"/"+((String)PDBFileComboBox.getSelectedItem()));
             //} else{
             viewer.openStringInline(PDBDAO.getPdbFileInMem(((String) PDBFileComboBox.getSelectedItem())));
             //}

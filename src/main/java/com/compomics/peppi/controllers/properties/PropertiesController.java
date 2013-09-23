@@ -4,6 +4,7 @@ import com.compomics.peppi.model.Property;
 import com.compomics.peppi.model.enums.PropertyEnum;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -20,6 +21,7 @@ abstract class PropertiesController implements Observer {
 
     protected Properties properties = new Properties();
     protected EnumSet propertyEnum;
+    protected File propertyFile;
 
     protected PropertiesController(File aPropertyFile, final EnumSet aPropertyEnum) throws IOException {
         FileReader propertiesFileReader = null;
@@ -28,6 +30,7 @@ abstract class PropertiesController implements Observer {
                 propertiesFileReader = new FileReader(aPropertyFile);
                 properties.load(propertiesFileReader);
                 this.propertyEnum = aPropertyEnum;
+                propertyFile = aPropertyFile;
             } else {
                 if (!aPropertyFile.getParentFile().exists()) {
                     aPropertyFile.getParentFile().mkdirs();
@@ -36,6 +39,7 @@ abstract class PropertiesController implements Observer {
                     throw new IOException("property file could not be created");
                 } else {
                     this.propertyEnum = aPropertyEnum;
+                    propertyFile = aPropertyFile;
                     setPropertiesFromEnumSet(aPropertyEnum);
                 }
             }
@@ -43,6 +47,20 @@ abstract class PropertiesController implements Observer {
             if (propertiesFileReader != null) {
                 propertiesFileReader.close();
             }
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    if (propertyFile.exists()) {
+                        try {
+                            properties.store(new FileWriter(propertyFile), null);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                }
+            });
+
         }
     }
 
@@ -53,14 +71,16 @@ abstract class PropertiesController implements Observer {
 
     private void setPropertiesFromEnumSet(EnumSet aPropertyEnum) {
         Iterator<PropertyEnum> propIter = aPropertyEnum.iterator();
+        PropertyEnum aProperty;
         while (propIter.hasNext()) {
-            properties.put(propIter.next().getValue(), "");
+            aProperty = propIter.next();
+            properties.put(aProperty.getKey(), aProperty.getDefaultValue());
         }
     }
 
     public void update(Observable o, Object property) throws IllegalArgumentException {
         if (property != null && property instanceof Property) {
-            properties.setProperty(((Property) property).getName().getValue(), ((Property) property).getValue());
+            properties.setProperty(((Property) property).getName().getKey(), ((Property) property).getValue());
         }
     }
 
@@ -82,7 +102,7 @@ abstract class PropertiesController implements Observer {
     public boolean setProperty(Property aProperty) throws IllegalArgumentException {
         boolean stored = false;
         if (propertyEnum.contains(aProperty.getName())) {
-            properties.setProperty(aProperty.getName().getValue(), aProperty.getValue());
+            properties.setProperty(aProperty.getName().getKey(), aProperty.getValue());
         }
         stored = true;
 
@@ -92,7 +112,7 @@ abstract class PropertiesController implements Observer {
     public boolean setProperties(List<Property> propertiesList) throws IllegalArgumentException {
         for (Property aPropertyEntry : propertiesList) {
             if (propertyEnum.contains(aPropertyEntry.getName())) {
-                properties.setProperty(aPropertyEntry.getName().getValue(), aPropertyEntry.getValue());
+                properties.setProperty(aPropertyEntry.getName().getKey(), aPropertyEntry.getValue());
             }
         }
         return true;

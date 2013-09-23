@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.peppi.model;
 
 import java.util.ArrayList;
@@ -13,7 +9,7 @@ import java.util.Map;
  *
  * @author Davy
  */
-public class ProteaseSpliceLocationMap {
+public class Proteases {
 
     private static final Map<String, Protease> proteaseMap = new HashMap<String, Protease>() {
         {
@@ -27,11 +23,19 @@ public class ProteaseSpliceLocationMap {
                     add("R");
                     add("K");
                 }
+            }, new ArrayList<String>() {
+                {
+                    add("P");
+                }
+            }, new ArrayList<String>() {
+                {
+                    add("P");
+                }
             }));
         }
     };
-    
-    public Map<String,Protease> getProteaseMap(){
+
+    public static Map<String, Protease> getProteaseMap() {
         return Collections.unmodifiableMap(proteaseMap);
     }
 }

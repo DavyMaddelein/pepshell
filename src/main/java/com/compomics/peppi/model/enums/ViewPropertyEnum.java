@@ -8,7 +8,8 @@ import java.util.EnumSet;
  */
 public enum ViewPropertyEnum implements PropertyEnum {
 
-    PROTEINACCESSIONTYPE("view.preferredaccessiontype", "uniprot");
+    PROTEINACCESSIONTYPE("view.preferredaccessiontype", "uniprot"),
+    PREFERREDENZYME("protein.preferredenzyme", "trypsin");
     private final String property;
     private final String defaultValue;
 
@@ -17,11 +18,13 @@ public enum ViewPropertyEnum implements PropertyEnum {
         this.defaultValue = defaultValue;
     }
 
-    public String getValue() {
+    public String getKey() {
         return property;
     }
 
-    public EnumSet allEnumValues() {
-        return EnumSet.allOf(ViewPropertyEnum.class);
+    public String getDefaultValue() {
+        return defaultValue;
     }
+    //TODO: make interface method reference implementing class?
+    public static EnumSet allEnumValues = EnumSet.allOf(ViewPropertyEnum.class);
 }

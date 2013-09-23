@@ -27,9 +27,9 @@ public class LoginFrame extends javax.swing.JFrame {
     public LoginFrame() {
         this.databasePropertiesInstance = DatabaseProperties.getInstance();
         initComponents();
-        usernameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getValue()));
-        urlTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBURL.getValue()));
-        databaseNameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBNAME.getValue()));
+        usernameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()));
+        urlTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()));
+        databaseNameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
         passwordField.setFocusTraversalKeysEnabled(false);
         urlTextField.setFocusTraversalKeysEnabled(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -6,5 +6,7 @@ package com.compomics.peppi.model.enums;
  */
 public interface PropertyEnum {
 
-    public String getValue();
+    public String getKey();
+
+    public String getDefaultValue();
 }

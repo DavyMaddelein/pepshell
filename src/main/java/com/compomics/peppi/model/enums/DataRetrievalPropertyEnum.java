@@ -20,11 +20,11 @@ public enum DataRetrievalPropertyEnum implements PropertyEnum {
         this.defaultValue = defaultWebsite;
     }
 
-    public String getValue() {
+    public String getKey() {
         return key;
     }
 
-    public String getDefaultProperty() {
+    public String getDefaultValue() {
         return defaultValue;
     }
 

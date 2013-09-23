@@ -8,15 +8,23 @@ import java.util.EnumSet;
  */
 public enum DataBasePropertyEnum implements PropertyEnum {
 
-    DBNAME("database.name"), DBURL("database.url"), DBUSERNAME("database.username");
-    private final String dbPropertyTerms;
+    DBNAME("database.name","mydbname"), DBURL("database.url","mydbserver.com"), DBUSERNAME("database.username","user");
+    private final String keyName;
+    private final String defaultValue;
 
-    private DataBasePropertyEnum(String keyName) {
-        this.dbPropertyTerms = keyName;
+    private DataBasePropertyEnum(String keyName,String defaultValue) {
+        this.keyName = keyName;
+        this.defaultValue = defaultValue;
     }
 
-    public String getValue() {
-        return dbPropertyTerms;
+    public String getKey() {
+        return keyName;
     }
+    
+    
+    public String getDefaultValue(){
+        return defaultValue;
+    }
+    
     public static final EnumSet<DataBasePropertyEnum> allEnumValues = EnumSet.allOf(DataBasePropertyEnum.class);
 }
