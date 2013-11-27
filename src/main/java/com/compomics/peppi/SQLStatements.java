@@ -15,6 +15,7 @@ public class SQLStatements {
     private static String SELECT_PEPTIDEGROUPS_FOR_ACCESSION;
     private static String SELECT_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION;
     private static String CHECK_IF_PROJECT_HAS_QUANTDATA;
+    private static String GET_PDBFILES_FOR_PROTEIN;
 
     public static void instantiateColimsStatements() {
         SQLStatements.SELECT_PROTEINS = SELECT_COLIMS_PROTEINS;
@@ -24,6 +25,7 @@ public class SQLStatements {
         SQLStatements.SELECT_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION = SELECT_COLIMS_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION;
         SQLStatements.SELECT_PEPTIDEGROUPS_FOR_ACCESSION = SELECT_COLIMS_PEPTIDEGROUPS_FOR_ACCESSION;
         SQLStatements.CHECK_IF_PROJECT_HAS_QUANTDATA = CHECK_IF_COLIMS_PROJECT_HAS_QUANTDATA;
+        SQLStatements.GET_PDBFILES_FOR_PROTEIN = GET_PDBFILES_FOR_PROTEIN_FROM_COLIMS;
     }
 
     public static void instantiateMslimsStatements() {
@@ -34,6 +36,7 @@ public class SQLStatements {
         SQLStatements.SELECT_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION = SELECT_MSLIMS_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION;
         SQLStatements.SELECT_PEPTIDEGROUPS_FOR_ACCESSION = SELECT_MSLIMS_PEPTIDEGROUPS_FOR_ACCESSION;
         SQLStatements.CHECK_IF_PROJECT_HAS_QUANTDATA = CHECK_IF_MSLIMS_PROJECT_HAS_QUANTDATA;
+        SQLStatements.GET_PDBFILES_FOR_PROTEIN = GET_PDBFILES_FOR_PROTEIN_FROM_MSLIMS;
     }
 
     //TODO rename
@@ -44,6 +47,7 @@ public class SQLStatements {
         SQLStatements.SELECT_A_SINGLE_PROJECT = SELECT_ELIEN_SINGLE_PROJECT;
         SQLStatements.SELECT_PEPTIDEGROUPS_FOR_ACCESSION = SELECT_ELIEN_PEPTIDEGROUPS_FOR_ACCESSION;
         SQLStatements.CHECK_IF_PROJECT_HAS_QUANTDATA = CHECK_IF_ELIENDB_PROJECT_HAS_QUANTDATA;
+        SQLStatements.GET_PDBFILES_FOR_PROTEIN = GET_PDBfILES_FOR_PROTEIN_FROM_ELIENDB;
     }
     private static String SELECT_MSLIMS_PROTEINS = "select distinct accession from identification,spectrum where l_spectrumid = spectrumid and l_projectid = ? order by accession";
     private static String SELECT_COLIMS_PROTEINS = "";
@@ -65,11 +69,14 @@ public class SQLStatements {
     private static String CHECK_IF_MSLIMS_PROJECT_HAS_QUANTDATA = "select l_identificationid from identification_to_quantitation,(select identificationid as ident_id from identification,(select spectrumid as spec_id from spectrum where l_projectid = ? limit 1)as spectrum_result where l_spectrumid = spectrum_result.spec_id limit 1) as ident_result where ident_result.ident_id = l_identificationid limit 1";
     private static String CHECK_IF_COLIMS_PROJECT_HAS_QUANTDATA;
     private static String CHECK_IF_ELIENDB_PROJECT_HAS_QUANTDATA = "select * from somwhere where column = null";
+    private static String GET_PDBFILES_FOR_PROTEIN_FROM_MSLIMS = "";
+    private static String GET_PDBFILES_FOR_PROTEIN_FROM_COLIMS = "";
+    private static String GET_PDBfILES_FOR_PROTEIN_FROM_ELIENDB = "";
 
     public static String selectAllProteins() {
         return SELECT_PROTEINS;
     }
-    
+
     public static String selectAllPeptidesGrouped() {
         return SELECT_PEPTIDEGROUPS;
     }
@@ -92,5 +99,9 @@ public class SQLStatements {
 
     public static String QuantedCheck() {
         return CHECK_IF_PROJECT_HAS_QUANTDATA;
+    }
+
+    public static String getPdbFilesFromDb() {
+        return GET_PDBFILES_FOR_PROTEIN;
     }
 }

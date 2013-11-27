@@ -273,7 +273,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void launchProjectSelectorWindow() {
-        FaultBarrier.getInstance().addObserver(new ProjectSelectorFrame());
+        FaultBarrier.getInstance().addObserver(new ProjectSelectionTreeFrame());
         this.dispose();
 
     }

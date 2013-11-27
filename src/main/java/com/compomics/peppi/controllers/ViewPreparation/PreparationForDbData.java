@@ -9,6 +9,7 @@ import com.compomics.peppi.model.QuantedProject;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +21,7 @@ public class PreparationForDbData extends ViewPreparation {
     FaultBarrier barrier = FaultBarrier.getInstance();
 
     @Override
-    public Set<Protein> PrepareProteinsForJList(Project referenceProject, Set<Project> ProjectsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
+    public Set<Protein> PrepareProteinsForJList(Project referenceProject, List<Project> ProjectsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         try {
             DbDAO.fetchPeptidesAndProteins(referenceProject);
             checkAndAddQuantToProteinsInProject(referenceProject);
@@ -56,9 +57,7 @@ public class PreparationForDbData extends ViewPreparation {
         } catch (IOException ex) {
             barrier.handleException(ex);
         }
-
         return dataAdded;
-
     }
 
     @Override

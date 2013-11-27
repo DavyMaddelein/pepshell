@@ -1,5 +1,6 @@
 package com.compomics.peppi.controllers.DAO;
 
+import com.compomics.peppi.SQLStatements;
 import com.compomics.peppi.controllers.AccessionConverter;
 import com.compomics.peppi.model.DAS.DasFeature;
 import com.compomics.peppi.model.PdbInfo;
@@ -17,6 +18,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,18 +50,18 @@ public class PDBDAO {
         File pdbFile = File.createTempFile(aPdbAccession, ".pdb");
         pdbFile.deleteOnExit();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdbFile), "UTF-8"));
-        bw.write(URLController.readUrl("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession+".ent"));
+        bw.write(URLController.readUrl("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession + ".ent"));
         bw.close();
         return pdbFile;
     }
 
-    public static String getPdbFileInMem(String aPdbAccession) throws IOException{
+    public static String getPdbFileInMem(String aPdbAccession) throws IOException {
         StringWriter pdbFile = new StringWriter();
         BufferedWriter bw = new BufferedWriter(pdbFile);
-        bw.write(URLController.readUrl("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession+".ent"));
+        bw.write(URLController.readUrl("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession + ".ent"));
         return pdbFile.toString();
     }
-    
+
     private static Set<String> startUniprotPDBParsing(BufferedReader br) throws IOException {
         Set<String> pdbFilesToReturn = new HashSet<String>();
         String pdbLine = "#";
@@ -68,17 +70,23 @@ public class PDBDAO {
         }
         return pdbFilesToReturn;
     }
-    
+
     public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException {
-        List<DasFeature>pdbFeatures = new ArrayList<DasFeature>();
+        List<DasFeature> pdbFeatures = new ArrayList<DasFeature>();
         XMLInputFactory xmlParseFactory = XMLInputFactory.newInstance();
         DasParser.getAllDasFeatures(xmlParseFactory.createXMLEventReader(new URL(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)).openStream()));
-        
+
         //List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(new URL("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment="+pdbAccession).openStream());
-        
-        for(DasFeature pdbFeature : pdbFeatures){
+
+        for (DasFeature pdbFeature : pdbFeatures) {
             pdbFeature.getMethod();
         }
         return null;
+    }
+
+    public static Set<String> getPdbFileForProteinFromRepository(Protein protein) throws SQLException {
+        Set<String> pdbNames = new HashSet<String>();
+        SQLStatements.getPdbFilesFromDb();
+        return pdbNames;
     }
 }

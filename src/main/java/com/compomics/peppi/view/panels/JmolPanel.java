@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -136,8 +138,14 @@ public class JmolPanel extends javax.swing.JPanel {
         }
     }
 
-    public void setPDBProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
-        Set<String> pdbAccessions = PDBDAO.getPDBFileAccessionsForProtein(protein);
+    public void setPDBProtein(Protein protein) throws MalformedURLException, ConversionException, SQLException {
+        Set<String> pdbAccessions = new HashSet<String>();
+        try {
+            pdbAccessions = PDBDAO.getPDBFileAccessionsForProtein(protein);
+        } catch (IOException ioe) {
+            // try offline repository if any
+            pdbAccessions = PDBDAO.getPdbFileForProteinFromRepository(protein);
+        }
         PDBFileComboBox.removeAllItems();
         if (pdbAccessions.isEmpty()) {
             PDBFileComboBox.addItem("no pdb accessions found for protein");

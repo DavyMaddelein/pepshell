@@ -75,13 +75,15 @@ public class ErrorReporterPanel extends javax.swing.JPanel implements Observer {
     // End of variables declaration//GEN-END:variables
 
     public void update(Observable faultBarrier, Object errorMessage) {
-        try {
-            errorTextPane.getDocument().insertString(errorTextPane.getDocument().getLength(), (String) errorMessage, null);
-            errorMessagesReported++;
-            checkSizeAndTruncate();
-        } catch (BadLocationException ex) {
-            logger.error(ex);
-            JOptionPane.showMessageDialog(this, "there has been an error in the exception handling:\n" + ex.getMessage());
+        if (errorMessage instanceof String) {
+            try {
+                errorTextPane.getDocument().insertString(errorTextPane.getDocument().getLength(), (String) errorMessage, null);
+                errorMessagesReported++;
+                checkSizeAndTruncate();
+            } catch (BadLocationException ex) {
+                logger.error(ex);
+                JOptionPane.showMessageDialog(this, "there has been an error in the exception handling:\n" + ex.getMessage());
+            }
         }
     }
 

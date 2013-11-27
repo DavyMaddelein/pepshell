@@ -29,6 +29,7 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("select your data source");
 
         dataCollectionFrameButton.setText("Continue...");
         dataCollectionFrameButton.addActionListener(new java.awt.event.ActionListener() {
@@ -71,16 +72,17 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void dataCollectionFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dataCollectionFrameButtonActionPerformed
         //JRadioGroup.getSelection();
 
         if (dbSelectionRadioButton.isSelected()) {
-            new LoginFrame();
+            new LoginFrame().setVisible(true);
             this.dispose();
         } else if (fastaSelectionRadioButton.isSelected()) {
-            new OfflineFileSelectionFrame();
+            new OfflineFileSelectionFrame().setVisible(true);
             this.dispose();
         }
 

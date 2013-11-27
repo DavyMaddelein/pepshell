@@ -3,18 +3,21 @@ package com.compomics.peppi.view.frames;
 import com.compomics.peppi.DbSchemeController;
 import com.compomics.peppi.FaultBarrier;
 import com.compomics.peppi.controllers.DAO.WebDAO;
+import com.compomics.peppi.model.AnalysisGroup;
 import com.compomics.peppi.model.Project;
 import com.compomics.peppi.model.Protein;
 import com.compomics.peppi.model.exceptions.ConversionException;
+import com.compomics.peppi.view.panels.InfoPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
+import java.util.List;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +35,26 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         faultBarrier.addObserver(errorReporterPanel1);
     }
 
-    public void showData(Project toCompareWithProject, Set<Project> toCompareProjects) {
+    public MainWindow(Project toCompareWithProject, AnalysisGroup dataList) {
+        this();
+        jTabbedPane1.add(new InfoPanel());
+        showData(toCompareWithProject, dataList);
+    }
+
+    public MainWindow(Project toCompareWithProject, List<AnalysisGroup> dataList) {
+        this();
+        for (AnalysisGroup aGroup : dataList) {
+            jTabbedPane1.add(aGroup.getName(), new InfoPanel());
+            showData(toCompareWithProject, aGroup, (InfoPanel) jTabbedPane1.getComponent(jTabbedPane1.getComponentCount()));
+            jTabbedPane1.setSelectedIndex(jTabbedPane1.getComponentCount());
+        }
+    }
+
+    private void showData(Project toCompareWithProject, List<Project> toCompareProjects) {
+        showData(toCompareWithProject, toCompareProjects, (InfoPanel) jTabbedPane1.getSelectedComponent());
+    }
+
+    private void showData(Project toCompareWithProject, List<Project> toCompareProjects, InfoPanel anInfoPanel) {
         try {
             this.setLocationRelativeTo(null);
             this.setVisible(true);
@@ -41,7 +63,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             proteinList.setListData(proteinsToDisplay);
             jScrollPane2.setViewportView(pdbProteinList);
             pdbProteinList.setListData(proteinsToDisplay);
-            proteinInfoPanel.setProjectsToDisplay(toCompareProjects);
+            anInfoPanel.setProjectsToDisplay(toCompareProjects);
         } catch (SQLException ex) {
             faultBarrier.handleException(ex);
         }
@@ -66,7 +88,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         proteinList = new javax.swing.JList();
         accessionLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        proteinInfoPanel = new com.compomics.peppi.view.panels.InfoPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         exportPanel = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
@@ -135,9 +157,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                     .addComponent(accessionLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(proteinInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1040, Short.MAX_VALUE)
-                .addGap(408, 408, 408))
+                .addGap(18, 18, 18)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1436, Short.MAX_VALUE)
+                .addContainerGap())
         );
         mainViewPanelLayout.setVerticalGroup(
             mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,12 +167,12 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap()
                 .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainViewPanelLayout.createSequentialGroup()
-                        .addComponent(proteinInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(87, 87, 87))
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(mainViewPanelLayout.createSequentialGroup()
                         .addComponent(accessionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE))
                     .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -311,7 +333,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             if (proteinOfInterest.getProteinSequence().isEmpty()) {
                 proteinOfInterest.setSequence(WebDAO.fetchSequence(proteinOfInterest.getProteinAccession()));
             }
-            proteinInfoPanel.updateProteinGraphics(proteinOfInterest);
+            ((InfoPanel) jTabbedPane1.getSelectedComponent()).updateProteinGraphics(proteinOfInterest);
         } catch (MalformedURLException ex) {
             faultBarrier.handleException(ex);
         } catch (IOException ex) {
@@ -342,26 +364,30 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
         //TODO extract export pane
-        /**File saveLocation = new File(PropertiesManager.getPreferredSaveLocation());
-          JFileChooser saveLocationChooser = new JFileChooser(saveLocation,new DirectoryFilter()); --> set only directory mode
-          saveLocationChooser.setVisible(true); --> this is different
-          saveLocation = saveLocationChooser.getSelectedFile();
-          export(saveLocation,ExcelFileExportCheckbox.get)
+        /**
+         * File saveLocation = new
+         * File(PropertiesManager.getPreferredSaveLocation()); JFileChooser
+         * saveLocationChooser = new JFileChooser(saveLocation,new
+         * DirectoryFilter()); --> set only directory mode
+         * saveLocationChooser.setVisible(true); --> this is different
+         * saveLocation = saveLocationChooser.getSelectedFile();
+         * export(saveLocation,ExcelFileExportCheckbox.get)
          */
     }//GEN-LAST:event_exportButtonActionPerformed
 
     private void pdbProteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pdbProteinListMouseClicked
         try {
-            jmolPanel1.setPDBProtein((Protein)pdbProteinList.getSelectedValue());
+            jmolPanel1.setPDBProtein((Protein) pdbProteinList.getSelectedValue());
         } catch (MalformedURLException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ConversionException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_pdbProteinListMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel accessionLabel;
     private com.compomics.peppi.view.panels.ErrorReporterPanel errorReporterPanel1;
@@ -381,11 +407,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private com.compomics.peppi.view.panels.JmolPanel jmolPanel1;
     private javax.swing.JPanel mainViewPanel;
     private javax.swing.JList pdbProteinList;
-    private com.compomics.peppi.view.panels.InfoPanel proteinInfoPanel;
     private javax.swing.JList proteinList;
     private javax.swing.JTabbedPane tabsPane;
     // End of variables declaration//GEN-END:variables

@@ -4,6 +4,7 @@ import com.compomics.peppi.controllers.DataModes.AbstractDataMode;
 import com.compomics.peppi.model.Project;
 import com.compomics.peppi.model.Protein;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
  */
 public abstract class ViewPreparation extends Observable {
 
-    public abstract Set<Protein> PrepareProteinsForJList(Project referenceProject, Set<Project> ProjectsToCompareWith,boolean removeNonOverlappingPeptidesFromReferenceProject);
+    public abstract Set<Protein> PrepareProteinsForJList(Project referenceProject, List<Project> ProjectsToCompareWith,boolean removeNonOverlappingPeptidesFromReferenceProject);
 
     protected abstract boolean checkAndAddQuantToProteinsInProject(Project aProject);
 

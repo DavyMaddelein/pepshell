@@ -229,7 +229,7 @@ public class InfoPanel extends javax.swing.JPanel {
     private javax.swing.JTextField transparencySliderValueTextfield;
     // End of variables declaration//GEN-END:variables
 
-    public void setProjectsToDisplay(Set<Project> toCompareProjects) {
+    public void setProjectsToDisplay(List<Project> toCompareProjects) {
         for (Project project : toCompareProjects) {
             PeptidesProteinsOverlapPanel aPanel = new PeptidesProteinsOverlapPanel(project);
             projectOverlapPanels.add(aPanel);

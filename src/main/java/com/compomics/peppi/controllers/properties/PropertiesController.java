@@ -36,6 +36,7 @@ abstract class PropertiesController implements Observer {
                     aPropertyFile.getParentFile().mkdirs();
                 }
                 if (!aPropertyFile.createNewFile()) {
+                    setPropertiesFromEnumSet(aPropertyEnum);
                     throw new IOException("property file could not be created");
                 } else {
                     this.propertyEnum = aPropertyEnum;

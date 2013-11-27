@@ -3,13 +3,13 @@ package com.compomics.peppi.view.frames;
 import com.compomics.peppi.FaultBarrier;
 import com.compomics.peppi.controllers.DAO.DbDAO;
 import com.compomics.peppi.controllers.comparators.CompareProjects;
+import com.compomics.peppi.model.AnalysisGroup;
 import com.compomics.peppi.model.Project;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -17,11 +17,10 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author Davy
- *  2435, 2499, 2500, 2501, 2502, 2503
  */
 public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer {
 
-    private Set<Project> selectedProjectsSet = new TreeSet<Project>(new CompareProjects());
+    private AnalysisGroup analysisGroup = new AnalysisGroup("project group");
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Project referenceProject;
 
@@ -69,7 +68,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
         launchMainWindowButton = new javax.swing.JButton();
         errorLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        selectedProjectsList = new JList(selectedProjectsSet.toArray());
+        selectedProjectsList = new JList(analysisGroup.toArray());
         onlyRefProjectPeptidesCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -221,8 +220,8 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     }//GEN-LAST:event_projectSelectorButtonMouseReleased
 
     private void projectRemovalButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_projectRemovalButtonMouseReleased
-        selectedProjectsSet.remove((Project) projectList.getSelectedValue());
-        selectedProjectsList.setListData(selectedProjectsSet.toArray());
+        analysisGroup.remove((Project) projectList.getSelectedValue());
+        selectedProjectsList.setListData(analysisGroup.toArray());
     }//GEN-LAST:event_projectRemovalButtonMouseReleased
 
     private void referenceProjectSelectorButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_referenceProjectSelectorButtonMouseReleased
@@ -235,13 +234,12 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     }//GEN-LAST:event_referenceProjectRemovalButtonMouseReleased
 
     private void launchMainWindowButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_launchMainWindowButtonMouseReleased
-        if (selectedProjectsSet.isEmpty() || referenceProject == null) {
+        if (analysisGroup.isEmpty() || referenceProject == null) {
             JOptionPane.showMessageDialog(this, "please select a project of interest and at least one project to compare with");
         } else {
             try {
-                MainWindow mainWindow = new MainWindow();
-                mainWindow.showData(referenceProject, selectedProjectsSet);
-            } finally {
+                MainWindow mainWindow = new MainWindow(referenceProject,analysisGroup);
+                } finally {
                 this.dispose(false);
             }
         }
@@ -255,8 +253,8 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
 
     private void selectedProjectsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectedProjectsListMouseClicked
         if (evt.getClickCount() == 2) {
-            selectedProjectsSet.remove((Project) selectedProjectsList.getSelectedValue());
-            selectedProjectsList.setListData(selectedProjectsSet.toArray());
+            analysisGroup.remove((Project) selectedProjectsList.getSelectedValue());
+            selectedProjectsList.setListData(analysisGroup.toArray());
         }
     }//GEN-LAST:event_selectedProjectsListMouseClicked
 
@@ -284,7 +282,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     }
 
     private void referenceProjectSelected() {
-        if (!selectedProjectsSet.contains((Project) projectList.getSelectedValue())) {
+        if (!analysisGroup.contains((Project) projectList.getSelectedValue())) {
             referenceProject = (Project) projectList.getSelectedValue();
             referenceProjectTextField.setText(referenceProject.getProjectName());
             errorLabel.setVisible(false);
@@ -297,9 +295,9 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
 
     private void projectSelected() {
         Project selectedProject = (Project) projectList.getSelectedValue();
-        if (!selectedProject.equals(referenceProject)) {
-            selectedProjectsSet.add(selectedProject);
-            selectedProjectsList.setListData(selectedProjectsSet.toArray(new Project[0]));
+        if (!selectedProject.equals(referenceProject) && !analysisGroup.contains(selectedProject)) {
+            analysisGroup.add(selectedProject);
+            selectedProjectsList.setListData(analysisGroup.toArray(new Project[0]));
             errorLabel.setVisible(false);
         } else {
             errorLabel.setVisible(true);
