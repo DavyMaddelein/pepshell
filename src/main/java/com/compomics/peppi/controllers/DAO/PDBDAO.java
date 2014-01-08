@@ -50,15 +50,17 @@ public class PDBDAO {
         File pdbFile = File.createTempFile(aPdbAccession, ".pdb");
         pdbFile.deleteOnExit();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdbFile), "UTF-8"));
-        bw.write(URLController.readUrl("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession + ".ent"));
+        bw.write(URLController.readUrl("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase() + ".ent"));
         bw.close();
         return pdbFile;
     }
 
     public static String getPdbFileInMem(String aPdbAccession) throws IOException {
         StringWriter pdbFile = new StringWriter();
-        BufferedWriter bw = new BufferedWriter(pdbFile);
-        bw.write(URLController.readUrl("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession + ".ent"));
+        if (aPdbAccession != null) {
+            BufferedWriter bw = new BufferedWriter(pdbFile);
+            bw.write(URLController.readUrl("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase() + ".ent"));
+        }
         return pdbFile.toString();
     }
 
@@ -73,8 +75,7 @@ public class PDBDAO {
 
     public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException {
         List<DasFeature> pdbFeatures = new ArrayList<DasFeature>();
-        XMLInputFactory xmlParseFactory = XMLInputFactory.newInstance();
-        DasParser.getAllDasFeatures(xmlParseFactory.createXMLEventReader(new URL(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)).openStream()));
+        DasParser.getAllDasFeatures(URLController.readUrl(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)));
 
         //List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(new URL("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment="+pdbAccession).openStream());
 

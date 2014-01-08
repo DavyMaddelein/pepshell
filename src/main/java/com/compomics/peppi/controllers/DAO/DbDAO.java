@@ -52,13 +52,13 @@ public class DbDAO extends Observable {
         return true;
     }
 
-    public static boolean fetchPeptidesAndProteins(Project project) throws SQLException, URISyntaxException, IOException {
+    public static boolean fetchPeptidesAndProteins(Project project) throws SQLException, IOException {
         fetchProteins(project);
         addPeptideGroupsToProteins(project.getProteins());
         return true;
     }
 
-    public static boolean fetchPeptidesAndProteins(QuantedProject project) throws SQLException, URISyntaxException, IOException {
+    public static boolean fetchPeptidesAndProteins(QuantedProject project) throws SQLException, IOException {
         fetchProteins(project);
         addQuantedPeptideGroupsToProteins(project.getProteins());
         project.setProteins(project.getProteins());

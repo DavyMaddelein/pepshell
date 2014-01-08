@@ -20,7 +20,6 @@ import javax.xml.stream.XMLStreamException;
  */
 public class DomainProteinDrawMode extends StandardPeptideProteinDrawMode {
 
-    private static FaultBarrier faultBarrier = new FaultBarrier();
 
     @Override
     public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int size, int width) {
@@ -31,7 +30,7 @@ public class DomainProteinDrawMode extends StandardPeptideProteinDrawMode {
                 try {
                     DomainFinder.addDomainsToProtein(protein);
                 } catch (XMLStreamException ex) {
-                    Logger.getLogger(DomainProteinDrawMode.class.getName()).log(Level.SEVERE, null, ex);
+                    FaultBarrier.getInstance().handleException(ex);
                 }
             }
             for (Domain domain : protein.getDomains()) {
@@ -44,10 +43,10 @@ public class DomainProteinDrawMode extends StandardPeptideProteinDrawMode {
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "there has been a problem retrieving the domains for protein: " + protein.getProteinAccession());
-            faultBarrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (ConversionException ex) {
             JOptionPane.showMessageDialog(null, "there has been a problem retrieving the domains for protein: " + protein.getProteinAccession());
-            faultBarrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
     }
     /**
@@ -67,7 +66,6 @@ public class DomainProteinDrawMode extends StandardPeptideProteinDrawMode {
      * barSize); int size = (int) (((peptideGroup.getEndAlignmentPosition() -
      * peptideGroup.getStartingAlignmentPosition()) / (double) proteinLength) *
      * barSize); g.fillRect(horizontalOffset + startingLocation, verticalOffset,
-     * size, hight);
-    }
+     * size, hight); }
      */
 }

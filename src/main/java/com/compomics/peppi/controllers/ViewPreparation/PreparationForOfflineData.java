@@ -24,5 +24,6 @@ public class PreparationForOfflineData extends ViewPreparation {
 
     @Override
     public void addProteinsToProject(AbstractDataMode dataMode) {
+        
     }
 }

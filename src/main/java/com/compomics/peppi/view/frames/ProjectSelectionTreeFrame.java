@@ -1,18 +1,24 @@
 package com.compomics.peppi.view.frames;
 
+import com.compomics.peppi.DataModeController;
 import com.compomics.peppi.FaultBarrier;
 import com.compomics.peppi.controllers.DAO.DbDAO;
+import com.compomics.peppi.controllers.DataModes.FastaDataMode;
+import com.compomics.peppi.controllers.properties.ViewProperties;
 import com.compomics.peppi.model.AnalysisGroup;
 import com.compomics.peppi.model.Project;
+import com.compomics.peppi.model.Property;
+import com.compomics.peppi.model.enums.ViewPropertyEnum;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -25,6 +31,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     private Set<Project> selectedProjectsSet = new HashSet<Project>();
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Project referenceProject;
+    private File fastaFile;
 
     /**
      * Creates new form ProjectSelectionTreeFrame all this is pretty much unsafe
@@ -63,6 +70,9 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         jScrollPane3 = new javax.swing.JScrollPane();
         projectTree = new com.compomics.peppi.view.components.DragAndDropTree();
         analyseButton = new javax.swing.JButton();
+        ownFastaToggle = new javax.swing.JToggleButton();
+        fastaLocationTextField = new javax.swing.JTextField();
+        addFastaButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("project selection");
@@ -124,29 +134,53 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
             }
         });
 
+        ownFastaToggle.setText("search against own fasta");
+        ownFastaToggle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ownFastaToggleActionPerformed(evt);
+            }
+        });
+
+        fastaLocationTextField.setEditable(false);
+
+        addFastaButton.setText("add fasta");
+        addFastaButton.setEnabled(false);
+        addFastaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addFastaButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addReferenceProjectButton)
-                    .addComponent(removeReferenceProjectButton)
-                    .addComponent(toProjectTreeButton)
-                    .addComponent(addAnalysisGroupButton)
-                    .addComponent(removeAnalysisGroupButton)
-                    .addComponent(removeProjectButton))
-                .addGap(40, 40, 40)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(analyseButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(addReferenceProjectButton)
+                            .addComponent(removeReferenceProjectButton)
+                            .addComponent(toProjectTreeButton)
+                            .addComponent(addAnalysisGroupButton)
+                            .addComponent(removeAnalysisGroupButton)
+                            .addComponent(removeProjectButton))
+                        .addGap(40, 40, 40)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(addFastaButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ownFastaToggle)
+                        .addGap(18, 18, 18)
+                        .addComponent(analyseButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -176,7 +210,11 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))))
                 .addGap(18, 18, 18)
-                .addComponent(analyseButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(analyseButton)
+                    .addComponent(ownFastaToggle)
+                    .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addFastaButton))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
@@ -236,9 +274,10 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
     private void analyseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analyseButtonActionPerformed
 
+        boolean goAhead = false;
         //can we actually continue?
+        List<AnalysisGroup> analysisList = new ArrayList<AnalysisGroup>();
         if (!selectedProjectsSet.isEmpty() && referenceProject != null) {
-            List<AnalysisGroup> analysisList = new ArrayList<AnalysisGroup>();
             AnalysisGroup rogueProjects = new AnalysisGroup("Analysis");
             Enumeration tree = ((DefaultMutableTreeNode) projectTree.getModel().getRoot()).children();
             while (tree.hasMoreElements()) {
@@ -248,60 +287,66 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 } else if (((DefaultMutableTreeNode) anObject).getUserObject() instanceof AnalysisGroup) {
                     analysisList.add((AnalysisGroup) ((DefaultMutableTreeNode) anObject).getUserObject());
                 }
-                if (!rogueProjects.isEmpty()) {
-                    analysisList.add(rogueProjects);
-                }
-            }
+                DataModeController.setDataSource(DataModeController.DataSource.DATABASE);
+            } 
 
+
+            if (!rogueProjects.isEmpty()) {
+                analysisList.add(rogueProjects);
+            }
+            goAhead = true;
+            if (ownFastaToggle.isSelected() && fastaFile != null && goAhead) {
+                //this sure as hell can be better
+                DataModeController.setDb(DataModeController.Db.FASTA);
+                ((FastaDataMode) DataModeController.getDb().getDataMode()).setFastaFile(fastaFile);
+            } else if (ownFastaToggle.isSelected() && fastaFile == null) {
+                goAhead = false;
+            }
+        }
+        if (goAhead) {
             MainWindow window = new MainWindow(referenceProject, analysisList);
             faultBarrier.addObserver(window);
             window.setVisible(true);
             this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "please make sure you have a reference project, one or more projects to compare to and if requested, have supplied a fasta");
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_analyseButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ProjectSelectionTreeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ProjectSelectionTreeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ProjectSelectionTreeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ProjectSelectionTreeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void ownFastaToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownFastaToggleActionPerformed
+        // TODO add your handling code here:
+        if (ownFastaToggle.isSelected()) {
+            addFastaButton.setEnabled(true);
+            fastaFile = new File(ViewProperties.getInstance().getProperty(ViewPropertyEnum.PROTEINFASTALOCATION.getKey()));
+            fastaLocationTextField.setText(fastaFile.getName());
+        } else {
+            addFastaButton.setEnabled(false);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_ownFastaToggleActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ProjectSelectionTreeFrame().setVisible(true);
-            }
-        });
-    }
+    private void addFastaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFastaButtonActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fastaChooser = new JFileChooser();
+        fastaChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fastaChooser.setMultiSelectionEnabled(false);
+        fastaChooser.showOpenDialog(this);
+        this.fastaFile = fastaChooser.getSelectedFile();
+        if (fastaFile != null) {
+            fastaLocationTextField.setText(fastaFile.getName());
+            ViewProperties.getInstance().setProperty(new Property(ViewPropertyEnum.PROTEINFASTALOCATION, fastaFile.getAbsolutePath()));
+        }
+    }//GEN-LAST:event_addFastaButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAnalysisGroupButton;
+    private javax.swing.JButton addFastaButton;
     private javax.swing.JButton addReferenceProjectButton;
     private javax.swing.JButton analyseButton;
+    private javax.swing.JTextField fastaLocationTextField;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JToggleButton ownFastaToggle;
     private javax.swing.JList projectList;
     private com.compomics.peppi.view.components.DragAndDropTree projectTree;
     private javax.swing.JTextArea referenceProjectTextBox;
@@ -312,7 +357,11 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     // End of variables declaration//GEN-END:variables
 
     public void update(Observable o, Object o1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (o1 != null) {
+            if (o1 instanceof Exception) {
+                faultBarrier.handleException((Exception) o1);
+            }
+        }
     }
 
     private void fillProjectList() throws SQLException {

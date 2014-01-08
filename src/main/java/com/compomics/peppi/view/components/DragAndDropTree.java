@@ -1,6 +1,7 @@
 package com.compomics.peppi.view.components;
 
 import com.compomics.peppi.model.AnalysisGroup;
+import com.compomics.peppi.model.Project;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -179,11 +180,11 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
         try {
             dtde.acceptDrop(DnDConstants.ACTION_MOVE);
             Object droppedObject = dtde.getTransferable().getTransferData(localObjectFlavor);
-            MutableTreeNode droppedNode = null;
+            DefaultMutableTreeNode droppedNode = null;
             if (droppedObject instanceof MutableTreeNode) {
                 if (((MutableTreeNode) droppedObject).getParent() != null) {
                     // remove from old location
-                    droppedNode = (MutableTreeNode) droppedObject;
+                    droppedNode = (DefaultMutableTreeNode) droppedObject;
                     ((DefaultTreeModel) getModel()).removeNodeFromParent(droppedNode);
                 } else {
                     droppedNode = new DefaultMutableTreeNode(droppedObject);
@@ -194,22 +195,33 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
             DefaultMutableTreeNode dropNode = (DefaultMutableTreeNode) path.getLastPathComponent();
             if (dropNode != null) {
                 if (dropNode.isLeaf()) {
-                    if (dropNode.getUserObject() instanceof AnalysisGroup && dropNode.getAllowsChildren()) {
-                        if (droppedObject instanceof AnalysisGroup) {
-                            ((DefaultMutableTreeNode) dropNode.getParent()).insert(droppedNode, dropNode.getParent().getChildCount());
+                    if (dropNode.getUserObject() instanceof AnalysisGroup && droppedNode.getUserObject() != null) {
+                        if (droppedNode.getUserObject() instanceof AnalysisGroup) {
+                            ((DefaultMutableTreeNode) dropNode.getParent()).insert(droppedNode, 0);
                         } else {
-                            dropNode.insert(droppedNode, dropNode.getChildCount());
+                            ((AnalysisGroup) dropNode.getUserObject()).add((Project) droppedNode.getUserObject());
+                            dropNode.insert(droppedNode, 0);
                         }
                     } else if (dropNode.isRoot()) {
-                        dropNode.insert(droppedNode, ((MutableTreeNode) getModel().getRoot()).getChildCount());
+                        dropNode.insert(droppedNode, 0);
                     } else {
                         DefaultMutableTreeNode parent = (DefaultMutableTreeNode) dropNode.getParent();
-                        int index = parent.getIndex(dropNode);
-                        ((DefaultTreeModel) getModel()).insertNodeInto(droppedNode, parent, index);
+                        ((DefaultTreeModel) getModel()).insertNodeInto(droppedNode, parent, 0);
+                    }
+                } else {
+                    if (dropNode.getUserObject() instanceof AnalysisGroup && droppedObject instanceof DefaultMutableTreeNode) {
+                        if (((DefaultMutableTreeNode) droppedObject).getUserObject() instanceof AnalysisGroup) {
+                            dropNode.insert((MutableTreeNode) getModel().getRoot(), 0);
+                        } else {
+                            ((AnalysisGroup) dropNode.getUserObject()).add((Project) droppedNode.getUserObject());
+                            dropNode.insert(droppedNode, 0);
+                        }
+                    } else {
+                        dropNode.insert(droppedNode, 0);
                     }
                 }
             } else {
-                ((DefaultTreeModel) getModel()).insertNodeInto(droppedNode, (MutableTreeNode) getModel().getRoot(), ((MutableTreeNode) getModel().getRoot()).getChildCount());
+                ((DefaultTreeModel) getModel()).insertNodeInto(droppedNode, (MutableTreeNode) getModel().getRoot(), 0);
             }
             dropped = true;
         } catch (Exception e) {

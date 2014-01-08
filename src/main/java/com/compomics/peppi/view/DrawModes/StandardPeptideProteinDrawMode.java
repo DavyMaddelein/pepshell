@@ -1,45 +1,49 @@
 package com.compomics.peppi.view.DrawModes;
 
-import com.compomics.peppi.controllers.properties.ViewProperties;
+import com.compomics.peppi.controllers.objectcontrollers.PeptideGroupController;
 import com.compomics.peppi.model.PeptideGroup;
-import com.compomics.peppi.model.Proteases;
 import com.compomics.peppi.model.Protein;
-import com.compomics.peppi.model.enums.ViewPropertyEnum;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.List;
+import java.awt.Graphics2D;
+
 /**
  *
  * @author Davy
  */
 public class StandardPeptideProteinDrawMode {
 
+    float transparency = 1;
+
     public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int size, int width) {
         g.setColor(Color.PINK);
-        List<String> possiblePeptides = Proteases.getProteaseMap().get(ViewProperties.getInstance().getProperty(ViewPropertyEnum.PREFERREDENZYME.getKey())).digest(protein.getProteinSequence());
         g.fillRect(horizontalOffset, verticalOffset, size, width);
-        for (String aPossiblePeptide : possiblePeptides) {
-            //TODO: what about multiple times the same peptide?
-            drawPossiblePeptide(protein.getProteinSequence().indexOf(aPossiblePeptide), aPossiblePeptide.length(), g, horizontalOffset, verticalOffset, width);
-        }
+        //TODO: what about multiple times the same peptide?
+        drawPeptides(protein, g, horizontalOffset, verticalOffset, width, (double) protein.getProteinSequence().length() / (double) size);
 
     }
 
-    public void drawPeptides(List<PeptideGroup> peptideGroups, Graphics g, int horizontalOffset, int verticalOffset, int size, int width, int barSize) {
-        for (PeptideGroup peptideGroup : peptideGroups) {
-            g.setColor(new Color(255, 255, 255));
-            g.fillRect(horizontalOffset + peptideGroup.getStartingAlignmentPosition(), verticalOffset, peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition(), width);
-        }
-    }
-
-    public void drawPeptide(PeptideGroup peptideGroup, Graphics g, int horizontalOffset, int verticalOffset, int proteinLength, int width, int barSize) {
+    public void drawPeptides(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int width, double barSize) {
+        ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
         g.setColor(new Color(255, 133, 0));
-        int startingLocation = (int) Math.ceil(((peptideGroup.getStartingAlignmentPosition() / (double) proteinLength) * barSize));
-        int size = (int) Math.ceil((((peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition()) / (double) proteinLength) * barSize));
+        for (PeptideGroup peptideGroup : protein.getPeptideGroupsForProtein()) {
+            if (peptideGroup.getEndAlignmentPosition() == -1 && peptideGroup.getStartingAlignmentPosition() == -1) {
+                PeptideGroupController.mapPeptideGroupToProtein(protein, peptideGroup);
+            }
+            //g.fillRect(horizontalOffset + peptideGroup.getStartingAlignmentPosition(), verticalOffset, peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition(), width);
+            drawPeptide(peptideGroup, g, horizontalOffset, verticalOffset, width, barSize);
+        }
+        ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+    }
+
+    public void drawPeptide(PeptideGroup peptideGroup, Graphics g, int horizontalOffset, int verticalOffset, int width, double barSize) {
+        int startingLocation = (int) Math.ceil(((double) (peptideGroup.getStartingAlignmentPosition()) / barSize));
+        int size = (int) Math.ceil((((double) (peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition())) / barSize));
         g.fillRect(horizontalOffset + startingLocation, verticalOffset, size, width);
     }
 
-    private void drawPossiblePeptide(int possiblePeptideStart, int possiblePeptideStop, Graphics g, int horizontalOffset, int verticalOffset, int width) {
-        g.fillRect(horizontalOffset + possiblePeptideStart, verticalOffset, possiblePeptideStop, width);
+    public void setPeptideAlpha(float aTransparency) {
+        this.transparency = aTransparency;
     }
 }

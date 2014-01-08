@@ -9,13 +9,9 @@ import com.compomics.peppi.model.Protein;
 import com.compomics.peppi.model.exceptions.ConversionException;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 /**
  * Created with IntelliJ IDEA. User: Davy Date: 3/7/13 Time: 8:14 AM To change
@@ -25,25 +21,23 @@ public class DomainFinder {
 
     public enum DomainWebSites {
         //todo, add website specific strings to enum to iterate over them and add them
+
         PFAM,
         SMART,
         PROSITE
-        
-        
     }
 
     public static List<Domain> getDomainsForSwissprotAccessionFromSingleSource(String aUniProtAccession, DomainWebSites aDomainWebSite) throws IOException, XMLStreamException {
 
         List<Domain> foundDomains = new ArrayList<Domain>();
         List<DasFeature> features = new ArrayList<DasFeature>();
-XMLInputFactory xmlParseFactory = XMLInputFactory.newInstance();
         if (aDomainWebSite == DomainWebSites.PFAM) {
             //TODO check if das is parsed decently for pfam
-            features = DasParser.getAllDasFeatures(xmlParseFactory.createXMLEventReader((new URL("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession)).openStream()));
+            features = DasParser.getAllDasFeatures(URLController.readUrl("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession));
         } else if (aDomainWebSite == DomainWebSites.SMART) {
-            //features = DasParser.getAllDasFeatures(URLController.readUrl("http://smart.embl.de/smart/das/smart/features?segment=" + aUniProtAccession));
+            features = DasParser.getAllDasFeatures(URLController.readUrl("http://smart.embl.de/smart/das/smart/features?segment=" + aUniProtAccession));
         } else if (aDomainWebSite == DomainWebSites.PROSITE) {
-            //features = DasParser.getAllDasFeatures(URLController.readUrl("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
+            features = DasParser.getAllDasFeatures(URLController.readUrl("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
         }
         for (DasFeature feature : features) {
             foundDomains.add(new Domain(feature.getFeatureLabel(), feature.getStart(), feature.getEnd(), aDomainWebSite.toString()));

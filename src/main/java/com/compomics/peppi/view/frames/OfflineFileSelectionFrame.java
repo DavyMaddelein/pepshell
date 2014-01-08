@@ -5,12 +5,14 @@ import com.compomics.peppi.model.Project;
 import java.io.File;
 import java.util.Set;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Davy
  */
 public class OfflineFileSelectionFrame extends javax.swing.JFrame {
+
     private File fastaFile;
 
     /**
@@ -18,6 +20,9 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
      */
     public OfflineFileSelectionFrame() {
         initComponents();
+        placeholderPanel = peptideFileTreePanel;
+        this.validate();
+        this.repaint();
     }
 
     /**
@@ -29,17 +34,100 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
-        launchMainWindowButton = new javax.swing.JButton();
+        digestPanel = new javax.swing.JPanel();
+        simpleDigestRadioButton = new javax.swing.JRadioButton();
+        CPDTRadioButton = new javax.swing.JRadioButton();
+        proteaseBox = new javax.swing.JComboBox();
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        peptideFileTreePanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        dragAndDropTree1 = new com.compomics.peppi.view.components.DragAndDropTree();
+        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        fastaFileLocationTextField = new javax.swing.JTextField();
+        launchMainWindowButton = new javax.swing.JButton();
+        fastaSelectionButton = new javax.swing.JButton();
+        selfDigestCheckBox = new javax.swing.JCheckBox();
+        placeholderPanel = new javax.swing.JPanel();
+
+        simpleDigestRadioButton.setText("simple digest");
+        simpleDigestRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simpleDigestRadioButtonActionPerformed(evt);
+            }
+        });
+
+        CPDTRadioButton.setText("use CP-DT");
+        CPDTRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CPDTRadioButtonActionPerformed(evt);
+            }
+        });
+
+        proteaseBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout digestPanelLayout = new javax.swing.GroupLayout(digestPanel);
+        digestPanel.setLayout(digestPanelLayout);
+        digestPanelLayout.setHorizontalGroup(
+            digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(digestPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(digestPanelLayout.createSequentialGroup()
+                        .addComponent(simpleDigestRadioButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(proteaseBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CPDTRadioButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        digestPanelLayout.setVerticalGroup(
+            digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(digestPanelLayout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(simpleDigestRadioButton)
+                    .addComponent(proteaseBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(CPDTRadioButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jScrollPane2.setViewportView(dragAndDropTree1);
+
+        jButton1.setText("add analysis group");
+
+        jButton2.setText("add peptide file");
+
+        javax.swing.GroupLayout peptideFileTreePanelLayout = new javax.swing.GroupLayout(peptideFileTreePanel);
+        peptideFileTreePanel.setLayout(peptideFileTreePanelLayout);
+        peptideFileTreePanelLayout.setHorizontalGroup(
+            peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        peptideFileTreePanelLayout.setVerticalGroup(
+            peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextField1.setEditable(false);
-        jTextField1.setText("jTextField1");
+        fastaFileLocationTextField.setEditable(false);
+        fastaFileLocationTextField.setText("fasta file");
 
         launchMainWindowButton.setText("go");
         launchMainWindowButton.addActionListener(new java.awt.event.ActionListener() {
@@ -48,81 +136,115 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        fastaSelectionButton.setText("select a fasta db");
+        fastaSelectionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                fastaSelectionButtonActionPerformed(evt);
             }
         });
 
-        jButton3.setText("jButton3");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        selfDigestCheckBox.setText("digest fasta file");
+        selfDigestCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                selfDigestCheckBoxActionPerformed(evt);
             }
         });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        javax.swing.GroupLayout placeholderPanelLayout = new javax.swing.GroupLayout(placeholderPanel);
+        placeholderPanel.setLayout(placeholderPanelLayout);
+        placeholderPanelLayout.setHorizontalGroup(
+            placeholderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        placeholderPanelLayout.setVerticalGroup(
+            placeholderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 171, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jTextField1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addGap(48, 48, 48))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(launchMainWindowButton)
-                .addGap(155, 155, 155))
+                .addGap(195, 195, 195))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(selfDigestCheckBox)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(placeholderPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(fastaFileLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                                .addComponent(fastaSelectionButton)))
+                        .addGap(52, 52, 52))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(jButton3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                    .addComponent(fastaFileLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fastaSelectionButton))
+                .addGap(18, 18, 18)
+                .addComponent(selfDigestCheckBox)
+                .addGap(18, 18, 18)
+                .addComponent(placeholderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(launchMainWindowButton)
-                .addGap(45, 45, 45))
+                .addGap(27, 27, 27))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void fastaSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fastaSelectionButtonActionPerformed
         JFileChooser fastaChooser = new JFileChooser();
         //fastaChooser.setFileFilter(); fastafilefilter
         fastaChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fastaChooser.setMultiSelectionEnabled(false);
         this.fastaFile = fastaChooser.getSelectedFile();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        JFileChooser peptideFileChooser = new JFileChooser();
-        peptideFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    }//GEN-LAST:event_jButton3ActionPerformed
+        if (fastaFile != null) {
+            fastaFileLocationTextField.setText(fastaFile.getName());
+        }
+    }//GEN-LAST:event_fastaSelectionButtonActionPerformed
 
     private void launchMainWindowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_launchMainWindowButtonActionPerformed
-        new FastaDataMode(fastaFile);
+        if (fastaFile == null) {
+            JOptionPane.showMessageDialog(this, "please provide a fasta file");
+        } else {
+            new FastaDataMode(fastaFile);
+        }
     }//GEN-LAST:event_launchMainWindowButtonActionPerformed
+
+    private void selfDigestCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selfDigestCheckBoxActionPerformed
+        // TODO add your handling code here:
+
+        if (selfDigestCheckBox.isSelected()) {
+        } else {
+        }
+
+    }//GEN-LAST:event_selfDigestCheckBoxActionPerformed
+
+    private void simpleDigestRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpleDigestRadioButtonActionPerformed
+        // TODO add your handling code here:
+        if (simpleDigestRadioButton.isSelected()) {
+            proteaseBox.setEnabled(true);
+        }
+
+    }//GEN-LAST:event_simpleDigestRadioButtonActionPerformed
+
+    private void CPDTRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CPDTRadioButtonActionPerformed
+        // TODO add your handling code here:
+        if (CPDTRadioButton.isSelected()) {
+            proteaseBox.setEnabled(false);
+        }
+    }//GEN-LAST:event_CPDTRadioButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -159,12 +281,21 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton CPDTRadioButton;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JPanel digestPanel;
+    private com.compomics.peppi.view.components.DragAndDropTree dragAndDropTree1;
+    private javax.swing.JTextField fastaFileLocationTextField;
+    private javax.swing.JButton fastaSelectionButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton launchMainWindowButton;
+    private javax.swing.JPanel peptideFileTreePanel;
+    private javax.swing.JPanel placeholderPanel;
+    private javax.swing.JComboBox proteaseBox;
+    private javax.swing.JCheckBox selfDigestCheckBox;
+    private javax.swing.JRadioButton simpleDigestRadioButton;
     // End of variables declaration//GEN-END:variables
 
     public Project getReferenceProject() {

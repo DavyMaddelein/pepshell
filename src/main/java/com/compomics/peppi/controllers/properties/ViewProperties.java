@@ -12,7 +12,7 @@ import java.io.IOException;
 public class ViewProperties extends PropertiesController {
 
     private static ViewProperties aViewProperties;
-    private static final File viewPropertiesFile = new File(System.getProperty("user.home")+"/.compomics/peppi/PDBpreferences");
+    private static final File viewPropertiesFile = new File(System.getProperty("user.home")+"/.compomics/peppi/viewPreferences");
     
     public ViewProperties() {
         super(ViewPropertyEnum.allEnumValues);

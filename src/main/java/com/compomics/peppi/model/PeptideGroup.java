@@ -1,6 +1,7 @@
 package com.compomics.peppi.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -11,8 +12,16 @@ public class PeptideGroup extends ArrayList<Peptide> {
     private int startingAlignmentPosition;
     private int endAlignmentPostition;
     private int shortestPeptideIndex = -1;
-    private static final long serialVersionUID = 1L;
 
+    public PeptideGroup(){
+        super();
+    }
+    
+    public PeptideGroup(List<String> listOfPotentialPeptides){
+        super();
+        this.add(listOfPotentialPeptides);
+    }
+    
     public Peptide getShortestPeptide() {
         return this.get(shortestPeptideIndex);
     }
@@ -45,5 +54,21 @@ public class PeptideGroup extends ArrayList<Peptide> {
     @Override
     public String toString() {
         return this.getShortestPeptide().getSequence();
+    }
+
+    @Override
+    public final boolean add(Peptide e) {
+        boolean added = false;
+        if (!this.contains(e)) {
+            added = super.add(e);
+        }
+        return added;
+    }
+
+    public final boolean add(List<String> peptideSequences) {
+       for (String aPeptideSequence : peptideSequences) {
+            this.add(new Peptide(aPeptideSequence));
+        }
+        return true;
     }
 }

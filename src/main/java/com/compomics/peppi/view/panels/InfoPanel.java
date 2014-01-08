@@ -1,16 +1,13 @@
 package com.compomics.peppi.view.panels;
 
+import com.compomics.peppi.model.AnalysisGroup;
 import com.compomics.peppi.model.Project;
 import com.compomics.peppi.model.Protein;
-import com.compomics.peppi.view.DrawModes.Peptides.QuantedPeptideDrawMode;
-import com.compomics.peppi.view.DrawModes.Proteins.DomainProteinDrawMode;
-import com.compomics.peppi.view.DrawModes.Proteins.HydrophilicityProteinDrawMode;
-import com.compomics.peppi.view.DrawModes.Proteins.SecondaryStructureProteinDrawMode;
-import com.compomics.peppi.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,9 +19,20 @@ public class InfoPanel extends javax.swing.JPanel {
 
     private final DecimalFormat df = new DecimalFormat("0.##");
     private List<PeptidesProteinsOverlapPanel> projectOverlapPanels = new ArrayList<PeptidesProteinsOverlapPanel>();
+    //this is also pretty ugly, switch this to analysisgroup
+    Project condensedProject = new Project(1, "condensed projects");
 
     public InfoPanel() {
         initComponents();
+        //euch
+        projectOverlapPanels.add(peptidesProteinsOverlapPanel1);
+        projectOverlapPanels.add(peptidesProteinsOverlapPanel2);
+        projectOverlapPanels.add(peptidesProteinsOverlapPanel3);
+    }
+
+    public InfoPanel(AnalysisGroup aGroup) {
+        this();
+        setProjectsToDisplay(aGroup);
     }
 
     /**
@@ -36,21 +44,16 @@ public class InfoPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        peptidesProteinsOverlapBarChooser = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         transparencySliderValueTextfield = new javax.swing.JTextField("100");
         transparencySlider = new javax.swing.JSlider();
         sequenceCoveragePanel = new com.compomics.peppi.view.panels.SequenceCoveragePanel();
-        quantCheckBox = new javax.swing.JCheckBox();
-        jInternalFrame1 = new javax.swing.JInternalFrame();
-
-        peptidesProteinsOverlapBarChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "standard", "hydrophobicity", "secondary structure", "domain" }));
-        peptidesProteinsOverlapBarChooser.setMinimumSize(new java.awt.Dimension(122, 20));
-        peptidesProteinsOverlapBarChooser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                peptidesProteinsOverlapBarChooserActionPerformed(evt);
-            }
-        });
+        condenseProjectsCheckBox = new javax.swing.JCheckBox();
+        addPeptideProteinView = new javax.swing.JButton();
+        removeViewButton = new javax.swing.JButton();
+        peptidesProteinsOverlapPanel1 = new com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel();
+        peptidesProteinsOverlapPanel2 = new com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel();
+        peptidesProteinsOverlapPanel3 = new com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel();
 
         jLabel1.setText("Peptide Transparency value ");
         jLabel1.setAlignmentY(0.0F);
@@ -78,53 +81,78 @@ public class InfoPanel extends javax.swing.JPanel {
             }
         });
 
-        quantCheckBox.setText("show quantitation range of peptides");
-        quantCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        condenseProjectsCheckBox.setText("open project view");
+        condenseProjectsCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quantCheckBoxActionPerformed(evt);
+                condenseProjectsCheckBoxActionPerformed(evt);
             }
         });
 
-        jInternalFrame1.setBorder(null);
-        jInternalFrame1.setVisible(true);
-        jInternalFrame1.getContentPane().setLayout(new java.awt.FlowLayout());
+        addPeptideProteinView.setText("add a view");
+        addPeptideProteinView.setEnabled(false);
+        addPeptideProteinView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPeptideProteinViewActionPerformed(evt);
+            }
+        });
+
+        removeViewButton.setText("remove view");
+        removeViewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeViewButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jInternalFrame1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(peptidesProteinsOverlapBarChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)
+                        .addComponent(condenseProjectsCheckBox)
+                        .addGap(59, 59, 59)
+                        .addComponent(addPeptideProteinView)
                         .addGap(18, 18, 18)
-                        .addComponent(quantCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                        .addComponent(removeViewButton)
+                        .addGap(99, 99, 99)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addComponent(transparencySliderValueTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(transparencySlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(transparencySlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(peptidesProteinsOverlapPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(peptidesProteinsOverlapPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(peptidesProteinsOverlapPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(peptidesProteinsOverlapBarChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)
-                        .addComponent(transparencySliderValueTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(quantCheckBox))
-                    .addComponent(transparencySlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(condenseProjectsCheckBox))
+                    .addComponent(addPeptideProteinView)
+                    .addComponent(removeViewButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel1))
+                    .addComponent(transparencySliderValueTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(transparencySlider, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jInternalFrame1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-                .addGap(29, 29, 29)
-                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(peptidesProteinsOverlapPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(peptidesProteinsOverlapPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(peptidesProteinsOverlapPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -151,47 +179,36 @@ public class InfoPanel extends javax.swing.JPanel {
         transparencySliderValueTextfield.selectAll();
     }//GEN-LAST:event_transparencySliderValueTextfieldFocusGained
 
-    private void peptidesProteinsOverlapBarChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peptidesProteinsOverlapBarChooserActionPerformed
-        for (PeptidesProteinsOverlapPanel panel : projectOverlapPanels) {
-            switch (peptidesProteinsOverlapBarChooser.getSelectedIndex()) {
-                case 0:
-                    panel.setProteinDrawMode(new StandardPeptideProteinDrawMode());
-                    panel.setPeptideDrawMode(new StandardPeptideProteinDrawMode());
-                    break;
-                case 1:
-                    panel.setProteinDrawMode(new HydrophilicityProteinDrawMode());
-                    break;
-                case 2:
-                    panel.setProteinDrawMode(new SecondaryStructureProteinDrawMode());
-                    break;
-                case 3:
-                    panel.setProteinDrawMode(new DomainProteinDrawMode());
-                    break;
-                default:
-                    panel.setProteinDrawMode(new StandardPeptideProteinDrawMode());
-                    panel.setPeptideDrawMode(new StandardPeptideProteinDrawMode());
-                    break;
-            }
-            panel.revalidate();
-            panel.repaint();
-        }
-    }//GEN-LAST:event_peptidesProteinsOverlapBarChooserActionPerformed
+    private void condenseProjectsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_condenseProjectsCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_condenseProjectsCheckBoxActionPerformed
 
-    private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
-        if (quantCheckBox.isSelected()) {
-            for (PeptidesProteinsOverlapPanel panel : projectOverlapPanels) {
-                panel.setPeptideDrawMode(new QuantedPeptideDrawMode());
-                panel.revalidate();
-                panel.repaint();
+    private void addPeptideProteinViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPeptideProteinViewActionPerformed
+        // TODO add your handling code here:
+        int visibleCount = 0;
+        for (PeptidesProteinsOverlapPanel panel : projectOverlapPanels) {
+            if (!panel.isVisible()) {
+                panel.setVisible(true);
+                visibleCount++;
+                break;
             }
-        } else {
-            for (PeptidesProteinsOverlapPanel panel : projectOverlapPanels) {
-                panel.setPeptideDrawMode(new StandardPeptideProteinDrawMode());
-                panel.revalidate();
-                panel.repaint();
+            visibleCount++;
+        }
+        if (visibleCount == 3) {
+            addPeptideProteinView.setEnabled(false);
+        }
+    }//GEN-LAST:event_addPeptideProteinViewActionPerformed
+
+    private void removeViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeViewButtonActionPerformed
+        // TODO add your handling code here:
+        for (PeptidesProteinsOverlapPanel aProjectPanel : projectOverlapPanels) {
+            if (aProjectPanel.isVisible()) {
+                aProjectPanel.setVisible(false);
+                addPeptideProteinView.setEnabled(true);
+                break;
             }
         }
-    }//GEN-LAST:event_quantCheckBoxActionPerformed
+    }//GEN-LAST:event_removeViewButtonActionPerformed
     private void transparencyChanged() {
         try {
             transparencySlider.setValue(Integer.parseInt(transparencySliderValueTextfield.getText()));
@@ -213,6 +230,7 @@ public class InfoPanel extends javax.swing.JPanel {
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
         sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein().iterator());
+
         for (PeptidesProteinsOverlapPanel panel : projectOverlapPanels) {
             panel.setProtein(proteinOfInterest);
             panel.revalidate();
@@ -220,24 +238,36 @@ public class InfoPanel extends javax.swing.JPanel {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JInternalFrame jInternalFrame1;
+    private javax.swing.JButton addPeptideProteinView;
+    private javax.swing.JCheckBox condenseProjectsCheckBox;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JComboBox peptidesProteinsOverlapBarChooser;
-    private javax.swing.JCheckBox quantCheckBox;
+    private com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel peptidesProteinsOverlapPanel1;
+    private com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel peptidesProteinsOverlapPanel2;
+    private com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel peptidesProteinsOverlapPanel3;
+    private javax.swing.JButton removeViewButton;
     private com.compomics.peppi.view.panels.SequenceCoveragePanel sequenceCoveragePanel;
     private javax.swing.JSlider transparencySlider;
     private javax.swing.JTextField transparencySliderValueTextfield;
     // End of variables declaration//GEN-END:variables
 
-    public void setProjectsToDisplay(List<Project> toCompareProjects) {
-        for (Project project : toCompareProjects) {
-            PeptidesProteinsOverlapPanel aPanel = new PeptidesProteinsOverlapPanel(project);
-            projectOverlapPanels.add(aPanel);
-            jInternalFrame1.getContentPane().add(aPanel);
+    public void setProjectsToDisplay(List<Project> toCompareProjects, boolean condense) {
+        Set<Protein> condensedProteins = new HashSet<Protein>();
+        if (condense) {
+            for (Project project : toCompareProjects) {
+                condensedProteins.addAll(project.getProteins());
+            }
+            condensedProject.setProteins(condensedProteins);
         }
-        jInternalFrame1.revalidate();
-        jInternalFrame1.repaint();
         this.revalidate();
         this.repaint();
+
+    }
+
+    public Project getCondensedProject() {
+        return condensedProject;
+    }
+
+    public final void setProjectsToDisplay(List<Project> toCompareProjects) {
+        setProjectsToDisplay(toCompareProjects, true);
     }
 }

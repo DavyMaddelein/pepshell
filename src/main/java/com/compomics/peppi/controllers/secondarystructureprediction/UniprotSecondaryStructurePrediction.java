@@ -7,13 +7,11 @@ import com.compomics.peppi.controllers.comparators.CompareDasFeatures;
 import com.compomics.peppi.model.DAS.DasFeature;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -26,10 +24,9 @@ public class UniprotSecondaryStructurePrediction extends SecondaryStructurePredi
     public String getPrediction(String anUniprotAccession) throws IOException {
 
         StringBuilder predictionResult = new StringBuilder();
-        XMLInputFactory xmlParseFactory = XMLInputFactory.newInstance();
         List<DasFeature> features = new ArrayList<DasFeature>();
         try {
-            features = DasParser.getAllDasFeatures(xmlParseFactory.createXMLEventReader(new URL("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + anUniprotAccession).openStream()));
+            features = DasParser.getAllDasFeatures(URLController.readUrl("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + anUniprotAccession));
         } catch (XMLStreamException ex) {
             Logger.getLogger(UniprotSecondaryStructurePrediction.class.getName()).log(Level.SEVERE, null, ex);
         }

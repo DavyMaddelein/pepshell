@@ -32,8 +32,6 @@ public class PreparationForDbData extends ViewPreparation {
             }
         } catch (SQLException ex) {
             barrier.handleException(ex);
-        } catch (URISyntaxException ex) {
-            barrier.handleException(ex);
         } catch (IOException ex) {
             barrier.handleException(ex);
         }
@@ -51,8 +49,6 @@ public class PreparationForDbData extends ViewPreparation {
                 dataAdded = true;
             }
         } catch (SQLException ex) {
-            barrier.handleException(ex);
-        } catch (URISyntaxException ex) {
             barrier.handleException(ex);
         } catch (IOException ex) {
             barrier.handleException(ex);

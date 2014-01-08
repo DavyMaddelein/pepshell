@@ -1,6 +1,6 @@
 package com.compomics.peppi.view.frames;
 
-import com.compomics.peppi.DbSchemeController;
+import com.compomics.peppi.DataModeController;
 import com.compomics.peppi.FaultBarrier;
 import com.compomics.peppi.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.peppi.controllers.properties.DatabaseProperties;
@@ -305,7 +305,7 @@ public class LoginFrame extends javax.swing.JFrame {
                         this.add(new Property(DataBasePropertyEnum.DBNAME, databaseNameTextField.getText()));
                     }
                 });
-                DbSchemeController.checkDbScheme();
+                DataModeController.checkDbScheme();
                 launchProjectSelectorWindow();
             } catch (SQLException sqle) {
                 logger.error(sqle);

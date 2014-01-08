@@ -16,67 +16,64 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jInternalFrame1" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="peptidesProteinsOverlapBarChooser" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="quantCheckBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="101" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                      <Component id="condenseProjectsCheckBox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="59" pref="59" max="-2" attributes="0"/>
+                      <Component id="addPeptideProteinView" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
+                      <Component id="removeViewButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="99" pref="99" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
                       <Component id="transparencySliderValueTextfield" min="-2" pref="67" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
                       <Component id="transparencySlider" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="sequenceCoveragePanel" alignment="0" max="32767" attributes="0"/>
+                  <Component id="peptidesProteinsOverlapPanel1" alignment="1" max="32767" attributes="0"/>
+                  <Component id="peptidesProteinsOverlapPanel2" alignment="1" max="32767" attributes="0"/>
+                  <Component id="peptidesProteinsOverlapPanel3" alignment="1" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
+          <Component id="sequenceCoveragePanel" alignment="1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                      <Component id="peptidesProteinsOverlapBarChooser" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="transparencySliderValueTextfield" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="quantCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
+                      <Component id="condenseProjectsCheckBox" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="transparencySlider" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="addPeptideProteinView" min="-2" max="-2" attributes="0"/>
+                  <Component id="removeViewButton" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="transparencySliderValueTextfield" min="-2" max="-2" attributes="0"/>
+                  <Component id="transparencySlider" min="-2" pref="23" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-              <Component id="jInternalFrame1" pref="246" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="peptidesProteinsOverlapPanel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="peptidesProteinsOverlapPanel2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="peptidesProteinsOverlapPanel3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="sequenceCoveragePanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JComboBox" name="peptidesProteinsOverlapBarChooser">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="standard"/>
-            <StringItem index="1" value="hydrophobicity"/>
-            <StringItem index="2" value="secondary structure"/>
-            <StringItem index="3" value="domain"/>
-          </StringArray>
-        </Property>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[122, 20]"/>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="peptidesProteinsOverlapBarChooserActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Peptide Transparency value "/>
@@ -111,23 +108,36 @@
     </Component>
     <Component class="com.compomics.peppi.view.panels.SequenceCoveragePanel" name="sequenceCoveragePanel">
     </Component>
-    <Component class="javax.swing.JCheckBox" name="quantCheckBox">
+    <Component class="javax.swing.JCheckBox" name="condenseProjectsCheckBox">
       <Properties>
-        <Property name="text" type="java.lang.String" value="show quantitation range of peptides"/>
+        <Property name="text" type="java.lang.String" value="open project view"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="quantCheckBoxActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="condenseProjectsCheckBoxActionPerformed"/>
       </Events>
     </Component>
-    <Container class="javax.swing.JInternalFrame" name="jInternalFrame1">
+    <Component class="javax.swing.JButton" name="addPeptideProteinView">
       <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="null"/>
-        </Property>
-        <Property name="visible" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="add a view"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-    </Container>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addPeptideProteinViewActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="removeViewButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="remove view"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeViewButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel" name="peptidesProteinsOverlapPanel1">
+    </Component>
+    <Component class="com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel" name="peptidesProteinsOverlapPanel2">
+    </Component>
+    <Component class="com.compomics.peppi.view.panels.PeptidesProteinsOverlapPanel" name="peptidesProteinsOverlapPanel3">
+    </Component>
   </SubComponents>
 </Form>

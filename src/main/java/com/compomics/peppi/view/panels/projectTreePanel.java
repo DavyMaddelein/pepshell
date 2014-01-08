@@ -1,5 +1,6 @@
 package com.compomics.peppi.view.panels;
 
+import com.compomics.peppi.model.AnalysisGroup;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -29,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -106,8 +108,7 @@ public class projectTreePanel extends JPanel implements DragGestureListener, Dro
         return addObject(parentNode, child, true, anIcon);
     }
 
-    public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent,
-            Object child) {
+    public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child) {
         return addObject(parent, child, false, null);
     }
 
@@ -126,8 +127,7 @@ public class projectTreePanel extends JPanel implements DragGestureListener, Dro
             }
         }
         if (alreadyAdded == false) {
-            treeModel.insertNodeInto(childNode, parent,
-                    parent.getChildCount());
+            treeModel.insertNodeInto(childNode, parent, parent.getChildCount());
         }
         if (shouldBeVisible) {
             tree.scrollPathToVisible(new TreePath(childNode.getPath()));
@@ -189,13 +189,11 @@ public class projectTreePanel extends JPanel implements DragGestureListener, Dro
         Point dropPoint = dtde.getLocation();
         // int index = locationToIndex (dropPoint);
         TreePath path = tree.getPathForLocation(dropPoint.x, dropPoint.y);
-        System.out.println("drop path is " + path);
         boolean dropped = false;
         try {
             dtde.acceptDrop(DnDConstants.ACTION_MOVE);
             System.out.println("accepted");
-            Object droppedObject =
-                    dtde.getTransferable().getTransferData(localObjectFlavor);
+            Object droppedObject = dtde.getTransferable().getTransferData(localObjectFlavor);
             MutableTreeNode droppedNode = null;
             if (droppedObject instanceof MutableTreeNode) {
                 // remove from old location
@@ -205,17 +203,19 @@ public class projectTreePanel extends JPanel implements DragGestureListener, Dro
                 droppedNode = new DefaultMutableTreeNode(droppedObject);
             }
             // insert into spec'd path. if dropped into a parent 
-            DefaultMutableTreeNode dropNode =
-                    (DefaultMutableTreeNode) path.getLastPathComponent();
+            DefaultMutableTreeNode dropNode = (DefaultMutableTreeNode) path.getLastPathComponent();
             if (dropNode.isLeaf()) {
-                DefaultMutableTreeNode parent =
-                        (DefaultMutableTreeNode) dropNode.getParent();
+                DefaultMutableTreeNode parent = (DefaultMutableTreeNode) dropNode.getParent();
                 int index = parent.getIndex(dropNode);
-                treeModel.insertNodeInto(droppedNode,
-                        parent, index);
+                treeModel.insertNodeInto(droppedNode, parent, index);
             } else {
-                treeModel.insertNodeInto(droppedNode, dropNode,
-                        dropNode.getChildCount());
+                if (droppedObject instanceof AnalysisGroup) {
+                    DefaultMutableTreeNode parent = (DefaultMutableTreeNode) dropNode.getParent();
+                    int index = parent.getIndex(dropNode);
+                    treeModel.insertNodeInto(droppedNode, parent, index);
+
+                }
+                treeModel.insertNodeInto(droppedNode, dropNode, dropNode.getChildCount());
             }
             dropped = true;
         } catch (Exception e) {
@@ -263,8 +263,7 @@ public class projectTreePanel extends JPanel implements DragGestureListener, Dro
         }
     }
 
-    class DnDTreeCellRenderer
-            extends DefaultTreeCellRenderer {
+    class DnDTreeCellRenderer extends DefaultTreeCellRenderer {
 
         boolean isTargetNode;
         boolean isTargetNodeLeaf;
@@ -276,19 +275,15 @@ public class projectTreePanel extends JPanel implements DragGestureListener, Dro
         }
 
         @Override
-        public Component getTreeCellRendererComponent(JTree tree,
-                Object value,
-                boolean isSelected,
-                boolean isExpanded,
-                boolean isLeaf,
-                int row,
-                boolean hasFocus) {
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean isExpanded, boolean isLeaf, int row, boolean hasFocus) {
             isTargetNode = (value == dropTargetNode);
-            isTargetNodeLeaf = (isTargetNode
-                    && ((TreeNode) value).isLeaf());
+            isTargetNodeLeaf = (isTargetNode && ((TreeNode) value).isLeaf());
+            if (isTargetNodeLeaf && ((DefaultMutableTreeNode) value).getUserObject() instanceof AnalysisGroup) {
+                setOpenIcon((Icon) UIManager.get("InternalFrame.minimizeIcon"));
+                setClosedIcon((Icon) UIManager.get("InternalFrame.maximizeIcon"));
+            }
             // isLastItem = (index == list.getModel().getSize()-1); 
-            boolean showSelected = isSelected
-                    & (dropTargetNode == null);
+            boolean showSelected = isSelected & (dropTargetNode == null);
             return super.getTreeCellRendererComponent(tree, value,
                     isSelected, isExpanded, isLeaf, row, hasFocus);
         }

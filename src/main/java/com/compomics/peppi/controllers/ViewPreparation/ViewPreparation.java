@@ -14,25 +14,24 @@ import java.util.Set;
  */
 public abstract class ViewPreparation extends Observable {
 
-    public abstract Set<Protein> PrepareProteinsForJList(Project referenceProject, List<Project> ProjectsToCompareWith,boolean removeNonOverlappingPeptidesFromReferenceProject);
+    public abstract Set<Protein> PrepareProteinsForJList(Project referenceProject, List<Project> ProjectsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
 
     protected abstract boolean checkAndAddQuantToProteinsInProject(Project aProject);
 
-    protected boolean checkOverlappingPeptides(Project referenceProject, Project projectToCompareWith,boolean removeNonOverlappingPeptidesFromReferenceProject) {
+    protected boolean checkOverlappingPeptides(Project referenceProject, Project projectToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         //perhaps change with list so it is easier to notify observers of progress
         boolean finished = false;
         Iterator<Protein> referenceProjectProteinIter = referenceProject.getProteins().iterator();
-        while (referenceProjectProteinIter.hasNext()){
+        while (referenceProjectProteinIter.hasNext()) {
             Protein currentReferenceProtein = referenceProjectProteinIter.next();
             if (projectToCompareWith.getProteins().contains(currentReferenceProtein)) {
                 currentReferenceProtein.getProteinInfo().increaseNumberOfProjectOccurences();
-            } else if (removeNonOverlappingPeptidesFromReferenceProject){
+            } else if (removeNonOverlappingPeptidesFromReferenceProject) {
                 referenceProjectProteinIter.remove();
             }
         }
         return finished;
     }
-    
+
     public abstract void addProteinsToProject(AbstractDataMode dataMode);
-    
 }

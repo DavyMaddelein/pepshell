@@ -34,7 +34,7 @@ public class DasFeature {
 
     public DasFeature(String feature) {
 
-        this.featureLabel = feature.substring(feature.indexOf("label=") + 7, feature.indexOf("\">"));
+        this.featureLabel = feature.substring(feature.indexOf("label=") + 7, feature.indexOf("\">",feature.indexOf("label")));
         if (featureLabel.equalsIgnoreCase("Invalid segment")) {
             valid = false;
             return;

@@ -8,7 +8,7 @@ import java.util.Set;
  * @author Davy
  */
 public class Project {
-
+//todo extends hashset
     private int projectId;
     private String projectName;
     private Set<Protein> projectProteins = new HashSet<Protein>();

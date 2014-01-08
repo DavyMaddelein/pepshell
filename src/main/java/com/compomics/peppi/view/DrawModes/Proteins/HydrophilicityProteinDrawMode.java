@@ -13,29 +13,22 @@ import java.util.Map;
  *
  * @author Davy
  */
-
 public class HydrophilicityProteinDrawMode extends StandardPeptideProteinDrawMode {
 
     @Override
-    public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int width, int height) {
-        List<Integer> gradientArray = calculateGradient(protein,HydrophilicityMaps.getHydrophilicityMapPh7());
-        int scale = (int) ((width/(double)protein.getProteinSequence().length()));
+    public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int size, int width) {
+        List<Integer> gradientArray = calculateGradient(protein, HydrophilicityMaps.getHydrophilicityMapPh7());
+        int scale = (int) Math.ceil(((double) size/(double) protein.getProteinSequence().length()));
         int previousEnd = 0;
         for (int aminoAcidColor : gradientArray) {
             g.setColor(new Color(aminoAcidColor, 0, 225));
-            g.fillRect(horizontalOffset + previousEnd, verticalOffset, scale, height);
+            g.fillRect(horizontalOffset + previousEnd, verticalOffset, scale, width);
             previousEnd += scale;
         }
+        drawPeptides(protein, g, horizontalOffset, verticalOffset, width, (double) protein.getProteinSequence().length() / (double) size);
     }
-    /**
-    public void drawPeptides(List<PeptideGroup> peptideGroups, Graphics g, int horizontalOffset, int verticalOffset, int size, int hight) {
-        for (PeptideGroup peptideGroup : peptideGroups) {
-            g.setColor(new Color(255, 255, 255));
-            g.fillRect(horizontalOffset + peptideGroup.getStartingAlignmentPosition(), verticalOffset, peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition(), hight);
-        }
-    }*/
 
-    private static List<Integer> calculateGradient(Protein protein,Map<String,Double> HydrophilicityMap) {
+    private static List<Integer> calculateGradient(Protein protein, Map<String, Double> HydrophilicityMap) {
         ArrayList<Integer> gradientList = new ArrayList<Integer>();
         String[] proteinSequence = protein.getProteinSequence().split("");
         int i = 1;
@@ -46,11 +39,15 @@ public class HydrophilicityProteinDrawMode extends StandardPeptideProteinDrawMod
         }
         return gradientList;
     }
-/**
-    public void drawPeptide(PeptideGroup peptideGroup, Graphics g, int horizontalOffset, int verticalOffset, int proteinLength, int hight, int barSize, int colourScale) {
-        g.setColor(new Color(255 * colourScale, 133, 0));
-        int startingLocation = (int) ((peptideGroup.getStartingAlignmentPosition() / (double) proteinLength) * barSize);
-        int size = (int) (((peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition()) / (double) proteinLength) * barSize);
-        g.fillRect(horizontalOffset + startingLocation, verticalOffset, size, hight);
-    }*/
+    /**
+     * public void drawPeptide(PeptideGroup peptideGroup, Graphics g, int
+     * horizontalOffset, int verticalOffset, int proteinLength, int hight, int
+     * barSize, int colourScale) { g.setColor(new Color(255 * colourScale, 133,
+     * 0)); int startingLocation = (int)
+     * ((peptideGroup.getStartingAlignmentPosition() / (double) proteinLength) *
+     * barSize); int size = (int) (((peptideGroup.getEndAlignmentPosition() -
+     * peptideGroup.getStartingAlignmentPosition()) / (double) proteinLength) *
+     * barSize); g.fillRect(horizontalOffset + startingLocation, verticalOffset,
+     * size, hight); }
+     */
 }

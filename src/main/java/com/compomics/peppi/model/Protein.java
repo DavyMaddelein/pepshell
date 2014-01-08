@@ -1,16 +1,16 @@
 package com.compomics.peppi.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author Davy
  */
-public class Protein {
+public class Protein extends ArrayList<PeptideGroup> {
 
-    private ProteinInfo proteinInfo;
-    private List<PeptideGroup> peptideGroupsOfProtein = new ArrayList<PeptideGroup>();
+    private ProteinInfo proteinInfo = new ProteinInfo();
     private final String accession;
     private int projectId;
     private String sequence = "";
@@ -43,11 +43,11 @@ public class Protein {
     }
 
     public List<PeptideGroup> getPeptideGroupsForProtein() {
-        return this.peptideGroupsOfProtein;
+        return Collections.unmodifiableList(this);
     }
 
     public void setPeptideGroupsForProtein(List<PeptideGroup> listOfPeptides) {
-        this.peptideGroupsOfProtein = listOfPeptides;
+        this.addAll(listOfPeptides);
     }
 
     public void setProjectId(int projectId) {
@@ -93,7 +93,7 @@ public class Protein {
 
     @Override
     public boolean equals(Object obj) {
-        boolean returnValue = false;
+        boolean returnValue = true;
         if (obj == null) {
             returnValue = false;
         } else {
@@ -104,11 +104,24 @@ public class Protein {
                 if ((this.accession == null) ? (other.accession != null) : !this.accession.equals(other.accession)) {
                     returnValue = false;
                 }
-                if ((this.sequence == null) ? (other.sequence != null) : !this.sequence.equals(other.sequence)) {
-                    returnValue = false;
+                if (this.sequence == null && other.sequence != null) {
+                    if (!other.sequence.isEmpty() && this.sequence.equals(other.sequence)) {
+                        returnValue = false;
+                    }
                 }
             }
         }
         return returnValue;
+    }
+
+    @Override
+    public final boolean add(PeptideGroup e) {
+        boolean added = false;
+        if (this.contains(e)) {
+            this.get(this.indexOf(e)).addAll(e);
+        } else {
+            added = super.add(e);
+        }
+        return added;
     }
 }

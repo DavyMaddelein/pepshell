@@ -9,7 +9,8 @@ import java.util.EnumSet;
 public enum ViewPropertyEnum implements PropertyEnum {
 
     PROTEINACCESSIONTYPE("view.preferredaccessiontype", "uniprot"),
-    PREFERREDENZYME("protein.preferredenzyme", "trypsin");
+    PREFERREDENZYME("protein.preferredenzyme", "trypsin"),
+    PROTEINFASTALOCATION("protein.fastalocation", "");
     private final String property;
     private final String defaultValue;
 

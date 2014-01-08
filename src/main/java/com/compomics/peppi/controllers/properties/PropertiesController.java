@@ -1,5 +1,6 @@
 package com.compomics.peppi.controllers.properties;
 
+import com.compomics.peppi.FaultBarrier;
 import com.compomics.peppi.model.Property;
 import com.compomics.peppi.model.enums.PropertyEnum;
 import java.io.File;
@@ -21,17 +22,15 @@ abstract class PropertiesController implements Observer {
 
     protected Properties properties = new Properties();
     protected EnumSet propertyEnum;
-    protected File propertyFile;
-
-    protected PropertiesController(File aPropertyFile, final EnumSet aPropertyEnum) throws IOException {
+    
+    protected PropertiesController(final File aPropertyFile, final EnumSet aPropertyEnum) throws IOException {
         FileReader propertiesFileReader = null;
         try {
             if (aPropertyFile.exists()) {
                 propertiesFileReader = new FileReader(aPropertyFile);
                 properties.load(propertiesFileReader);
                 this.propertyEnum = aPropertyEnum;
-                propertyFile = aPropertyFile;
-            } else {
+               } else {
                 if (!aPropertyFile.getParentFile().exists()) {
                     aPropertyFile.getParentFile().mkdirs();
                 }
@@ -40,8 +39,6 @@ abstract class PropertiesController implements Observer {
                     throw new IOException("property file could not be created");
                 } else {
                     this.propertyEnum = aPropertyEnum;
-                    propertyFile = aPropertyFile;
-                    setPropertiesFromEnumSet(aPropertyEnum);
                 }
             }
         } finally {
@@ -51,17 +48,17 @@ abstract class PropertiesController implements Observer {
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
-                    if (propertyFile.exists()) {
+                    if (aPropertyFile.exists()) {
                         try {
-                            properties.store(new FileWriter(propertyFile), null);
+                            properties.store(new FileWriter(aPropertyFile), null);
                         } catch (IOException ex) {
-                            ex.printStackTrace();
+                            FaultBarrier.getInstance().handleException(ex);
                         }
                     }
 
                 }
             });
-
+            setPropertiesFromEnumSet(aPropertyEnum);
         }
     }
 
@@ -75,7 +72,9 @@ abstract class PropertiesController implements Observer {
         PropertyEnum aProperty;
         while (propIter.hasNext()) {
             aProperty = propIter.next();
-            properties.put(aProperty.getKey(), aProperty.getDefaultValue());
+            if (!properties.containsKey(aProperty.getKey())) {
+                properties.put(aProperty.getKey(), aProperty.getDefaultValue());
+            }
         }
     }
 
