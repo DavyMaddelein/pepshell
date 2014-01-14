@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.compomics</groupId>
-    <artifactId>peppi</artifactId>
+    <artifactId>pepshell</artifactId>
     <version>0.3</version>
     <packaging>jar</packaging>
 
-    <name>peppi</name>
+    <name>pepshell</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -46,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.compomics.peppi.view.frames.ModeSelectionFrame</mainClass>
+                            <mainClass>com.compomics.pepshell.view.frames.ModeSelectionFrame</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>
