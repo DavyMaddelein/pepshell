@@ -1,15 +1,13 @@
 package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Iterator;
 
 /**
  *
  * @author Davy
  */
-public class AnalysisGroup extends ArrayList<Experiment> {
+public class AnalysisGroup<T extends Experiment> extends ArrayList<T> {
 
     private String analysisName;
 
@@ -27,15 +25,14 @@ public class AnalysisGroup extends ArrayList<Experiment> {
         return analysisName;
     }
 
-    public List<Protein> getAnalysisGroupProteins() {
-        List<Protein> allAnalysisGroupProteins = new ArrayList<Protein>();
-        for (Experiment project : this) {
-            for (Protein protein : project.getProteins()) {
-                if (allAnalysisGroupProteins.contains(protein)) {
-                    allAnalysisGroupProteins.get(allAnalysisGroupProteins.indexOf(protein)).addAll(protein.getPeptideGroupsForProtein());
-                } else {
-                    allAnalysisGroupProteins.add(protein);
-                }
+    public Experiment getAnalysisGroupProteins() {
+        Experiment allAnalysisGroupProteins = new Experiment(-1, "combined experiments of analysisgroup " + this.analysisName);
+        for (T experiment : this) {
+            Iterator<Protein> proteinIterator = experiment.iterator();
+            while (proteinIterator.hasNext()) {
+                Protein protein = proteinIterator.next();
+                allAnalysisGroupProteins.add(protein);
+
             }
         }
         return allAnalysisGroupProteins;

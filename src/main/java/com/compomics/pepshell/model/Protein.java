@@ -1,14 +1,14 @@
 package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  *
  * @author Davy
  */
-public class Protein extends ArrayList<PeptideGroup> {
+public class Protein<T extends PeptideGroup> extends ArrayList<T> {
 
     private ProteinInfo proteinInfo = new ProteinInfo();
     private String accession;
@@ -53,11 +53,11 @@ public class Protein extends ArrayList<PeptideGroup> {
         this.domainsFoundInProtein.addAll(domainsToAdd);
     }
 
-    public List<PeptideGroup> getPeptideGroupsForProtein() {
-        return Collections.unmodifiableList(this);
+    public Iterator<T> getPeptideGroupsForProtein() {
+        return this.iterator();
     }
 
-    public void setPeptideGroupsForProtein(List<PeptideGroup> listOfPeptides) {
+    public void setPeptideGroupsForProtein(List<T> listOfPeptides) {
         this.addAll(listOfPeptides);
     }
 
@@ -126,7 +126,7 @@ public class Protein extends ArrayList<PeptideGroup> {
     }
 
     @Override
-    public final boolean add(PeptideGroup e) {
+    public final boolean add(T e) {
         boolean added = false;
         if (this.contains(e)) {
             this.get(this.indexOf(e)).addAll(e);

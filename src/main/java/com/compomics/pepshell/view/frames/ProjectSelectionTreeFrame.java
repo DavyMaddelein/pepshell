@@ -274,7 +274,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
         boolean goAhead = false;
         //can we actually continue?
-        List<AnalysisGroup> analysisList = new ArrayList<AnalysisGroup>();
+        List<AnalysisGroup<Experiment>> analysisList = new ArrayList<AnalysisGroup<Experiment>>();
         if (!selectedProjectsList.isEmpty() && referenceProject != null) {
             AnalysisGroup rogueProjects = new AnalysisGroup("Analysis");
             Enumeration tree = ((DefaultMutableTreeNode) projectTree.getModel().getRoot()).children();
@@ -287,7 +287,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 }
                 DataModeController.setDataSource(DataModeController.DataSource.DATABASE);
             }
-
 
             if (!rogueProjects.isEmpty()) {
                 analysisList.add(rogueProjects);

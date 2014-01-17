@@ -39,9 +39,11 @@ public class InfoPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         sequenceCoveragePanel = new com.compomics.pepshell.view.panels.SequenceCoveragePanel();
-        peptidesProteinsOverlapPanel1 = new com.compomics.pepshell.view.panels.PeptidesProteinsOverlapPanel();
+        peptidesProteinsOverlapPanel1 = new com.compomics.pepshell.view.panels.ReferenceExperimentPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
+
+        setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -81,7 +83,7 @@ public class InfoPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
-        sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein().iterator(), true);
+        sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein(), true);
         double test = (double) (peptidesProteinsOverlapPanel1.getWidth() - 100);
         ProgramVariables.SCALE = (double) proteinOfInterest.getProteinSequence().length() / (double) (peptidesProteinsOverlapPanel1.getWidth() - 100);
         peptidesProteinsOverlapPanel1.setProtein(proteinOfInterest);
@@ -92,7 +94,7 @@ public class InfoPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.compomics.pepshell.view.panels.PeptidesProteinsOverlapPanel peptidesProteinsOverlapPanel1;
+    private com.compomics.pepshell.view.panels.ReferenceExperimentPanel peptidesProteinsOverlapPanel1;
     private com.compomics.pepshell.view.panels.SequenceCoveragePanel sequenceCoveragePanel;
     // End of variables declaration//GEN-END:variables
 
@@ -112,7 +114,7 @@ public class InfoPanel extends javax.swing.JPanel {
             gridBagConstraints.weighty = 1.0;
             gridBagConstraints.gridy = i;
             gridBagConstraints.anchor = GridBagConstraints.CENTER;
-            PeptidesOnlyPanel panel = new PeptidesOnlyPanel(experiments.get(i));
+            ExperimentPanel panel = new ExperimentPanel(experiments.get(i));
             panel.setExperiment(experiments.get(i));
             panel.setYOffset(panel.getSize().getHeight() * i);
             //change with smarter clustering jpanel
@@ -137,7 +139,7 @@ public class InfoPanel extends javax.swing.JPanel {
 
     private void updatePeptideGraphics(Protein aProtein) {
         for (int i = 0; i < jPanel1.getComponents().length; i++) {
-            ((PeptidesOnlyPanel) jPanel1.getComponent(i)).setProtein(aProtein);
+            ((ExperimentPanel) jPanel1.getComponent(i)).setProtein(aProtein);
         }
     }
 

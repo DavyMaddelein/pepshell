@@ -6,8 +6,6 @@ import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.QuantedPeptideGroup;
-import com.compomics.pepshell.model.drawable.DrawablePeptide;
-import com.compomics.pepshell.model.drawable.DrawablePeptideGroup;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,8 +33,8 @@ public class PeptideGroupController {
                 peptideGroupHolder.get(peptideSequence).getShortestPeptide().incrementTimesFound();
             } else {
                 if (!isPartiallyPresent(rs, peptideGroupHolder)) {
-                    DrawablePeptideGroup addedGroup = new DrawablePeptideGroup();
-                    DrawablePeptide peptideToAdd = new DrawablePeptide(peptideSequence);
+                    PeptideGroup addedGroup = new PeptideGroup();
+                    Peptide peptideToAdd = new Peptide(peptideSequence);
                     addedGroup.add(peptideToAdd);
                     checkIfMiscleaved(peptideToAdd);
                     addedGroup.setAlignmentPositions(rs.getInt("start"), rs.getInt("end"));
@@ -167,7 +165,7 @@ public class PeptideGroupController {
             PeptideGroup currentGroup = peptideGroups.next();
             if (rs.getInt("start") >= currentGroup.getStartingAlignmentPosition() && rs.getInt("end") <= currentGroup.getEndAlignmentPosition()) {
                 if (rs.getInt("start") > currentGroup.getStartingAlignmentPosition() || rs.getInt("end") < currentGroup.getEndAlignmentPosition()) {
-                    DrawablePeptide peptideToAdd = new DrawablePeptide(rs.getString("sequence"));
+                    Peptide peptideToAdd = new Peptide(rs.getString("sequence"));
                     peptideToAdd.setBeginningProteinMatch(rs.getInt("start"));
                     peptideToAdd.setEndProteinMatch(rs.getInt("end"));
                     checkIfMiscleaved(peptideToAdd);

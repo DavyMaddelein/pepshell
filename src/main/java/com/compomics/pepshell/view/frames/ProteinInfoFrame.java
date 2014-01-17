@@ -6,6 +6,7 @@ import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import java.awt.MouseInfo;
+import java.util.Iterator;
 
 /**
  *
@@ -20,15 +21,17 @@ public class ProteinInfoFrame extends javax.swing.JFrame {
         initComponents();
         this.setLocation(MouseInfo.getPointerInfo().getLocation());
         proteinTextArea.setText(protein.getProteinAccession() + "\n" + protein.getProteinSequence());
-        for (Domain domainInProtein : protein.getDomains()) {
+        Iterator<Domain> domains = protein.getDomains().iterator();
+        while (domains.hasNext()) {
+            Domain domainInProtein = domains.next();
             proteinTextArea.append("\n" + domainInProtein.getDomainName());
-            proteinTextArea.append("\nDomain start: "+Integer.toString(domainInProtein.getStartPosition()));
-            proteinTextArea.append("\nDomain stop: "+Integer.toString(domainInProtein.getStopPosition()));
+            proteinTextArea.append("\nDomain start: " + Integer.toString(domainInProtein.getStartPosition()));
+            proteinTextArea.append("\nDomain stop: " + Integer.toString(domainInProtein.getStopPosition()));
         }
         this.setVisible(true);
     }
 
-    public ProteinInfoFrame(Protein protein, PeptideGroup peptideGroup) {
+    public ProteinInfoFrame(Protein protein, PeptideGroup<Peptide> peptideGroup) {
         this(protein);
         proteinTextArea.append("\n" + "---------------");
         for (Peptide peptide : peptideGroup) {

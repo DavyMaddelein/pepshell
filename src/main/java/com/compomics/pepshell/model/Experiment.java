@@ -1,15 +1,13 @@
 package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  *
  * @author Davy
  */
-public class Experiment extends ArrayList<Protein> {
+public class Experiment <T extends Protein> extends ArrayList<T> {
 
     private int experimentId;
     private String experimentName;
@@ -23,12 +21,8 @@ public class Experiment extends ArrayList<Protein> {
         return experimentId;
     }
 
-    public void setProteins(List<Protein> fetchedProteins) {
+    public void setProteins(List<T> fetchedProteins) {
         this.addAll(fetchedProteins);
-    }
-
-    public List<Protein> getProteins() {
-        return this;
     }
 
     public String getExperimentName() {
@@ -41,7 +35,7 @@ public class Experiment extends ArrayList<Protein> {
     }
 
     @Override
-    public final boolean add(Protein e) {
+    public final boolean add(T e) {
         boolean added = false;
         if (this.contains(e)) {
             this.get(this.indexOf(e)).addAll(e);
@@ -51,9 +45,9 @@ public class Experiment extends ArrayList<Protein> {
         return added;
     }
 
-    public Protein get(Protein aProtein) {
-        Protein toReturnProtein = null;
-        for (Protein proteinInList : this) {
+    public T get(T aProtein) {
+        T toReturnProtein = null;
+        for (T proteinInList : this) {
             if (proteinInList.getProteinAccession().equalsIgnoreCase(aProtein.getProteinAccession())) {
                 toReturnProtein = proteinInList;
                 break;

@@ -24,7 +24,7 @@ public class DataExport {
         for (int i = 0; i < listOfProteins.getModel().getSize(); i++) {
             protein = (Protein) listOfProteins.getModel().getElementAt(i);
             tsvOutput.append(protein.getProteinAccession()).append("\t");
-            tsvOutput.append(DataPreparationForExport.returnListCommaSeparated(protein.getPeptideGroupsForProtein())).append("\t");
+            tsvOutput.append(DataPreparationForExport.returnListCommaSeparated(protein)).append("\t");
             tsvOutput.append(DataPreparationForExport.returnListCommaSeparated(protein.getPdbFileNames())).append("\t");
             tsvOutput.append("\n");
         }

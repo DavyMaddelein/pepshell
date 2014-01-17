@@ -6,34 +6,35 @@ import com.compomics.pepshell.controllers.DAO.WebDAO;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.drawable.DrawableProtein;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
-import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
+import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
 import java.awt.*;
+import java.util.Iterator;
 
 /**
  *
  * @author Davy
  */
-public class PeptidesOnlyPanel extends javax.swing.JPanel {
+public class ExperimentPanel extends javax.swing.JPanel {
 
     private int horizontalOffset = 115;
     private int verticalOffset = 20;
     private Protein protein;
-    private QuantedPeptideDrawMode quantPeptideDrawMode = new QuantedPeptideDrawMode();
-    private boolean useQuantPeptideDrawMode = false;
+    private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
+    private DrawModeInterface proteinDrawMode = new StandardPeptideProteinDrawMode();
     private Experiment experiment;
     private String experimentName;
 
     /**
      * Creates new form PeptidesProteinsOverlapGUI
      */
-    public PeptidesOnlyPanel() {
+    public ExperimentPanel() {
         initComponents();
     }
 
-    public PeptidesOnlyPanel(Experiment experiment) {
+    public ExperimentPanel(Experiment experiment) {
         initComponents();
         this.experiment = experiment;
         experimentName = experiment.getExperimentName();
@@ -64,6 +65,8 @@ public class PeptidesOnlyPanel extends javax.swing.JPanel {
 
         projectNameLabel = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+        setForeground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1000, 45));
         setMinimumSize(new java.awt.Dimension(1000, 45));
         setPreferredSize(new java.awt.Dimension(1000, 45));
@@ -91,14 +94,15 @@ public class PeptidesOnlyPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        //todo actually take a look at this
         if (protein != null) {
-            for (PeptideGroup peptideGroup : protein.getPeptideGroupsForProtein()) {
+            Iterator<PeptideGroup> peptideGroupIter = protein.getPeptideGroupsForProtein();
+            while (peptideGroupIter.hasNext()) {
+                PeptideGroup peptideGroup = peptideGroupIter.next();
                 if (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() / ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() / ProgramVariables.SCALE)) {
                     ((InfoPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), peptideGroup);
                 }
@@ -114,23 +118,26 @@ public class PeptidesOnlyPanel extends javax.swing.JPanel {
         super.paintComponent(g);
         if (protein != null) {
             projectNameLabel.setText(experimentName);
-            if (!useQuantPeptideDrawMode) {
-                if (protein.getProteinSequence().isEmpty()) {
-                    try {
-                        protein.setSequence(WebDAO.fetchSequence(protein.getProteinAccession()));
-                    } catch (Exception e) {
-                    }
+            if (protein.getProteinSequence().isEmpty()) {
+                try {
+                    protein.setSequence(WebDAO.fetchSequence(protein.getProteinAccession()));
+                } catch (Exception e) {
                 }
-                if (protein instanceof DrawableProtein) {
-                    try {
-                        ((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
-                    } catch (UndrawableException ex) {
-                        FaultBarrier.getInstance().handleException(ex);
-                    }
+            }
+            try {
+                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, ProgramVariables.SCALE, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+            } catch (UndrawableException ex) {
+                FaultBarrier.getInstance().handleException(ex);
+            }
+
+            //peptideDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight);
+            Iterator<PeptideGroup> peptideGroups = protein.getPeptideGroupsForProtein();
+            while (peptideGroups.hasNext()) {
+                PeptideGroup aPeptideGroup = peptideGroups.next();
+                try {
+                    peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset, (int) Math.ceil(ProgramVariables.SCALE), ProgramVariables.VERTICALSIZE);
+                } catch (UndrawableException ex) {
                 }
-                //peptideDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight);
-            } else {
-                quantPeptideDrawMode.drawPeptides(protein, g, horizontalOffset, verticalOffset, (int) Math.ceil(ProgramVariables.SCALE), ProgramVariables.VERTICALSIZE);
             }
         } else {
             projectNameLabel.setText(experimentName + ": protein not found");

@@ -3,9 +3,9 @@ package com.compomics.pepshell.controllers.DAO;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.Proteases;
 import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.drawable.DrawableProtein;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
 import com.compomics.pepshell.model.exceptions.AggregateFastaReadingException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -40,10 +41,12 @@ public class FastaDAO {
         projectToAddProteinsTo.setProteins(getListOfProteinsFromFastaFile(fastaFile));
     }
 
-    public static void mapFastaSequencesToProteinAccessions(File fastaFile, Experiment experimentToAddSequencesTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
+    public static <T extends Protein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<T> experimentToAddSequencesTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
 
         for (Protein aParsedProtein : getListOfProteinsFromFastaFile(fastaFile)) {
-            for (Protein experimentProtein : experimentToAddSequencesTo) {
+            Iterator<T> proteinIterator = experimentToAddSequencesTo.iterator();
+            while (proteinIterator.hasNext()) {
+                T experimentProtein = proteinIterator.next();
                 if (experimentProtein.getProteinAccession().equalsIgnoreCase(aParsedProtein.getProteinAccession())) {
                     experimentProtein.setSequence(aParsedProtein.getProteinSequence());
                     experimentProtein.setProteinName(aParsedProtein.getProteinName());
@@ -77,7 +80,7 @@ public class FastaDAO {
         if (!arex.getExceptionList().isEmpty()) {
             throw arex;
         }
-        projectToAddProteinsTo.getProteins().addAll(uniqueProteinsToAdd);
+        projectToAddProteinsTo.addAll(uniqueProteinsToAdd);
     }
 
     /**
@@ -107,7 +110,7 @@ public class FastaDAO {
             while ((fastaLine = lineReader.readLine()) != null) {
                 if (fastaLine.contains(">")) {
                     if (!header.isEmpty() && sequence.length() != 0) {
-                        DrawableProtein aParsedProtein = new DrawableProtein(header, sequence.toString());
+                        Protein aParsedProtein = new Protein(header, sequence.toString());
                         aParsedProtein.setProteinName(name);
                         parsedProteins.add(aParsedProtein);
                         sequence = new StringBuilder();
@@ -127,7 +130,9 @@ public class FastaDAO {
             if (digest) {
                 for (Protein aProtein : parsedProteins) {
                     List<String> possiblePeptides = Proteases.getProteaseMap().get(ViewProperties.getInstance().getProperty(ViewPropertyEnum.PREFERREDENZYME.getKey())).digest(aProtein.getProteinSequence());
-                    aProtein.add(new PeptideGroup(possiblePeptides));
+                    for (String aPeptideSequence : possiblePeptides) {
+                        aProtein.add(new PeptideGroup().add(new Peptide(aPeptideSequence)));
+                    }
                 }
             }
             return parsedProteins;

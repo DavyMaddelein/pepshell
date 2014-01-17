@@ -38,7 +38,7 @@ public class PdbViewPanel extends javax.swing.JPanel {
         //if (offlineMode){
         //viewer.openFile(PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getKey())+"/"+((String)PDBFileComboBox.getSelectedItem()));
         //} else{
-        viewer.openStringInline(PDBDAO.getPdbFileInMem(pdbName));
+         viewer.openStringInline(PDBDAO.getPdbFileInMem(pdbName));
         //}
         this.repaint();
     }

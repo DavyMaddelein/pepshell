@@ -4,16 +4,16 @@ package com.compomics.pepshell.model;
  *
  * @author Davy
  */
-public class QuantedProject extends Experiment {
+public class QuantedExperiment extends Experiment {
 
     private int highestRatioInProject;
     private int lowestRatioInProject;
 
-    public QuantedProject(int projectId, String projectName) {
+    public QuantedExperiment(int projectId, String projectName) {
         super(projectId, projectName);
     }
 
-    public QuantedProject(Experiment project) {
+    public QuantedExperiment(Experiment project) {
         super(project.getExperimentId(),project.getExperimentName());
     }
 

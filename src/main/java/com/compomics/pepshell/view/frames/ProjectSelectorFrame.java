@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer {
 
-    private AnalysisGroup analysisGroup = new AnalysisGroup("project group");
+    private AnalysisGroup analysisGroup = new AnalysisGroup<Experiment>("experiment group");
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Experiment referenceProject;
 
@@ -238,8 +238,8 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
             JOptionPane.showMessageDialog(this, "please select a project of interest and at least one project to compare with");
         } else {
             try {
-                MainWindow mainWindow = new MainWindow(referenceProject,analysisGroup);
-                } finally {
+                //MainWindow mainWindow = new MainWindow(referenceProject, analysisGroup);
+            } finally {
                 this.dispose(false);
             }
         }

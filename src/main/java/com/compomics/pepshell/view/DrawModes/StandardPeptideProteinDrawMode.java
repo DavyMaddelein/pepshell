@@ -1,47 +1,42 @@
 package com.compomics.pepshell.view.DrawModes;
 
-import com.compomics.pepshell.controllers.objectcontrollers.PeptideGroupController;
+import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
-import java.awt.Color;
+import com.compomics.pepshell.model.exceptions.UndrawableException;
 import java.awt.Graphics;
+import java.util.Iterator;
 
 /**
  *
  * @author Davy
+ * @param <T>
+ * @param <N>
+ * @param <U>
  */
-public class StandardPeptideProteinDrawMode {
+public class StandardPeptideProteinDrawMode<T extends Protein<N>, N extends PeptideGroup<U>, U extends Peptide> implements DrawModeInterface<T, U> {
 
-    float transparency = 1;
-
-    public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int size, int width) {
-        g.setColor(Color.PINK);
-        g.fillRect(horizontalOffset, verticalOffset, size, width);
-        //TODO: what about multiple times the same peptide?
-        int length = protein.getProteinSequence().length();
-        double scale = (double) length  / (double) size;
-        drawPeptides(protein, g, horizontalOffset, verticalOffset, width,scale);
-
+    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, double scale, int width) throws UndrawableException {
+        g.setColor(ProgramVariables.PROTEINCOLOR);
+        g.fillRect(horizontalOffset, verticalOffset, (int) Math.ceil(protein.getProteinSequence().length() / scale), width);
     }
 
-    public void drawPeptides(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int width, double barSize) {
-        g.setColor(Color.BLACK);
-        for (PeptideGroup peptideGroup : protein.getPeptideGroupsForProtein()) {
-            if (peptideGroup.getEndAlignmentPosition() == -1 || peptideGroup.getStartingAlignmentPosition() == -1) {
-                PeptideGroupController.mapPeptideGroupToProtein(protein, peptideGroup);
-            }
-            //g.fillRect(horizontalOffset + peptideGroup.getStartingAlignmentPosition(), verticalOffset, peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition(), width);
-            drawPeptide(peptideGroup, g, horizontalOffset, verticalOffset, width, barSize);
+    public void drawPeptide(U peptide, Graphics g, int horizontalOffset, int verticalOffset, double barSize, int width) throws UndrawableException {
+        g.setColor(ProgramVariables.PEPTIDECOLOR);
+        if (peptide.getEndProteinMatch() == -1 || peptide.getBeginningProteinMatch() == -1) {
+            throw new UndrawableException("could not determine relative position of the peptide");
         }
-    }
-
-    public void drawPeptide(PeptideGroup peptideGroup, Graphics g, int horizontalOffset, int verticalOffset, int width, double barSize) {
-        int startingLocation = (int) Math.ceil(((double) (peptideGroup.getStartingAlignmentPosition()) / barSize));
-        int size = (int) Math.ceil((((double) (peptideGroup.getEndAlignmentPosition() - peptideGroup.getStartingAlignmentPosition())) / barSize));
+        int startingLocation = (int) Math.ceil(((peptide.getBeginningProteinMatch()) / barSize));
+        int size = (int) Math.ceil(((peptide.getEndProteinMatch() - peptide.getEndProteinMatch()) / barSize));
         g.drawRect(horizontalOffset + startingLocation, verticalOffset, size, width);
     }
 
-    public void setPeptideAlpha(float aTransparency) {
-        this.transparency = aTransparency;
+    public void drawProteinAndPeptidesOfProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, double scale, int verticalBarWidth) throws UndrawableException {
+        drawProtein(protein, g, horizontalOffset, verticalOffset, scale, verticalBarWidth);
+        Iterator<N> peptideGroupIterator = protein.getPeptideGroupsForProtein();
+        while (peptideGroupIterator.hasNext()) {
+            drawPeptide(peptideGroupIterator.next().getShortestPeptide(), g, horizontalOffset, verticalOffset, scale, verticalBarWidth);
+        }
     }
 }

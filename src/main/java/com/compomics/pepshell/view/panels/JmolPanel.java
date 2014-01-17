@@ -1,9 +1,13 @@
 package com.compomics.pepshell.view.panels;
 
 import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
+import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
+import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+import java.awt.PopupMenu;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
@@ -13,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.Popup;
 
 /**
  *
@@ -40,8 +45,18 @@ public class JmolPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         pdbViewPanel1 = new com.compomics.pepshell.view.panels.PdbViewPanel();
         sequenceCoveragePanel1 = new com.compomics.pepshell.view.panels.SequenceCoveragePanel();
+        PDBInfoText = new javax.swing.JLabel();
 
         PDBFileComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2L05" }));
+        PDBFileComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                PDBFileComboBoxPopupMenuWillBecomeVisible(evt);
+            }
+        });
         PDBFileComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PDBFileComboBoxActionPerformed(evt);
@@ -72,12 +87,15 @@ public class JmolPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(sequenceCoveragePanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(PDBFileComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(PDBFileComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1))
+                            .addComponent(PDBInfoText))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -89,9 +107,11 @@ public class JmolPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(PDBFileComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGap(4, 4, 4)
+                .addComponent(PDBInfoText)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addComponent(sequenceCoveragePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -100,6 +120,7 @@ public class JmolPanel extends javax.swing.JPanel {
     private void PDBFileComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PDBFileComboBoxActionPerformed
         try {
             pdbViewPanel1.setPdbFile((String) PDBFileComboBox.getSelectedItem());
+            PDBInfoText.setText(ProgramVariables.STRUCTUREDATASOURCE.getPDBDataForPDBName((String) PDBFileComboBox.getSelectedItem()));
         } catch (IOException ioe) {
             if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
                 JOptionPane.showMessageDialog(this, "the PDB file for accession: " + (String) PDBFileComboBox.getSelectedItem() + " could not be retrieved");
@@ -107,8 +128,15 @@ public class JmolPanel extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_PDBFileComboBoxActionPerformed
+
+    private void PDBFileComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_PDBFileComboBoxPopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_PDBFileComboBoxPopupMenuWillBecomeVisible
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox PDBFileComboBox;
+    private javax.swing.JLabel PDBInfoText;
     private javax.swing.JButton jButton1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -127,9 +155,9 @@ public class JmolPanel extends javax.swing.JPanel {
         }
     }
 
-    public void setPDBProtein(final Protein protein) throws MalformedURLException, ConversionException, SQLException {
+    public void setPDBProtein(final Protein<PeptideGroup> protein) throws MalformedURLException, ConversionException, SQLException {
         final Set<String> pdbAccessions = new HashSet<String>();
-        sequenceCoveragePanel1.showProteinCoverage(protein.getProteinSequence(), protein.getPeptideGroupsForProtein().iterator());
+        sequenceCoveragePanel1.showProteinCoverage(protein.getProteinSequence(), protein.getPeptideGroupsForProtein());
         jProgressBar1.setIndeterminate(true);
         jProgressBar1.setString("fetching pdb files");
         new Runnable() {

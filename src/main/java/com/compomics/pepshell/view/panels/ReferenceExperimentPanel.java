@@ -1,41 +1,42 @@
 package com.compomics.pepshell.view.panels;
 
 import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.HydrophobicityMaps;
 import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.drawable.DrawableProtein;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
+import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
-import com.compomics.pepshell.view.DrawModes.Peptides.StandardPeptideDrawMode;
-import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
-import com.compomics.pepshell.view.DrawModes.Proteins.HydrophilicityProteinDrawMode;
+import com.compomics.pepshell.view.DrawModes.Proteins.FreeEnergyProteinDrawMode;
+import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
 import java.awt.*;
+import java.util.Map;
 
 /**
  *
  * @author Davy
  */
-public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
+public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
     private int horizontalOffset = 115;
     private int verticalOffset = 50;
-    private int proteinBarSize = 1000;
-    private int proteinBarHeight = 15;
     private Protein protein;
-    private StandardPeptideProteinDrawMode secondaryDrawMode = new StandardPeptideDrawMode();
-    
+    private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
+    private DrawModeInterface proteinDrawMode = new StandardPeptideProteinDrawMode();
+    private DrawModeInterface secondaryDrawMode = new HydrophobicityProteinDrawMode();
+
     /**
      * Creates new form PeptidesProteinsOverlapGUI
      */
-    public PeptidesProteinsOverlapPanel() {
+    public ReferenceExperimentPanel() {
         initComponents();
     }
 
-    public PeptidesProteinsOverlapPanel(Experiment project) {
+    public ReferenceExperimentPanel(Experiment project) {
         initComponents();
         projectNameLabel.setText(project.getExperimentName());
     }
@@ -56,6 +57,8 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
         drawModeChooser = new javax.swing.JComboBox();
         quantCheckBox = new javax.swing.JCheckBox();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         setName("[1000, 80]"); // NOI18N
         setPreferredSize(new java.awt.Dimension(1000, 80));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -68,13 +71,14 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
         projectNameLabel.setMinimumSize(new java.awt.Dimension(50, 30));
         projectNameLabel.setPreferredSize(new java.awt.Dimension(50, 30));
 
-        drawModeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "hydrophobicity", "secondary structure" }));
+        drawModeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "hydrophobicity", "secondary structure", "free residue energy" }));
         drawModeChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 drawModeChooserActionPerformed(evt);
             }
         });
 
+        quantCheckBox.setForeground(new java.awt.Color(0, 255, 255));
         quantCheckBox.setText("show quantitfied range");
         quantCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -94,7 +98,7 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
                         .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(quantCheckBox)))
-                .addContainerGap(691, Short.MAX_VALUE))
+                .addContainerGap(686, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,7 +108,7 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
                     .addComponent(quantCheckBox))
                 .addGap(6, 6, 6)
                 .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -126,13 +130,13 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         switch (drawModeChooser.getSelectedIndex()) {
             case 0:
-                secondaryDrawMode = new HydrophilicityProteinDrawMode();
+                secondaryDrawMode = new HydrophobicityProteinDrawMode();
                 break;
             case 1:
                 secondaryDrawMode = new SecondaryStructureProteinDrawMode();
                 break;
             default:
-                secondaryDrawMode = new StandardPeptideProteinDrawMode();
+                secondaryDrawMode = new FreeEnergyProteinDrawMode();
                 break;
         }
         this.revalidate();
@@ -142,9 +146,10 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
     private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
         // TODO add your handling code here:
         if (quantCheckBox.isSelected()) {
-            secondaryDrawMode = new QuantedPeptideDrawMode();
-        } else if (!quantCheckBox.isSelected()) {
-            secondaryDrawMode = new StandardPeptideProteinDrawMode();
+            peptideDrawMode = new QuantedPeptideDrawMode();
+            //((DrawableProtein) protein).drawAllPeptideGroups(horizontalOffset, verticalOffset + 25, g);
+        } else {
+            peptideDrawMode = new StandardPeptideProteinDrawMode();
         }
         this.revalidate();
         this.repaint();
@@ -161,22 +166,20 @@ public class PeptidesProteinsOverlapPanel extends javax.swing.JPanel {
         if (!projectNameLabel.getText().isEmpty()) {
             horizontalOffset = this.getX() + projectNameLabel.getX() + projectNameLabel.getWidth() + 25;
             verticalOffset = this.getY() + 65;
-            proteinBarSize = this.getWidth() - 10;
         }
         if (protein != null) {
-            if (protein instanceof DrawableProtein) {
-                try {
-                    ((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
-                    ((DrawableProtein) protein).drawDomains(horizontalOffset, verticalOffset + 25, g);
-                    ((DrawableProtein) protein).drawAllPeptideGroups(horizontalOffset, verticalOffset + 25, g);
-                    ((DrawableProtein) protein).drawAminoAcidsOfSequence(horizontalOffset, verticalOffset + 25, g, HydrophobicityMaps.hydrophobicityMapPh7);
-                } catch (UndrawableException ex) {
-                    FaultBarrier.getInstance().handleException(ex);
+            try {
+                proteinDrawMode.drawProteinAndPeptidesOfProtein(protein, g, horizontalOffset, verticalOffset, ProgramVariables.SCALE, ProgramVariables.VERTICALSIZE);
+                //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                if (protein.getDomains().isEmpty()) {
+                    ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein);
                 }
+                
+                secondaryDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset +25, ProgramVariables.SCALE, ProgramVariables.VERTICALSIZE);
+                //((DrawableProtein) protein).drawAminoAcidsOfSequence(horizontalOffset, verticalOffset + 25, g, gradientMap);
+            } catch (UndrawableException ex) {
+                FaultBarrier.getInstance().handleException(ex);
             }
-            //proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight);
-//            domainProteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset - 25, proteinBarSize, proteinBarHeight);
-            secondaryDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 25, proteinBarSize, proteinBarHeight);
         }
     }
 }

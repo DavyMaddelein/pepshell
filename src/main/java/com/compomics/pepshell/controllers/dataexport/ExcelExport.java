@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
  * @author Davy
  */
 public class ExcelExport {
-    
+
     private static void addHeadersToProteinsSheet(Sheet sheet, boolean quant) {
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("Uniport accession");
@@ -41,7 +41,7 @@ public class ExcelExport {
         Sheet proteinSheet = workBook.createSheet("proteins");
         Sheet PDBSheet = workBook.createSheet("PDB");
 
-        addHeadersToProteinsSheet(proteinSheet, ((Protein) listOfProteins.getModel().getElementAt(0)).getPeptideGroupsForProtein().get(0) instanceof QuantedPeptideGroup);
+        addHeadersToProteinsSheet(proteinSheet, ((Protein) listOfProteins.getModel().getElementAt(0)).get(0) instanceof QuantedPeptideGroup);
         addHeadersToPDBSheet(PDBSheet);
 
         while (listWalkCounter < listOfProteins.getModel().getSize()) {
@@ -53,17 +53,17 @@ public class ExcelExport {
         }
     }
 
-    private static void excelProteinInfoExportOfProtein(Protein proteinToExport, Sheet proteinSheet) {
+    private static void excelProteinInfoExportOfProtein(Protein<PeptideGroup> proteinToExport, Sheet proteinSheet) {
         int column = 0;
-        Row proteinRow = proteinSheet.createRow(proteinSheet.getLastRowNum()+1);
+        Row proteinRow = proteinSheet.createRow(proteinSheet.getLastRowNum() + 1);
         proteinRow.createCell(column).setCellValue(proteinToExport.getProteinAccession());
         column++;
-        for (PeptideGroup peptideGroup : proteinToExport.getPeptideGroupsForProtein()) {
+        for (PeptideGroup peptideGroup : proteinToExport) {
             proteinRow.createCell(column).setCellValue(peptideGroup.getShortestPeptide().getSequence());
             if (peptideGroup instanceof QuantedPeptideGroup) {
-                proteinRow.createCell(column+1).setCellValue(Integer.toString(((QuantedPeptideGroup) peptideGroup).getRatio()));
+                proteinRow.createCell(column + 1).setCellValue(Integer.toString(((QuantedPeptideGroup) peptideGroup).getRatio()));
             }
-            proteinRow = proteinSheet.createRow(proteinSheet.getLastRowNum()+1);
+            proteinRow = proteinSheet.createRow(proteinSheet.getLastRowNum() + 1);
         }
-    }   
+    }
 }

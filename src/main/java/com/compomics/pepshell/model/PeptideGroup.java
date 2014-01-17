@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author Davy
  */
-public class PeptideGroup extends ArrayList<Peptide> {
+public class PeptideGroup<T extends Peptide> extends ArrayList<T> {
 
     private int startingAlignmentPosition;
     private int endAlignmentPostition;
@@ -17,12 +17,7 @@ public class PeptideGroup extends ArrayList<Peptide> {
         super();
     }
 
-    public PeptideGroup(List<String> listOfPotentialPeptides) {
-        super();
-        this.add(listOfPotentialPeptides);
-    }
-
-    public Peptide getShortestPeptide() {
+    public T getShortestPeptide() {
         return this.get(shortestPeptideIndex);
     }
 
@@ -57,18 +52,11 @@ public class PeptideGroup extends ArrayList<Peptide> {
     }
 
     @Override
-    public final boolean add(Peptide e) {
+    public final boolean add(T e) {
         boolean added = false;
         if (!this.contains(e)) {
             added = super.add(e);
         }
         return added;
-    }
-
-    public final boolean add(List<String> peptideSequences) {
-        for (String aPeptideSequence : peptideSequences) {
-            this.add(new Peptide(aPeptideSequence));
-        }
-        return true;
     }
 }

@@ -4,36 +4,36 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.QuantedProject;
+import com.compomics.pepshell.model.QuantedExperiment;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  *
  * @author Davy
  */
-public class PreparationForDbData extends ViewPreparation {
+public class PreparationForDbData<T extends Experiment> extends ViewPreparation<T> {
 
     FaultBarrier barrier = FaultBarrier.getInstance();
 
     @Override
-    public List<Protein> PrepareProteinsForJList(Experiment referenceProject, List<Experiment> ProjectsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
+    public T PrepareProteinsForJList(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         try {
-            DbDAO.fetchPeptidesAndProteins(referenceProject);
-            checkAndAddQuantToProteinsInExperiment(referenceProject);
-            for (Experiment anExperimentToCompareWith : ProjectsToCompareWith) {
+            DbDAO.fetchPeptidesAndProteins(referenceExperiment);
+            checkAndAddQuantToProteinsInExperiment(referenceExperiment);
+            while (ExperimentsToCompareWith.hasNext()) {
+                T anExperimentToCompareWith = ExperimentsToCompareWith.next();
                 DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
                 checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
-                checkOverlappingPeptides(referenceProject, anExperimentToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
+                checkOverlappingPeptides(referenceExperiment, anExperimentToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
             }
         } catch (SQLException ex) {
             barrier.handleException(ex);
         } catch (IOException ex) {
             barrier.handleException(ex);
         }
-        return referenceProject.getProteins();
+        return referenceExperiment;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PreparationForDbData extends ViewPreparation {
         boolean dataAdded = false;
         try {
             if (DbDAO.projectHasQuant(anExperiment)) {
-                anExperiment = new QuantedProject(anExperiment);
+                anExperiment = new QuantedExperiment(anExperiment);
             }
             if (DbDAO.fetchPeptidesAndProteins(anExperiment)) {
                 dataAdded = true;

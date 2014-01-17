@@ -3,24 +3,26 @@ package com.compomics.pepshell.controllers.ViewPreparation;
 import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DAO.FastaDAO;
+import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.Peptide;
+import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
  * @author Davy
+ * @param <T>
  */
-public class ViewPreparationForFastaData extends PreparationForOfflineData {
+public class ViewPreparationForFastaData<T extends Experiment<N>, N extends Protein<U>, U extends PeptideGroup<M>, M extends Peptide> extends ViewPreparation<T> {
 
     //TODO: this entire thing needs cleaning up
     private File fastaFile;
@@ -30,10 +32,27 @@ public class ViewPreparationForFastaData extends PreparationForOfflineData {
     }
 
     @Override
-    public List<Protein> PrepareProteinsForJList(Experiment referenceProject, List<Experiment> ProjectsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
-        List<Protein> returnset = new ArrayList<Protein>();
+    public T PrepareProteinsForJList(T referenceExperiment, Iterator<T> experimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         try {
-            returnset = PrepareProteinsForJList(referenceProject, ProjectsToCompareWith, removeNonOverlappingPeptidesFromReferenceProject, fastaFile);
+            if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
+                DbDAO.fetchPeptidesAndProteins(referenceExperiment);
+                FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment);
+            } else {
+                FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, referenceExperiment);
+            }
+            if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
+                while (experimentsToCompareWith.hasNext()) {
+                    T anExperimentToCompareWith = experimentsToCompareWith.next();
+                    DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
+                    FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith);
+                    checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
+                }
+            } else {
+                while (experimentsToCompareWith.hasNext()) {
+                    T aProjectToCompareWith = experimentsToCompareWith.next();
+                }
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
         } catch (FastaCouldNotBeReadException ex) {
             Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
@@ -42,31 +61,20 @@ public class ViewPreparationForFastaData extends PreparationForOfflineData {
             Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return returnset;
+        return referenceExperiment;
     }
 
-    public List<Protein> PrepareProteinsForJList(Experiment referenceExperiment, List<Experiment> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject, File fastaFile) throws FastaCouldNotBeReadException, FileNotFoundException, IOException, SQLException, URISyntaxException {
-        if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
-            DbDAO.fetchPeptidesAndProteins(referenceExperiment);
-            FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment);
-        } else {
-            FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, referenceExperiment);
+    @Override
+    protected boolean checkAndAddQuantToProteinsInExperiment(T anExperiment) {
+        for (Protein aProtein : anExperiment) {
+
         }
-        if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
-            for (Experiment anExperimentToCompareWith : ExperimentsToCompareWith) {
-                DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
-                FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith);
-                checkAndAddQuantToProteinsInProject(anExperimentToCompareWith);
-                //(referenceExperiment, anExperimentToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
-            }
-        } else {
-            for (Experiment aProjectToCompareWith : ExperimentsToCompareWith) {
-            }
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        return referenceExperiment.getProteins();
+        return true;
+    }
+
+    @Override
+    public void addProteinsToExperiment(AbstractDataMode dataMode) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

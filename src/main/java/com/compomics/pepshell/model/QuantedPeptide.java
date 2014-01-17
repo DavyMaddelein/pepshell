@@ -4,6 +4,7 @@
  */
 package com.compomics.pepshell.model;
 
+
 /**
  *
  * @author Davy
@@ -11,6 +12,7 @@ package com.compomics.pepshell.model;
 public class QuantedPeptide extends Peptide {
 
     String quantitationType;
+    Double ratio;
 
     public QuantedPeptide(String sequence, String quantitationType) {
         super(sequence);
@@ -19,5 +21,13 @@ public class QuantedPeptide extends Peptide {
 
     public String getQuantitationType() {
         return quantitationType;
+    }
+
+    public double getRatio() {
+        return this.ratio;
+    }
+
+    public void setRatio(double aRatio) {
+        this.ratio = aRatio;
     }
 }

@@ -6,8 +6,7 @@ import com.compomics.pepshell.controllers.objectcontrollers.PeptideGroupControll
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.QuantedProject;
-import com.compomics.pepshell.model.drawable.DrawableProtein;
+import com.compomics.pepshell.model.QuantedExperiment;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -34,7 +33,7 @@ public class DbDAO extends Observable {
             ResultSet rs = stat.executeQuery();
             try {
                 while (rs.next()) {
-                    protToAdd = new DrawableProtein(rs.getString("accession"));
+                    protToAdd = new Protein(rs.getString("accession"));
                     protToAdd.setProjectId(project.getExperimentId());
                     fetchedProteins.add(protToAdd);
                 }
@@ -52,14 +51,14 @@ public class DbDAO extends Observable {
 
     public static boolean fetchPeptidesAndProteins(Experiment project) throws SQLException, IOException {
         fetchProteins(project);
-        addPeptideGroupsToProteins(project.getProteins());
+        addPeptideGroupsToProteins(project);
         return true;
     }
 
-    public static boolean fetchPeptidesAndProteins(QuantedProject project) throws SQLException, IOException {
+    public static boolean fetchPeptidesAndProteins(QuantedExperiment project) throws SQLException, IOException {
         fetchProteins(project);
-        addQuantedPeptideGroupsToProteins(project.getProteins());
-        project.setProteins(project.getProteins());
+        addQuantedPeptideGroupsToProteins(project);
+        project.setProteins(project);
         return true;
     }
 

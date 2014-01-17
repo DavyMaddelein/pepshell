@@ -41,7 +41,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     }
 
-    public MainWindow(final Experiment toCompareWithProject, final AnalysisGroup dataList) {
+    public MainWindow(final Experiment toCompareWithProject, final AnalysisGroup<Experiment> dataList) {
         this();
         //infoPanelTabbedPane.add(new InfoPanel());
         new Runnable() {
@@ -52,7 +52,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         }.run();
     }
 
-    public MainWindow(final Experiment referenceExperiment, final List<AnalysisGroup> dataList) {
+    public MainWindow(final Experiment referenceExperiment, final List<AnalysisGroup<Experiment>> dataList) {
         this();
         new Runnable() {
             @Override
@@ -68,7 +68,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         }.run();
         //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
         //TODO: turn the proteins not in the referenceExperiment red
-        proteinsToDisplay = referenceExperiment.getProteins();
+        proteinsToDisplay = referenceExperiment;
         //this totally does not have to happen with anonymous stuff
         proteinList.setListData(proteinsToDisplay.toArray());
         jScrollPane1.setViewportView(proteinList);
@@ -77,12 +77,12 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }
 
     private void collectData(Experiment referenceExperiment, List<Experiment> experiments) {
-        DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments, false);
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments.iterator(), false);
     }
 
     //
     private void collectAndShowData(Experiment referenceExperiment, List<Experiment> experiments, InfoPanel anInfoPanel) {
-        DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments, false);
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments.iterator(), false);
         anInfoPanel.setExperimentsToDisplay(experiments);
 
     }
@@ -137,8 +137,10 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Comparison window");
+        setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(800, 600));
 
+        tabsPane.setBackground(new java.awt.Color(255, 255, 255));
         tabsPane.setMinimumSize(new java.awt.Dimension(1573, 571));
         tabsPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -146,6 +148,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             }
         });
 
+        mainViewPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainViewPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -355,6 +358,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         tabsPane.addTab("statistics", jPanel2);
 
+        jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
+
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
 
@@ -514,7 +519,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             aProtein.setAccession(aProtein.getOriginalAccession());
         }
     }//GEN-LAST:event_jRadioButtonMenuItem2ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel accessionLabel;
     private javax.swing.JButton exportButton;

@@ -1,7 +1,13 @@
 package com.compomics.pepshell.view.DrawModes.Peptides;
 
+import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.QuantedPeptideGroup;
+import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.exceptions.CalculationException;
+import com.compomics.pepshell.model.exceptions.UndrawableException;
+import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,24 +15,37 @@ import java.awt.Graphics;
 /**
  *
  * @author Davy
+ * @param <N>
+ * @param <U>
  */
-public class QuantedPeptideDrawMode extends StandardPeptideProteinDrawMode {
+public class QuantedPeptideDrawMode<N extends PeptideGroup<U>, U extends QuantedPeptide> extends StandardPeptideProteinDrawMode<Protein<N>, N, U> implements GradientDrawModeInterface<Protein<N>, U> {
 
     @Override
-    public void drawPeptide(PeptideGroup peptideGroup, Graphics g, int horizontalOffset, int verticalOffset, int width, double barSize) {
-        if (peptideGroup instanceof QuantedPeptideGroup) {
-            g.setColor(new Color(calculateRatioColor((QuantedPeptideGroup)peptideGroup), 255, 255));
+    public void drawPeptide(U peptide, Graphics g, int horizontalOffset, int verticalOffset, double scale, int verticalBarSize) throws UndrawableException {
+        try {
+            g.setColor(calculatePeptideGradient(peptide));
+        } catch (CalculationException ex) {
+            FaultBarrier.getInstance().handleException(ex);
+            throw new UndrawableException("could not calculate the ratio gradient");
         }
-        super.drawPeptide(peptideGroup, g, horizontalOffset, verticalOffset, width, barSize);
+        super.drawPeptide(peptide, g, horizontalOffset, verticalOffset, scale, verticalBarSize);
     }
 
-    public int calculateRatioColor(QuantedPeptideGroup aQuantedPeptideGroup) {
-        int returnValue = 125;
+    public Color calculatePeptideGradient(U peptide) throws CalculationException {
         //log quant code from rover
-        if (aQuantedPeptideGroup.getRatio() > ((aQuantedPeptideGroup.getProjectInfo().getMaxRatio() + aQuantedPeptideGroup.getProjectInfo().getMinRatio()) / 2)) {
-            returnValue = (int)Math.ceil(125 * aQuantedPeptideGroup.getLogRatio());
+        Color gradientColor = null;
+        if (peptide instanceof QuantedPeptide) {
+            QuantedPeptide aQuantedPeptide = (QuantedPeptide) peptide;
+            //returnValue = (int) Math.ceil(125 * aQuantedPeptideGroup.getLogRatio());
+
         } else {
+            gradientColor = ProgramVariables.PEPTIDECOLOR;
         }
-        return returnValue;
+        return gradientColor;
+
+    }
+
+    public Color calculateAminoAcidGradient(Protein<N> protein, int location) throws CalculationException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
