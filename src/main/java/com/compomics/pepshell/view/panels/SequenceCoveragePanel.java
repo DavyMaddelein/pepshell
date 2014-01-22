@@ -75,7 +75,6 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         // see how many amino acids we have room for
         int fontWidth = editorPane.getGraphics().getFontMetrics().stringWidth("X");
 
-
         // hardcoding needed to due issues with other look and feels
         if (!UIManager.getLookAndFeel().getName().equalsIgnoreCase("Nimbus")) {
             fontWidth = 8; // 8 is to represent the default average font width in html
@@ -129,18 +128,18 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
             }
 
             if (previousAminoAcidWasSelected && !selectedPeptide) {
-                currentCellSequence += "</span>";
+                currentCellSequence += "</b></span>";
             }
 
             // highlight the covered and selected peptides
             if (selectedPeptide) {
                 if (i % 10 == 1) {
-                    currentCellSequence += "<span style=\"background:#CEE3F6\">" + cleanSequence.charAt(i - 1);
+                    currentCellSequence += "<span style=\"background:#7E83C7\"><b>" + cleanSequence.charAt(i - 1);
                 } else {
                     if (previousAminoAcidWasSelected) {
                         currentCellSequence += cleanSequence.charAt(i - 1);
                     } else {
-                        currentCellSequence += "</span><span style=\"background:#CEE3F6\">" + cleanSequence.charAt(i - 1);
+                        currentCellSequence += "</span><span style=\"background:#7E83C7\"><b>" + cleanSequence.charAt(i - 1);
                     }
                 }
 
@@ -157,15 +156,15 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
                         if (previousAminoAcidWasCovered) {
                             currentCellSequence += cleanSequence.charAt(i - 1);
                         } else {
-                            currentCellSequence += "</span>" + cleanSequence.charAt(i - 1);
+                            currentCellSequence += "<b></span>" + cleanSequence.charAt(i - 1);
                         }
                     }
                 } else {
                     if (i % 10 == 1) {
-                        currentCellSequence += "<span style=\"color:#BDBDBD\">" + cleanSequence.charAt(i - 1);
+                        currentCellSequence += "<span style=\"color:#9C9C9C\">" + cleanSequence.charAt(i - 1);
                     } else {
                         if (previousAminoAcidWasCovered) {
-                            currentCellSequence += "<span style=\"color:#BDBDBD\">" + cleanSequence.charAt(i - 1);
+                            currentCellSequence += "<span style=\"color:#9C9C9C\">" + cleanSequence.charAt(i - 1);
                         } else {
                             currentCellSequence += cleanSequence.charAt(i - 1);
                         }
@@ -246,6 +245,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         proteinCoveragePane.setEditable(false);
+        proteinCoveragePane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         proteinCoveragePane.setContentType("text/html"); // NOI18N
         jScrollPane2.setViewportView(proteinCoveragePane);
 
@@ -273,5 +273,14 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         if (originalProteinSequence != null && originalPeptideGroupIterator != null && !isOriginalCcoverage) {
             showProteinCoverage(originalProteinSequence, originalPeptideGroupIterator, true);
         }
+    }
+
+    //to remove the formatting
+    public int getTextSelectionStart() {
+        return this.proteinCoveragePane.getSelectionStart() - (int) Math.floor(this.proteinCoveragePane.getSelectionStart() / 10);
+    }
+    
+        public int getTextSelectionEnd() {
+        return this.proteinCoveragePane.getSelectionEnd()- (int) Math.floor(this.proteinCoveragePane.getSelectionEnd() / 10);
     }
 }

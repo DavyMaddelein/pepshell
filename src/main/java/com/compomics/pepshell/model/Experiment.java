@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class Experiment <T extends Protein> extends ArrayList<T> {
 
-    private int experimentId;
-    private String experimentName;
+    private final int experimentId;
+    private final String experimentName;
 
     public Experiment(int experimentId, String experimentName) {
         this.experimentId = experimentId;

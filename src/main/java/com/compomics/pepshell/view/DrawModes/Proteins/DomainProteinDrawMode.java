@@ -27,9 +27,9 @@ import javax.xml.stream.XMLStreamException;
 public class DomainProteinDrawMode<T extends Protein<N>, N extends PeptideGroup<U>, U extends Peptide> extends StandardPeptideProteinDrawMode<T, N, U> {
 
     @Override
-    public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, double scale, int verticalBarSize) throws UndrawableException {
+    public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarSize) throws UndrawableException {
         try {
-            g.drawLine(horizontalOffset, verticalOffset + (verticalBarSize / 2), (int) Math.ceil((double) protein.getProteinSequence().length() / scale), verticalOffset);
+            g.drawLine(horizontalOffset, verticalOffset + (verticalBarSize / 2), horizontalBarSize, verticalOffset + (verticalBarSize / 2));
             if (protein.getDomains().isEmpty()) {
                 try {
                     //ExternalDomainFinder.addDomainsToProtein(protein);
@@ -41,21 +41,20 @@ public class DomainProteinDrawMode<T extends Protein<N>, N extends PeptideGroup<
                     FaultBarrier.getInstance().handleException(ex);
                 }
             }
-            drawDomains(protein, g, horizontalOffset, verticalOffset, scale, verticalBarSize);
+            drawDomains(protein, g, horizontalOffset, verticalOffset, verticalBarSize);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "there has been a problem retrieving the domains for protein: " + protein.getProteinAccession());
             FaultBarrier.getInstance().handleException(ex);
         }
     }
 
-    public void drawDomains(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, double scale, int verticalBarSize) {
+    public void drawDomains(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int verticalBarSize) {
         g.setColor(ProgramVariables.DOMAINCOLOR);
         Iterator<Domain> it = protein.getDomains().iterator();
         while (it.hasNext()) {
             Domain domain = it.next();
-            double barsize = (int) Math.ceil((double) protein.getProteinSequence().length() / scale);
-            int domainSize = (int) Math.ceil((((double) (domain.getStopPosition() - domain.getStartPosition())) / scale));
-            int startingLocation = (int) Math.ceil(((double) (domain.getStartPosition()) / barsize));
+            int domainSize = (int) Math.ceil((((double) (domain.getStopPosition() - domain.getStartPosition())) * ProgramVariables.SCALE));
+            int startingLocation = (int) Math.ceil(((double) (domain.getStartPosition()) * ProgramVariables.SCALE));
             g.fillRect(horizontalOffset + startingLocation, verticalOffset, domainSize, verticalBarSize);
             g.setColor(Color.BLACK);
             g.drawString(domain.getDomainName(), horizontalOffset + startingLocation, verticalOffset + 7);

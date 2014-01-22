@@ -17,17 +17,18 @@ import java.io.IOException;
 /**
  *
  * @author Davy
+ * 
+ * @param <F>
  * @param <T>
- * @param <N>
- * @param <U>
+ * @param <W>
  */
-public class SecondaryStructureProteinDrawMode<T extends Protein<N>, N extends PeptideGroup<U>, U extends Peptide> extends StandardPeptideProteinDrawMode<T, N, U> implements GradientDrawModeInterface<T, U> {
+public class SecondaryStructureProteinDrawMode<T extends Protein<F>, F extends PeptideGroup<W>, W extends Peptide> extends StandardPeptideProteinDrawMode<T, F, W> implements GradientDrawModeInterface<T, W> {
 
     private static UniprotSecondaryStructurePrediction predictor = new UniprotSecondaryStructurePrediction();
     private static final Font font = new Font("Dialog", Font.PLAIN, 24);
 
     @Override
-    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, double scale, int verticalBarSize) {
+    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarSize) {
         try {
             g.setFont(font);
             g.drawString(predictor.getPrediction(protein.getProteinAccession()), horizontalOffset, verticalOffset);

@@ -3,7 +3,8 @@ package com.compomics.pepshell.view.panels;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.HydrophobicityMaps;
+import com.compomics.pepshell.model.Peptide;
+import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
@@ -14,7 +15,9 @@ import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinD
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
 import java.awt.*;
-import java.util.Map;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,27 +25,35 @@ import java.util.Map;
  */
 public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
-    private int horizontalOffset = 115;
+    private int horizontalOffset = this.getX() + 15;
     private int verticalOffset = 50;
-    private Protein protein;
+    private Protein<PeptideGroup<Peptide>> protein;
     private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
     private DrawModeInterface proteinDrawMode = new StandardPeptideProteinDrawMode();
     private DrawModeInterface secondaryDrawMode = new HydrophobicityProteinDrawMode();
+    private boolean nameChanged = false;
+    private Experiment referenceExperiment;
 
     /**
      * Creates new form PeptidesProteinsOverlapGUI
      */
     public ReferenceExperimentPanel() {
         initComponents();
+        this.addMouseListener(new popupMenuListener());
     }
 
     public ReferenceExperimentPanel(Experiment project) {
-        initComponents();
+        this();
         projectNameLabel.setText(project.getExperimentName());
     }
 
     public void setProtein(Protein protein) {
         this.protein = protein;
+    }
+
+    public void setReferenceExperiment(Experiment reference) {
+        this.referenceExperiment = reference;
+        projectNameLabel.setText(referenceExperiment.getExperimentName());
     }
 
     public String getProjectNameForPanel() {
@@ -53,9 +64,23 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        experimentPopupMenu = new javax.swing.JPopupMenu();
+        changeNameOption = new javax.swing.JMenuItem();
+        exportImageToPDFOption = new javax.swing.JMenuItem();
         projectNameLabel = new javax.swing.JLabel();
         drawModeChooser = new javax.swing.JComboBox();
         quantCheckBox = new javax.swing.JCheckBox();
+
+        changeNameOption.setText("change name of the selected experiment");
+        changeNameOption.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeNameOptionActionPerformed(evt);
+            }
+        });
+        experimentPopupMenu.add(changeNameOption);
+
+        exportImageToPDFOption.setText("export this image to PDF");
+        experimentPopupMenu.add(exportImageToPDFOption);
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -78,7 +103,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
             }
         });
 
-        quantCheckBox.setForeground(new java.awt.Color(0, 255, 255));
         quantCheckBox.setText("show quantitfied range");
         quantCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,12 +117,13 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(quantCheckBox)))
-                .addContainerGap(686, Short.MAX_VALUE))
+                        .addComponent(quantCheckBox)
+                        .addGap(0, 683, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,8 +179,18 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         this.revalidate();
         this.repaint();
     }//GEN-LAST:event_quantCheckBoxActionPerformed
+
+    private void changeNameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeNameOptionActionPerformed
+        // TODO add your handling code here:
+        projectNameLabel.setText(JOptionPane.showInputDialog("change name of " + projectNameLabel.getText()));
+
+    }//GEN-LAST:event_changeNameOptionActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem changeNameOption;
     private javax.swing.JComboBox drawModeChooser;
+    private javax.swing.JPopupMenu experimentPopupMenu;
+    private javax.swing.JMenuItem exportImageToPDFOption;
     private javax.swing.JLabel projectNameLabel;
     private javax.swing.JCheckBox quantCheckBox;
     // End of variables declaration//GEN-END:variables
@@ -163,22 +198,42 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (!projectNameLabel.getText().isEmpty()) {
-            horizontalOffset = this.getX() + projectNameLabel.getX() + projectNameLabel.getWidth() + 25;
-            verticalOffset = this.getY() + 65;
-        }
         if (protein != null) {
             try {
-                proteinDrawMode.drawProteinAndPeptidesOfProtein(protein, g, horizontalOffset, verticalOffset, ProgramVariables.SCALE, ProgramVariables.VERTICALSIZE);
-                //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
+
+                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
+                for (PeptideGroup<Peptide> aGroup : protein) {
+                    peptideDrawMode.drawPeptide(aGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset, ProgramVariables.VERTICALSIZE);
+                }
+//((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
                 if (protein.getDomains().isEmpty()) {
                     ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein);
                 }
-                
-                secondaryDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset +25, ProgramVariables.SCALE, ProgramVariables.VERTICALSIZE);
+                secondaryDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 25, (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE), ProgramVariables.VERTICALSIZE);
                 //((DrawableProtein) protein).drawAminoAcidsOfSequence(horizontalOffset, verticalOffset + 25, g, gradientMap);
             } catch (UndrawableException ex) {
                 FaultBarrier.getInstance().handleException(ex);
+            }
+        }
+    }
+
+    private class popupMenuListener extends MouseAdapter {
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        private void maybeShowPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                experimentPopupMenu.show(e.getComponent(),
+                        e.getX(), e.getY());
             }
         }
     }

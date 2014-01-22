@@ -5,6 +5,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.WebDAO;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
+import com.compomics.pepshell.filters.RegexFilter;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
@@ -32,6 +33,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private static FaultBarrier faultBarrier;
     private List<Protein> proteinsToDisplay = new ArrayList<Protein>();
+    private RegexFilter filter = new RegexFilter();
 
     public MainWindow() {
         faultBarrier = FaultBarrier.getInstance();
@@ -107,6 +109,12 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         accessionLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         infoPanel1 = new com.compomics.pepshell.view.panels.InfoPanel();
+        filterTextField = new javax.swing.JTextField();
+        PDBViewPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        pdbProteinList = new javax.swing.JList();
+        jSeparator2 = new javax.swing.JSeparator();
+        jmolPanel1 = new com.compomics.pepshell.view.panels.JmolPanel();
         exportPanel = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
@@ -119,11 +127,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         exportButton = new javax.swing.JButton();
         jCheckBox7 = new javax.swing.JCheckBox();
         jTextField1 = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        pdbProteinList = new javax.swing.JList();
-        jSeparator2 = new javax.swing.JSeparator();
-        jmolPanel1 = new com.compomics.pepshell.view.panels.JmolPanel();
         jPanel2 = new javax.swing.JPanel();
         statisticsTabbedPane = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -138,10 +141,12 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Comparison window");
         setBackground(new java.awt.Color(255, 255, 255));
+        setForeground(java.awt.Color.white);
         setPreferredSize(new java.awt.Dimension(800, 600));
 
         tabsPane.setBackground(new java.awt.Color(255, 255, 255));
         tabsPane.setMinimumSize(new java.awt.Dimension(1573, 571));
+        tabsPane.setOpaque(true);
         tabsPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tabsPaneStateChanged(evt);
@@ -149,7 +154,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         });
 
         mainViewPanel.setBackground(new java.awt.Color(255, 255, 255));
-        mainViewPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -174,40 +178,95 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         jSeparator1.setMinimumSize(new java.awt.Dimension(50, 3));
         jSeparator1.setPreferredSize(new java.awt.Dimension(50, 3));
 
+        filterTextField.setText("search for ...");
+        filterTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                filterTextFieldKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout mainViewPanelLayout = new javax.swing.GroupLayout(mainViewPanel);
         mainViewPanel.setLayout(mainViewPanelLayout);
         mainViewPanelLayout.setHorizontalGroup(
             mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainViewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(mainViewPanelLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(accessionLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(accessionLabel)
+                        .addGroup(mainViewPanelLayout.createSequentialGroup()
+                            .addGap(12, 12, 12)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(filterTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(infoPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(infoPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1208, Short.MAX_VALUE)
+                .addContainerGap())
         );
         mainViewPanelLayout.setVerticalGroup(
             mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainViewPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainViewPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(mainViewPanelLayout.createSequentialGroup()
+                                .addComponent(infoPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE)
+                                .addGap(19, 19, 19))))
                     .addGroup(mainViewPanelLayout.createSequentialGroup()
                         .addComponent(accessionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(mainViewPanelLayout.createSequentialGroup()
-                        .addComponent(infoPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 742, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 10, Short.MAX_VALUE)))
+                        .addComponent(filterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
         );
 
         tabsPane.addTab("Protein Comparison", mainViewPanel);
+
+        pdbProteinList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        pdbProteinList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pdbProteinListMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(pdbProteinList);
+
+        javax.swing.GroupLayout PDBViewPanelLayout = new javax.swing.GroupLayout(PDBViewPanel);
+        PDBViewPanel.setLayout(PDBViewPanelLayout);
+        PDBViewPanelLayout.setHorizontalGroup(
+            PDBViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PDBViewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addComponent(jmolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+        );
+        PDBViewPanelLayout.setVerticalGroup(
+            PDBViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PDBViewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PDBViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PDBViewPanelLayout.createSequentialGroup()
+                        .addComponent(jmolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 735, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(PDBViewPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE)
+                        .addGap(13, 13, 13)))
+                .addContainerGap())
+        );
+
+        tabsPane.addTab("pdb view panel", PDBViewPanel);
 
         jCheckBox1.setText("export all projects");
 
@@ -296,52 +355,10 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addComponent(exportButton)
                 .addGap(18, 18, 18)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(502, Short.MAX_VALUE))
+                .addContainerGap(507, Short.MAX_VALUE))
         );
 
         tabsPane.addTab("exportPanel", exportPanel);
-
-        pdbProteinList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        pdbProteinList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                pdbProteinListMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(pdbProteinList);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addComponent(jmolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jmolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 735, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
-                        .addGap(13, 13, 13)))
-                .addContainerGap())
-        );
-
-        tabsPane.addTab("pdb view panel", jPanel1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -353,7 +370,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 768, Short.MAX_VALUE)
+            .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
         );
 
         tabsPane.addTab("statistics", jPanel2);
@@ -407,11 +424,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1398, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(tabsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1398, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(tabsPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -519,10 +536,34 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             aProtein.setAccession(aProtein.getOriginalAccession());
         }
     }//GEN-LAST:event_jRadioButtonMenuItem2ActionPerformed
+
+    private void filterTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTextFieldKeyTyped
+        // TODO add your handling code here:
+        String searchTerm = ((JTextField) evt.getComponent()).getText();
+        if (!searchTerm.isEmpty()) {
+            if (!searchTerm.endsWith("$")) {
+                searchTerm += ".*";
+            }
+            if (!searchTerm.startsWith("^")) {
+                searchTerm = ".*" + searchTerm;
+            }
+            List<String> searchRegex = new ArrayList<String>(1);
+            searchRegex.add(searchTerm);
+            for (Protein protein : proteinsToDisplay) {
+
+            }
+            proteinList.setListData(filter.filterProtein(proteinsToDisplay, searchRegex).toArray(new Protein[0]));
+        } else {
+            proteinList.setListData(proteinsToDisplay.toArray());
+        }
+    }//GEN-LAST:event_filterTextFieldKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel PDBViewPanel;
     private javax.swing.JLabel accessionLabel;
     private javax.swing.JButton exportButton;
     private javax.swing.JPanel exportPanel;
+    private javax.swing.JTextField filterTextField;
     private com.compomics.pepshell.view.panels.InfoPanel infoPanel1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
@@ -536,7 +577,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;

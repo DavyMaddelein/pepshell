@@ -4,6 +4,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedExperiment;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ import java.util.Iterator;
  *
  * @author Davy
  */
-public class PreparationForDbData<T extends Experiment> extends ViewPreparation<T> {
+public class PreparationForDbData<T extends Experiment<Protein>> extends ViewPreparation<T> {
 
     FaultBarrier barrier = FaultBarrier.getInstance();
 
@@ -21,6 +22,9 @@ public class PreparationForDbData<T extends Experiment> extends ViewPreparation<
     public T PrepareProteinsForJList(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         try {
             DbDAO.fetchPeptidesAndProteins(referenceExperiment);
+            if (!filterList.isEmpty()) {
+                this.filter.filter(referenceExperiment, filterList);
+            }
             checkAndAddQuantToProteinsInExperiment(referenceExperiment);
             while (ExperimentsToCompareWith.hasNext()) {
                 T anExperimentToCompareWith = ExperimentsToCompareWith.next();

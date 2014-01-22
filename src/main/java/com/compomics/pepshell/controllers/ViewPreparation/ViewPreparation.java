@@ -1,9 +1,13 @@
 package com.compomics.pepshell.controllers.ViewPreparation;
 
 import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
+import com.compomics.pepshell.filters.FilterParent;
+import com.compomics.pepshell.filters.NaiveFilter;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -12,7 +16,10 @@ import java.util.Observable;
  */
 public abstract class ViewPreparation<T extends Experiment> extends Observable {
 
-    public abstract T PrepareProteinsForJList(T referenceExperiment,Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
+    protected FilterParent<Protein> filter = new NaiveFilter<Protein>();
+    protected List<Protein> filterList = new ArrayList<Protein>();
+
+    public abstract T PrepareProteinsForJList(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
 
     protected abstract boolean checkAndAddQuantToProteinsInExperiment(T anExperiment);
 
@@ -33,4 +40,20 @@ public abstract class ViewPreparation<T extends Experiment> extends Observable {
     }
 
     public abstract void addProteinsToExperiment(AbstractDataMode dataMode);
+
+    public void setFilter(FilterParent<Protein> aFilter) {
+        this.filter = aFilter;
+    }
+
+    public FilterParent getFilter() {
+        return filter;
+    }
+
+    public void setProteinsToFilter(List<Protein> aFilterList) {
+        this.filterList = aFilterList;
+    }
+
+    public void clearFilter() {
+        filterList.clear();
+    }
 }

@@ -1,35 +1,3 @@
-proteins
-----------
-
-isoforms?
-irrelevant uniprot entries?
-protein info?
-only show proteins with peptides that map in both projects? separate list of non matching proteins?
-
-
---------------
-statistics?
-
---------------
-
-searchbar?
-sorters?
-clickable 2D figures?
-
-
-statistiek
-----------
-
-
-gemiddelde L/H ratio (ratio van blauw naar rood), min, max, (stdev)
-
-
-quant muchos importante --> voornamelijk visualisatie, verschillende repeats tegelijk?
-
-projecten gebundeld vs single views
-
-
-CPDT (volgende iteratie)
----------
-
-paper lezen, algoritme implementeren --> 
+quant range nog altijd nie zichtbaar
+alles pdb in orde
+legendes!!!!!

@@ -36,6 +36,11 @@
         <Component class="javax.swing.JEditorPane" name="proteinCoveragePane">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                <LineBorder/>
+              </Border>
+            </Property>
             <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
           </Properties>
         </Component>

@@ -6,7 +6,6 @@ import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.controllers.InfoFinders.ExternalDomainFinder;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
-import com.compomics.pepshell.controllers.secondarystructureprediction.UniprotSecondaryStructurePrediction;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.Peptide;
@@ -30,6 +29,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class LinkDb<T extends Protein<PeptideGroup<Peptide>>> implements StructureDataSource<T> {
 //TODO subtype this to uniprot protein since we need to be sure we have uniprot accessions
+
     public String getPDBDataForPDBName(String pdbName) {
         String pdbData = "no data found";
         PreparedStatement stat;
@@ -40,6 +40,14 @@ public class LinkDb<T extends Protein<PeptideGroup<Peptide>>> implements Structu
             try {
                 while (rs.next()) {
                     pdbData = "technique: " + rs.getString("technique") + "\n" + "resolution: " + rs.getString("resolution");
+                    try {
+                        PDBDAO.getPdbInfoForPdbAccession(pdbName);
+                                //TODO if online fetch title from pbd
+                                } catch (IOException ex) {
+                        Logger.getLogger(LinkDb.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (XMLStreamException ex) {
+                        Logger.getLogger(LinkDb.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             } catch (SQLException sqle) {
             }
@@ -64,7 +72,27 @@ public class LinkDb<T extends Protein<PeptideGroup<Peptide>>> implements Structu
         return foundDomains;
     }
 
-    public List<InteractionPartner> getInteractionPartnersForAminoAcid(Protein aProtein, int aminoAcidLocation) {
+    public List<InteractionPartner> getInteractionPartnersForRange(Protein aProtein, int start, int stop) {
+        List<InteractionPartner> interactionPartnerList = new ArrayList<InteractionPartner>();
+        PreparedStatement stat = null;
+        try {
+            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.getInteractionPartnersForRange());
+            stat.setString(1, aProtein.getProteinAccession());
+            stat.setInt(2, start);
+            stat.setInt(3, stop);
+            ResultSet rs = stat.executeQuery();
+            try {
+                while (rs.next()) {
+                    interactionPartnerList.add(new InteractionPartner(rs.getInt("residuepartner1"), rs.getInt("residuepartner2"), rs.getString("interaction_type")));
+                }
+            } catch (SQLException sqle) {
+            }
+        } catch (SQLException sqle) {
+        }
+        return interactionPartnerList;
+    }
+
+    public List<InteractionPartner> getInteractionPartners(Protein aProtein) {
         List<InteractionPartner> interactionPartnerList = new ArrayList<InteractionPartner>();
         PreparedStatement stat = null;
         try {
@@ -73,7 +101,7 @@ public class LinkDb<T extends Protein<PeptideGroup<Peptide>>> implements Structu
             ResultSet rs = stat.executeQuery();
             try {
                 while (rs.next()) {
-                    interactionPartnerList.add(new InteractionPartner());
+                    interactionPartnerList.add(new InteractionPartner(rs.getInt("residuepartner1"), rs.getInt("residuepartner2"), rs.getString("interaction_type")));
                 }
             } catch (SQLException sqle) {
             }

@@ -1,6 +1,7 @@
 package com.compomics.pepshell.controllers.DataSources;
 
 import com.compomics.pepshell.model.Domain;
+import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
@@ -16,6 +17,10 @@ public interface StructureDataSource<T extends Protein<PeptideGroup<Peptide>>> e
     public List<Domain> getDomainData(T aProtein);
 
     public String getPDBDataForPDBName(String pdbAccession);
+
+    public List<InteractionPartner> getInteractionPartners(Protein aProtein);
+
+    public List<InteractionPartner> getInteractionPartnersForRange(Protein aProtein,int start, int stop);
 
     //TODO think of a cleaner way to handle below
     public boolean isAbleToGetFreeEnergy();

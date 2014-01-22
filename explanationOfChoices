@@ -1,0 +1,8 @@
+gradient scale is based on 64 steps because of the fact that RGB colors are 0-255 for each channel and this is a suitable slice of the possible color spectrum
+
+internal preference for drop down option menus
+
+the peptides are only colored see through rectangles so they would not impede or alter the visual interpretation of the protein representation
+
+filter in the protein comparison window works as a regex filter for more advanced filtering
+

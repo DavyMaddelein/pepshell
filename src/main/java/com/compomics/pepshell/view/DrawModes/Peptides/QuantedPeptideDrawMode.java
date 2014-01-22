@@ -21,14 +21,14 @@ import java.awt.Graphics;
 public class QuantedPeptideDrawMode<N extends PeptideGroup<U>, U extends QuantedPeptide> extends StandardPeptideProteinDrawMode<Protein<N>, N, U> implements GradientDrawModeInterface<Protein<N>, U> {
 
     @Override
-    public void drawPeptide(U peptide, Graphics g, int horizontalOffset, int verticalOffset, double scale, int verticalBarSize) throws UndrawableException {
+    public void drawPeptide(U peptide, Graphics g, int horizontalOffset, int verticalOffset, int verticalBarSize) throws UndrawableException {
         try {
             g.setColor(calculatePeptideGradient(peptide));
         } catch (CalculationException ex) {
             FaultBarrier.getInstance().handleException(ex);
             throw new UndrawableException("could not calculate the ratio gradient");
         }
-        super.drawPeptide(peptide, g, horizontalOffset, verticalOffset, scale, verticalBarSize);
+        super.drawPeptide(peptide, g, horizontalOffset, verticalOffset, verticalBarSize);
     }
 
     public Color calculatePeptideGradient(U peptide) throws CalculationException {

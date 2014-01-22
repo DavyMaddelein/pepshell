@@ -152,6 +152,12 @@
             <version>3.14.42</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>15.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>

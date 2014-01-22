@@ -47,4 +47,12 @@ public class ExternalStructureDataSource implements StructureDataSource {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public List getInteractionPartners(Protein aProtein) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List getInteractionPartnersForRange(Protein aProtein, int start, int stop) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
