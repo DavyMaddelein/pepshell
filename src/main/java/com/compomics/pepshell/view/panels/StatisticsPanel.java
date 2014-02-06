@@ -189,16 +189,16 @@ public class StatisticsPanel extends javax.swing.JPanel {
             peptideLengthDistribution(aGroup);
         }
 
-        private void peptideOccurence(AnalysisGroup<Experiment> anAnalysisGroup) {
+        private void peptideOccurence(AnalysisGroup anAnalysisGroup) {
             //redo this completely with a hashmap containing arraylists
             Set<Protein> onceFound = new HashSet();
             Set<Protein> twiceFound = new HashSet();
             Set<Protein> multipleFound = new HashSet();
 
-            for (Experiment<Protein> aProject : anAnalysisGroup) {
+            for (Experiment aProject : anAnalysisGroup.getExperiments()) {
                 int peptidesFound;
-                for (Protein aProjectProtein : aProject) {
-                    peptidesFound = aProjectProtein.size();
+                for (Protein aProjectProtein : aProject.getProteins()) {
+                    peptidesFound = aProjectProtein.getPeptideGroupsForProtein().size();
                     if (peptidesFound == 1) {
                         if (onceFound.contains(aProjectProtein)) {
                             twiceFound.add(aProjectProtein);
@@ -236,13 +236,13 @@ public class StatisticsPanel extends javax.swing.JPanel {
 
         }
 
-        private void peptideLengthDistribution(AnalysisGroup<Experiment> aGroup) {
+        private void peptideLengthDistribution(AnalysisGroup aGroup) {
             HashMap<Integer, HashSet<Protein>> distribution = new HashMap<Integer, HashSet<Protein>>();
             //for for for for for for for for
-            for (Experiment<Protein> aProject : aGroup) {
-                for (Protein<PeptideGroup> aProtein : aProject) {
-                    for (PeptideGroup<Peptide> aPeptideGroup : aProtein) {
-                        for (Peptide aPeptide : aPeptideGroup) {
+            for (Experiment aProject : aGroup.getExperiments()) {
+                for (Protein aProtein : aProject.getProteins()) {
+                    for (PeptideGroup aPeptideGroup : aProtein.getPeptideGroupsForProtein()) {
+                        for (Peptide aPeptide : aPeptideGroup.getPeptideList()) {
                             //todo make an incremental hashmap so this gets less wordy
                             if (distribution.containsKey(aPeptide.getSequence().length())) {
                                 distribution.get(aPeptide.getSequence().length()).add(aProtein);

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  * @author Davy
  * @param <T>
  */
-public class ViewPreparationForFastaData<T extends Experiment<N>, N extends Protein<U>, U extends PeptideGroup<M>, M extends Peptide> extends ViewPreparation<T> {
+public class ViewPreparationForFastaData<T extends Experiment> extends ViewPreparation<T> {
 
     //TODO: this entire thing needs cleaning up
     private File fastaFile;
@@ -40,7 +40,8 @@ public class ViewPreparationForFastaData<T extends Experiment<N>, N extends Prot
         try {
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
                 DbDAO.fetchPeptidesAndProteins(referenceExperiment);
-                FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment);
+                filter.filter(referenceExperiment.getProteins(), filterList);
+                FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
             } else {
                 FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, referenceExperiment);
             }
@@ -48,7 +49,7 @@ public class ViewPreparationForFastaData<T extends Experiment<N>, N extends Prot
                 while (experimentsToCompareWith.hasNext()) {
                     T anExperimentToCompareWith = experimentsToCompareWith.next();
                     DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
-                    FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith);
+                    FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith.getProteins());
                     checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
                 }
             } else {
@@ -74,13 +75,13 @@ public class ViewPreparationForFastaData<T extends Experiment<N>, N extends Prot
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups());
-            for (Protein protein : anExperiment) {
+            for (Protein protein : anExperiment.getProteins()) {
                 stat.setInt(1, anExperiment.getExperimentId());
                 stat.setString(1, protein.getProteinAccession());
                 ResultSet rs = stat.executeQuery();
                 try {
                     while (rs.next()) {
-                        
+
                     }
                 } catch (SQLException sqle) {
                 }

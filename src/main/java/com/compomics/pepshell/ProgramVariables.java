@@ -6,6 +6,7 @@ import com.compomics.pepshell.controllers.calculators.GradientCalculator;
 import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
+import java.io.File;
 
 /**
  *
@@ -15,15 +16,14 @@ public class ProgramVariables {
 
     //TODO move all these to their designated preferences
     //viewpreferences
-    //public static Color PROTEINCOLOR = Color.RED;
-    public static Color PROTEINCOLOR = new Color(93,100,202);
-    public static Color PEPTIDECOLOR = new Color(223,156,55);
+    public static Color PROTEINCOLOR = new Color(93, 100, 202);
+    public static Color PEPTIDECOLOR = new Color(223, 156, 55);
     public static Color DOMAINCOLOR = Color.GREEN;
     public static double SCALE = 1;
     public static int VERTICALSIZE = 15;
     public static boolean RESIZEPANELS = true;
-    public static DrawModeInterface GLOBALPROTEINDRAWMODE = new StandardPeptideProteinDrawMode();
-    public static GradientCalculator PEPTIDEGRADIENTCALCULATOR;
+    public static File EXPORTFOLDER = new File("C:/Users/Davy");
     //database properties
     public static StructureDataSource STRUCTUREDATASOURCE = new LinkDb();
+    public static boolean USEINTERNETSOURCES = true;
 }

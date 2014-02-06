@@ -26,7 +26,7 @@ public class InfoPanel extends javax.swing.JPanel {
     public InfoPanel(Experiment referenceExperiment, AnalysisGroup aGroup) {
         this();
         this.referenceExperiment = referenceExperiment;
-        setExperimentsToDisplay(aGroup);
+        setExperimentsToDisplay(aGroup.getExperiments());
     }
 
     /**
@@ -48,7 +48,6 @@ public class InfoPanel extends javax.swing.JPanel {
         jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(null);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -78,18 +77,16 @@ public class InfoPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(peptidesProteinsOverlapPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(peptidesProteinsOverlapPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
-        sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein(), true);
-        double test = (double) (peptidesProteinsOverlapPanel1.getWidth() - 100);
+        sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein().iterator(), true);
         ProgramVariables.SCALE = (peptidesProteinsOverlapPanel1.getWidth() - 100) / proteinOfInterest.getProteinSequence().length();
         peptidesProteinsOverlapPanel1.setProtein(proteinOfInterest);
         peptidesProteinsOverlapPanel1.revalidate();
@@ -107,7 +104,7 @@ public class InfoPanel extends javax.swing.JPanel {
      * sets the project do display the peptides from in relation to the
      * reference experiment
      *
-     * @param toCompareProjects the projects to compare
+     * @param experiments the experiments to show and compare
      * @param condense should the experiments be treated as a group or not
      */
     public void setExperimentsToDisplay(List<Experiment> experiments, boolean condense) {

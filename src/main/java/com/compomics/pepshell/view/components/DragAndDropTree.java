@@ -199,7 +199,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
                         if (droppedNode.getUserObject() instanceof AnalysisGroup) {
                             ((DefaultMutableTreeNode) dropNode.getParent()).insert(droppedNode, 0);
                         } else {
-                            ((AnalysisGroup) dropNode.getUserObject()).add((Experiment) droppedNode.getUserObject());
+                            ((AnalysisGroup) dropNode.getUserObject()).getExperiments().add((Experiment) droppedNode.getUserObject());
                             dropNode.insert(droppedNode, 0);
                         }
                     } else if (dropNode.isRoot()) {
@@ -213,7 +213,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
                         if (((DefaultMutableTreeNode) droppedObject).getUserObject() instanceof AnalysisGroup) {
                             dropNode.insert((MutableTreeNode) getModel().getRoot(), 0);
                         } else {
-                            ((AnalysisGroup) dropNode.getUserObject()).add((Experiment) droppedNode.getUserObject());
+                            ((AnalysisGroup) dropNode.getUserObject()).getExperiments().add((Experiment) droppedNode.getUserObject());
                             dropNode.insert(droppedNode, 0);
                         }
                     } else {

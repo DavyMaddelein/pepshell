@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer {
 
-    private AnalysisGroup analysisGroup = new AnalysisGroup<Experiment>("experiment group");
+    private AnalysisGroup analysisGroup = new AnalysisGroup("experiment group");
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Experiment referenceProject;
 
@@ -68,7 +68,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
         launchMainWindowButton = new javax.swing.JButton();
         errorLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        selectedProjectsList = new JList(analysisGroup.toArray());
+        selectedProjectsList = new JList(analysisGroup.getExperiments().toArray());
         onlyRefProjectPeptidesCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -220,8 +220,8 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     }//GEN-LAST:event_projectSelectorButtonMouseReleased
 
     private void projectRemovalButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_projectRemovalButtonMouseReleased
-        analysisGroup.remove((Experiment) projectList.getSelectedValue());
-        selectedProjectsList.setListData(analysisGroup.toArray());
+        analysisGroup.getExperiments().remove((Experiment) projectList.getSelectedValue());
+        selectedProjectsList.setListData(analysisGroup.getExperiments().toArray());
     }//GEN-LAST:event_projectRemovalButtonMouseReleased
 
     private void referenceProjectSelectorButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_referenceProjectSelectorButtonMouseReleased
@@ -234,7 +234,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     }//GEN-LAST:event_referenceProjectRemovalButtonMouseReleased
 
     private void launchMainWindowButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_launchMainWindowButtonMouseReleased
-        if (analysisGroup.isEmpty() || referenceProject == null) {
+        if (analysisGroup.getExperiments().isEmpty() || referenceProject == null) {
             JOptionPane.showMessageDialog(this, "please select a project of interest and at least one project to compare with");
         } else {
             try {
@@ -253,8 +253,8 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
 
     private void selectedProjectsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectedProjectsListMouseClicked
         if (evt.getClickCount() == 2) {
-            analysisGroup.remove((Experiment) selectedProjectsList.getSelectedValue());
-            selectedProjectsList.setListData(analysisGroup.toArray());
+            analysisGroup.getExperiments().remove((Experiment) selectedProjectsList.getSelectedValue());
+            selectedProjectsList.setListData(analysisGroup.getExperiments().toArray());
         }
     }//GEN-LAST:event_selectedProjectsListMouseClicked
 
@@ -282,7 +282,7 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
     }
 
     private void referenceProjectSelected() {
-        if (!analysisGroup.contains((Experiment) projectList.getSelectedValue())) {
+        if (!analysisGroup.getExperiments().contains((Experiment) projectList.getSelectedValue())) {
             referenceProject = (Experiment) projectList.getSelectedValue();
             referenceProjectTextField.setText(referenceProject.getExperimentName());
             errorLabel.setVisible(false);
@@ -295,9 +295,9 @@ public class ProjectSelectorFrame extends javax.swing.JFrame implements Observer
 
     private void projectSelected() {
         Experiment selectedProject = (Experiment) projectList.getSelectedValue();
-        if (!selectedProject.equals(referenceProject) && !analysisGroup.contains(selectedProject)) {
-            analysisGroup.add(selectedProject);
-            selectedProjectsList.setListData(analysisGroup.toArray(new Experiment[0]));
+        if (!selectedProject.equals(referenceProject) && !analysisGroup.getExperiments().contains(selectedProject)) {
+            analysisGroup.getExperiments().add(selectedProject);
+            selectedProjectsList.setListData(analysisGroup.getExperiments().toArray(new Experiment[0]));
             errorLabel.setVisible(false);
         } else {
             errorLabel.setVisible(true);

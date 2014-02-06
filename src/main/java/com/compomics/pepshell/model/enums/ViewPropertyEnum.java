@@ -11,7 +11,9 @@ public enum ViewPropertyEnum implements PropertyEnum {
     PROTEINACCESSIONTYPE("view.preferredaccessiontype", "uniprot"),
     PREFERREDENZYME("protein.preferredenzyme", "trypsin"),
     PROTEINFASTALOCATION("protein.fastalocation", ""),
-    PROTEININFOWEBSITE("protein.externaldatalocation","www.uniprot.org/uniprot/");
+    PROTEININFOWEBSITE("protein.externaldatalocation", "www.uniprot.org/uniprot/"),
+    LOADMASKINGFILEAUTOMATICALLY("protein.loadproteinmaskonstartup", "no"),
+    PROTEINMASKLOCATION("protein.proteinmasklocation", System.getProperty("user.home") + ".compomics/pepshell/proteinmask.txt");
     private final String property;
     private final String defaultValue;
 

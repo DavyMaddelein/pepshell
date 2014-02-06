@@ -11,15 +11,23 @@ import java.sql.SQLException;
 public class DbConnectionController {
 
     private static Connection connection;
+    private static Connection linkdbConnection;
 
     public static Connection createConnection(String username, String password, String url, String database) throws SQLException {
         if (connection == null) {
-            new DbConnectionController(username, password, url, database);
+            connection = connect(username, password, url, database);
         }
         return DbConnectionController.getConnection();
     }
 
-    private DbConnectionController(String username, String password, String url, String database) throws SQLException {
+    public static Connection createLinkDbConnection(String username, String password, String url, String database) throws SQLException {
+        if (linkdbConnection == null) {
+            linkdbConnection = connect(username, password, url, database);
+        }
+        return DbConnectionController.getLinkDBConnection();
+    }
+
+    private static Connection connect(String username, String password, String url, String database) throws SQLException {
         MysqlDataSource dbSource = new MysqlDataSource();
         if (url.contains(":")) {
             String[] urlAndPort = url.split(":");
@@ -31,13 +39,28 @@ public class DbConnectionController {
         dbSource.setDatabaseName(database);
         dbSource.setUser(username);
         dbSource.setPassword(password);
-        connection = dbSource.getConnection();
+        return dbSource.getConnection();
     }
 
     public static Connection getConnection() throws SQLException {
         if (connection == null) {
-            throw new SQLException("No connection has been made yet");
+            throw new SQLException("connection has not been made");
         }
         return connection;
+    }
+
+    public static Connection getLinkDBConnection() throws SQLException {
+        if (linkdbConnection == null) {
+            throw new SQLException("connection to linkdb not made");
+        }
+        return linkdbConnection;
+    }
+
+    public static boolean isDbConnected() {
+        return connection != null;
+    }
+
+    public static boolean isLinkDbConnected() {
+        return linkdbConnection != null;
     }
 }

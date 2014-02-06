@@ -41,7 +41,7 @@ public class ExcelExport {
         Sheet proteinSheet = workBook.createSheet("proteins");
         Sheet PDBSheet = workBook.createSheet("PDB");
 
-        addHeadersToProteinsSheet(proteinSheet, ((Protein) listOfProteins.getModel().getElementAt(0)).get(0) instanceof QuantedPeptideGroup);
+        addHeadersToProteinsSheet(proteinSheet, ((Protein) listOfProteins.getModel().getElementAt(0)).getPeptideGroupsForProtein().get(0) instanceof QuantedPeptideGroup);
         addHeadersToPDBSheet(PDBSheet);
 
         while (listWalkCounter < listOfProteins.getModel().getSize()) {
@@ -53,12 +53,12 @@ public class ExcelExport {
         }
     }
 
-    private static void excelProteinInfoExportOfProtein(Protein<PeptideGroup> proteinToExport, Sheet proteinSheet) {
+    private static void excelProteinInfoExportOfProtein(Protein proteinToExport, Sheet proteinSheet) {
         int column = 0;
         Row proteinRow = proteinSheet.createRow(proteinSheet.getLastRowNum() + 1);
         proteinRow.createCell(column).setCellValue(proteinToExport.getProteinAccession());
         column++;
-        for (PeptideGroup peptideGroup : proteinToExport) {
+        for (PeptideGroup peptideGroup : proteinToExport.getPeptideGroupsForProtein()) {
             proteinRow.createCell(column).setCellValue(peptideGroup.getShortestPeptide().getSequence());
             if (peptideGroup instanceof QuantedPeptideGroup) {
                 proteinRow.createCell(column + 1).setCellValue(Integer.toString(((QuantedPeptideGroup) peptideGroup).getRatio()));

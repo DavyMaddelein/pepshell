@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+
 /**
  *
  * @author Davy
@@ -51,14 +52,14 @@ public class DbDAO extends Observable {
 
     public static boolean fetchPeptidesAndProteins(Experiment project) throws SQLException, IOException {
         fetchProteins(project);
-        addPeptideGroupsToProteins(project);
+        addPeptideGroupsToProteins(project.getProteins());
         return true;
     }
 
     public static boolean fetchPeptidesAndProteins(QuantedExperiment project) throws SQLException, IOException {
         fetchProteins(project);
-        addQuantedPeptideGroupsToProteins(project);
-        project.setProteins(project);
+        addQuantedPeptideGroupsToProteins(project.getProteins());
+        project.setProteins(project.getProteins());
         return true;
     }
 

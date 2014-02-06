@@ -1,31 +1,34 @@
 package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author Davy
  */
-public class Protein<T extends PeptideGroup> extends ArrayList<T> {
+public class Protein {
 
     private ProteinInfo proteinInfo = new ProteinInfo();
     private String accession;
     private int projectId;
     private String sequence = "";
     private List<Domain> domainsFoundInProtein = new ArrayList<Domain>();
+    private List<PeptideGroup> peptideGroupsForProtein = new ArrayList<PeptideGroup>();
     private List<String> allPDBFileNamesForProtein = new ArrayList<String>();
     private String proteinName;
     private String originalAccession;
+    private String visibleAccession;
 
     public Protein(String accession) {
         this.accession = accession;
+        this.visibleAccession = accession;
+        this.originalAccession = accession;
     }
 
     public Protein(String accession, String sequence) {
-        this.accession = accession;
-        this.originalAccession = accession;
+        this(accession);
         this.sequence = sequence;
     }
 
@@ -53,12 +56,16 @@ public class Protein<T extends PeptideGroup> extends ArrayList<T> {
         this.domainsFoundInProtein.addAll(domainsToAdd);
     }
 
-    public Iterator<T> getPeptideGroupsForProtein() {
-        return this.iterator();
+    public List<PeptideGroup> getPeptideGroupsForProtein() {
+        return Collections.unmodifiableList(peptideGroupsForProtein);
     }
 
-    public void setPeptideGroupsForProtein(List<T> listOfPeptides) {
-        this.addAll(listOfPeptides);
+    public void setPeptideGroupsForProtein(List<PeptideGroup> listOfPeptides) {
+        peptideGroupsForProtein.addAll(listOfPeptides);
+    }
+
+    public void addPeptideGroup(PeptideGroup aPeptideGroup) {
+        peptideGroupsForProtein.add(aPeptideGroup);
     }
 
     public void setProjectId(int projectId) {
@@ -83,7 +90,7 @@ public class Protein<T extends PeptideGroup> extends ArrayList<T> {
 
     @Override
     public String toString() {
-        return accession;
+        return visibleAccession;
     }
 
     public void addPdbFileNames(List<String> allPDBFileNamesForProtein) {
@@ -104,19 +111,15 @@ public class Protein<T extends PeptideGroup> extends ArrayList<T> {
 
     @Override
     public boolean equals(Object obj) {
-        boolean returnValue = true;
-        if (obj == null) {
-            returnValue = false;
-        } else {
-            if (getClass() != obj.getClass()) {
-                returnValue = false;
-            } else {
+        boolean returnValue = false;
+        if (obj != null) {
+            if (getClass() == obj.getClass()) {
                 final Protein other = (Protein) obj;
-                if ((this.accession == null) ? (other.accession != null) : this.accession.equals(other.accession)) {
+                if ((this.visibleAccession == null) ? (other.getVisibleAccession() != null) : this.visibleAccession.equals(other.getVisibleAccession())) {
                     returnValue = true;
                 }
-                if (this.sequence == null && other.sequence != null) {
-                    if (!other.sequence.isEmpty() && this.sequence.equals(other.sequence)) {
+                if (this.sequence == null && other.getProteinSequence() != null) {
+                    if (!other.getProteinSequence().isEmpty() && this.sequence.equals(other.getProteinSequence())) {
                         returnValue = true;
                     }
                 }
@@ -125,22 +128,29 @@ public class Protein<T extends PeptideGroup> extends ArrayList<T> {
         return returnValue;
     }
 
-    @Override
-    public final boolean add(T e) {
-        boolean added = false;
-        if (this.contains(e)) {
-            this.get(this.indexOf(e)).addAll(e);
-        } else {
-            added = super.add(e);
-        }
-        return added;
-    }
-
     public void setAccession(String anAccession) {
         this.accession = anAccession;
     }
 
     public String getOriginalAccession() {
         return this.originalAccession;
+    }
+
+    public void addPeptideGroups(List<PeptideGroup> aListOfPeptideGroups) {
+        for (PeptideGroup aGroup : aListOfPeptideGroups) {
+            if (!peptideGroupsForProtein.contains(aGroup)) {
+                peptideGroupsForProtein.add(aGroup);
+            } else {
+                peptideGroupsForProtein.get(peptideGroupsForProtein.indexOf(aGroup)).addPeptides(aGroup.getPeptideList());
+            }
+        }
+    }
+
+    public String getVisibleAccession() {
+        return visibleAccession;
+    }
+
+    public void setVisibleAccession(String visibleAccession) {
+        this.visibleAccession = visibleAccession;
     }
 }

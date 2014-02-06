@@ -2,9 +2,8 @@ package com.compomics.pepshell.controllers.DataSources;
 
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import java.util.List;
 
 /**
@@ -12,9 +11,9 @@ import java.util.List;
  * @author Davy
  * @param <T>
  */
-public interface StructureDataSource<T extends Protein<PeptideGroup<Peptide>>> extends AbstractDataSource {
+public interface StructureDataSource extends AbstractDataSource {
 
-    public List<Domain> getDomainData(T aProtein);
+    public List<Domain> getDomainData(Protein aProtein) throws DataRetrievalException;
 
     public String getPDBDataForPDBName(String pdbAccession);
 
@@ -25,11 +24,13 @@ public interface StructureDataSource<T extends Protein<PeptideGroup<Peptide>>> e
     //TODO think of a cleaner way to handle below
     public boolean isAbleToGetFreeEnergy();
 
-    public double getFreeEnergyForResidue(T protein, int location);
+    public double getFreeEnergyForResidue(Protein protein, int location);
 
-    public boolean isAbleToGetSolventAccessability();
+    public boolean isAbleToGetSolventAccessibility();
 
-    public double getRelativeSolventAccessabilityForResidue(T protein, int location);
+    public double getRelativeSolventAccessibilityForResidue(Protein protein, int location);
 
-    public void getSecondaryStructureForResidue(T protein, int location);
+    public void getSecondaryStructureForResidue(Protein protein, int location);
+
+    public List<InteractionPartner> getInteractionPartnersForPDBName(String string);
 }

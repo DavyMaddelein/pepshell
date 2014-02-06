@@ -1,16 +1,18 @@
 package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author Davy
  */
-public class Experiment <T extends Protein> extends ArrayList<T> {
+public class Experiment {
 
     private final int experimentId;
     private final String experimentName;
+    private List<Protein> proteinList = new ArrayList<Protein>();
 
     public Experiment(int experimentId, String experimentName) {
         this.experimentId = experimentId;
@@ -21,8 +23,20 @@ public class Experiment <T extends Protein> extends ArrayList<T> {
         return experimentId;
     }
 
-    public void setProteins(List<T> fetchedProteins) {
-        this.addAll(fetchedProteins);
+    public void setProteins(List<Protein> fetchedProteins) {
+        proteinList.addAll(fetchedProteins);
+    }
+
+    public List<Protein> getProteins() {
+        return Collections.unmodifiableList(proteinList);
+    }
+    
+    public void addProtein(Protein aProtein){
+        if(!proteinList.contains(aProtein)){
+            proteinList.add(aProtein);
+        } else {
+            proteinList.get(proteinList.indexOf(aProtein)).addPeptideGroups(aProtein.getPeptideGroupsForProtein());
+        }
     }
 
     public String getExperimentName() {
@@ -32,31 +46,6 @@ public class Experiment <T extends Protein> extends ArrayList<T> {
     @Override
     public String toString() {
         return experimentName;
-    }
-
-    @Override
-    public final boolean add(T e) {
-        boolean added = false;
-        if (this.contains(e)) {
-            this.get(this.indexOf(e)).addAll(e);
-        } else {
-            added = super.add(e);
-        }
-        return added;
-    }
-
-    public T get(T aProtein) {
-        T toReturnProtein = null;
-        for (T proteinInList : this) {
-            if (proteinInList.getProteinAccession().equalsIgnoreCase(aProtein.getProteinAccession())) {
-                toReturnProtein = proteinInList;
-                break;
-            }
-        }
-        if (toReturnProtein == null) {
-            throw new IndexOutOfBoundsException("could not find protein in the experiment");
-        }
-        return toReturnProtein;
     }
 
     @Override

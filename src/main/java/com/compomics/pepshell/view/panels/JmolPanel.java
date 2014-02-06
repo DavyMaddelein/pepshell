@@ -3,6 +3,7 @@ package com.compomics.pepshell.view.panels;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
+import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
@@ -10,6 +11,7 @@ import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -120,6 +122,10 @@ public class JmolPanel extends javax.swing.JPanel {
         try {
             pdbViewPanel1.setPdbFile((String) PDBFileComboBox.getSelectedItem());
             PDBInfoText.setText(ProgramVariables.STRUCTUREDATASOURCE.getPDBDataForPDBName((String) PDBFileComboBox.getSelectedItem()));
+            sequenceCoveragePanel1.showProteinCoverage(
+                    ProteinController.fromThreeLetterToOneLetterAminoAcids(PDBDAO.getSequenceFromPdbFile(PDBDAO.getPdbFileInMem((String) PDBFileComboBox.getSelectedItem()))),
+                    new ArrayList<PeptideGroup>().iterator());
+            sequenceCoveragePanel1.setInteractionCoverage(ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForPDBName((String) PDBFileComboBox.getSelectedItem()));
         } catch (IOException ioe) {
             if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
                 JOptionPane.showMessageDialog(this, "the PDB file for accession: " + (String) PDBFileComboBox.getSelectedItem() + " could not be retrieved");
@@ -161,9 +167,9 @@ public class JmolPanel extends javax.swing.JPanel {
 
     }
 
-    public void setPDBProtein(final Protein<PeptideGroup> protein) throws MalformedURLException, ConversionException, SQLException {
+    public void setPDBProtein(final Protein protein) throws MalformedURLException, ConversionException, SQLException {
         final Set<String> pdbAccessions = new HashSet<String>();
-        sequenceCoveragePanel1.showProteinCoverage(protein.getProteinSequence(), protein.getPeptideGroupsForProtein());
+        sequenceCoveragePanel1.showProteinCoverage(protein.getProteinSequence(), protein.getPeptideGroupsForProtein().iterator());
         jProgressBar1.setIndeterminate(true);
         jProgressBar1.setString("fetching pdb files");
         new Runnable() {

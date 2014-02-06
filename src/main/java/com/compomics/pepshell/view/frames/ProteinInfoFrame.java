@@ -31,10 +31,10 @@ public class ProteinInfoFrame extends javax.swing.JFrame {
         this.setVisible(true);
     }
 
-    public ProteinInfoFrame(Protein protein, PeptideGroup<Peptide> peptideGroup) {
+    public ProteinInfoFrame(Protein protein, PeptideGroup peptideGroup) {
         this(protein);
         proteinTextArea.append("\n" + "---------------");
-        for (Peptide peptide : peptideGroup) {
+        for (Peptide peptide : peptideGroup.getPeptideList()) {
             proteinTextArea.append("\n" + peptide.getSequence());
             proteinTextArea.append("\n" + peptideGroup.getStartingAlignmentPosition());
             proteinTextArea.append("\n" + peptideGroup.getEndAlignmentPosition());

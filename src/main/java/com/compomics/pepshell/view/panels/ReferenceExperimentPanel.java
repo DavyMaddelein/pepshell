@@ -6,12 +6,17 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
+import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.FreeEnergyProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinDrawMode;
+import com.compomics.pepshell.view.DrawModes.Proteins.SolventAccessibleProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
 import java.awt.*;
@@ -27,11 +32,11 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
     private int horizontalOffset = this.getX() + 15;
     private int verticalOffset = 50;
-    private Protein<PeptideGroup<Peptide>> protein;
+    private Protein protein;
     private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
     private DrawModeInterface proteinDrawMode = new StandardPeptideProteinDrawMode();
     private DrawModeInterface secondaryDrawMode = new HydrophobicityProteinDrawMode();
-    private boolean nameChanged = false;
+    private DrawModeInterface domainDrawMode = new DomainProteinDrawMode();
     private Experiment referenceExperiment;
 
     /**
@@ -96,7 +101,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setMinimumSize(new java.awt.Dimension(50, 30));
         projectNameLabel.setPreferredSize(new java.awt.Dimension(50, 30));
 
-        drawModeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "hydrophobicity", "secondary structure", "free residue energy" }));
+        drawModeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "hydrophobicity", "secondary structure", "free residue energy", "solvent accessibility" }));
         drawModeChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 drawModeChooserActionPerformed(evt);
@@ -122,7 +127,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                         .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(quantCheckBox)
-                        .addGap(0, 683, Short.MAX_VALUE)))
+                        .addGap(0, 679, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -160,8 +165,14 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
             case 1:
                 secondaryDrawMode = new SecondaryStructureProteinDrawMode();
                 break;
-            default:
+            case 2:
                 secondaryDrawMode = new FreeEnergyProteinDrawMode();
+                break;
+            case 3:
+                secondaryDrawMode = new SolventAccessibleProteinDrawMode();
+                break;
+            default:
+                secondaryDrawMode = new HydrophobicityProteinDrawMode();
                 break;
         }
         this.revalidate();
@@ -171,7 +182,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
         // TODO add your handling code here:
         if (quantCheckBox.isSelected()) {
-            peptideDrawMode = new QuantedPeptideDrawMode();
+            peptideDrawMode = new QuantedPeptideDrawMode<QuantedPeptide>();
             //((DrawableProtein) protein).drawAllPeptideGroups(horizontalOffset, verticalOffset + 25, g);
         } else {
             peptideDrawMode = new StandardPeptideProteinDrawMode();
@@ -200,18 +211,26 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         super.paintComponent(g);
         if (protein != null) {
             try {
+                verticalOffset = this.projectNameLabel.getY() + 20;
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
 
-                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
-                for (PeptideGroup<Peptide> aGroup : protein) {
-                    peptideDrawMode.drawPeptide(aGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset, ProgramVariables.VERTICALSIZE);
+                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 25, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
+                for (PeptideGroup aGroup : protein.getPeptideGroupsForProtein()) {
+                    peptideDrawMode.drawPeptide(aGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 25, ProgramVariables.VERTICALSIZE);
                 }
-//((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
-                if (protein.getDomains().isEmpty()) {
-                    ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein);
+
+                secondaryDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 50, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
+                if (secondaryDrawMode instanceof GradientDrawModeInterface) {
+                    ((GradientDrawModeInterface) secondaryDrawMode).drawColorLegend(horizontalOffset + scaledHorizontalBarSize + 15, verticalOffset + 50, g);
                 }
-                secondaryDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 25, (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE), ProgramVariables.VERTICALSIZE);
-                //((DrawableProtein) protein).drawAminoAcidsOfSequence(horizontalOffset, verticalOffset + 25, g, gradientMap);
+                try {
+                    if (protein.getDomains().isEmpty()) {
+                        ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein);
+                    }
+                    domainDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
+                } catch (DataRetrievalException e) {
+
+                }
             } catch (UndrawableException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }

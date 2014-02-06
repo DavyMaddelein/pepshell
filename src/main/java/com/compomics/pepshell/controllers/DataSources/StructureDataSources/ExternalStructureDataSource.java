@@ -27,11 +27,11 @@ public class ExternalStructureDataSource implements StructureDataSource {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public boolean isAbleToGetSolventAccessability() {
+    public boolean isAbleToGetSolventAccessibility() {
         return false;
     }
 
-    public double getRelativeSolventAccessabilityForResidue(String proteinAccession, int location) {
+    public double getRelativeSolventAccessibilityForResidue(String proteinAccession, int location) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -39,7 +39,7 @@ public class ExternalStructureDataSource implements StructureDataSource {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public double getRelativeSolventAccessabilityForResidue(Protein protein, int location) {
+    public double getRelativeSolventAccessibilityForResidue(Protein protein, int location) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -52,6 +52,10 @@ public class ExternalStructureDataSource implements StructureDataSource {
     }
 
     public List getInteractionPartnersForRange(Protein aProtein, int start, int stop) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List getInteractionPartnersForPDBName(String string) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -34,7 +34,7 @@ public class PDBDAO {
     public static Set<String> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
         String pdbLine;
         Set<String> pdbFilesToReturn = new HashSet<String>();
-        URL pdbURL = new URL("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.GIToUniprot(protein.getProteinAccession()));
+        URL pdbURL = new URL("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.ToUniprot(protein.getVisibleAccession()));
         URLConnection pdbFileConnection = pdbURL.openConnection();
         BufferedReader br = new BufferedReader(new LineNumberReader(new InputStreamReader(pdbFileConnection.getInputStream(), "UTF-8")));
         while ((pdbLine = br.readLine()) != null) {
@@ -77,7 +77,6 @@ public class PDBDAO {
         DasParser.getAllDasFeatures(URLController.readUrl(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)));
 
         //List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(new URL("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment="+pdbAccession).openStream());
-
         for (DasFeature pdbFeature : pdbFeatures) {
             pdbFeature.getMethod();
         }
@@ -88,5 +87,18 @@ public class PDBDAO {
         Set<String> pdbNames = new HashSet<String>();
         SQLStatements.getPdbFilesFromDb();
         return pdbNames;
+    }
+
+    public static String getSequenceFromPdbFile(String pdbFileInMem) {
+        StringBuilder sequence = new StringBuilder();
+        for (String pdbLine : pdbFileInMem.split("\n")) {
+            if (pdbLine.startsWith("SEQRES")) {
+                String[] splitLine = pdbLine.split(" ");
+                for (int i = 8; i < splitLine.length; i++) {
+                    sequence.append(splitLine[i]);
+                }
+            }
+        }
+        return sequence.toString();
     }
 }

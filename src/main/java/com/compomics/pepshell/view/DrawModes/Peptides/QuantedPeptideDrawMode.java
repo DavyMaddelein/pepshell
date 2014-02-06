@@ -18,7 +18,7 @@ import java.awt.Graphics;
  * @param <N>
  * @param <U>
  */
-public class QuantedPeptideDrawMode<N extends PeptideGroup<U>, U extends QuantedPeptide> extends StandardPeptideProteinDrawMode<Protein<N>, N, U> implements GradientDrawModeInterface<Protein<N>, U> {
+public class QuantedPeptideDrawMode<U extends QuantedPeptide> extends StandardPeptideProteinDrawMode<Protein, U> implements GradientDrawModeInterface<Protein, U> {
 
     @Override
     public void drawPeptide(U peptide, Graphics g, int horizontalOffset, int verticalOffset, int verticalBarSize) throws UndrawableException {
@@ -45,7 +45,11 @@ public class QuantedPeptideDrawMode<N extends PeptideGroup<U>, U extends Quanted
 
     }
 
-    public Color calculateAminoAcidGradient(Protein<N> protein, int location) throws CalculationException {
+    public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
+        return ProgramVariables.PROTEINCOLOR;
+    }
+
+    public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

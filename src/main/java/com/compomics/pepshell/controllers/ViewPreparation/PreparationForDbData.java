@@ -14,7 +14,7 @@ import java.util.Iterator;
  *
  * @author Davy
  */
-public class PreparationForDbData<T extends Experiment<Protein>> extends ViewPreparation<T> {
+public class PreparationForDbData<T extends Experiment> extends ViewPreparation<T> {
 
     FaultBarrier barrier = FaultBarrier.getInstance();
 
@@ -23,7 +23,7 @@ public class PreparationForDbData<T extends Experiment<Protein>> extends ViewPre
         try {
             DbDAO.fetchPeptidesAndProteins(referenceExperiment);
             if (!filterList.isEmpty()) {
-                this.filter.filter(referenceExperiment, filterList);
+                this.filter.filter(referenceExperiment.getProteins(), filterList);
             }
             checkAndAddQuantToProteinsInExperiment(referenceExperiment);
             while (ExperimentsToCompareWith.hasNext()) {

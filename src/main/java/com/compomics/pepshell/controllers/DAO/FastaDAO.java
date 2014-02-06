@@ -80,7 +80,7 @@ public class FastaDAO {
         if (!arex.getExceptionList().isEmpty()) {
             throw arex;
         }
-        projectToAddProteinsTo.addAll(uniqueProteinsToAdd);
+        projectToAddProteinsTo.getProteins().addAll(uniqueProteinsToAdd);
     }
 
     /**
@@ -131,7 +131,9 @@ public class FastaDAO {
                 for (Protein aProtein : parsedProteins) {
                     List<String> possiblePeptides = Proteases.getProteaseMap().get(ViewProperties.getInstance().getProperty(ViewPropertyEnum.PREFERREDENZYME.getKey())).digest(aProtein.getProteinSequence());
                     for (String aPeptideSequence : possiblePeptides) {
-                        aProtein.add(new PeptideGroup().add(new Peptide(aPeptideSequence)));
+                        PeptideGroup toAdd = new PeptideGroup();
+                        toAdd.addPeptide(new Peptide(aPeptideSequence));
+                        aProtein.addPeptideGroup(toAdd);
                     }
                 }
             }

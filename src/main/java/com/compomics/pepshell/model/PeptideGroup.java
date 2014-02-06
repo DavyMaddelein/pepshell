@@ -1,24 +1,26 @@
 package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author Davy
  */
-public class PeptideGroup<T extends Peptide> extends ArrayList<T> {
+public class PeptideGroup {
 
     private int startingAlignmentPosition;
     private int endAlignmentPostition;
     private int shortestPeptideIndex = -1;
+    private List<Peptide> listOfPeptides = new ArrayList<Peptide>();
 
     public PeptideGroup() {
         super();
     }
 
-    public T getShortestPeptide() {
-        return this.get(shortestPeptideIndex);
+    public Peptide getShortestPeptide() {
+        return listOfPeptides.get(shortestPeptideIndex);
     }
 
     public void setShortestPeptideIndex(int peptideIndex) {
@@ -41,6 +43,14 @@ public class PeptideGroup<T extends Peptide> extends ArrayList<T> {
         return this.endAlignmentPostition;
     }
 
+    public List<Peptide> getPeptideList() {
+        return Collections.unmodifiableList(listOfPeptides);
+    }
+
+    public void addPeptide(Peptide aPeptide) {
+        listOfPeptides.add(aPeptide);
+    }
+
     public void setAlignmentPositions(int startingAlignmentPosition, int lastAlignmentPosition) {
         this.startingAlignmentPosition = startingAlignmentPosition;
         this.endAlignmentPostition = lastAlignmentPosition;
@@ -51,12 +61,14 @@ public class PeptideGroup<T extends Peptide> extends ArrayList<T> {
         return this.getShortestPeptide().getSequence();
     }
 
-    @Override
-    public final boolean add(T e) {
-        boolean added = false;
-        if (!this.contains(e)) {
-            added = super.add(e);
+    void addPeptides(List<Peptide> peptideList) {
+        for (Peptide aPeptide : peptideList) {
+            if (!listOfPeptides.contains(aPeptide)) {
+                //todo fill this up
+            } else {
+                listOfPeptides.get(listOfPeptides.indexOf(aPeptide)).incrementTimesFound();
+            }
         }
-        return added;
+
     }
 }

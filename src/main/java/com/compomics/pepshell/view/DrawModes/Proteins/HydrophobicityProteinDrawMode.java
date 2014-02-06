@@ -1,41 +1,71 @@
 package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.HydrophobicityMaps;
+import com.compomics.pepshell.model.gradientMaps.HydrophobicityMaps;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
+import static com.compomics.pepshell.model.gradientMaps.HydrophobicityMaps.hydrophobicityMapPh7;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Ordering;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.SortedSet;
 
 /**
  *
  * @author Davy
  */
-public class HydrophobicityProteinDrawMode<T extends Protein<N>, N extends PeptideGroup<U>, U extends Peptide> extends StandardPeptideProteinDrawMode<T, N, U> implements GradientDrawModeInterface<T, U> {
+public class HydrophobicityProteinDrawMode extends StandardPeptideProteinDrawMode<Protein, Peptide> implements GradientDrawModeInterface<Protein, Peptide> {
+
+    SortedSet<Color> colorLegend;
 
     @Override
-    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
+    public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
 
         int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
-        for (int previousEnd = 0; previousEnd < protein.getProteinSequence().length();) {
+        for (int previousEnd = 0; previousEnd < protein.getProteinSequence().length(); previousEnd++) {
             g.setColor(HydrophobicityMaps.hydrophobicityMapPh7.get(protein.getProteinSequence().charAt(previousEnd)));
-            g.fillRect(horizontalOffset + previousEnd, verticalOffset, sizePerAminoAcid, verticalBarWidth);
-            previousEnd += sizePerAminoAcid;
+            g.fillRect(horizontalOffset + (previousEnd * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarWidth);
         }
     }
 
     @Override
-    public Color calculateAminoAcidGradient(T protein, int location) {
+    public Color calculateAminoAcidGradient(Protein protein, int location) {
         return HydrophobicityMaps.hydrophobicityMapPh7.get(protein.getProteinSequence().charAt(location));
 
     }
 
-    public Color calculatePeptideGradient(U peptide) throws CalculationException {
+    public Color calculatePeptideGradient(Peptide peptide) throws CalculationException {
         return ProgramVariables.PEPTIDECOLOR;
     }
+
+    public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
+        //order colors by blue value
+        if (colorLegend == null) {
+            Ordering<Color> colorOrdering = Ordering.natural().onResultOf(getRedValue);
+            colorLegend = ImmutableSortedSet.orderedBy(colorOrdering).addAll(hydrophobicityMapPh7.values()).build();
+        }
+        int colorCounter = 0;
+        g.setColor(Color.black);
+        g.drawString("acidic", xOffset, yOffset + 25);
+        for (Color aColor : colorLegend) {
+            g.setColor(aColor);
+            g.fillRect(xOffset + colorCounter, yOffset, 5, ProgramVariables.VERTICALSIZE);
+            colorCounter += 5;
+        }
+        g.setColor(Color.black);
+        g.drawString("basic", xOffset + colorCounter - 5, yOffset + 25);
+    }
+
+    Function<Color, Integer> getRedValue = new Function<Color, Integer>() {
+        public Integer apply(Color input) {
+            return input.getRed();
+        }
+    };
 }

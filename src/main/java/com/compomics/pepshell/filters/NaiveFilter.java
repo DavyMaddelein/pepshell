@@ -20,6 +20,7 @@ public class NaiveFilter<T extends Object> extends FilterParent<T> {
         } else {
             return Lists.newArrayList(Collections2.filter(listToFilter, Predicates.not(Predicates.in(listToFilterAgainst))));
         }
+    // no real need for stringent checks since, being present should be stringent enough
     }
 
 }

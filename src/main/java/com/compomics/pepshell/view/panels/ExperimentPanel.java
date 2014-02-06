@@ -21,8 +21,8 @@ import javax.swing.JOptionPane;
  * @author Davy
  */
 public class ExperimentPanel extends javax.swing.JPanel {
-    
-    private int horizontalOffset = 15;
+
+    private int horizontalOffset = this.getX() + 15;
     private int verticalOffset = 20;
     private Protein protein;
     private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
@@ -38,32 +38,32 @@ public class ExperimentPanel extends javax.swing.JPanel {
         initComponents();
         this.addMouseListener(new popupMenuListener());
     }
-    
+
     public ExperimentPanel(Experiment experiment) {
         this();
         this.experiment = experiment;
         experimentName = experiment.getExperimentName();
         projectNameLabel.setText(experiment.getExperimentName());
     }
-    
+
     public void setProtein(Protein protein) {
         try {
-            this.protein = experiment.get(protein);
+            this.protein = experiment.getProteins().get(experiment.getProteins().indexOf(protein));
         } catch (IndexOutOfBoundsException e) {
             this.protein = null;
         }
         this.revalidate();
         this.repaint();
     }
-    
+
     public void setXoffset(int anXoffset) {
         horizontalOffset = anXoffset;
     }
-    
+
     public String getProjectNameForPanel() {
         return projectNameLabel.getText();
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -118,8 +118,9 @@ public class ExperimentPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        //replace with a hashset and call contains
         if (protein != null) {
-            Iterator<PeptideGroup> peptideGroupIter = protein.getPeptideGroupsForProtein();
+            Iterator<PeptideGroup> peptideGroupIter = protein.getPeptideGroupsForProtein().iterator();
             while (peptideGroupIter.hasNext()) {
                 PeptideGroup peptideGroup = peptideGroupIter.next();
                 if (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() / ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() / ProgramVariables.SCALE)) {
@@ -155,13 +156,14 @@ public class ExperimentPanel extends javax.swing.JPanel {
                 }
             }
             try {
-                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE), ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                int horizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
+                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5,horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
             } catch (UndrawableException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
 
             //peptideDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight);
-            Iterator<PeptideGroup> peptideGroups = protein.getPeptideGroupsForProtein();
+            Iterator<PeptideGroup> peptideGroups = protein.getPeptideGroupsForProtein().iterator();
             while (peptideGroups.hasNext()) {
                 PeptideGroup aPeptideGroup = peptideGroups.next();
                 try {
@@ -173,33 +175,33 @@ public class ExperimentPanel extends javax.swing.JPanel {
             projectNameLabel.setText(experimentName + ": protein not found");
         }
     }
-    
+
     void setExperiment(Experiment experiment) {
         this.experiment = experiment;
     }
-    
+
     void setYOffset(double height) {
         verticalOffset = (int) ((int) verticalOffset + height);
     }
-    
+
     private class popupMenuListener extends MouseAdapter {
-        
+
         @Override
         public void mouseReleased(MouseEvent e) {
             maybeShowPopup(e);
         }
-        
+
         @Override
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
         }
-        
+
         private void maybeShowPopup(MouseEvent e) {
             if (e.isPopupTrigger()) {
                 experimentPopupMenu.show(e.getComponent(),
                         e.getX(), e.getY());
             }
         }
-        
+
     }
 }

@@ -1,5 +1,6 @@
 package com.compomics.pepshell.view.panels;
 
+import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 
@@ -279,8 +280,14 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
     public int getTextSelectionStart() {
         return this.proteinCoveragePane.getSelectionStart() - (int) Math.floor(this.proteinCoveragePane.getSelectionStart() / 10);
     }
-    
-        public int getTextSelectionEnd() {
-        return this.proteinCoveragePane.getSelectionEnd()- (int) Math.floor(this.proteinCoveragePane.getSelectionEnd() / 10);
+
+    public int getTextSelectionEnd() {
+        return this.proteinCoveragePane.getSelectionEnd() - (int) Math.floor(this.proteinCoveragePane.getSelectionEnd() / 10);
+    }
+
+    void setInteractionCoverage(List<InteractionPartner> interactionPartnersForPDBName) {
+        for (InteractionPartner aPartner : interactionPartnersForPDBName) {
+            System.out.println(aPartner.getInteractorLocation() + " " + aPartner.getComplementLocation() + " " + aPartner.getInteractionType());
+        }
     }
 }

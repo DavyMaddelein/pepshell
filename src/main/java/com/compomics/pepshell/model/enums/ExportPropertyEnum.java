@@ -4,7 +4,7 @@ package com.compomics.pepshell.model.enums;
  *
  * @author Davy
  */
-public enum ExportPropertyEnum {
+public enum ExportPropertyEnum implements PropertyEnum{
     
     
     EXPORTFILE("export.fileformat","CSV");
@@ -23,7 +23,7 @@ public enum ExportPropertyEnum {
         return key;
     }
     
-    public String getDefaultvalue(){
+    public String getDefaultValue() {
         return defaultValue;
     }
 }

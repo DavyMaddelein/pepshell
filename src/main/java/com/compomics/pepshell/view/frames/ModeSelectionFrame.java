@@ -11,6 +11,8 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
      */
     public ModeSelectionFrame() {
         initComponents();
+        dataSourceSelectionGroup.add(dbSelectionRadioButton);
+        dataSourceSelectionGroup.add(fastaSelectionRadioButton);
     }
 
     /**
@@ -51,24 +53,24 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fastaSelectionRadioButton)
-                    .addComponent(dbSelectionRadioButton)
                     .addComponent(dataCollectionFrameButton)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(fastaSelectionRadioButton)
+                    .addComponent(dbSelectionRadioButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(46, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(dbSelectionRadioButton)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(fastaSelectionRadioButton)
-                .addGap(27, 27, 27)
+                .addGap(18, 18, 18)
                 .addComponent(dataCollectionFrameButton)
-                .addGap(15, 15, 15))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -79,7 +81,7 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
         //JRadioGroup.getSelection();
 
         if (dbSelectionRadioButton.isSelected()) {
-            new LoginFrame().setVisible(true);
+            ProjectSelectionTreeFrame frame = new ProjectSelectionTreeFrame(this.getLocation());
             this.dispose();
         } else if (fastaSelectionRadioButton.isSelected()) {
             new OfflineFileSelectionFrame().setVisible(true);

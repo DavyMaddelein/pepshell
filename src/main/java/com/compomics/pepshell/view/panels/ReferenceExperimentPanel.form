@@ -64,7 +64,7 @@
                       <Component id="drawModeChooser" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="quantCheckBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="683" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="679" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -102,10 +102,11 @@
     <Component class="javax.swing.JComboBox" name="drawModeChooser">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="3">
+          <StringArray count="4">
             <StringItem index="0" value="hydrophobicity"/>
             <StringItem index="1" value="secondary structure"/>
             <StringItem index="2" value="free residue energy"/>
+            <StringItem index="3" value="solvent accessibility"/>
           </StringArray>
         </Property>
       </Properties>

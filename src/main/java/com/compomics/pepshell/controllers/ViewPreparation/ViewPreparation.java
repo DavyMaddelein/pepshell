@@ -19,17 +19,20 @@ public abstract class ViewPreparation<T extends Experiment> extends Observable {
     protected FilterParent<Protein> filter = new NaiveFilter<Protein>();
     protected List<Protein> filterList = new ArrayList<Protein>();
 
+    //change this to a better name and make this a factory style class
+    
     public abstract T PrepareProteinsForJList(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
 
     protected abstract boolean checkAndAddQuantToProteinsInExperiment(T anExperiment);
 
+    // this doesn't do what is advertised, review this, and rename this to checkReferenceProteinOccurencesInExperiments or something
     protected boolean checkOverlappingPeptides(T referenceProject, T projectToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         //perhaps change with list so it is easier to notify observers of progress
         boolean finished = false;
-        Iterator<Protein> referenceProjectProteinIter = referenceProject.iterator();
+        Iterator<Protein> referenceProjectProteinIter = referenceProject.getProteins().iterator();
         while (referenceProjectProteinIter.hasNext()) {
             Protein currentReferenceProtein = referenceProjectProteinIter.next();
-            if (projectToCompareWith.contains(currentReferenceProtein)) {
+            if (projectToCompareWith.getProteins().contains(currentReferenceProtein)) {
                 currentReferenceProtein.getProteinInfo().increaseNumberOfProjectOccurences();
             }
             if (removeNonOverlappingPeptidesFromReferenceProject) {
@@ -45,7 +48,7 @@ public abstract class ViewPreparation<T extends Experiment> extends Observable {
         this.filter = aFilter;
     }
 
-    public FilterParent getFilter() {
+    public FilterParent<Protein> getFilter() {
         return filter;
     }
 

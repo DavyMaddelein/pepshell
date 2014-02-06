@@ -19,10 +19,11 @@ public class SQLStatements {
     private static String GET_INTERACTIONPARTNERS_FOR_RESIDUE;
     private static String GET_PDB_DATA_FROM_DB;
     private static String GET_FREE_ENERGY_FOR_RESIDUE;
-    private static String GET_RELATIVE_SOLVENT_ACCESSABILITY_FOR_RESIDUE;
+    private static String GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE;
     private static String GET_INTERACTIONPARTNERS_FOR_RANGE;
     private static String GET_QUANT_FOR_EXPERIMENT;
     private static String GET_PEPTIDES_WITH_QUANT;
+    private static String GET_INTERACTIONPARTNERS_FOR_PDB;
 
     public static void instantiateColimsStatements() {
         SQLStatements.SELECT_PROTEINS = SELECT_COLIMS_PROTEINS;
@@ -50,13 +51,13 @@ public class SQLStatements {
 
     //TODO rename
     public static void instantiateElienDbStatements() {
-        SQLStatements.SELECT_PROTEINS = SELECT_ELIEN_PROTEINS;
         SQLStatements.GET_PDBFILES_FOR_PROTEIN = GET_PDBfILES_FOR_PROTEIN_FROM_ELIENDB;
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_RESIDUE = GET_INTERACTIONPARTNERS_FOR_RESIDUE_FROM_ELIENDB;
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_RANGE = GET_INTERACTIONPARTNERS_FOR_RANGE_FROM_ELIENDB;
         SQLStatements.GET_PDB_DATA_FROM_DB = GET_PDB_FILES_FROM_ELIENDB;
         SQLStatements.GET_FREE_ENERGY_FOR_RESIDUE = GET_FREE_ENERGY_FOR_RESIDUE_FROM_ELIENDB;
-        SQLStatements.GET_RELATIVE_SOLVENT_ACCESSABILITY_FOR_RESIDUE = GET_RELATIVE_SOLVENT_ACCESSABILITY_FOR_RESIDUE_FROM_ELIENDB;
+        SQLStatements.GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE = GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE_FROM_ELIENDB;
+        SQLStatements.GET_INTERACTIONPARTNERS_FOR_PDB = GET_INTERACTION_PARTNERS_FOR_PDB_FROM_ELIENDB;
     }
 
     //TODO move these to enums
@@ -78,13 +79,14 @@ public class SQLStatements {
     private static final String GET_PDBFILES_FOR_PROTEIN_FROM_MSLIMS = "";
     private static final String GET_PDBFILES_FOR_PROTEIN_FROM_COLIMS = "";
     private static final String GET_PDBfILES_FOR_PROTEIN_FROM_ELIENDB = "";
-    private static final String GET_INTERACTIONPARTNERS_FOR_RESIDUE_FROM_ELIENDB = "select interaction.* from interaction,residue,protein_chain,protein where protein_chain.idchain = residue.chain_id and protein.idprotein = protein_id and residue_id_partner1 = residue.idresidue and protein.uniprot_id = ?";
+    private static final String GET_INTERACTIONPARTNERS_FOR_RESIDUE_FROM_ELIENDB = "select interaction.* from interaction,residue,protein_chain,protein where protein_chain.chain_id = residue.chain_id and protein.idprotein = protein_id and residue_id_partner1 = residue.idresidue and protein.uniprot_id = ?";
     private static final String GET_PDB_FILES_FROM_ELIENDB = "select * from structure where PDB = ?";
-    private static final String GET_FREE_ENERGY_FOR_RESIDUE_FROM_ELIENDB = "select residue.E_total from residue,protein_chain,protein where protein_chain.idchain = residue.chain_id and protein.idprotein = protein_id and protein.uniprot_id = ?";
-    private static final String GET_RELATIVE_SOLVENT_ACCESSABILITY_FOR_RESIDUE_FROM_ELIENDB = "select residue.SASrel from residue,protein_chain,protein where protein_chain.idchain = residue.chain_id and protein.idprotein = protein_id and protein.uniprot_id = ?";
+    private static final String GET_FREE_ENERGY_FOR_RESIDUE_FROM_ELIENDB = "select residue.E_total from residue,protein_chain,chain,protein, (select idstructure from structure order by idstructure desc limit 1) as highest_resolution where protein_chain.chain_id = residue.chain_id and protein.idprotein = protein_id and protein.uniprot_id = ? and chain.structure_id = highest_resolution.idstructure and chain.idchain = protein_chain.chain_id";
+    private static final String GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE_FROM_ELIENDB = "select residue.SASrel from residue,protein_chain,protein,chain, (select idstructure from structure order by idstructure desc limit 1)as highest_resolution where protein_chain.chain_id = residue.chain_id and protein.idprotein = protein_id and protein.uniprot_id = ? and chain.structure_id = highest_resolution.idstructure and chain.idchain = protein_chain.chain_id and residue.numbering_fasta = ?";
     private static final String GET_INTERACTIONPARTNERS_FOR_RANGE_FROM_ELIENDB = "select interaction.* from interaction,residue,protein_chain,protein where protein_chain.idchain = residue.chain_id and protein.idprotein = protein_id and residue_id_partner1 = residue.idresidue or residue_id_partner2 = residue.idresidue and numbering_fasta between(?,?) and protein.uniprot_id = ?";
     private static final String SELECT_QUANT_DATA_FOR_MS_LIMS_PROJECT = "steal this";
     private static final String SELECT_PEPTIDES_WITH_QUANT_FOR_MS_LIMS_PROJECT = "";
+    private static final String GET_INTERACTION_PARTNERS_FOR_PDB_FROM_ELIENDB = "select interaction.* from interaction,residue,chain,structure where chain.idchain = residue.chain_id and chain.structure_id = structure.idstructure and residue_id_partner2 = residue.idresidue and structure.PDB = ?";
 
     public static String selectAllProteins() {
         return SELECT_PROTEINS;
@@ -130,8 +132,8 @@ public class SQLStatements {
         return GET_FREE_ENERGY_FOR_RESIDUE;
     }
 
-    public static String getRelativeSolventAccessabilityForResidue() {
-        return GET_RELATIVE_SOLVENT_ACCESSABILITY_FOR_RESIDUE;
+    public static String getRelativeSolventAccessibilityForResidue() {
+        return GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE;
     }
 
     public static String getInteractionPartnersForRange() {
@@ -144,5 +146,9 @@ public class SQLStatements {
 
     public static String getPeptidesWithQuant() {
         return GET_PEPTIDES_WITH_QUANT;
+    }
+
+    public static String getInteractionPartnersForPDB() {
+        return GET_INTERACTIONPARTNERS_FOR_PDB;
     }
 }

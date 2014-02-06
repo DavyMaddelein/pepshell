@@ -1,41 +1,46 @@
-package com.compomics.pepshell.view.frames;
+package com.compomics.pepshell.view.panels;
 
 import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
-import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.Property;
+import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JFrame;
+import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import java.util.logging.Level;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.apache.log4j.Logger;
+import javax.swing.WindowConstants;
 
 /**
  *
  * @author Davy
  */
-public class LoginFrame extends javax.swing.JFrame {
+public class LoginDialog extends javax.swing.JDialog {
 
-    final static Logger logger = Logger.getLogger(LoginFrame.class);
-    DatabaseProperties databasePropertiesInstance;
-
-    public LoginFrame() {
-        this.databasePropertiesInstance = DatabaseProperties.getInstance();
-        setlookandfeel();
+    /**
+     *
+     * @param parent
+     * @param modal
+     */
+    public LoginDialog(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
-        usernameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()));
-        urlTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()));
-        databaseNameTextField.setText(databasePropertiesInstance.getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
+    }
+
+    public LoginDialog(java.awt.Frame parent, boolean modal, String username, String url, String dbname) {
+        this(parent, modal);
+        setlookandfeel();
+        usernameTextField.setText(username);
+        urlTextField.setText(url);
+        databaseNameTextField.setText(dbname);
         passwordField.setFocusTraversalKeysEnabled(false);
         urlTextField.setFocusTraversalKeysEnabled(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         usernameTextField.addKeyListener(new KeyAdapter() {
             @Override
@@ -43,6 +48,22 @@ public class LoginFrame extends javax.swing.JFrame {
                 if (e.getKeyChar() == KeyEvent.VK_ENTER || e.getKeyChar() == KeyEvent.VK_TAB) {
                     passwordField.requestFocus();
                     passwordField.selectAll();
+                } else {
+                    super.keyTyped(e);
+                }
+            }
+        });
+
+        //TODO add shift tab
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.isShiftDown() && e.getKeyChar() == KeyEvent.VK_TAB) {
+                    usernameTextField.requestFocus();
+                    usernameTextField.selectAll();
+                } else if (e.getKeyChar() == KeyEvent.VK_ENTER || e.getKeyChar() == KeyEvent.VK_TAB) {
+                    urlTextField.requestFocus();
+                    urlTextField.selectAll();
                 } else {
                     super.keyTyped(e);
                 }
@@ -70,21 +91,10 @@ public class LoginFrame extends javax.swing.JFrame {
                 } else if (e.isShiftDown() && e.getKeyChar() == KeyEvent.VK_TAB) {
                     urlTextField.requestFocus();
                     urlTextField.selectAll();
-                } else {
-                    super.keyTyped(e);
-                }
-            }
-        });
-        //TODO add shift tab
-        passwordField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.isShiftDown() && e.getKeyChar() == KeyEvent.VK_TAB) {
-                    usernameTextField.requestFocus();
-                    usernameTextField.selectAll();
-                } else if (e.getKeyChar() == KeyEvent.VK_ENTER || e.getKeyChar() == KeyEvent.VK_TAB) {
-                    urlTextField.requestFocus();
-                    urlTextField.selectAll();
+                } else if (e.getKeyChar() == KeyEvent.VK_TAB) {
+                    loginButton.requestFocus();
+                } else if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                    executeLogin();
                 } else {
                     super.keyTyped(e);
                 }
@@ -102,8 +112,14 @@ public class LoginFrame extends javax.swing.JFrame {
                 System.exit(0);
             }
         });
+        this.setVisible(true);
     }
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -120,9 +136,11 @@ public class LoginFrame extends javax.swing.JFrame {
         passwordField = new javax.swing.JPasswordField();
         databaseNameTextField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        storeCredentialsCheckBox = new javax.swing.JCheckBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Login");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("log in to experiment database");
+        setModal(true);
 
         usernameLabel.setText("Username");
 
@@ -148,13 +166,20 @@ public class LoginFrame extends javax.swing.JFrame {
 
         jLabel1.setText("database name");
 
+        storeCredentialsCheckBox.setSelected(true);
+        storeCredentialsCheckBox.setText("remember me");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(52, 52, 52)
+                .addComponent(loginCredentialLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -176,15 +201,13 @@ public class LoginFrame extends javax.swing.JFrame {
                         .addComponent(loginButton)
                         .addGap(32, 32, 32)
                         .addComponent(cancelButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(databaseNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(storeCredentialsCheckBox)
+                            .addComponent(databaseNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(loginCredentialLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,7 +222,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(passwordLabel)
                     .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(urlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(urlLabel))
@@ -207,11 +230,12 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(databaseNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(storeCredentialsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loginButton)
-                    .addComponent(cancelButton))
-                .addGap(35, 35, 35))
+                    .addComponent(cancelButton)
+                    .addComponent(loginButton)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -219,30 +243,37 @@ public class LoginFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginButtonMouseReleased
-        executeLogin();
+        if (usernameTextField.getText().equals("") || new String(passwordField.getPassword()).equals("") || urlTextField.getText().equals("") || databaseNameTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide all the fields");
+        } else {
+            executeLogin();
+            storeCredentials(storeCredentialsCheckBox.isSelected());
+            this.dispose();
+        }
     }//GEN-LAST:event_loginButtonMouseReleased
 
     private void cancelButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseReleased
         this.dispose();
     }//GEN-LAST:event_cancelButtonMouseReleased
 
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -257,78 +288,90 @@ public class LoginFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoginFrame().setVisible(true);
+                LoginDialog dialog = new LoginDialog(new javax.swing.JFrame(), true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
+                        DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
+                        DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
 
-    private void launchProjectSelectorWindow() {
-        FaultBarrier.getInstance().addObserver(new ProjectSelectionTreeFrame());
-        this.dispose();
-
+    void executeLogin() {
+        try {
+            DbConnectionController.createConnection(usernameTextField.getText(), new String(passwordField.getPassword()), urlTextField.getText(), databaseNameTextField.getText());
+            DataModeController.checkDbScheme();
+        } catch (SQLException sqle) {
+            FaultBarrier.getInstance().handleException(sqle);
+            JOptionPane.showMessageDialog(this, "there has been an error while trying to log in.\n" + sqle.getMessage());
+        }
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JTextField databaseNameTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JButton loginButton;
-    private javax.swing.JLabel loginCredentialLabel;
-    private javax.swing.JPasswordField passwordField;
-    private javax.swing.JLabel passwordLabel;
-    private javax.swing.JLabel urlLabel;
-    private javax.swing.JTextField urlTextField;
-    private javax.swing.JLabel usernameLabel;
-    private javax.swing.JTextField usernameTextField;
-    // End of variables declaration//GEN-END:variables
 
-    private void executeLogin() {
-        if (usernameTextField.getText().equals("") || new String(passwordField.getPassword()).equals("") || urlTextField.getText().equals("") || databaseNameTextField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please provide all the fields");
+    void storeCredentials(boolean store) {
+        if (store) {
+            DatabaseProperties.getInstance().setProperties(new ArrayList<Property>() {
+                {
+                    this.add(new Property(DataBasePropertyEnum.DBUSERNAME, usernameTextField.getText()));
+                    this.add(new Property(DataBasePropertyEnum.DBURL, urlTextField.getText()));
+                    this.add(new Property(DataBasePropertyEnum.DBNAME, databaseNameTextField.getText()));
+                }
+            });
         } else {
-            try {
-                DbConnectionController.createConnection(usernameTextField.getText(), new String(passwordField.getPassword()), urlTextField.getText(), databaseNameTextField.getText());
-                DatabaseProperties.getInstance().setProperties(new ArrayList<Property>() {
-                    {
-                        this.add(new Property(DataBasePropertyEnum.DBUSERNAME, usernameTextField.getText()));
-                        this.add(new Property(DataBasePropertyEnum.DBURL, urlTextField.getText()));
-                        this.add(new Property(DataBasePropertyEnum.DBNAME, databaseNameTextField.getText()));
-                    }
-                });
-                DataModeController.checkDbScheme();
-                launchProjectSelectorWindow();
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-                JOptionPane.showMessageDialog(this, "there has been an error while trying to log in.\n" + sqle.getMessage());
-            }
+            DatabaseProperties.getInstance().setProperties(new ArrayList<Property>() {
+                {
+                    this.add(new Property(DataBasePropertyEnum.DBUSERNAME, DataBasePropertyEnum.DBUSERNAME.getDefaultValue()));
+                    this.add(new Property(DataBasePropertyEnum.DBURL, DataBasePropertyEnum.DBURL.getDefaultValue()));
+                    this.add(new Property(DataBasePropertyEnum.DBNAME, DataBasePropertyEnum.DBNAME.getDefaultValue()));
+                }
+            });
         }
     }
 
     private void setlookandfeel() {
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");	
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelButton;
+    javax.swing.JTextField databaseNameTextField;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton loginButton;
+    javax.swing.JLabel loginCredentialLabel;
+    javax.swing.JPasswordField passwordField;
+    private javax.swing.JLabel passwordLabel;
+    private javax.swing.JCheckBox storeCredentialsCheckBox;
+    private javax.swing.JLabel urlLabel;
+    javax.swing.JTextField urlTextField;
+    private javax.swing.JLabel usernameLabel;
+    javax.swing.JTextField usernameTextField;
+    // End of variables declaration//GEN-END:variables
 }

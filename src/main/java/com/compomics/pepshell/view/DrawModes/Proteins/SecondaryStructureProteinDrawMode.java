@@ -17,12 +17,12 @@ import java.io.IOException;
 /**
  *
  * @author Davy
- * 
+ *
  * @param <F>
  * @param <T>
  * @param <W>
  */
-public class SecondaryStructureProteinDrawMode<T extends Protein<F>, F extends PeptideGroup<W>, W extends Peptide> extends StandardPeptideProteinDrawMode<T, F, W> implements GradientDrawModeInterface<T, W> {
+public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Peptide> extends StandardPeptideProteinDrawMode<T, W> implements GradientDrawModeInterface<T, W> {
 
     private static UniprotSecondaryStructurePrediction predictor = new UniprotSecondaryStructurePrediction();
     private static final Font font = new Font("Dialog", Font.PLAIN, 24);
@@ -44,6 +44,10 @@ public class SecondaryStructureProteinDrawMode<T extends Protein<F>, F extends P
 
     public Color calculatePeptideGradient(Peptide peptide) throws CalculationException {
         return ProgramVariables.PEPTIDECOLOR;
+    }
+
+    public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
