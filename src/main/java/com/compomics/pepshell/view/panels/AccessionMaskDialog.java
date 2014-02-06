@@ -22,6 +22,7 @@ import javax.swing.JFileChooser;
 public class AccessionMaskDialog extends javax.swing.JDialog {
 
     private static Map<Protein, String> maskMap = new HashMap<Protein, String>();
+    private boolean accept = false;
 
     /**
      * Creates new form AccessionMaskDialog
@@ -55,6 +56,11 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("add a masking for accessions");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         loadAccessionMaskButton.setText("load a accession masking file");
         loadAccessionMaskButton.addActionListener(new java.awt.event.ActionListener() {
@@ -179,7 +185,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
             maskMap.put(((Protein) proteinList.getSelectedValue()), accessionMaskTextField.getText());
             ((Protein) proteinList.getSelectedValue()).setVisibleAccession(accessionMaskTextField.getText());
         } else {
-            maskMap.remove((Protein)proteinList.getSelectedValue());
+            maskMap.remove((Protein) proteinList.getSelectedValue());
             ((Protein) proteinList.getSelectedValue()).setVisibleAccession(originalAccessionTextField.getText());
         }
         proteinList.repaint();
@@ -245,20 +251,25 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        accept = true;
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-            for (int i = 0; i < proteinList.getModel().getSize(); i++) {
-                if (maskMap.containsKey((Protein) proteinList.getModel().getElementAt(i))) {
-                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(maskMap.get((Protein) proteinList.getModel().getElementAt(i)));
-                    proteinList.repaint();
-                }
-            }
-        
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        if (!accept) {
+            for (int i = 0; i < proteinList.getModel().getSize(); i++) {
+                if (maskMap.containsKey((Protein) proteinList.getModel().getElementAt(i))) {
+                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(((Protein) proteinList.getModel().getElementAt(i)).getOriginalAccession());
+                }
+            }
+        }
+    }//GEN-LAST:event_formWindowClosing
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
