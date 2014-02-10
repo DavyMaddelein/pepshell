@@ -63,7 +63,7 @@ public class DataModeController {
                 } else {
                     SQLStatements.instantiateMslimsStatements();
                     iScheme = Db.MSLIMS;
-                    SQLStatements.instantiateElienDbStatements();
+                    SQLStatements.instantiateLinkDbStatements();
                 }
             } finally {
                 rs.close();
