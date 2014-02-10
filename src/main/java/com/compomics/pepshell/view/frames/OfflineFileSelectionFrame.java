@@ -39,8 +39,6 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         proteaseBox = new javax.swing.JComboBox();
         buttonGroup1 = new javax.swing.ButtonGroup();
         peptideFileTreePanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        dragAndDropTree1 = new com.compomics.pepshell.view.components.DragAndDropTree();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         fastaFileLocationTextField = new javax.swing.JTextField();
@@ -92,8 +90,6 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jScrollPane2.setViewportView(dragAndDropTree1);
-
         jButton1.setText("add analysis group");
 
         jButton2.setText("add peptide file");
@@ -103,9 +99,7 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         peptideFileTreePanelLayout.setHorizontalGroup(
             peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE)
                 .addGroup(peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -115,12 +109,9 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
             peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
@@ -254,51 +245,14 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_CPDTRadioButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(OfflineFileSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(OfflineFileSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(OfflineFileSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(OfflineFileSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new OfflineFileSelectionFrame().setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton CPDTRadioButton;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JPanel digestPanel;
-    private com.compomics.pepshell.view.components.DragAndDropTree dragAndDropTree1;
     private javax.swing.JTextField fastaFileLocationTextField;
     private javax.swing.JButton fastaSelectionButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton launchMainWindowButton;

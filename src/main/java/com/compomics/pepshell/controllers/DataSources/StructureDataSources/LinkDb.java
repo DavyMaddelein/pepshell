@@ -9,8 +9,6 @@ import com.compomics.pepshell.controllers.InfoFinders.ExternalDomainFinder;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;

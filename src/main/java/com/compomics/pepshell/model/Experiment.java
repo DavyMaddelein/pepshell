@@ -24,15 +24,20 @@ public class Experiment {
     }
 
     public void setProteins(List<Protein> fetchedProteins) {
+        proteinList.clear();
         proteinList.addAll(fetchedProteins);
+    }
+    
+    public void addProteins(List<Protein> proteins){
+        proteinList.addAll(proteins);
     }
 
     public List<Protein> getProteins() {
         return Collections.unmodifiableList(proteinList);
     }
-    
-    public void addProtein(Protein aProtein){
-        if(!proteinList.contains(aProtein)){
+
+    public void addProtein(Protein aProtein) {
+        if (!proteinList.contains(aProtein)) {
             proteinList.add(aProtein);
         } else {
             proteinList.get(proteinList.indexOf(aProtein)).addPeptideGroups(aProtein.getPeptideGroupsForProtein());

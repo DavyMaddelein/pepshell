@@ -14,6 +14,4 @@ public interface DrawModeInterface<T extends Protein, U extends Peptide> {
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException;
 
     public void drawPeptide(U peptide, Graphics g, int horizontalOffset, int verticalOffset, int verticalBarWidth) throws UndrawableException;
-
-    public void drawProteinAndPeptidesOfProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalProteinBarSize, int verticalBarWidth) throws UndrawableException;
 }

@@ -38,7 +38,7 @@ public class PdbViewPanel extends javax.swing.JPanel {
         //if (offlineMode){
         //viewer.openFile(PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getKey())+"/"+((String)PDBFileComboBox.getSelectedItem()));
         //} else{
-         viewer.openStringInline(PDBDAO.getPdbFileInMem(pdbName));
+        viewer.openStringInline(PDBDAO.getPdbFileInMem(pdbName));
         //}
         this.repaint();
     }
@@ -47,7 +47,7 @@ public class PdbViewPanel extends javax.swing.JPanel {
     public void paint(Graphics grphcs) {
         super.paint(grphcs);
         if (viewer != null) {
-            viewer.renderScreenImage(grphcs, this.getWidth(),this.getHeight());
+            viewer.renderScreenImage(grphcs, this.getWidth(), this.getHeight());
         }
         //To change body of generated methods, choose Tools | Templates.
     }

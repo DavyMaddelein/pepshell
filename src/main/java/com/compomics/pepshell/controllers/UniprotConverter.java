@@ -69,15 +69,6 @@ public class UniprotConverter {
         conn.disconnect();
     }
 
-    public static void main(String[] args)
-            throws Exception {
-        run("mapping", new ParameterNameValue[]{
-            new ParameterNameValue("from", "P_GI"),
-            new ParameterNameValue("to", "ACC"),
-            new ParameterNameValue("format", "tab"),
-            new ParameterNameValue("query", "15213760"),});
-    }
-
     private static class ParameterNameValue {
 
         private final String name;

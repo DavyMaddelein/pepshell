@@ -56,10 +56,9 @@ public class DbDAO extends Observable {
         return true;
     }
 
-    public static boolean fetchPeptidesAndProteins(QuantedExperiment project) throws SQLException, IOException {
-        fetchProteins(project);
-        addQuantedPeptideGroupsToProteins(project.getProteins());
-        project.setProteins(project.getProteins());
+    public static boolean fetchPeptidesAndProteins(QuantedExperiment experiment) throws SQLException, IOException {
+        fetchProteins(experiment);
+        addQuantedPeptideGroupsToProteins(experiment.getProteins());
         return true;
     }
 

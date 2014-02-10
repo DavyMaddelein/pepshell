@@ -39,8 +39,9 @@ public class ViewPreparationForFastaData<T extends Experiment> extends ViewPrepa
     public T PrepareProteinsForJList(T referenceExperiment, Iterator<T> experimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         try {
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
-                DbDAO.fetchPeptidesAndProteins(referenceExperiment);
-                filter.filter(referenceExperiment.getProteins(), filterList);
+                DbDAO.fetchProteins(referenceExperiment);
+                referenceExperiment.setProteins(filter.filter(referenceExperiment.getProteins(), filterList));
+                DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
             } else {
                 FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, referenceExperiment);

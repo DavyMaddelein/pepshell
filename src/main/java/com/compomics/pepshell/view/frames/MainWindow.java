@@ -66,7 +66,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         }
 
 //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
-        //TODO: turn the proteins not in the referenceExperiment red
         proteinsToDisplay = referenceExperiment.getProteins();
         //this totally does not have to happen with anonymous stuff
         proteinList.setListData(proteinsToDisplay.toArray());
@@ -546,6 +545,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_preferencesMenuActionPerformed
 
     private void jRadioButtonMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem1ActionPerformed
+        //change this to popup progress bar
         downloadBar.setMaximum(proteinsToDisplay.size());
         downloadBar.setValue(0);
         downloadBar.setVisible(true);
@@ -680,7 +680,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             if (selection == JOptionPane.YES_OPTION) {
                 LinkDbLoginDialog loginDialog = new LinkDbLoginDialog();
                 loginDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                //todo add logged in listener to loginFrame and wait for it
             } else if (selection == JOptionPane.NO_OPTION) {
                 ProgramVariables.STRUCTUREDATASOURCE = new InternetStructureDataSource();
             }
