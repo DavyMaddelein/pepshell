@@ -11,8 +11,14 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
      */
     public ModeSelectionFrame() {
         initComponents();
+        
         dataSourceSelectionGroup.add(dbSelectionRadioButton);
         dataSourceSelectionGroup.add(fastaSelectionRadioButton);
+        
+        //select dbSelectionRadioButton
+        dbSelectionRadioButton.setSelected(true);
+        
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -25,52 +31,74 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         dataSourceSelectionGroup = new javax.swing.ButtonGroup();
+        parentPanel = new javax.swing.JPanel();
         dataCollectionFrameButton = new javax.swing.JButton();
         dbSelectionRadioButton = new javax.swing.JRadioButton();
         fastaSelectionRadioButton = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("select your data source");
+        setTitle("data source selection");
+        setBackground(new java.awt.Color(255, 255, 255));
 
-        dataCollectionFrameButton.setText("Continue...");
+        parentPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        dataCollectionFrameButton.setText("continue...");
         dataCollectionFrameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dataCollectionFrameButtonActionPerformed(evt);
             }
         });
 
-        dbSelectionRadioButton.setText("Database Connection");
+        dbSelectionRadioButton.setText("database connection");
+        dbSelectionRadioButton.setOpaque(false);
 
         fastaSelectionRadioButton.setText("file based");
+        fastaSelectionRadioButton.setOpaque(false);
 
-        jLabel1.setText("select data source");
+        jLabel1.setText("Select a data source");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout parentPanelLayout = new javax.swing.GroupLayout(parentPanel);
+        parentPanel.setLayout(parentPanelLayout);
+        parentPanelLayout.setHorizontalGroup(
+            parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dataCollectionFrameButton)
-                    .addComponent(jLabel1)
-                    .addComponent(fastaSelectionRadioButton)
-                    .addComponent(dbSelectionRadioButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(parentPanelLayout.createSequentialGroup()
+                        .addGroup(parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(fastaSelectionRadioButton)
+                            .addComponent(dbSelectionRadioButton))
+                        .addGap(0, 115, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, parentPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(dataCollectionFrameButton)))
+                .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        parentPanelLayout.setVerticalGroup(
+            parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(dbSelectionRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(fastaSelectionRadioButton)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(dataCollectionFrameButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(parentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(parentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -78,57 +106,23 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void dataCollectionFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dataCollectionFrameButtonActionPerformed
-        //JRadioGroup.getSelection();
 
         if (dbSelectionRadioButton.isSelected()) {
-            ProjectSelectionTreeFrame frame = new ProjectSelectionTreeFrame(this.getLocation());
             this.dispose();
+            ProjectSelectionTreeFrame frame = new ProjectSelectionTreeFrame(this.getLocation());            
         } else if (fastaSelectionRadioButton.isSelected()) {
             new OfflineFileSelectionFrame().setVisible(true);
             this.dispose();
         }
 
     }//GEN-LAST:event_dataCollectionFrameButtonActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ModeSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ModeSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ModeSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ModeSelectionFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ModeSelectionFrame().setVisible(true);
-            }
-        });
-    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton dataCollectionFrameButton;
     private javax.swing.ButtonGroup dataSourceSelectionGroup;
     private javax.swing.JRadioButton dbSelectionRadioButton;
     private javax.swing.JRadioButton fastaSelectionRadioButton;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel parentPanel;
     // End of variables declaration//GEN-END:variables
 }
