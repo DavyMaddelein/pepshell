@@ -47,7 +47,7 @@ public class FastaDAO {
             Iterator<T> proteinIterator = experimentToAddSequencesTo.iterator();
             while (proteinIterator.hasNext()) {
                 T experimentProtein = proteinIterator.next();
-                if (experimentProtein.getProteinAccession().equalsIgnoreCase(aParsedProtein.getProteinAccession())) {
+                if (experimentProtein.equals(aParsedProtein)) {
                     experimentProtein.setSequence(aParsedProtein.getProteinSequence());
                     experimentProtein.setProteinName(aParsedProtein.getProteinName());
                 }

@@ -207,7 +207,6 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
         } catch (IOException ex) {
             Logger.getLogger(AccessionMaskDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_loadAccessionMaskButtonActionPerformed
 
     private void exportAccessionMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportAccessionMaskButtonActionPerformed
