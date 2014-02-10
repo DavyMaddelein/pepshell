@@ -1,6 +1,6 @@
 package com.compomics.peppi.controllers.DAO;
 
-import com.compomics.peppi.model.Project;
+import com.compomics.pepshell.controllers.DAO.FastaDAO;
 import java.io.File;
 import java.util.List;
 import org.junit.After;
@@ -40,12 +40,12 @@ public class FastaDAOTest {
      */
     @Test
     public void testSetProjectProteinsToFastaFileProteins() throws Exception {
-        System.out.println("setProjectProteinsToFastaFileProteins");
-        File fastaFile = null;
-        Project projectToAddProteinsTo = null;
-        FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, projectToAddProteinsTo);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        System.out.println("setProjectProteinsToFastaFileProteins");
+//        File fastaFile = null;
+//        Project projectToAddProteinsTo = null;
+//        FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, projectToAddProteinsTo);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
     }
 
     /**
@@ -53,11 +53,11 @@ public class FastaDAOTest {
      */
     @Test
     public void testSetProjectProteinsToMultipleFastaFileProteins() throws Exception {
-        System.out.println("setProjectProteinsToMultipleFastaFileProteins");
-        List<File> fastaFiles = null;
-        Project projectToAddProteinsTo = null;
-        FastaDAO.setProjectProteinsToMultipleFastaFileProteins(fastaFiles, projectToAddProteinsTo);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        System.out.println("setProjectProteinsToMultipleFastaFileProteins");
+//        List<File> fastaFiles = null;
+//        Project projectToAddProteinsTo = null;
+//        FastaDAO.setProjectProteinsToMultipleFastaFileProteins(fastaFiles, projectToAddProteinsTo);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
     }
 }

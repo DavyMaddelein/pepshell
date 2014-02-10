@@ -1,7 +1,8 @@
 package com.compomics.peppi.view.panels;
 
-import com.compomics.peppi.model.Protein;
-import com.compomics.peppi.model.exceptions.ConversionException;
+import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.exceptions.ConversionException;
+import com.compomics.pepshell.view.panels.JmolPanel;
 import org.jmol.adapter.smarter.Structure;
 import org.junit.After;
 import org.junit.AfterClass;
