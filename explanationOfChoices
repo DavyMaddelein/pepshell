@@ -7,3 +7,6 @@ the peptides are only colored see through rectangles so they would not impede or
 filter in the protein comparison window works as a regex filter for more advanced filtering
 
 accession masking is used to make sure you can find data about hybrid proteins that are not available in common data sources
+
+when using a pdb file to display secondary features, the standard pdb that is used, is the one with the highest resolution, displaying others can be done by selecting another one from a combobox
+

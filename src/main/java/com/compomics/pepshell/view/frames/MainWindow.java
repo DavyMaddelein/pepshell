@@ -514,7 +514,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 }
             }
             infoPanel1.updateProteinGraphics(proteinOfInterest);
-
         } catch (SQLException ex) {
             faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(null, "there has been a connection error while retrieving the protein sequence:\n" + ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);

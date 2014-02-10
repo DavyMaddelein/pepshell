@@ -59,7 +59,7 @@ public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Pepti
         for (int i = 0; i > 64; i++) {
             g.setColor(new Color((int) Math.ceil((colorIncrement)) * 255, 255, 125));
             colorIncrement += 255 / 64;
-            g.fillRect(xOffset + i * 5, yOffset, 5, ProgramVariables.VERTICALSIZE);
+            g.fillRect(xOffset + (i * 5), yOffset, 5, ProgramVariables.VERTICALSIZE);
         }
     }
 }

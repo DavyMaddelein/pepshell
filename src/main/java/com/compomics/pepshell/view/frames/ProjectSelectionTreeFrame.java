@@ -52,12 +52,18 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     public ProjectSelectionTreeFrame(Point aPoint) {
         initComponents();
         filterPanel.setVisible(false);
-        this.setLocation(aPoint.x - (this.getWidth() / 2), aPoint.y - (this.getHeight() / 2));
+        jPanel1.setVisible(false);
+        //went faster than setting bounds
+        int x  = aPoint.x - (this.getWidth() / 2);
+        int y = aPoint.y - (this.getHeight() / 2);
+        if (x < 0){x = 0;}
+        if (y<0){y = 0;}
+        this.setLocation(x,y);
         this.pack();
         this.setVisible(true);
         new LoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
-                DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
+                DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey())).setLocationRelativeTo(this);
         try {
             fillProjectList();
         } catch (Exception ex) {
@@ -91,16 +97,26 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         fastaLocationTextField = new javax.swing.JTextField();
         addFastaButton = new javax.swing.JButton();
         ownFastaCheckBox = new javax.swing.JCheckBox();
-        filterSubsetCheckBox = new javax.swing.JCheckBox();
         filterPanel = new javax.swing.JPanel();
         accessionScrollPane = new javax.swing.JScrollPane();
         accessionTextArea = new javax.swing.JTextArea();
         filterCheckbox = new javax.swing.JCheckBox();
         importSubsetButton = new javax.swing.JButton();
         saveSubsetButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         makeDbConnectionButton = new javax.swing.JButton();
+        filterSubsetCheckBox1 = new javax.swing.JCheckBox();
+        filterSubsetCheckBox = new javax.swing.JCheckBox();
+        jPanel1 = new javax.swing.JPanel();
+        loadAccessionMaskingFile = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        addMaskingAccessionButton = new javax.swing.JButton();
+        removeAccessionMaskingButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         useLinkDbCheckBox = new javax.swing.JCheckBoxMenuItem();
@@ -115,6 +131,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("project selection");
+        setBounds(new java.awt.Rectangle(0, 0, 0, 0));
         setMaximumSize(new java.awt.Dimension(707, 609));
 
         jScrollPane1.setViewportView(projectList);
@@ -194,13 +211,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
             }
         });
 
-        filterSubsetCheckBox.setText("filter/mask proteins");
-        filterSubsetCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filterSubsetCheckBoxActionPerformed(evt);
-            }
-        });
-
         accessionTextArea.setColumns(20);
         accessionTextArea.setRows(5);
         accessionTextArea.setText("list of accessions separated by enters");
@@ -212,48 +222,33 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
         saveSubsetButton.setText("save subset...");
 
-        jButton1.setText("enter list of masking accessions");
-
-        jButton2.setText("load a masking file");
-
         javax.swing.GroupLayout filterPanelLayout = new javax.swing.GroupLayout(filterPanel);
         filterPanel.setLayout(filterPanelLayout);
         filterPanelLayout.setHorizontalGroup(
             filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(filterPanelLayout.createSequentialGroup()
+                .addGap(4, 4, 4)
                 .addComponent(accessionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(filterPanelLayout.createSequentialGroup()
-                        .addComponent(importSubsetButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(filterPanelLayout.createSequentialGroup()
-                        .addComponent(filterCheckbox)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(filterPanelLayout.createSequentialGroup()
-                        .addComponent(saveSubsetButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)))
-                .addContainerGap())
+                    .addComponent(filterCheckbox)
+                    .addComponent(importSubsetButton)
+                    .addComponent(saveSubsetButton))
+                .addContainerGap(321, Short.MAX_VALUE))
         );
         filterPanelLayout.setVerticalGroup(
             filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(filterPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(accessionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(filterPanelLayout.createSequentialGroup()
                         .addComponent(filterCheckbox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(importSubsetButton)
-                            .addComponent(jButton1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(saveSubsetButton)
-                            .addComponent(jButton2))))
-                .addContainerGap())
+                        .addComponent(importSubsetButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(saveSubsetButton))
+                    .addComponent(accessionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37))
         );
 
         makeDbConnectionButton.setText("connect to a database");
@@ -262,6 +257,97 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 makeDbConnectionButtonActionPerformed(evt);
             }
         });
+
+        filterSubsetCheckBox1.setText("filter proteins");
+        filterSubsetCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterSubsetCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        filterSubsetCheckBox.setText("mask proteins");
+        filterSubsetCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterSubsetCheckBoxActionPerformed(evt);
+            }
+        });
+
+        loadAccessionMaskingFile.setText("load a masking file");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.setEnabled(false);
+        jScrollPane4.setViewportView(jTextArea1);
+
+        jLabel1.setText("original accession");
+
+        jLabel2.setText("masking accession");
+
+        addMaskingAccessionButton.setText("=>");
+        addMaskingAccessionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addMaskingAccessionButtonActionPerformed(evt);
+            }
+        });
+
+        removeAccessionMaskingButton.setText("<=");
+        removeAccessionMaskingButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeAccessionMaskingButtonActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("remove selected maskings");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(loadAccessionMaskingFile)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(removeAccessionMaskingButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(addMaskingAccessionButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(loadAccessionMaskingFile)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(addMaskingAccessionButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeAccessionMaskingButton)
+                        .addGap(18, 18, 18))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addGap(6, 6, 6)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane4)
+        );
 
         jMenu1.setText("data sources");
 
@@ -293,7 +379,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         jMenu3.add(jRadioButtonMenuItem2);
 
         jRadioButtonMenuItem3.setSelected(true);
-        jRadioButtonMenuItem3.setText("ncbi");
+        jRadioButtonMenuItem3.setText("genbank");
         jMenu3.add(jRadioButtonMenuItem3);
 
         jMenu2.add(jMenu3);
@@ -314,91 +400,91 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(filterPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(ownFastaCheckBox)
-                                    .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(addFastaButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(analyseButton))
-                            .addComponent(filterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(makeDbConnectionButton)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(filterSubsetCheckBox)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(addFastaButton)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                    .addComponent(addReferenceProjectButton)
-                                    .addComponent(removeReferenceProjectButton)
-                                    .addComponent(addAnalysisGroupButton)
-                                    .addComponent(toProjectTreeButton)
-                                    .addComponent(removeAnalysisGroupButton)
-                                    .addComponent(removeProjectButton))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                                    .addComponent(jScrollPane3))))
-                        .addGap(0, 10, Short.MAX_VALUE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(makeDbConnectionButton)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                                .addComponent(addReferenceProjectButton)
+                                                .addComponent(removeReferenceProjectButton)
+                                                .addComponent(addAnalysisGroupButton)
+                                                .addComponent(toProjectTreeButton)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                    .addGap(30, 30, 30)
+                                                    .addComponent(removeProjectButton)))
+                                            .addComponent(removeAnalysisGroupButton))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                                            .addComponent(jScrollPane3)))
+                                    .addComponent(ownFastaCheckBox)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(filterSubsetCheckBox1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(filterSubsetCheckBox)))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(makeDbConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1)
-                                .addGap(2, 2, 2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
+                        .addContainerGap()
+                        .addComponent(makeDbConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
                         .addComponent(addReferenceProjectButton)
                         .addGap(18, 18, 18)
                         .addComponent(removeReferenceProjectButton)
-                        .addGap(73, 73, 73)
+                        .addGap(86, 86, 86)
                         .addComponent(addAnalysisGroupButton)
                         .addGap(18, 18, 18)
                         .addComponent(toProjectTreeButton)
                         .addGap(18, 18, 18)
                         .addComponent(removeAnalysisGroupButton)
                         .addGap(18, 18, 18)
-                        .addComponent(removeProjectButton)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(analyseButton)
-                        .addGap(65, 65, 65))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(addFastaButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)))
-                        .addComponent(ownFastaCheckBox)
+                        .addComponent(removeProjectButton)
+                        .addGap(39, 39, 39)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addFastaButton))
                         .addGap(18, 18, 18)
-                        .addComponent(filterSubsetCheckBox)
-                        .addGap(6, 6, 6)))
-                .addComponent(filterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(ownFastaCheckBox))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(analyseButton)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(filterSubsetCheckBox)
+                    .addComponent(filterSubsetCheckBox1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(filterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -484,12 +570,12 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 goAhead = false;
             }
         }
-        List<Protein> filterList = new ArrayList<Protein>();
         if (filterSubsetCheckBox.isSelected() && !accessionTextArea.getText().isEmpty()) {
+            List<Protein> filterList = new ArrayList<Protein>();
             for (String accession : Arrays.asList(accessionTextArea.getText().split("\n"))) {
                 filterList.add(new Protein(accession));
             }
-             DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(filterList);
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(filterList);
         }
 
         if (goAhead) {
@@ -501,11 +587,9 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         } else {
             JOptionPane.showMessageDialog(this, "please make sure you have a reference project, one or more projects to compare to and if requested, have supplied a fasta");
         }
-        // TODO add your handling code here:
     }//GEN-LAST:event_analyseButtonActionPerformed
 
     private void addFastaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFastaButtonActionPerformed
-        // TODO add your handling code here:
         JFileChooser fastaChooser = new JFileChooser();
         fastaChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fastaChooser.setMultiSelectionEnabled(false);
@@ -518,7 +602,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     }//GEN-LAST:event_addFastaButtonActionPerformed
 
     private void ownFastaCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownFastaCheckBoxActionPerformed
-        // TODO add your handling code here:
         if (ownFastaCheckBox.isSelected()) {
             addFastaButton.setEnabled(true);
             fastaFile = new File(ViewProperties.getInstance().getProperty(ViewPropertyEnum.PROTEINFASTALOCATION.getKey()));
@@ -529,7 +612,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     }//GEN-LAST:event_ownFastaCheckBoxActionPerformed
 
     private void filterSubsetCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterSubsetCheckBoxActionPerformed
-        // TODO add your handling code here:
         if (filterSubsetCheckBox.isSelected()) {
             filterPanel.setVisible(true);
             this.pack();
@@ -543,7 +625,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     }//GEN-LAST:event_filterSubsetCheckBoxActionPerformed
 
     private void useLinkDbCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useLinkDbCheckBoxActionPerformed
-        // TODO add your handling code here:
         if (useLinkDbCheckBox.isSelected()) {
             LinkDbLoginDialog loginDialog = new LinkDbLoginDialog();
             loginDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -558,7 +639,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     }//GEN-LAST:event_useLinkDbCheckBoxActionPerformed
 
     private void makeDbConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeDbConnectionButtonActionPerformed
-        // TODO add your handling code here:
         LoginDialog dialog = new LoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
@@ -574,37 +654,59 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         this.repaint();
     }//GEN-LAST:event_makeDbConnectionButtonActionPerformed
 
+    private void filterSubsetCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterSubsetCheckBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filterSubsetCheckBox1ActionPerformed
+
+    private void addMaskingAccessionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMaskingAccessionButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addMaskingAccessionButtonActionPerformed
+
+    private void removeAccessionMaskingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAccessionMaskingButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_removeAccessionMaskingButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane accessionScrollPane;
     private javax.swing.JTextArea accessionTextArea;
     private javax.swing.JButton addAnalysisGroupButton;
     private javax.swing.JButton addFastaButton;
+    private javax.swing.JButton addMaskingAccessionButton;
     private javax.swing.JButton addReferenceProjectButton;
     private javax.swing.JButton analyseButton;
     private javax.swing.JTextField fastaLocationTextField;
     private javax.swing.JCheckBox filterCheckbox;
     private javax.swing.JPanel filterPanel;
     private javax.swing.JCheckBox filterSubsetCheckBox;
+    private javax.swing.JCheckBox filterSubsetCheckBox1;
     private javax.swing.JButton importSubsetButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JButton loadAccessionMaskingFile;
     private javax.swing.JButton makeDbConnectionButton;
     private javax.swing.JCheckBox ownFastaCheckBox;
     private javax.swing.JList projectList;
     private com.compomics.pepshell.view.components.DragAndDropTree projectTree;
     private javax.swing.JTextArea referenceProjectTextBox;
+    private javax.swing.JButton removeAccessionMaskingButton;
     private javax.swing.JButton removeAnalysisGroupButton;
     private javax.swing.JButton removeProjectButton;
     private javax.swing.JButton removeReferenceProjectButton;

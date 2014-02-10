@@ -7,8 +7,6 @@ import com.compomics.pepshell.controllers.DAO.FastaDAO;
 import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 import java.io.File;
@@ -40,7 +38,10 @@ public class ViewPreparationForFastaData<T extends Experiment> extends ViewPrepa
         try {
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
                 DbDAO.fetchProteins(referenceExperiment);
-                referenceExperiment.setProteins(filter.filter(referenceExperiment.getProteins(), filterList));
+                if (!filterList.isEmpty()) {
+                    // needs to change to a step in factory 
+                    referenceExperiment.setProteins(filter.filter(referenceExperiment.getProteins(), filterList));
+                }
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
             } else {
@@ -55,6 +56,7 @@ public class ViewPreparationForFastaData<T extends Experiment> extends ViewPrepa
                 }
             } else {
                 while (experimentsToCompareWith.hasNext()) {
+                    //something something CP-DT files
                     T aProjectToCompareWith = experimentsToCompareWith.next();
                 }
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
