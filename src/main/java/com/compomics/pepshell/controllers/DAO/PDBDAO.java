@@ -31,9 +31,9 @@ import javax.xml.stream.XMLStreamException;
  */
 public class PDBDAO {
 
-    public static Set<String> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
+    public static Set<PdbInfo> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
         String pdbLine;
-        Set<String> pdbFilesToReturn = new HashSet<String>();
+        Set<PdbInfo> pdbFilesToReturn = new HashSet<PdbInfo>();
         URL pdbURL = new URL("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.ToUniprot(protein.getVisibleAccession()));
         URLConnection pdbFileConnection = pdbURL.openConnection();
         BufferedReader br = new BufferedReader(new LineNumberReader(new InputStreamReader(pdbFileConnection.getInputStream(), "UTF-8")));
@@ -63,11 +63,18 @@ public class PDBDAO {
         return pdbFile.toString();
     }
 
-    private static Set<String> startUniprotPDBParsing(BufferedReader br) throws IOException {
-        Set<String> pdbFilesToReturn = new HashSet<String>();
+    private static Set<PdbInfo> startUniprotPDBParsing(BufferedReader br) throws IOException {
+        Set<PdbInfo> pdbFilesToReturn = new HashSet<PdbInfo>();
         String pdbLine = "#";
-        while ((pdbLine = br.readLine()) != null && !pdbLine.startsWith("#")) {
-            pdbFilesToReturn.add(pdbLine.split("\t")[3]);
+        while ((pdbLine = br.readLine()) != null) {
+            if (!pdbLine.startsWith("#")) {
+                String[] pdbSplitLine = pdbLine.split("\t");
+                PdbInfo info = new PdbInfo();
+                info.setUniprotAccession(pdbSplitLine[0]);
+                info.setPdbAccession(pdbSplitLine[3]);
+                info.setName(pdbSplitLine[4]);
+                pdbFilesToReturn.add(info);
+            }
         }
         return pdbFilesToReturn;
     }
@@ -83,8 +90,8 @@ public class PDBDAO {
         return null;
     }
 
-    public static Set<String> getPdbFileForProteinFromRepository(Protein protein) throws SQLException {
-        Set<String> pdbNames = new HashSet<String>();
+    public static Set<PdbInfo> getPdbFileForProteinFromRepository(Protein protein) throws SQLException {
+        Set<PdbInfo> pdbNames = new HashSet<PdbInfo>();
         SQLStatements.getPdbFilesFromDb();
         return pdbNames;
     }

@@ -59,14 +59,12 @@ public class AccessionConverter {
         int startIndex = 0;
         List<String> accessions = new ArrayList<String>();
 
-
         return accessions;
     }
 
     public static List<String> uniProtToRefSeq(String aUniprotAccession) {
         int startIndex = 0;
         List<String> accessions = new ArrayList<String>();
-
 
         return accessions;
     }
@@ -84,13 +82,13 @@ public class AccessionConverter {
     //TODO finish this, needs to take any accession and try to convert to uniprot
 
     public static String ToUniprot(String accession) throws IOException, ConversionException {
-        String tempaccession = ";";
+        String tempaccession = accession;
         if (isGIAccession(accession)) {
             tempaccession = GIToUniprot(accession);
-        } else if (isSwissprotAccession(accession)){
+        } else if (isSwissprotAccession(accession)) {
             //TODO check if it is possible to get the isoform data from swissprot to uniprot
-           // tempaccession = spToUniProt(accession).get(0);
-        //}
+            // tempaccession = spToUniProt(accession).get(0);
+            //}
         }
         return tempaccession;
     }
@@ -99,8 +97,8 @@ public class AccessionConverter {
         return accession.toLowerCase().contains("gi");
         //return accession.matches("^(GI|gi)\\|[0-9]");
     }
-    
-    private static boolean isSwissprotAccession(String accession){
+
+    private static boolean isSwissprotAccession(String accession) {
         return accession.matches("something something something");
-        }
+    }
 }

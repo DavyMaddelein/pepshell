@@ -24,6 +24,9 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
     boolean hasToMask = false;
     Set<V> maskingSet = new HashSet<V>();
     boolean hasToFetchDomainData = false;
+    boolean hasToAddQuantData = false;
+    boolean hasToTranslateAccessions = false;
+    boolean hasToRetrievePDBData = true;
 
     public abstract T retrieveData(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
 
@@ -45,7 +48,7 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
             //replace with iterator and remove
             for (Protein aProtein : projectToCompareWith.getProteins()) {
                 if (aProtein.getProteinInfo().getNumberOfProjectOccurences() == 0) {
-                    
+
                 }
             }
         }
@@ -77,8 +80,20 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
     public void setProteinMasks(Set<V> masks) {
         this.maskingSet = masks;
     }
-    
-    public void hasToFetchDomainData(boolean decision){
+
+    public void hasToFetchDomainData(boolean decision) {
         this.hasToFetchDomainData = decision;
+    }
+
+    public void hasToAddQuantDataToExperiments(boolean decision) {
+        this.hasToAddQuantData = decision;
+    }
+
+    public void hasToTranslateAccessions(boolean decision) {
+        this.hasToTranslateAccessions = decision;
+    }
+
+    public void hasToRetrievePDBData(boolean decision) {
+        this.hasToRetrievePDBData = decision;
     }
 }

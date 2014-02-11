@@ -5,6 +5,7 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.InteractionPartner;
+import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
@@ -168,7 +169,7 @@ public class JmolPanel extends javax.swing.JPanel {
     }
 
     public void setPDBProtein(final Protein protein) throws MalformedURLException, ConversionException, SQLException {
-        final Set<String> pdbAccessions = new HashSet<String>();
+        final Set<PdbInfo> pdbAccessions = new HashSet<PdbInfo>();
         sequenceCoveragePanel1.showProteinCoverage(protein.getProteinSequence(), protein.getPeptideGroupsForProtein().iterator());
         jProgressBar1.setIndeterminate(true);
         jProgressBar1.setString("fetching pdb files");
@@ -202,7 +203,7 @@ public class JmolPanel extends javax.swing.JPanel {
             PDBFileComboBox.addItem("3Q4C");
             PDBFileComboBox.addItem("3C4C");
         } else {
-            for (String aPDBFileAccession : pdbAccessions) {
+            for (PdbInfo aPDBFileAccession : pdbAccessions) {
                 PDBFileComboBox.addItem(aPDBFileAccession);
             }
         }

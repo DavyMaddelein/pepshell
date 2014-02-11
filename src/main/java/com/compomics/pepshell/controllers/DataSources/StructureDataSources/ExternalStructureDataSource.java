@@ -59,4 +59,8 @@ public class ExternalStructureDataSource implements StructureDataSource {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public StructureDataSource getInstance() {
+        return new ExternalStructureDataSource();
+    }
+
 }

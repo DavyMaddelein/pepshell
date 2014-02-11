@@ -1,14 +1,22 @@
 package com.compomics.pepshell.controllers.ViewPreparation;
 
 import com.compomics.pepshell.DataModeController;
+import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.SQLStatements;
+import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DAO.FastaDAO;
+import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
+import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.exceptions.ConversionException;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,8 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,7 +32,7 @@ import java.util.logging.Logger;
  * @param <T>
  * @param <V>
  */
-public class ViewPreparationForFastaData<T extends Experiment,V extends Protein> extends ViewPreparation<T,V> {
+public class ViewPreparationForFastaData<T extends Experiment, V extends Protein> extends ViewPreparation<T, V> {
 
     //TODO: this entire thing needs cleaning up
     private File fastaFile;
@@ -40,6 +46,16 @@ public class ViewPreparationForFastaData<T extends Experiment,V extends Protein>
         try {
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
                 DbDAO.fetchProteins(referenceExperiment);
+                if (hasToTranslateAccessions) {
+                    //todo multithread
+                    for (Protein aProtein : referenceExperiment.getProteins()) {
+                        try {
+                            aProtein.setAccession(AccessionConverter.ToUniprot(aProtein.getOriginalAccession()));
+                        } catch (ConversionException ex) {
+                            FaultBarrier.getInstance().handleException(ex);
+                        }
+                    }
+                }
                 if (hasToFilter) {
                     referenceExperiment.setProteins(filter.filter(referenceExperiment.getProteins(), filterList));
                 }
@@ -52,6 +68,9 @@ public class ViewPreparationForFastaData<T extends Experiment,V extends Protein>
                 }
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
+                if (hasToAddQuantData) {
+                    checkAndAddQuantToProteinsInExperiment(referenceExperiment);
+                }
             } else {
                 FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, referenceExperiment);
             }
@@ -60,7 +79,9 @@ public class ViewPreparationForFastaData<T extends Experiment,V extends Protein>
                     T anExperimentToCompareWith = experimentsToCompareWith.next();
                     DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
                     FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith.getProteins());
-                    checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
+                    if (hasToAddQuantData) {
+                        checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
+                    }
                 }
             } else {
                 while (experimentsToCompareWith.hasNext()) {
@@ -71,13 +92,13 @@ public class ViewPreparationForFastaData<T extends Experiment,V extends Protein>
             }
             retrieveSecondaryData(referenceExperiment);
         } catch (FastaCouldNotBeReadException ex) {
-            Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (IOException ex) {
-            Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (SQLException ex) {
-            Logger.getLogger(ViewPreparationForFastaData.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
         return referenceExperiment;
     }
@@ -111,8 +132,33 @@ public class ViewPreparationForFastaData<T extends Experiment,V extends Protein>
 
     @Override
     protected void retrieveSecondaryData(T experiment) {
-        if (hasToFetchDomainData){
-        
+        if (hasToFetchDomainData) {
+            for (final List<Protein> partitionedExperimentProteins : Lists.partition(experiment.getProteins(), Runtime.getRuntime().availableProcessors())) {
+                new Runnable() {
+                    public void run() {
+                        StructureDataSource domainDataFetcher = ProgramVariables.STRUCTUREDATASOURCE.getInstance();
+                        for (Protein anExperimentProtein : partitionedExperimentProteins) {
+                            try {
+                                domainDataFetcher.getDomainData(anExperimentProtein);
+                            } catch (DataRetrievalException ex) {
+                                FaultBarrier.getInstance().handleException(ex);
+                            }
+                        }
+                    }
+
+                };
+            }
+        }
+        if (hasToRetrievePDBData) {
+            for (Protein aProtein : experiment.getProteins()) {
+                try {
+                    PDBDAO.getPDBFileAccessionsForProtein(aProtein);
+                } catch (IOException ex) {
+                    FaultBarrier.getInstance().handleException(ex);
+                } catch (ConversionException ex) {
+                    FaultBarrier.getInstance().handleException(ex);
+                }
+            }
         }
     }
 }
