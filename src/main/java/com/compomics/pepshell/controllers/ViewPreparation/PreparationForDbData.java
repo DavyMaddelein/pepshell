@@ -14,12 +14,12 @@ import java.util.Iterator;
  *
  * @author Davy
  */
-public class PreparationForDbData<T extends Experiment> extends ViewPreparation<T> {
+public class PreparationForDbData<T extends Experiment,V extends Protein> extends ViewPreparation<T,V> {
 
     FaultBarrier barrier = FaultBarrier.getInstance();
 
     @Override
-    public T PrepareProteinsForJList(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
+    public T retrieveData(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         try {
             DbDAO.fetchPeptidesAndProteins(referenceExperiment);
             if (!filterList.isEmpty()) {
@@ -30,7 +30,7 @@ public class PreparationForDbData<T extends Experiment> extends ViewPreparation<
                 T anExperimentToCompareWith = ExperimentsToCompareWith.next();
                 DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
                 checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
-                checkOverlappingPeptides(referenceExperiment, anExperimentToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
+                removeProteinsNotInReferenceExperiment(referenceExperiment, anExperimentToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
             }
         } catch (SQLException ex) {
             barrier.handleException(ex);
@@ -60,6 +60,11 @@ public class PreparationForDbData<T extends Experiment> extends ViewPreparation<
 
     @Override
     public void addProteinsToExperiment(AbstractDataMode dataMode) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void retrieveSecondaryData(T experiment) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

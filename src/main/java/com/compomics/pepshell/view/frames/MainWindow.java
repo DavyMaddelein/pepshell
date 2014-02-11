@@ -59,7 +59,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             askLinkDbLoginQuestion();
         }
         for (AnalysisGroup experiments : analysisList) {
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments.getExperiments().iterator(), false);
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.getExperiments().iterator(), false);
             infoPanel1.setReferenceExperiment(referenceExperiment);
             statisticsTabbedPane.add(experiments.getName(), new StatisticsPanel(experiments));
             infoPanel1.setExperimentsToDisplay(experiments.getExperiments(), false);
@@ -75,7 +75,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }
 
     public void collectAndShowData(Experiment referenceExperiment, List<Experiment> experiments, InfoPanel anInfoPanel) {
-        DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments.iterator(), false);
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.iterator(), false);
         anInfoPanel.setExperimentsToDisplay(experiments);
 
     }
@@ -609,7 +609,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void newViewMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newViewMenuItemActionPerformed
-        // TODO add your handling code here:
         int selection = JOptionPane.showConfirmDialog(null, "Select a new set of experiments?", "new view", JOptionPane.YES_NO_OPTION);
         if (selection == JOptionPane.YES_OPTION) {
             new ModeSelectionFrame().setVisible(true);
@@ -618,8 +617,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_newViewMenuItemActionPerformed
 
     private void setAccessionMaskOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setAccessionMaskOptionActionPerformed
-        // TODO add your handling code here:
-        AccessionMaskDialog dialog = new AccessionMaskDialog(this, true, proteinsToDisplay);
+         AccessionMaskDialog dialog = new AccessionMaskDialog(this, true, proteinsToDisplay);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_setAccessionMaskOptionActionPerformed
