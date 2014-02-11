@@ -4,6 +4,7 @@ import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.Protein;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -35,11 +36,11 @@ public class ExternalStructureDataSource implements StructureDataSource {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public double getFreeEnergyForResidue(Protein protein, int location) {
+    public Map<Integer, Double> getFreeEnergyForStructure(Protein protein, String psbAccession) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }       
 
-    public double getRelativeSolventAccessibilityForResidue(Protein protein, int location) {
+    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(Protein protein, String structureName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

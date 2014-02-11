@@ -18,8 +18,8 @@ public class SQLStatements {
     private static String GET_PDBFILES_FOR_PROTEIN;
     private static String GET_INTERACTIONPARTNERS_FOR_RESIDUE;
     private static String GET_PDB_DATA_FROM_DB;
-    private static String GET_FREE_ENERGY_FOR_RESIDUE;
-    private static String GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE;
+    private static String GET_FREE_ENERGY_FOR_STRUCTURE;
+    private static String GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_STRUCTURE;
     private static String GET_INTERACTIONPARTNERS_FOR_RANGE;
     private static String GET_QUANT_FOR_EXPERIMENT;
     private static String GET_PEPTIDES_WITH_QUANT;
@@ -53,8 +53,8 @@ public class SQLStatements {
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_RESIDUE = GET_INTERACTIONPARTNERS_FOR_RESIDUE_FROM_LINKDB;
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_RANGE = GET_INTERACTIONPARTNERS_FOR_RANGE_FROM_LINKDB;
         SQLStatements.GET_PDB_DATA_FROM_DB = GET_PDB_FILES_FROM_LINKDB;
-        SQLStatements.GET_FREE_ENERGY_FOR_RESIDUE = GET_FREE_ENERGY_FOR_RESIDUE_FROM_LINKDB;
-        SQLStatements.GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE = GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE_FROM_LINKDB;
+        SQLStatements.GET_FREE_ENERGY_FOR_STRUCTURE = GET_FREE_ENERGY_FOR_STRUCTURE_FROM_LINKDB;
+        SQLStatements.GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_STRUCTURE = GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_STRUCTURE_FROM_LINKDB;
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_PDB = GET_INTERACTION_PARTNERS_FOR_PDB_FROM_LINKDB;
         SQLStatements.GET_PDB_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN = GET_PDBFILE_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN_FROM_LINKDB;
     }
@@ -78,8 +78,8 @@ public class SQLStatements {
     private static final String GET_PDBfILES_FOR_PROTEIN_FROM_LINKDB = "select PDB from structure";
     private static final String GET_INTERACTIONPARTNERS_FOR_RESIDUE_FROM_LINKDB = "select interaction.* from interaction,residue,protein_chain,protein where protein_chain.chain_id = residue.chain_id and protein.idprotein = protein_id and residue_id_partner1 = residue.idresidue and protein.uniprot_id = ?";
     private static final String GET_PDB_FILES_FROM_LINKDB = "select * from structure where PDB = ?";
-    private static final String GET_FREE_ENERGY_FOR_RESIDUE_FROM_LINKDB = "select residue.E_total from residue,protein_chain,chain,protein,structure where protein_chain.chain_id = residue.chain_id and protein.idprotein = protein_id and protein.uniprot_id = ? and chain.structure_id = structure.idstructure and chain.idchain = protein_chain.chain_id and structure.PDB = ?";
-    private static final String GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE_FROM_LINKDB = "select residue.SASrel from residue,protein_chain,protein,chain, (select idstructure from structure order by idstructure desc limit 1)as highest_resolution where protein_chain.chain_id = residue.chain_id and protein.idprotein = protein_id and protein.uniprot_id = ? and chain.structure_id = highest_resolution.idstructure and chain.idchain = protein_chain.chain_id and residue.numbering_fasta = ?";
+    private static final String GET_FREE_ENERGY_FOR_STRUCTURE_FROM_LINKDB = "select residue.numbering_fasta, residue.E_total, residue.SASrel from residue, ( select chain.idchain as chain_id from protein, protein_chain, chain, structure where protein.uniprot_id = ? and protein_chain.protein_id = protein.idprotein and protein_chain.chain_id = chain.idchain and structure.PDB = ? and chain.structure_id = structure.idstructure order by chain_label asc limit 1) as chain_id_sub where residue.chain_id = chain_id_sub.chain_id;";
+    private static final String GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_STRUCTURE_FROM_LINKDB = "select residue.numbering_fasta, residue.SASrel from residue, ( select chain.idchain as chain_id from protein, protein_chain, chain, structure where protein.uniprot_id = ? and protein_chain.protein_id = protein.idprotein and protein_chain.chain_id = chain.idchain and structure.PDB = ? and chain.structure_id = structure.idstructure order by chain_label asc limit 1) as chain_id_sub where residue.chain_id = chain_id_sub.chain_id;";
     private static final String GET_INTERACTIONPARTNERS_FOR_RANGE_FROM_LINKDB = "select interaction.* from interaction,residue,protein_chain,protein where protein_chain.idchain = residue.chain_id and protein.idprotein = protein_id and residue_id_partner1 = residue.idresidue or residue_id_partner2 = residue.idresidue and numbering_fasta between(?,?) and protein.uniprot_id = ?";
     private static final String SELECT_QUANT_DATA_FOR_MS_LIMS_PROJECT = "steal this";
     private static final String SELECT_PEPTIDES_WITH_QUANT_FOR_MS_LIMS_PROJECT = "and steal this";
@@ -127,12 +127,12 @@ public class SQLStatements {
         return GET_PDB_DATA_FROM_DB;
     }
 
-    public static String GetFreeEnergyForResidue() {
-        return GET_FREE_ENERGY_FOR_RESIDUE;
+    public static String GetFreeEnergyForStructure() {
+        return GET_FREE_ENERGY_FOR_STRUCTURE;
     }
 
-    public static String getRelativeSolventAccessibilityForResidue() {
-        return GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_RESIDUE;
+    public static String getRelativeSolventAccessibilityForStructure() {
+        return GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_STRUCTURE;
     }
 
     public static String getInteractionPartnersForRange() {

@@ -2,7 +2,6 @@ package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
@@ -10,39 +9,45 @@ import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Map;
 
 /**
  *
  * @author Davy
  * @param <T>
- * @param <N>
  * @param <U>
  */
 public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> extends StandardPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
-
+    
     @Override
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
 
         int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
-        for (int previousEnd = 0; previousEnd < protein.getProteinSequence().length(); previousEnd++) {
-            try {
-                g.setColor(calculateAminoAcidGradient(protein, previousEnd));
-            } catch (CalculationException ex) {
-                g.drawString("could not draw the solvent accessibility", horizontalOffset, verticalOffset);
-                throw new UndrawableException("could not calculate gradient");
+
+//        Map<Integer, Double> relSasValues = ProgramVariables.STRUCTUREDATASOURCE.getRelativeSolventAccessibilityForStructure(protein, protein.getPdbFileNames().get(0));
+        Map<Integer, Double> freeEnergyValues = ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForStructure(protein, "3NY5");
+        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy()) {
+            //go over all locations retrieved from the data source
+            for (int location : freeEnergyValues.keySet()) {
+                Double relSasValue = freeEnergyValues.get(location);
+                //check for null values
+                if (relSasValue != null) {
+                    Color freeEnergyGradientColor = new Color(Math.min((int) Math.ceil(relSasValue * 255), 255), 255, 125);
+                    g.setColor(freeEnergyGradientColor);
+                } else {
+                    g.setColor(Color.WHITE);
+                }
+                g.fillRect(horizontalOffset + (location * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarWidth);
             }
-            g.fillRect(horizontalOffset + (previousEnd * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarWidth);
+        } else {
+            g.setColor(Color.black);
+            g.drawString("could not draw the free energy", horizontalOffset, verticalOffset + 5);
+            throw new UndrawableException("could not calculate gradient");
         }
     }
 
     public Color calculateAminoAcidGradient(T protein, int location) throws CalculationException {
-        Color freeEnergyGradientColor = ProgramVariables.PROTEINCOLOR;
-        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy()) {
-            ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForResidue(protein, location);
-        } else {
-            throw new CalculationException("cannot retrieve free energy values for protein");
-        }
-        return freeEnergyGradientColor;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Color calculatePeptideGradient(U peptide) throws CalculationException {

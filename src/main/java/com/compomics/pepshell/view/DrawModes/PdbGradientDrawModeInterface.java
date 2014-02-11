@@ -9,10 +9,8 @@ import java.awt.Graphics;
 /**
  *
  * @author Davy
- * @param <T>
- * @param <U>
  */
-public interface GradientDrawModeInterface<T extends Protein, U extends Peptide> extends DrawModeInterface<T, U> {
+public interface PdbGradientDrawModeInterface<T extends Protein, U extends Peptide> extends GradientDrawModeInterface<T, U> {
 
     Color calculateAminoAcidGradient(T protein, int location) throws CalculationException;
 

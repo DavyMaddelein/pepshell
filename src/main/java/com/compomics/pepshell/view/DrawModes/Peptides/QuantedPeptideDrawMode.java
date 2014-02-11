@@ -2,7 +2,6 @@ package com.compomics.pepshell.view.DrawModes.Peptides;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
@@ -15,7 +14,6 @@ import java.awt.Graphics;
 /**
  *
  * @author Davy
- * @param <N>
  * @param <U>
  */
 public class QuantedPeptideDrawMode<U extends QuantedPeptide> extends StandardPeptideProteinDrawMode<Protein, U> implements GradientDrawModeInterface<Protein, U> {

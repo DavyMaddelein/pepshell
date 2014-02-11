@@ -5,11 +5,11 @@ import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Davy
- * @param <T>
  */
 public interface StructureDataSource extends AbstractDataSource {
 
@@ -19,16 +19,32 @@ public interface StructureDataSource extends AbstractDataSource {
 
     public List<InteractionPartner> getInteractionPartners(Protein aProtein);
 
-    public List<InteractionPartner> getInteractionPartnersForRange(Protein aProtein,int start, int stop);
+    public List<InteractionPartner> getInteractionPartnersForRange(Protein aProtein, int start, int stop);
 
     //TODO think of a cleaner way to handle below
     public boolean isAbleToGetFreeEnergy();
 
-    public double getFreeEnergyForResidue(Protein protein, int location);
+    /**
+     * Get the free energy for a given PDB structure. Returns a
+     * map (key: fasta residu location; value: free energy value).
+     *
+     * @param protein the given protein
+     * @param psbAccession the PDB accession
+     * @return the rel. solvent acc. map
+     */
+    public Map<Integer, Double> getFreeEnergyForStructure(Protein protein, String psbAccession);
 
     public boolean isAbleToGetSolventAccessibility();
 
-    public double getRelativeSolventAccessibilityForResidue(Protein protein, int location);
+    /**
+     * Get the relative solvent accessibility for a given PDB structure. Returns a
+     * map (key: fasta residu location; value: rel. solvent acc. value).
+     *
+     * @param protein the given protein
+     * @param psbAccession the PDB accession
+     * @return the rel. solvent acc. map
+     */
+    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(Protein protein, String psbAccession);
 
     public void getSecondaryStructureForResidue(Protein protein, int location);
 

@@ -17,7 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
@@ -118,36 +120,23 @@ public class LinkDb implements StructureDataSource {
         return true;
     }
 
-    public double getFreeEnergyForResidue(Protein protein, int location) {
-        double freeEnergy = -1;
+    public Map<Integer, Double> getFreeEnergyForStructure(Protein protein, String pdbAccession) {
+        Map<Integer, Double> freeEnergyValues = new HashMap<Integer, Double>();
+        
         PreparedStatement stat = null;
         try {
-            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.GetFreeEnergyForResidue());
+            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.GetFreeEnergyForStructure());
             stat.setString(1, protein.getVisibleAccession());
+            stat.setString(2, pdbAccession);
             ResultSet rs = stat.executeQuery();
             try {
                 while (rs.next()) {
-                    freeEnergy = Double.parseDouble(rs.getString("e_total"));
-                }
-            } catch (SQLException sqle) {
-            }
-        } catch (SQLException sqle) {
-        }
-
-        return freeEnergy;
-    }
-
-    public double getRelativeSolventAccessibilityForResidue(Protein protein, int location) {
-        double solventAccessability = -1;
-        PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getRelativeSolventAccessibilityForResidue());
-            stat.setString(1, protein.getVisibleAccession());
-            stat.setInt(2, location);
-            ResultSet rs = stat.executeQuery();
-            try {
-                while (rs.next()) {
-                    solventAccessability = Double.parseDouble(rs.getString("SASrel"));
+                    Integer location = rs.getInt("numbering_fasta");
+                    try {
+                        freeEnergyValues.put(location, Double.parseDouble(rs.getString("E_total")));
+                    } catch (NumberFormatException nfe) {
+                        freeEnergyValues.put(location, null);
+                    }
                 }
             } catch (SQLException sqle) {
                 FaultBarrier.getInstance().handleException(sqle);
@@ -156,7 +145,35 @@ public class LinkDb implements StructureDataSource {
             FaultBarrier.getInstance().handleException(sqle);
         }
 
-        return solventAccessability;
+        return freeEnergyValues;
+    }
+
+    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(Protein protein, String pdbAccession) {
+        Map<Integer, Double> relSasValues = new HashMap<Integer, Double>();
+
+        PreparedStatement stat = null;
+        try {
+            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getRelativeSolventAccessibilityForStructure());
+            stat.setString(1, protein.getVisibleAccession());
+            stat.setString(2, pdbAccession);
+            ResultSet rs = stat.executeQuery();
+            try {
+                while (rs.next()) {
+                    Integer location = rs.getInt("numbering_fasta");
+                    try {
+                        relSasValues.put(location, Double.parseDouble(rs.getString("SASrel")));
+                    } catch (NumberFormatException nfe) {
+                        relSasValues.put(location, null);
+                    }
+                }
+            } catch (SQLException sqle) {
+                FaultBarrier.getInstance().handleException(sqle);
+            }
+        } catch (SQLException sqle) {
+            FaultBarrier.getInstance().handleException(sqle);
+        }
+
+        return relSasValues;
     }
 
     public void getSecondaryStructureForResidue(Protein protein, int location) {
