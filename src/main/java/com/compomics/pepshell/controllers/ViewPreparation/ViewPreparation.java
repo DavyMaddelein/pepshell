@@ -6,39 +6,50 @@ import com.compomics.pepshell.filters.NaiveFilter;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import java.util.Set;
 
 /**
  *
  * @author Davy
  */
-public abstract class ViewPreparation<T extends Experiment> extends Observable {
+public abstract class ViewPreparation<T extends Experiment, V extends Protein> extends Observable {
 
     protected FilterParent<Protein> filter = new NaiveFilter<Protein>();
     protected List<Protein> filterList = new ArrayList<Protein>();
+    boolean hasToFilter = false;
+    boolean hasToMask = false;
+    Set<V> maskingSet = new HashSet<V>();
+    boolean hasToFetchDomainData = false;
 
-    //change this to a better name and make this a factory style class
-    
-    public abstract T PrepareProteinsForJList(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
+    public abstract T retrieveData(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
+
+    protected abstract void retrieveSecondaryData(T experiment);
 
     protected abstract boolean checkAndAddQuantToProteinsInExperiment(T anExperiment);
 
     // this doesn't do what is advertised, review this, and rename this to checkReferenceProteinOccurencesInExperiments or something
-    protected boolean checkOverlappingPeptides(T referenceProject, T projectToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
+    protected boolean removeProteinsNotInReferenceExperiment(T referenceProject, T projectToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         //perhaps change with list so it is easier to notify observers of progress
         boolean finished = false;
-        Iterator<Protein> referenceProjectProteinIter = referenceProject.getProteins().iterator();
-        while (referenceProjectProteinIter.hasNext()) {
-            Protein currentReferenceProtein = referenceProjectProteinIter.next();
-            if (projectToCompareWith.getProteins().contains(currentReferenceProtein)) {
-                currentReferenceProtein.getProteinInfo().increaseNumberOfProjectOccurences();
-            }
-            if (removeNonOverlappingPeptidesFromReferenceProject) {
-                referenceProjectProteinIter.remove();
+        for (Protein aProtein : referenceProject.getProteins()) {
+            if (projectToCompareWith.getProteins().contains(aProtein)) {
+                aProtein.getProteinInfo().increaseNumberOfProjectOccurences();
+                projectToCompareWith.getProteins().get(projectToCompareWith.getProteins().indexOf(aProtein)).getProteinInfo().increaseNumberOfProjectOccurences();
             }
         }
+        if (removeNonOverlappingPeptidesFromReferenceProject) {
+            //replace with iterator and remove
+            for (Protein aProtein : projectToCompareWith.getProteins()) {
+                if (aProtein.getProteinInfo().getNumberOfProjectOccurences() == 0) {
+                    
+                }
+            }
+        }
+
         return finished;
     }
 
@@ -48,15 +59,26 @@ public abstract class ViewPreparation<T extends Experiment> extends Observable {
         this.filter = aFilter;
     }
 
-    public FilterParent<Protein> getFilter() {
-        return filter;
-    }
-
+    /**
+     * public FilterParent<V> getFilter() { return filter; }
+     */
     public void setProteinsToFilter(List<Protein> aFilterList) {
         this.filterList = aFilterList;
     }
 
-    public void clearFilter() {
-        filterList.clear();
+    public void hasToFilter(boolean decision) {
+        this.hasToFilter = decision;
+    }
+
+    public void hasToMask(boolean decision) {
+        this.hasToMask = decision;
+    }
+
+    public void setProteinMasks(Set<V> masks) {
+        this.maskingSet = masks;
+    }
+    
+    public void hasToFetchDomainData(boolean decision){
+        this.hasToFetchDomainData = decision;
     }
 }

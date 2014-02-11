@@ -59,7 +59,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             askLinkDbLoginQuestion();
         }
         for (AnalysisGroup experiments : analysisList) {
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments.getExperiments().iterator(), false);
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.getExperiments().iterator(), false);
             infoPanel1.setReferenceExperiment(referenceExperiment);
             statisticsTabbedPane.add(experiments.getName(), new StatisticsPanel(experiments));
             infoPanel1.setExperimentsToDisplay(experiments.getExperiments(), false);
@@ -75,7 +75,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }
 
     public void collectAndShowData(Experiment referenceExperiment, List<Experiment> experiments, InfoPanel anInfoPanel) {
-        DataModeController.getDb().getDataMode().getViewPreparationForMode().PrepareProteinsForJList(referenceExperiment, experiments.iterator(), false);
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.iterator(), false);
         anInfoPanel.setExperimentsToDisplay(experiments);
 
     }

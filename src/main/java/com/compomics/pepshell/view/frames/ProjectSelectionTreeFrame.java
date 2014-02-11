@@ -19,6 +19,7 @@ import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.enums.ProgramPropertyEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
 import com.compomics.pepshell.view.panels.LoginDialog;
+import com.compomics.pepshell.view.panels.PreloadProteinMaskPanel;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,17 +28,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 /**
  *
@@ -49,7 +52,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Experiment referenceProject;
     private File fastaFile;
-    private Map<String, String> accessionMasks = new HashMap<String, String>();
 
     /**
      * Creates new form ProjectSelectionTreeFrame all this is pretty much unsafe
@@ -61,8 +63,8 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
     public ProjectSelectionTreeFrame(Point aPoint) {
         initComponents();
-        filterPanel.setVisible(false);
-        accessionMaskPanel.setVisible(false);
+        preloadProteinFilterPanel1.setVisible(false);
+        preloadProteinMaskPanel1.setVisible(false);
         //went faster than setting bounds
         int x = aPoint.x - (this.getWidth() / 2);
         int y = aPoint.y - (this.getHeight() / 2);
@@ -111,27 +113,11 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         fastaLocationTextField = new javax.swing.JTextField();
         addFastaButton = new javax.swing.JButton();
         ownFastaCheckBox = new javax.swing.JCheckBox();
-        filterPanel = new javax.swing.JPanel();
-        accessionScrollPane = new javax.swing.JScrollPane();
-        accessionTextArea = new javax.swing.JTextArea();
-        filterCheckbox = new javax.swing.JCheckBox();
-        importSubsetButton = new javax.swing.JButton();
-        saveSubsetButton = new javax.swing.JButton();
         makeDbConnectionButton = new javax.swing.JButton();
         maskProteinsCheckBox = new javax.swing.JCheckBox();
         filterSubsetCheckBox = new javax.swing.JCheckBox();
-        accessionMaskPanel = new javax.swing.JPanel();
-        loadAccessionMaskingFile = new javax.swing.JButton();
-        accessionToMaskTextField = new javax.swing.JTextField();
-        maskingAccessionTextField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        addMaskingAccessionButton = new javax.swing.JButton();
-        removeAccessionMaskingButton = new javax.swing.JButton();
-        removeMaskingsFromListButton = new javax.swing.JButton();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        accessionMaskingList = new javax.swing.JList();
-        saveAccessionMaskingButton = new javax.swing.JButton();
+        preloadProteinFilterPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinFilterPanel();
+        preloadProteinMaskPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinMaskPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         useLinkDbCheckBox = new javax.swing.JCheckBoxMenuItem();
@@ -226,46 +212,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
             }
         });
 
-        accessionTextArea.setColumns(20);
-        accessionTextArea.setRows(5);
-        accessionTextArea.setText("list of accessions separated by enters");
-        accessionScrollPane.setViewportView(accessionTextArea);
-
-        filterCheckbox.setText("remove this subset instead");
-
-        importSubsetButton.setText("import subset ...");
-
-        saveSubsetButton.setText("save subset...");
-
-        javax.swing.GroupLayout filterPanelLayout = new javax.swing.GroupLayout(filterPanel);
-        filterPanel.setLayout(filterPanelLayout);
-        filterPanelLayout.setHorizontalGroup(
-            filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(filterPanelLayout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addComponent(accessionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(filterCheckbox)
-                    .addComponent(importSubsetButton)
-                    .addComponent(saveSubsetButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        filterPanelLayout.setVerticalGroup(
-            filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(filterPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(filterPanelLayout.createSequentialGroup()
-                        .addComponent(filterCheckbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(importSubsetButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(saveSubsetButton))
-                    .addComponent(accessionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-
         makeDbConnectionButton.setText("connect to a database");
         makeDbConnectionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -286,106 +232,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 filterSubsetCheckBoxActionPerformed(evt);
             }
         });
-
-        loadAccessionMaskingFile.setText("load a masking file");
-        loadAccessionMaskingFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadAccessionMaskingFileActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("original accession");
-
-        jLabel2.setText("masking accession");
-
-        addMaskingAccessionButton.setText("=>");
-        addMaskingAccessionButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addMaskingAccessionButtonActionPerformed(evt);
-            }
-        });
-
-        removeAccessionMaskingButton.setText("<=");
-        removeAccessionMaskingButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeAccessionMaskingButtonActionPerformed(evt);
-            }
-        });
-
-        removeMaskingsFromListButton.setText("remove all maskings");
-        removeMaskingsFromListButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeMaskingsFromListButtonActionPerformed(evt);
-            }
-        });
-
-        jScrollPane5.setViewportView(accessionMaskingList);
-
-        saveAccessionMaskingButton.setText("export masking");
-        saveAccessionMaskingButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveAccessionMaskingButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout accessionMaskPanelLayout = new javax.swing.GroupLayout(accessionMaskPanel);
-        accessionMaskPanel.setLayout(accessionMaskPanelLayout);
-        accessionMaskPanelLayout.setHorizontalGroup(
-            accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, accessionMaskPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(accessionMaskPanelLayout.createSequentialGroup()
-                        .addGroup(accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(accessionToMaskTextField)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1)
-                            .addComponent(maskingAccessionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(removeAccessionMaskingButton)
-                                .addComponent(addMaskingAccessionButton))
-                            .addComponent(removeMaskingsFromListButton, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(accessionMaskPanelLayout.createSequentialGroup()
-                        .addComponent(loadAccessionMaskingFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
-                        .addComponent(saveAccessionMaskingButton)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        accessionMaskPanelLayout.setVerticalGroup(
-            accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(accessionMaskPanelLayout.createSequentialGroup()
-                .addGroup(accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(accessionMaskPanelLayout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addGroup(accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(loadAccessionMaskingFile)
-                            .addComponent(saveAccessionMaskingButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(accessionMaskPanelLayout.createSequentialGroup()
-                                .addComponent(addMaskingAccessionButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(removeAccessionMaskingButton)
-                                .addGap(18, 18, 18))
-                            .addGroup(accessionMaskPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(accessionToMaskTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel2)
-                                .addGap(6, 6, 6)))
-                        .addGroup(accessionMaskPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(maskingAccessionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(removeMaskingsFromListButton)))
-                    .addGroup(accessionMaskPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
 
         jMenu1.setText("data sources");
 
@@ -438,45 +284,43 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(accessionMaskPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(preloadProteinMaskPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(addFastaButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(analyseButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(makeDbConnectionButton)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(addFastaButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(analyseButton))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(makeDbConnectionButton)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                                .addComponent(addReferenceProjectButton)
-                                                .addComponent(removeReferenceProjectButton)
-                                                .addComponent(addAnalysisGroupButton)
-                                                .addComponent(toProjectTreeButton)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                    .addGap(30, 30, 30)
-                                                    .addComponent(removeProjectButton)))
-                                            .addComponent(removeAnalysisGroupButton))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                                            .addComponent(jScrollPane3)))
-                                    .addComponent(ownFastaCheckBox)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(filterSubsetCheckBox)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(maskProteinsCheckBox)))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addComponent(filterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                        .addComponent(addReferenceProjectButton)
+                                        .addComponent(removeReferenceProjectButton)
+                                        .addComponent(addAnalysisGroupButton)
+                                        .addComponent(toProjectTreeButton)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addGap(30, 30, 30)
+                                            .addComponent(removeProjectButton)))
+                                    .addComponent(removeAnalysisGroupButton))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane3)))
+                            .addComponent(ownFastaCheckBox)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(filterSubsetCheckBox)
+                                .addGap(18, 18, 18)
+                                .addComponent(maskProteinsCheckBox))
+                            .addComponent(preloadProteinFilterPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 723, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 10, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -521,11 +365,11 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(maskProteinsCheckBox)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(accessionMaskPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(26, 26, 26)
+                .addComponent(preloadProteinFilterPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(preloadProteinMaskPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -588,7 +432,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         List<AnalysisGroup> analysisList = new ArrayList<AnalysisGroup>();
         if (!selectedProjectsList.isEmpty() && referenceProject != null) {
             AnalysisGroup rogueProjects = new AnalysisGroup("Analysis");
-            Enumeration tree = ((DefaultMutableTreeNode) projectTree.getModel().getRoot()).children();
+            Enumeration tree = ((TreeNode) projectTree.getModel().getRoot()).children();
             while (tree.hasMoreElements()) {
                 Object anObject = tree.nextElement();
                 if (((DefaultMutableTreeNode) anObject).getUserObject() instanceof Experiment) {
@@ -611,18 +455,19 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 goAhead = false;
             }
         }
-        //probably replace the accession text area with a list with add and remove buttons
-        if (filterSubsetCheckBox.isSelected() && !accessionTextArea.getText().isEmpty()) {
+        //todo, move this to the sub panels?
+        /**if (filterSubsetCheckBox.isSelected() && !accessionTextArea.getText().isEmpty()) {
             List<Protein> filterList = new ArrayList<Protein>();
             for (String accession : Arrays.asList(accessionTextArea.getText().split("\n"))) {
                 filterList.add(new Protein(accession));
             }
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToFilter(true);
             DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(filterList);
         }
-        
-        if (maskProteinsCheckBox.isSelected() && !accessionMasks.isEmpty()){
-            
-        }
+
+        if (maskProteinsCheckBox.isSelected() && !accessionMasks.isEmpty()) {
+
+        }*/
 
         if (goAhead) {
             MainWindow window = new MainWindow();
@@ -659,11 +504,11 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
     private void filterSubsetCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterSubsetCheckBoxActionPerformed
         if (filterSubsetCheckBox.isSelected()) {
-            filterPanel.setVisible(true);
+            preloadProteinFilterPanel1.setVisible(true);
             this.pack();
             this.repaint();
         } else {
-            filterPanel.setVisible(false);
+            preloadProteinFilterPanel1.setVisible(false);
             this.pack();
             this.repaint();
         }
@@ -703,120 +548,25 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     private void maskProteinsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maskProteinsCheckBoxActionPerformed
         // TODO add your handling code here:
         if (maskProteinsCheckBox.isSelected()) {
-            accessionMaskPanel.setVisible(true);
+            preloadProteinMaskPanel1.setVisible(true);
             this.pack();
             this.repaint();
         } else {
-            accessionMaskPanel.setVisible(false);
+            preloadProteinMaskPanel1.setVisible(false);
             this.pack();
             this.repaint();
         }
-
     }//GEN-LAST:event_maskProteinsCheckBoxActionPerformed
 
-    //TODO: extract masking and filtering panel to separate panel classes, so it can be more complex and easier to handle, and optimized since this is not scalable
-    private void addMaskingAccessionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMaskingAccessionButtonActionPerformed
-        // TODO add your handling code here:
-        if (!accessionToMaskTextField.getText().isEmpty() || !maskingAccessionTextField.getText().isEmpty()) {
-            accessionMasks.put(accessionToMaskTextField.getText(), maskingAccessionTextField.getText());
-            //todo change this to objects containing the key and value, and a tostring that returns like below, also use a list model where we can add to instead of rebuilding
-            Vector<String> listData = new Vector<String>();
-            for (Entry<String, String> entry : accessionMasks.entrySet()) {
-                listData.add(entry.getKey() + " -> " + entry.getValue() + "\n");
-            }
-            accessionMaskingList.setListData(listData);
-        }
-
-    }//GEN-LAST:event_addMaskingAccessionButtonActionPerformed
-
-    private void removeAccessionMaskingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAccessionMaskingButtonActionPerformed
-        // TODO add your handling code here:
-        if (!accessionMaskingList.getSelectedValuesList().isEmpty()) {
-            //todo use the objects to get the key and value instead of splitting on a textual occurence, should clean up a lot
-            for (String aValue : (List<String>) accessionMaskingList.getSelectedValuesList()) {
-                accessionMasks.remove(aValue.split(" -> ")[0]);
-            }
-            Vector<String> listData = new Vector<String>();
-            for (Entry<String, String> entry : accessionMasks.entrySet()) {
-                listData.add(entry.getKey() + " -> " + entry.getValue() + "\n");
-            }
-            accessionMaskingList.setListData(listData);
-        }
-    }//GEN-LAST:event_removeAccessionMaskingButtonActionPerformed
-
-    private void loadAccessionMaskingFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadAccessionMaskingFileActionPerformed
-        // TODO add your handling code here:
-        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
-        accessionMaskingChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        accessionMaskingChooser.showOpenDialog(this);
-        File selectedFile = accessionMaskingChooser.getSelectedFile();
-        try {
-            Map<Protein, String> maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
-            Vector<String> listData = new Vector<String>();
-            for (Entry<Protein, String> entry : maskMap.entrySet()) {
-                listData.add(entry.getKey().getOriginalAccession() + " -> " + entry.getValue() + "\n");
-            }
-            accessionMaskingList.setListData(listData);
-        } catch (IOException ex) {
-            faultBarrier.getInstance().handleException(ex);
-        }
-    }//GEN-LAST:event_loadAccessionMaskingFileActionPerformed
-
-    private void removeMaskingsFromListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMaskingsFromListButtonActionPerformed
-        // TODO add your handling code here:
-        accessionMasks.clear();
-        accessionMaskingList.setListData(new Vector<String>());
-    }//GEN-LAST:event_removeMaskingsFromListButtonActionPerformed
-
-    private void saveAccessionMaskingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAccessionMaskingButtonActionPerformed
-        // TODO add your handling code here:
-        FileWriter saveWriter = null;
-        try {
-            // TODO add your handling code here:
-            JFileChooser accessionMaskSaver = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
-            accessionMaskSaver.setDialogType(JFileChooser.SAVE_DIALOG);
-            accessionMaskSaver.setMultiSelectionEnabled(false);
-            accessionMaskSaver.showOpenDialog(this);
-            File saveFile = accessionMaskSaver.getSelectedFile();
-            //this could be moved out of this dialog to the controller
-            saveWriter = new FileWriter(saveFile);
-            for (Entry<String, String> anAccessionMaskingEntry : accessionMasks.entrySet()) {
-                saveWriter.append(anAccessionMaskingEntry.getKey()).append("=").append(anAccessionMaskingEntry.getValue()).append("\n");
-            }
-        } catch (IOException ex) {
-            FaultBarrier.getInstance().handleException(ex);
-        } finally {
-            try {
-                if (saveWriter != null) {
-                    saveWriter.flush();
-                    saveWriter.close();
-                }
-            } catch (IOException ex) {
-                FaultBarrier.getInstance().handleException(ex);
-            }
-        }
-    }//GEN-LAST:event_saveAccessionMaskingButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel accessionMaskPanel;
-    private javax.swing.JList accessionMaskingList;
-    private javax.swing.JScrollPane accessionScrollPane;
-    private javax.swing.JTextArea accessionTextArea;
-    private javax.swing.JTextField accessionToMaskTextField;
     private javax.swing.JButton addAnalysisGroupButton;
     private javax.swing.JButton addFastaButton;
-    private javax.swing.JButton addMaskingAccessionButton;
     private javax.swing.JButton addReferenceProjectButton;
     private javax.swing.JButton analyseButton;
     private javax.swing.JTextField fastaLocationTextField;
-    private javax.swing.JCheckBox filterCheckbox;
-    private javax.swing.JPanel filterPanel;
     private javax.swing.JCheckBox filterSubsetCheckBox;
-    private javax.swing.JButton importSubsetButton;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -827,22 +577,17 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JButton loadAccessionMaskingFile;
     private javax.swing.JButton makeDbConnectionButton;
     private javax.swing.JCheckBox maskProteinsCheckBox;
-    private javax.swing.JTextField maskingAccessionTextField;
     private javax.swing.JCheckBox ownFastaCheckBox;
+    private com.compomics.pepshell.view.panels.PreloadProteinFilterPanel preloadProteinFilterPanel1;
+    private com.compomics.pepshell.view.panels.PreloadProteinMaskPanel preloadProteinMaskPanel1;
     private javax.swing.JList projectList;
     private com.compomics.pepshell.view.components.DragAndDropTree projectTree;
     private javax.swing.JTextArea referenceProjectTextBox;
-    private javax.swing.JButton removeAccessionMaskingButton;
     private javax.swing.JButton removeAnalysisGroupButton;
-    private javax.swing.JButton removeMaskingsFromListButton;
     private javax.swing.JButton removeProjectButton;
     private javax.swing.JButton removeReferenceProjectButton;
-    private javax.swing.JButton saveAccessionMaskingButton;
-    private javax.swing.JButton saveSubsetButton;
     private javax.swing.JButton toProjectTreeButton;
     private javax.swing.JCheckBoxMenuItem useInternetCheckBox;
     private javax.swing.JCheckBoxMenuItem useLinkDbCheckBox;
