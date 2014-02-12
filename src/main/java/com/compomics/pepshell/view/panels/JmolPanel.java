@@ -2,6 +2,7 @@ package com.compomics.pepshell.view.panels;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.controllers.DAO.DatabasePDBDAO;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.InteractionPartner;
@@ -9,13 +10,16 @@ import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Ordering;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -142,8 +146,7 @@ public class JmolPanel extends javax.swing.JPanel {
         if (presentedProtein != null) {
             int start = ((SequenceCoveragePanel) evt.getComponent()).getTextSelectionStart();
             int stop = ((SequenceCoveragePanel) evt.getComponent()).getTextSelectionEnd();
-            for (Iterator<InteractionPartner> it = ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForRange(presentedProtein, start, stop).iterator(); it.hasNext();) {
-                InteractionPartner aPartner = it.next();
+            for (InteractionPartner aPartner : ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForRange(presentedProtein, start, stop)) {
             }
         }
     }//GEN-LAST:event_sequenceCoveragePanel1MouseDragged
@@ -179,12 +182,15 @@ public class JmolPanel extends javax.swing.JPanel {
             @Override
             public void run() {
                 try {
-                    try {
-                        pdbAccessions.addAll(PDBDAO.getPDBFileAccessionsForProtein(protein));
-                    } catch (MalformedURLException ex) {
-                        Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ConversionException ex) {
-                        Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    pdbAccessions.addAll(DatabasePDBDAO.getPDBFileAccessionsForProtein(protein));
+                    if (pdbAccessions.isEmpty()) {
+                        try {
+                            pdbAccessions.addAll(PDBDAO.getPDBFileAccessionsForProtein(protein));
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (ConversionException ex) {
+                            Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 } catch (IOException ioe) {
                     try {
@@ -193,6 +199,8 @@ public class JmolPanel extends javax.swing.JPanel {
                     } catch (SQLException ex) {
                         Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } catch (ConversionException ex) {
+                    Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         ;
@@ -205,10 +213,21 @@ public class JmolPanel extends javax.swing.JPanel {
             PDBFileComboBox.addItem("3Q4C");
             PDBFileComboBox.addItem("3C4C");
         } else {
-            for (PdbInfo aPDBFileAccession : pdbAccessions) {
+            Ordering<PdbInfo> resolutionOrdering = Ordering.natural().onResultOf(getResolution);
+            SortedSet<PdbInfo> infoSet = ImmutableSortedSet.orderedBy(resolutionOrdering).addAll(pdbAccessions).build();
+            for (PdbInfo aPDBFileAccession : infoSet) {
                 PDBFileComboBox.addItem(aPDBFileAccession);
             }
         }
         jProgressBar1.setIndeterminate(false);
     }
+    Function<PdbInfo, Double> getResolution = new Function<PdbInfo, Double>() {
+        public Double apply(PdbInfo input) {
+            Double toReturn = 10000.0;
+            if (input.getResolution() != null) {
+                toReturn = input.getResolution();
+            }
+            return toReturn;
+        }
+    };
 }

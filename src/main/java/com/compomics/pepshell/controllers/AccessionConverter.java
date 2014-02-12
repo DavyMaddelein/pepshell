@@ -81,7 +81,7 @@ public class AccessionConverter {
     }
     //TODO finish this, needs to take any accession and try to convert to uniprot
 
-    public static String ToUniprot(String accession) throws IOException, ConversionException {
+    public static String toUniprot(String accession) throws IOException, ConversionException {
         String tempaccession = accession;
         if (isGIAccession(accession)) {
             tempaccession = GIToUniprot(accession);

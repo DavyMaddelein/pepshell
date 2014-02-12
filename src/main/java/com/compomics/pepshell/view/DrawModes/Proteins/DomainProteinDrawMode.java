@@ -34,7 +34,7 @@ public class DomainProteinDrawMode<T extends Protein, U extends Peptide> extends
                 try {
                     //ExternalDomainFinder.addDomainsToProtein(protein);
                     try {
-                        protein.addDomains(ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.ToUniprot(protein.getProteinAccession()), DomainWebSites.PFAM));
+                        protein.addDomains(ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(protein.getProteinAccession()), DomainWebSites.PFAM));
                     } catch (ConversionException e) {
                     }
                 } catch (XMLStreamException ex) {

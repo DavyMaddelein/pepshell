@@ -120,6 +120,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("project selection");
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        setForeground(java.awt.Color.white);
         setMaximumSize(new java.awt.Dimension(707, 609));
 
         jScrollPane1.setViewportView(projectList);
@@ -241,15 +242,12 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
         jMenu3.setText("translate accessions to");
 
-        uniprotTranslateRadioButtonMenuItem.setSelected(true);
         uniprotTranslateRadioButtonMenuItem.setText("uniprot");
         jMenu3.add(uniprotTranslateRadioButtonMenuItem);
 
-        swissprotTranslationRadioButtonMenuItem.setSelected(true);
         swissprotTranslationRadioButtonMenuItem.setText("swissprot");
         jMenu3.add(swissprotTranslationRadioButtonMenuItem);
 
-        genbankTranslationRadioButtonMenuItem.setSelected(true);
         genbankTranslationRadioButtonMenuItem.setText("genbank");
         jMenu3.add(genbankTranslationRadioButtonMenuItem);
 
@@ -469,7 +467,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
         if (uniprotTranslateRadioButtonMenuItem.isSelected() || swissprotTranslationRadioButtonMenuItem.isSelected() || genbankTranslationRadioButtonMenuItem.isSelected()) {
             //TODO actually set what to translate to
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToTranslateAccessions(true);
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToTranslateAccessions(false);
         }
 
         if (goAhead) {

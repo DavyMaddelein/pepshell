@@ -25,6 +25,7 @@ public class SQLStatements {
     private static String GET_PEPTIDES_WITH_QUANT;
     private static String GET_INTERACTIONPARTNERS_FOR_PDB;
     private static String GET_PDB_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN;
+    private static String GET_PDB_INFO_FOR_PROTEIN;
 
     public static void instantiateColimsStatements() {
         SQLStatements.SELECT_PROTEINS = SELECT_COLIMS_PROTEINS;
@@ -49,7 +50,7 @@ public class SQLStatements {
     }
 
     public static void instantiateLinkDbStatements() {
-        SQLStatements.GET_PDBFILES_FOR_PROTEIN = GET_PDBfILES_FOR_PROTEIN_FROM_LINKDB;
+        SQLStatements.GET_PDBFILES_FOR_PROTEIN = GET_PDBFILES_FOR_PROTEIN_FROM_LINKDB;
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_RESIDUE = GET_INTERACTIONPARTNERS_FOR_RESIDUE_FROM_LINKDB;
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_RANGE = GET_INTERACTIONPARTNERS_FOR_RANGE_FROM_LINKDB;
         SQLStatements.GET_PDB_DATA_FROM_DB = GET_PDB_FILES_FROM_LINKDB;
@@ -57,6 +58,8 @@ public class SQLStatements {
         SQLStatements.GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_STRUCTURE = GET_RELATIVE_SOLVENT_ACCESSIBILITY_FOR_STRUCTURE_FROM_LINKDB;
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_PDB = GET_INTERACTION_PARTNERS_FOR_PDB_FROM_LINKDB;
         SQLStatements.GET_PDB_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN = GET_PDBFILE_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN_FROM_LINKDB;
+        SQLStatements.GET_PDB_INFO_FOR_PROTEIN = GET_PDBINFO_FOR_PROTEIN_FROM_LINKDB;
+        
     }
 
     //TODO move these to enums, split up peptide/protein queries(ms-colims) and structural db queries (link db)
@@ -75,7 +78,8 @@ public class SQLStatements {
     private static final String SELECT_COLIMS_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION = "";
     private static final String CHECK_IF_MSLIMS_PROJECT_HAS_QUANTDATA = "select l_identificationid from identification_to_quantitation,(select identificationid as ident_id from identification,(select spectrumid as spec_id from spectrum where l_projectid = ? limit 1)as spectrum_result where l_spectrumid = spectrum_result.spec_id limit 1) as ident_result where ident_result.ident_id = l_identificationid limit 1";
     private static final String CHECK_IF_COLIMS_PROJECT_HAS_QUANTDATA = "";
-    private static final String GET_PDBfILES_FOR_PROTEIN_FROM_LINKDB = "select PDB from structure";
+    private static final String GET_PDBFILES_FOR_PROTEIN_FROM_LINKDB = "select PDB from structure";
+    private static final String GET_PDBINFO_FOR_PROTEIN_FROM_LINKDB = "select * from structure";
     private static final String GET_INTERACTIONPARTNERS_FOR_RESIDUE_FROM_LINKDB = "select interaction.* from interaction,residue,protein_chain,protein where protein_chain.chain_id = residue.chain_id and protein.idprotein = protein_id and residue_id_partner1 = residue.idresidue and protein.uniprot_id = ?";
     private static final String GET_PDB_FILES_FROM_LINKDB = "select * from structure where PDB = ?";
     private static final String GET_FREE_ENERGY_FOR_STRUCTURE_FROM_LINKDB = "select residue.numbering_fasta, residue.E_total, residue.SASrel from residue, ( select chain.idchain as chain_id from protein, protein_chain, chain, structure where protein.uniprot_id = ? and protein_chain.protein_id = protein.idprotein and protein_chain.chain_id = chain.idchain and structure.PDB = ? and chain.structure_id = structure.idstructure order by chain_label asc limit 1) as chain_id_sub where residue.chain_id = chain_id_sub.chain_id;";
@@ -153,5 +157,9 @@ public class SQLStatements {
 
     public static String getPdbWithHighestResolutionForProtein(){
         return GET_PDB_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN;
+    }
+    
+    public static String getPdbInfoForProtein(){
+        return GET_PDB_INFO_FOR_PROTEIN;
     }
 }

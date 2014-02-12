@@ -45,20 +45,19 @@ public class HydrophobicityProteinDrawMode extends StandardPeptideProteinDrawMod
     }
 
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
-        //order colors by blue value
+        //order colors by red value
         if (colorLegend == null) {
             Ordering<Color> colorOrdering = Ordering.natural().onResultOf(getRedValue);
             colorLegend = ImmutableSortedSet.orderedBy(colorOrdering).addAll(hydrophobicityMapPh7.values()).build();
         }
         int colorCounter = 0;
-        g.setColor(Color.black);
-        g.drawString("acidic", xOffset, yOffset + 25);
         for (Color aColor : colorLegend) {
             g.setColor(aColor);
             g.fillRect(xOffset + colorCounter, yOffset, 5, ProgramVariables.VERTICALSIZE);
             colorCounter += 5;
         }
         g.setColor(Color.black);
+        g.drawString("acidic", xOffset, yOffset + 25);
         g.drawString("basic", xOffset + colorCounter - 5, yOffset + 25);
     }
 

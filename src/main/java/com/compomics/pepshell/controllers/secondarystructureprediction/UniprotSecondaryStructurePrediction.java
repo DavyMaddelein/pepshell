@@ -28,7 +28,7 @@ public class UniprotSecondaryStructurePrediction extends SecondaryStructurePredi
         StringBuilder predictionResult = new StringBuilder();
         List<DasFeature> features = new ArrayList<DasFeature>();
         try {
-            features = DasParser.getAllDasFeatures(URLController.readUrl("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + AccessionConverter.ToUniprot(anUniprotAccession)));
+            features = DasParser.getAllDasFeatures(URLController.readUrl("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + AccessionConverter.toUniprot(anUniprotAccession)));
         } catch (XMLStreamException ex) {
             Logger.getLogger(UniprotSecondaryStructurePrediction.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ConversionException ex) {
