@@ -65,11 +65,11 @@ public class LinkDb implements StructureDataSource {
         try {
             foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.ToUniprot(aProtein.getProteinAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
         } catch (IOException ex) {
-            throw new DataRetrievalException("");
+            throw new DataRetrievalException("", ex);
         } catch (ConversionException ex) {
-            throw new DataRetrievalException("");
+            throw new DataRetrievalException("", ex);
         } catch (XMLStreamException ex) {
-            throw new DataRetrievalException("");
+            throw new DataRetrievalException("", ex);
         }
         return foundDomains;
     }

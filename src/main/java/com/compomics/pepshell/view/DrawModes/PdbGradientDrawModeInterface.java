@@ -8,7 +8,7 @@ import java.awt.Graphics;
 
 /**
  *
- * @author Davy
+ * @author Niels Hulstaert
  */
 public interface PdbGradientDrawModeInterface<T extends Protein, U extends Peptide> extends GradientDrawModeInterface<T, U> {
 

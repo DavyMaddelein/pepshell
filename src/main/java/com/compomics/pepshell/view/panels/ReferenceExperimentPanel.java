@@ -24,9 +24,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -34,6 +33,7 @@ import javax.swing.JOptionPane;
  */
 public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
+    private static final Logger LOGGER = Logger.getLogger(ReferenceExperimentPanel.class);
     private int horizontalOffset = this.getX() + 15;
     private int verticalOffset = 50;
     private Protein protein;
@@ -49,7 +49,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     public ReferenceExperimentPanel() {
         initComponents();
         pdbSelectionComboBox.setVisible(false);
-        this.addMouseListener(new popupMenuListener());
+        //this.addMouseListener(new popupMenuListener());
     }
 
     public ReferenceExperimentPanel(Experiment project) {
@@ -64,9 +64,9 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 try {
                     PDBDAO.getPDBFileAccessionsForProtein(protein);
                 } catch (IOException ex) {
-                    Logger.getLogger(ReferenceExperimentPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 } catch (ConversionException ex) {
-                    Logger.getLogger(ReferenceExperimentPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
             //pdbSelectionComboBox.addItem(this);
@@ -109,11 +109,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         setName("[1000, 80]"); // NOI18N
         setPreferredSize(new java.awt.Dimension(1000, 80));
-        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                formMouseMoved(evt);
-            }
-        });
 
         projectNameLabel.setMaximumSize(new java.awt.Dimension(1600, 300));
         projectNameLabel.setMinimumSize(new java.awt.Dimension(50, 30));
@@ -170,20 +165,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        //todo actually take a look at this
-        /*if (evt.getY() >= verticalOffset + 5 && evt.getY() <= verticalOffset + proteinBarSize) {
-         System.out.println(evt.getY());
-         System.out.println(evt.getX());
-         for (PeptideGroup peptideGroup : protein.getPeptideGroupsForProtein()) {
-         if (evt.getX() >= horizontalOffset + peptideGroup.getStartingAlignmentPosition() && evt.getX() <= horizontalOffset + peptideGroup.getEndAlignmentPosition()) {
-         ProteinInfoFrame frame = new ProteinInfoFrame(protein, peptideGroup);
-         }
-         }
-         }
-         */
-    }//GEN-LAST:event_formMouseMoved
-
     private void drawModeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawModeChooserActionPerformed
         // TODO add your handling code here:
         switch (drawModeChooser.getSelectedIndex()) {
@@ -205,8 +186,9 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 secondaryDrawMode = new HydrophobicityProteinDrawMode();
                 break;
         }
-        this.revalidate();
-        this.repaint();
+        //this.revalidate();
+        //this.repaint();
+
     }//GEN-LAST:event_drawModeChooserActionPerformed
 
     private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
@@ -247,6 +229,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (protein != null) {
+            LOGGER.error("started painting");
             try {
                 verticalOffset = this.projectNameLabel.getY() + 20;
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
@@ -266,11 +249,12 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                     }
                     domainDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
                 } catch (DataRetrievalException e) {
-
+                    LOGGER.error(e.getMessage(), e);
                 }
             } catch (UndrawableException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
+            LOGGER.error("finished painting");
         }
     }
 
