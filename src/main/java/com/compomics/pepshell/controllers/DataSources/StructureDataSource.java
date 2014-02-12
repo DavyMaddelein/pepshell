@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public interface StructureDataSource extends AbstractDataSource {
 
+    public StructureDataSource getInstance();
+        
     public List<Domain> getDomainData(Protein aProtein) throws DataRetrievalException;
 
     public String getPDBDataForPDBName(String pdbAccession);

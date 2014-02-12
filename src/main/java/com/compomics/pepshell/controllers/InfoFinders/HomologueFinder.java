@@ -10,7 +10,7 @@ import java.util.HashSet;
 public class HomologueFinder {
 
     public static HashSet<String> findHomologueForNcbiAccession(String aNcbiAccession) throws IOException {
-        String htmlPage = URLController.readUrl("http:eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=homologene&term=" + aNcbiAccession);
+        String htmlPage = URLController.readUrl("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=homologene&term=" + aNcbiAccession);
         String count = htmlPage.substring(htmlPage.indexOf("<Count>") + 7, htmlPage.indexOf("</Count>"));
         if(count.equalsIgnoreCase("1") ){
             String urlMake = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=homologene&id=" + htmlPage.substring(htmlPage.indexOf("<Id>") + 4, htmlPage.indexOf("</Id>"));

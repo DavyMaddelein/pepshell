@@ -115,7 +115,8 @@ public class Protein {
         if (obj != null) {
             if (getClass() == obj.getClass()) {
                 final Protein other = (Protein) obj;
-                if ((this.visibleAccession == null) ? (other.getVisibleAccession() != null) : this.visibleAccession.equals(other.getVisibleAccession())) {
+                if ((this.visibleAccession == null) ? (other.getVisibleAccession() != null) : this.visibleAccession.equals(other.getVisibleAccession())
+                        || (this.originalAccession == null) ? (other.getProteinAccession() != null) : this.originalAccession.equals(other.getProteinAccession())) {
                     returnValue = true;
                 }
                 if (this.sequence == null && other.getProteinSequence() != null) {

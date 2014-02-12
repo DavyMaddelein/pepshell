@@ -5,6 +5,7 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.InteractionPartner;
+import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
@@ -119,17 +120,19 @@ public class JmolPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void PDBFileComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PDBFileComboBoxActionPerformed
-        try {
-            pdbViewPanel1.setPdbFile((String) PDBFileComboBox.getSelectedItem());
-            PDBInfoText.setText(ProgramVariables.STRUCTUREDATASOURCE.getPDBDataForPDBName((String) PDBFileComboBox.getSelectedItem()));
-            sequenceCoveragePanel1.showProteinCoverage(
-                    ProteinController.fromThreeLetterToOneLetterAminoAcids(PDBDAO.getSequenceFromPdbFile(PDBDAO.getPdbFileInMem((String) PDBFileComboBox.getSelectedItem()))),
-                    new ArrayList<PeptideGroup>().iterator());
-            sequenceCoveragePanel1.setInteractionCoverage(ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForPDBName((String) PDBFileComboBox.getSelectedItem()));
-        } catch (IOException ioe) {
-            if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
-                JOptionPane.showMessageDialog(this, "the PDB file for accession: " + (String) PDBFileComboBox.getSelectedItem() + " could not be retrieved");
-                faultBarrier.handleException(ioe);
+        if (PDBFileComboBox.getSelectedItem() != null) {
+            try {
+                pdbViewPanel1.setPdbFile(PDBFileComboBox.getSelectedItem().toString());
+                PDBInfoText.setText(ProgramVariables.STRUCTUREDATASOURCE.getPDBDataForPDBName(PDBFileComboBox.getSelectedItem().toString()));
+                sequenceCoveragePanel1.showProteinCoverage(
+                        ProteinController.fromThreeLetterToOneLetterAminoAcids(PDBDAO.getSequenceFromPdbFile(PDBDAO.getPdbFileInMem(PDBFileComboBox.getSelectedItem().toString()))),
+                        new ArrayList<PeptideGroup>().iterator());
+                sequenceCoveragePanel1.setInteractionCoverage(ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForPDBName(PDBFileComboBox.getSelectedItem().toString()));
+            } catch (IOException ioe) {
+                if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
+                    JOptionPane.showMessageDialog(this, "the PDB file for accession: " + PDBFileComboBox.getSelectedItem().toString() + " could not be retrieved");
+                    faultBarrier.handleException(ioe);
+                }
             }
         }
     }//GEN-LAST:event_PDBFileComboBoxActionPerformed
@@ -168,7 +171,7 @@ public class JmolPanel extends javax.swing.JPanel {
     }
 
     public void setPDBProtein(final Protein protein) throws MalformedURLException, ConversionException, SQLException {
-        final Set<String> pdbAccessions = new HashSet<String>();
+        final Set<PdbInfo> pdbAccessions = new HashSet<PdbInfo>();
         sequenceCoveragePanel1.showProteinCoverage(protein.getProteinSequence(), protein.getPeptideGroupsForProtein().iterator());
         jProgressBar1.setIndeterminate(true);
         jProgressBar1.setString("fetching pdb files");
@@ -202,7 +205,7 @@ public class JmolPanel extends javax.swing.JPanel {
             PDBFileComboBox.addItem("3Q4C");
             PDBFileComboBox.addItem("3C4C");
         } else {
-            for (String aPDBFileAccession : pdbAccessions) {
+            for (PdbInfo aPDBFileAccession : pdbAccessions) {
                 PDBFileComboBox.addItem(aPDBFileAccession);
             }
         }

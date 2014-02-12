@@ -2,9 +2,6 @@ package com.compomics.pepshell;
 
 import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
-import com.compomics.pepshell.controllers.calculators.GradientCalculator;
-import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
-import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
 import java.io.File;
 

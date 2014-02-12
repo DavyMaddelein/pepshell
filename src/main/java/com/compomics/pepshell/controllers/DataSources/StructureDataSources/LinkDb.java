@@ -197,4 +197,8 @@ public class LinkDb implements StructureDataSource {
         }
         return interactionPartnerList;
     }
+
+    public StructureDataSource getInstance() {
+        return new LinkDb();
+    }
 }

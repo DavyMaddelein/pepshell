@@ -4,38 +4,25 @@ import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
 import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DataModes.FastaDataMode;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.InternetStructureDataSource;
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
-import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Property;
-import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
-import com.compomics.pepshell.model.enums.ProgramPropertyEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
 import com.compomics.pepshell.view.panels.LoginDialog;
-import com.compomics.pepshell.view.panels.PreloadProteinMaskPanel;
 import java.awt.Point;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
-import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
@@ -124,11 +111,11 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         useInternetCheckBox = new javax.swing.JCheckBoxMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
-        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem3 = new javax.swing.JRadioButtonMenuItem();
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
+        uniprotTranslateRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        swissprotTranslationRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        genbankTranslationRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        fetchDomainDataCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
+        fetchPdbDataCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("project selection");
@@ -254,27 +241,27 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
 
         jMenu3.setText("translate accessions to");
 
-        jRadioButtonMenuItem1.setSelected(true);
-        jRadioButtonMenuItem1.setText("uniprot");
-        jMenu3.add(jRadioButtonMenuItem1);
+        uniprotTranslateRadioButtonMenuItem.setSelected(true);
+        uniprotTranslateRadioButtonMenuItem.setText("uniprot");
+        jMenu3.add(uniprotTranslateRadioButtonMenuItem);
 
-        jRadioButtonMenuItem2.setSelected(true);
-        jRadioButtonMenuItem2.setText("swissprot");
-        jMenu3.add(jRadioButtonMenuItem2);
+        swissprotTranslationRadioButtonMenuItem.setSelected(true);
+        swissprotTranslationRadioButtonMenuItem.setText("swissprot");
+        jMenu3.add(swissprotTranslationRadioButtonMenuItem);
 
-        jRadioButtonMenuItem3.setSelected(true);
-        jRadioButtonMenuItem3.setText("genbank");
-        jMenu3.add(jRadioButtonMenuItem3);
+        genbankTranslationRadioButtonMenuItem.setSelected(true);
+        genbankTranslationRadioButtonMenuItem.setText("genbank");
+        jMenu3.add(genbankTranslationRadioButtonMenuItem);
 
         jMenu2.add(jMenu3);
 
-        jCheckBoxMenuItem1.setSelected(true);
-        jCheckBoxMenuItem1.setText("fetch domain-related data");
-        jMenu2.add(jCheckBoxMenuItem1);
+        fetchDomainDataCheckBoxMenuItem.setSelected(true);
+        fetchDomainDataCheckBoxMenuItem.setText("fetch domain-related data");
+        jMenu2.add(fetchDomainDataCheckBoxMenuItem);
 
-        jCheckBoxMenuItem2.setSelected(true);
-        jCheckBoxMenuItem2.setText("fetch pdb data for proteins");
-        jMenu2.add(jCheckBoxMenuItem2);
+        fetchPdbDataCheckBoxMenuItem.setSelected(true);
+        fetchPdbDataCheckBoxMenuItem.setText("fetch pdb data for proteins");
+        jMenu2.add(fetchPdbDataCheckBoxMenuItem);
 
         jMenuBar1.add(jMenu2);
 
@@ -455,19 +442,35 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 goAhead = false;
             }
         }
-        //todo, move this to the sub panels?
-        /**if (filterSubsetCheckBox.isSelected() && !accessionTextArea.getText().isEmpty()) {
-            List<Protein> filterList = new ArrayList<Protein>();
-            for (String accession : Arrays.asList(accessionTextArea.getText().split("\n"))) {
-                filterList.add(new Protein(accession));
+        if (filterSubsetCheckBox.isSelected()) {
+            if (!preloadProteinFilterPanel1.getProteinsToFilterWith().isEmpty()) {
+                DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToFilter(true);
+                DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(preloadProteinFilterPanel1.getProteinsToFilterWith());
+            } else {
+                JOptionPane.showMessageDialog(this, "empty filter set, was ignored");
             }
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToFilter(true);
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(filterList);
+        }
+        if (maskProteinsCheckBox.isSelected()) {
+            if (!preloadProteinMaskPanel1.getProteinsToMaskWith().isEmpty()) {
+                DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToMask(true);
+                DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinMasks(preloadProteinMaskPanel1.getProteinsToMaskWith());
+            } else {
+                JOptionPane.showMessageDialog(this, "empty masking set, was ignored");
+            }
         }
 
-        if (maskProteinsCheckBox.isSelected() && !accessionMasks.isEmpty()) {
+        if (fetchDomainDataCheckBoxMenuItem.isSelected()) {
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToFetchDomainData(true);
+        }
 
-        }*/
+        if (fetchPdbDataCheckBoxMenuItem.isSelected()) {
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToRetrievePDBData(true);
+        }
+
+        if (uniprotTranslateRadioButtonMenuItem.isSelected() || swissprotTranslationRadioButtonMenuItem.isSelected() || genbankTranslationRadioButtonMenuItem.isSelected()) {
+            //TODO actually set what to translate to
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToTranslateAccessions(true);
+        }
 
         if (goAhead) {
             MainWindow window = new MainWindow();
@@ -564,16 +567,14 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     private javax.swing.JButton addReferenceProjectButton;
     private javax.swing.JButton analyseButton;
     private javax.swing.JTextField fastaLocationTextField;
+    private javax.swing.JCheckBoxMenuItem fetchDomainDataCheckBoxMenuItem;
+    private javax.swing.JCheckBoxMenuItem fetchPdbDataCheckBoxMenuItem;
     private javax.swing.JCheckBox filterSubsetCheckBox;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
+    private javax.swing.JRadioButtonMenuItem genbankTranslationRadioButtonMenuItem;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -588,7 +589,9 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     private javax.swing.JButton removeAnalysisGroupButton;
     private javax.swing.JButton removeProjectButton;
     private javax.swing.JButton removeReferenceProjectButton;
+    private javax.swing.JRadioButtonMenuItem swissprotTranslationRadioButtonMenuItem;
     private javax.swing.JButton toProjectTreeButton;
+    private javax.swing.JRadioButtonMenuItem uniprotTranslateRadioButtonMenuItem;
     private javax.swing.JCheckBoxMenuItem useInternetCheckBox;
     private javax.swing.JCheckBoxMenuItem useLinkDbCheckBox;
     // End of variables declaration//GEN-END:variables
