@@ -1,5 +1,10 @@
 package com.compomics.pepshell.view.panels;
 
+import com.compomics.pepshell.model.Protein;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author Davy
@@ -9,9 +14,19 @@ public class PreloadProteinFilterPanel extends javax.swing.JPanel {
     /**
      * Creates new form PreloadProteinFilterPanel
      */
-   //probably replace the accession text area with a list with add and remove buttons
+    //probably replace the accession text area with a list with add and remove buttons
     public PreloadProteinFilterPanel() {
         initComponents();
+    }
+
+    public List<Protein> getProteinsToFilterWith() {
+        List<Protein> filterList = new ArrayList<Protein>();
+        if (!accessionTextArea.getText().isEmpty()) {
+            for (String accession : Arrays.asList(accessionTextArea.getText().split("\n"))) {
+                filterList.add(new Protein(accession));
+            }
+        }
+        return filterList;
     }
 
     /**

@@ -120,17 +120,19 @@ public class JmolPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void PDBFileComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PDBFileComboBoxActionPerformed
-        try {
-            pdbViewPanel1.setPdbFile((String) PDBFileComboBox.getSelectedItem());
-            PDBInfoText.setText(ProgramVariables.STRUCTUREDATASOURCE.getPDBDataForPDBName((String) PDBFileComboBox.getSelectedItem()));
-            sequenceCoveragePanel1.showProteinCoverage(
-                    ProteinController.fromThreeLetterToOneLetterAminoAcids(PDBDAO.getSequenceFromPdbFile(PDBDAO.getPdbFileInMem((String) PDBFileComboBox.getSelectedItem()))),
-                    new ArrayList<PeptideGroup>().iterator());
-            sequenceCoveragePanel1.setInteractionCoverage(ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForPDBName((String) PDBFileComboBox.getSelectedItem()));
-        } catch (IOException ioe) {
-            if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
-                JOptionPane.showMessageDialog(this, "the PDB file for accession: " + (String) PDBFileComboBox.getSelectedItem() + " could not be retrieved");
-                faultBarrier.handleException(ioe);
+        if (PDBFileComboBox.getSelectedItem() != null) {
+            try {
+                pdbViewPanel1.setPdbFile(PDBFileComboBox.getSelectedItem().toString());
+                PDBInfoText.setText(ProgramVariables.STRUCTUREDATASOURCE.getPDBDataForPDBName(PDBFileComboBox.getSelectedItem().toString()));
+                sequenceCoveragePanel1.showProteinCoverage(
+                        ProteinController.fromThreeLetterToOneLetterAminoAcids(PDBDAO.getSequenceFromPdbFile(PDBDAO.getPdbFileInMem(PDBFileComboBox.getSelectedItem().toString()))),
+                        new ArrayList<PeptideGroup>().iterator());
+                sequenceCoveragePanel1.setInteractionCoverage(ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForPDBName(PDBFileComboBox.getSelectedItem().toString()));
+            } catch (IOException ioe) {
+                if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
+                    JOptionPane.showMessageDialog(this, "the PDB file for accession: " + PDBFileComboBox.getSelectedItem().toString() + " could not be retrieved");
+                    faultBarrier.handleException(ioe);
+                }
             }
         }
     }//GEN-LAST:event_PDBFileComboBoxActionPerformed

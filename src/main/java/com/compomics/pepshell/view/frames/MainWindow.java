@@ -617,9 +617,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_newViewMenuItemActionPerformed
 
     private void setAccessionMaskOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setAccessionMaskOptionActionPerformed
-         AccessionMaskDialog dialog = new AccessionMaskDialog(this, true, proteinsToDisplay);
+        AccessionMaskDialog dialog = new AccessionMaskDialog(this, true, proteinsToDisplay);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
+        proteinList.repaint();
+        pdbProteinList.repaint();
     }//GEN-LAST:event_setAccessionMaskOptionActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -58,4 +58,8 @@ public class PdbInfo {
         return equal;
     }
 
+    @Override
+    public String toString(){
+        return this.pdbAccession;
+    }
 }

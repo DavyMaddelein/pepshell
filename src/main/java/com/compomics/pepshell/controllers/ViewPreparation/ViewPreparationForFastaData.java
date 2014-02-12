@@ -46,8 +46,15 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
         try {
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
                 DbDAO.fetchProteins(referenceExperiment);
+                if (hasToMask) {
+                    for (Protein maskingProtein : maskingSet) {
+                        if (referenceExperiment.getProteins().contains(maskingProtein)) {
+                            referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(maskingProtein)).setVisibleAccession(maskingProtein.getVisibleAccession());
+                        }
+                    }
+                }
                 if (hasToTranslateAccessions) {
-                    //todo multithread
+                    //todo multithread with countdownlatch
                     for (Protein aProtein : referenceExperiment.getProteins()) {
                         try {
                             aProtein.setAccession(AccessionConverter.ToUniprot(aProtein.getOriginalAccession()));
@@ -58,13 +65,6 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
                 }
                 if (hasToFilter) {
                     referenceExperiment.setProteins(filter.filter(referenceExperiment.getProteins(), filterList));
-                }
-                if (hasToMask) {
-                    for (Protein maskingProtein : maskingSet) {
-                        if (referenceExperiment.getProteins().contains(maskingProtein)) {
-                            referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(maskingProtein)).setVisibleAccession(maskingProtein.getVisibleAccession());
-                        }
-                    }
                 }
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
@@ -88,7 +88,6 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
                     //something something CP-DT files
                     T aProjectToCompareWith = experimentsToCompareWith.next();
                 }
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
             retrieveSecondaryData(referenceExperiment);
         } catch (FastaCouldNotBeReadException ex) {
@@ -132,6 +131,8 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
 
     @Override
     protected void retrieveSecondaryData(T experiment) {
+//TODO add preliminary checks to see if the server is accessible, if not, skip and warn user       
+//TODO move this to separate place and work with countdownlatches
         if (hasToFetchDomainData) {
             for (final List<Protein> partitionedExperimentProteins : Lists.partition(experiment.getProteins(), Runtime.getRuntime().availableProcessors())) {
                 new Runnable() {
@@ -146,10 +147,11 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
                         }
                     }
 
-                };
+                }.run();
             }
         }
         if (hasToRetrievePDBData) {
+            //TODO move this to separate place and work with countdownlatches
             for (Protein aProtein : experiment.getProteins()) {
                 try {
                     PDBDAO.getPDBFileAccessionsForProtein(aProtein);

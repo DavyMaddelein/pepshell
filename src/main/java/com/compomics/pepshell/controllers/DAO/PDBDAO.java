@@ -19,9 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 
@@ -80,16 +78,14 @@ public class PDBDAO {
     }
 
     public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException {
-        List<DasFeature> pdbFeatures = new ArrayList<DasFeature>();
-        DasParser.getAllDasFeatures(URLController.readUrl(String.format("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment=%s", pdbAccession)));
+        URL pdbURL = new URL("http://www.pdb.org/pdb/rest/describePDB?structureId=" + pdbAccession);
+        URLConnection pdbFileConnection = pdbURL.openConnection();
+        BufferedReader br = new BufferedReader(new LineNumberReader(new InputStreamReader(pdbFileConnection.getInputStream(), "UTF-8")));
 
-        //List<DasFeature>pdbFeatures = DasParser.getAllDasFeatures(new URL("http://www.ebi.ac.uk/das-svr/proteindas/das/pdbe_summary/features?segment="+pdbAccession).openStream());
-        for (DasFeature pdbFeature : pdbFeatures) {
-            pdbFeature.getMethod();
-        }
         return null;
     }
 
+    //get uniprot accessions from pdb from http://www.pdb.org/pdb/rest/describeMol?structureId=4hhb
     public static Set<PdbInfo> getPdbFileForProteinFromRepository(Protein protein) throws SQLException {
         Set<PdbInfo> pdbNames = new HashSet<PdbInfo>();
         SQLStatements.getPdbFilesFromDb();

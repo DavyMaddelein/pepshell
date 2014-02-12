@@ -1,6 +1,5 @@
 package com.compomics.pepshell.controllers.InfoFinders;
 
-import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.DasParser;
 import com.compomics.pepshell.controllers.DAO.URLController;
 import com.compomics.pepshell.model.DAS.DasFeature;
@@ -11,13 +10,27 @@ import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 /**
  * Created with IntelliJ IDEA. User: Davy Date: 3/7/13 Time: 8:14 AM To change
  * this template use File | Settings | File Templates.
  */
-public class ExternalDomainFinder {
+public class ExternalDomainFinder implements DataRetieverInterface {
+
+    public void execute(List<Protein> proteinList) {
+        for (Protein protein : proteinList) {
+            try {
+                protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
+            } catch (IOException ex) {
+                Logger.getLogger(ExternalDomainFinder.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (XMLStreamException ex) {
+                Logger.getLogger(ExternalDomainFinder.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
     public enum DomainWebSites {
         //todo, add website specific strings to enum to iterate over them and add them
@@ -55,10 +68,7 @@ public class ExternalDomainFinder {
     }
 
     public static void addDomainsToProtein(Protein protein) throws IOException, ConversionException, XMLStreamException {
-        if (protein.getProteinAccession().contains("|") || protein.getProteinAccession().contains("gi")) {
-            protein.addDomains(getDomainsFromAllSitesForUniprotAccession(AccessionConverter.GIToUniprot(protein.getProteinAccession())));
-        } else {
-            protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
-        }
+        protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
+
     }
 }

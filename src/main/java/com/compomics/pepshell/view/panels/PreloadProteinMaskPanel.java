@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
@@ -168,6 +167,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
             for (Entry<Protein, String> entry : maskMap.entrySet()) {
                 entry.getKey().setVisibleAccession(entry.getValue());
                 listData.add(entry.getKey());
+                accessionMasks.add(entry.getKey());
             }
             accessionMaskingList.setListData(listData);
         } catch (IOException ex) {
@@ -227,6 +227,9 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
         accessionMaskingList.setListData(new Vector<Protein>());
     }//GEN-LAST:event_removeMaskingsFromListButtonActionPerformed
 
+    public Set<Protein> getProteinsToMaskWith() {
+        return accessionMasks;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList accessionMaskingList;

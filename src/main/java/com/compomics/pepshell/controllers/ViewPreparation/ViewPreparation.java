@@ -26,7 +26,7 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
     boolean hasToFetchDomainData = false;
     boolean hasToAddQuantData = false;
     boolean hasToTranslateAccessions = false;
-    boolean hasToRetrievePDBData = true;
+    boolean hasToRetrievePDBData = false;
 
     public abstract T retrieveData(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
 
