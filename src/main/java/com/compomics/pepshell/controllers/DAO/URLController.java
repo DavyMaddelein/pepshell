@@ -1,6 +1,7 @@
 package com.compomics.pepshell.controllers.DAO;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -15,11 +16,9 @@ import java.nio.CharBuffer;
 public class URLController {
 
     public static String readUrl(String aUrl) throws IOException {
-        String htmlPage;
-        URL myURL = new URL(aUrl);
         StringBuilder input = new StringBuilder();
-        HttpURLConnection c = (HttpURLConnection) myURL.openConnection();
-        Reader r = new InputStreamReader(new BufferedInputStream(c.getInputStream()), "UTF-8");
+        String htmlPage;
+        Reader r = openReader(aUrl);
         CharBuffer buffer = CharBuffer.allocate(256);
         while ((r.read(buffer)) != -1) {
             input.append(buffer.flip());
@@ -28,5 +27,13 @@ public class URLController {
         r.close();
         htmlPage = input.toString();
         return htmlPage;
+    }
+
+    public static BufferedReader openReader(String aUrl) throws IOException {
+        URL myURL = new URL(aUrl);
+        HttpURLConnection c = (HttpURLConnection) myURL.openConnection();
+        c.setConnectTimeout(1000);
+        BufferedReader r = new BufferedReader(new InputStreamReader(new BufferedInputStream(c.getInputStream()), "UTF-8"));   
+        return r;
     }
 }

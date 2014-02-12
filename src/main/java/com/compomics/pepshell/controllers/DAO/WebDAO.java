@@ -12,9 +12,7 @@ public class WebDAO {
 
     public static String fetchSequence(String proteinAccession) throws IOException, ConversionException {
         String uniprotProteinAccession = proteinAccession;
-        if (proteinAccession.contains("gi") || proteinAccession.contains("|")) {
-            uniprotProteinAccession = AccessionConverter.GIToUniprot(proteinAccession);
-        }
+        uniprotProteinAccession = AccessionConverter.toUniprot(proteinAccession);
         return UniprotDAO.fetchSequenceFromUniprot(uniprotProteinAccession);
     }
 }

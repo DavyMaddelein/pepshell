@@ -57,7 +57,7 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
                     //todo multithread with countdownlatch
                     for (Protein aProtein : referenceExperiment.getProteins()) {
                         try {
-                            aProtein.setAccession(AccessionConverter.ToUniprot(aProtein.getOriginalAccession()));
+                            aProtein.setAccession(AccessionConverter.toUniprot(aProtein.getOriginalAccession()));
                         } catch (ConversionException ex) {
                             FaultBarrier.getInstance().handleException(ex);
                         }
@@ -140,7 +140,7 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
                         StructureDataSource domainDataFetcher = ProgramVariables.STRUCTUREDATASOURCE.getInstance();
                         for (Protein anExperimentProtein : partitionedExperimentProteins) {
                             try {
-                                domainDataFetcher.getDomainData(anExperimentProtein);
+                                anExperimentProtein.addDomains(domainDataFetcher.getDomainData(anExperimentProtein));
                             } catch (DataRetrievalException ex) {
                                 FaultBarrier.getInstance().handleException(ex);
                             }
@@ -154,7 +154,7 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
             //TODO move this to separate place and work with countdownlatches
             for (Protein aProtein : experiment.getProteins()) {
                 try {
-                    PDBDAO.getPDBFileAccessionsForProtein(aProtein);
+                    aProtein.addPdbFileNames(PDBDAO.getPDBFileAccessionsForProtein(aProtein));
                 } catch (IOException ex) {
                     FaultBarrier.getInstance().handleException(ex);
                 } catch (ConversionException ex) {

@@ -1,6 +1,6 @@
 package com.compomics.pepshell.controllers.dataexport;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  *
@@ -9,11 +9,13 @@ import java.util.List;
 public class DataPreparationForExport {
 
     /**
-     * this takes a list of objects and returns the toString representation of it in a comma separated String
+     * this takes a list of objects and returns the toString representation of
+     * it in a comma separated String
+     *
      * @param listToSeparate list of objects to Stringify
      * @return String of comma separated toString values
      */
-    public static String returnListCommaSeparated(List<?> listToSeparate) {
+    public static String returnListCommaSeparated(Collection<?> listToSeparate) {
         StringBuilder separatedList = new StringBuilder();
         for (Object object : listToSeparate) {
             separatedList.append(object.toString());

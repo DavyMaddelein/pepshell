@@ -526,7 +526,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         if (evt.getClickCount() == 2) {
             try {
                 JOptionPane.showMessageDialog(this, "opening uniprot accession");
-                Desktop.getDesktop().browse(new URI(ViewProperties.getInstance().getProperty("protein.externaldatalocation") + AccessionConverter.GIToUniprot(((Protein) proteinList.getSelectedValue()).getProteinAccession())));
+                Desktop.getDesktop().browse(new URI(ViewProperties.getInstance().getProperty("protein.externaldatalocation") + AccessionConverter.toUniprot(((Protein) proteinList.getSelectedValue()).getProteinAccession())));
             } catch (URISyntaxException ex) {
                 faultBarrier.handleException(ex);
             } catch (IOException ex) {
@@ -559,7 +559,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                     @Override
                     public void run() {
                         try {
-                            aProtein.setVisibleAccession(AccessionConverter.ToUniprot(aProtein.getProteinAccession()));
+                            aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
                         } catch (IOException ex) {
                             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (ConversionException ex) {

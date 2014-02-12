@@ -2,7 +2,6 @@ package com.compomics.pepshell.controllers.DAO;
 
 import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.AccessionConverter;
-import com.compomics.pepshell.model.DAS.DasFeature;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
@@ -11,13 +10,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,9 +27,7 @@ public class PDBDAO {
     public static Set<PdbInfo> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
         String pdbLine;
         Set<PdbInfo> pdbFilesToReturn = new HashSet<PdbInfo>();
-        URL pdbURL = new URL("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.ToUniprot(protein.getVisibleAccession()));
-        URLConnection pdbFileConnection = pdbURL.openConnection();
-        BufferedReader br = new BufferedReader(new LineNumberReader(new InputStreamReader(pdbFileConnection.getInputStream(), "UTF-8")));
+        BufferedReader br = URLController.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(protein.getVisibleAccession()));
         while ((pdbLine = br.readLine()) != null) {
             if (pdbLine.contains("Uniprot to PDB mapping")) {
                 pdbFilesToReturn = startUniprotPDBParsing(br);
@@ -78,11 +71,25 @@ public class PDBDAO {
     }
 
     public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException {
-        URL pdbURL = new URL("http://www.pdb.org/pdb/rest/describePDB?structureId=" + pdbAccession);
-        URLConnection pdbFileConnection = pdbURL.openConnection();
-        BufferedReader br = new BufferedReader(new LineNumberReader(new InputStreamReader(pdbFileConnection.getInputStream(), "UTF-8")));
-
-        return null;
+        PdbInfo info = new PdbInfo();
+        BufferedReader br = URLController.openReader("http://www.pdb.org/pdb/rest/describePDB?structureId=" + pdbAccession);
+        String pbdDescription = br.readLine();
+        String[] splitXML = pbdDescription.split(" ");
+        for (String anXMLPart : splitXML) {
+            if (anXMLPart.contains("structureId")) {
+                info.setPdbAccession(anXMLPart.split("=\"")[1].replaceAll("\"", ""));
+            }
+            if (anXMLPart.contains("title")) {
+                info.setName(anXMLPart.split("=\"")[1].replaceAll("\"", ""));
+            }
+            if (anXMLPart.contains("resolution")) {
+                info.setResolution(Double.parseDouble((anXMLPart.split("=")[1]).replaceAll("\"", "")));
+            }
+            if (anXMLPart.contains("expMethod")) {
+                info.setMethod(anXMLPart.split("=")[1].replaceAll("\"", ""));
+            }
+        }
+        return info;
     }
 
     //get uniprot accessions from pdb from http://www.pdb.org/pdb/rest/describeMol?structureId=4hhb
@@ -104,4 +111,6 @@ public class PDBDAO {
         }
         return sequence.toString();
     }
+
+    //future feature, get gene ontology from http://www.pdb.org/pdb/rest/goTerms?structureId=4HHB
 }

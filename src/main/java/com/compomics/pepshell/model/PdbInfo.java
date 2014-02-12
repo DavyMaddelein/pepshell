@@ -10,6 +10,8 @@ public class PdbInfo {
     private String name;
     private String uniprotAccession;
     private String pdbAccession;
+    private Double resolution;
+    private String method;
 
     public PdbInfo() {
 
@@ -47,11 +49,27 @@ public class PdbInfo {
         this.pdbAccession = pdbAccession;
     }
 
+    public Double getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(Double resolution) {
+        this.resolution = resolution;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     @Override
     public boolean equals(Object obj) {
         boolean equal = false;
         if (obj instanceof PdbInfo) {
-            if (((PdbInfo) obj).getPdbAccession().equals(this.pdbAccession)) {
+            if (((PdbInfo) obj).getPdbAccession().toLowerCase().equals(this.pdbAccession.toLowerCase())) {
                 equal = true;
             }
         }
@@ -59,7 +77,7 @@ public class PdbInfo {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.pdbAccession;
     }
 }

@@ -47,7 +47,7 @@ public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Pept
     }
 
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     /**

@@ -2,7 +2,9 @@ package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -16,7 +18,7 @@ public class Protein {
     private String sequence = "";
     private List<Domain> domainsFoundInProtein = new ArrayList<Domain>();
     private List<PeptideGroup> peptideGroupsForProtein = new ArrayList<PeptideGroup>();
-    private List<String> allPDBFileNamesForProtein = new ArrayList<String>();
+    private Set<PdbInfo> allPDBFileNamesForProtein = new HashSet<PdbInfo>();
     private String proteinName;
     private String originalAccession;
     private String visibleAccession;
@@ -93,11 +95,11 @@ public class Protein {
         return visibleAccession;
     }
 
-    public void addPdbFileNames(List<String> allPDBFileNamesForProtein) {
+    public void addPdbFileNames(Set<PdbInfo> allPDBFileNamesForProtein) {
         this.allPDBFileNamesForProtein.addAll(allPDBFileNamesForProtein);
     }
 
-    public List<String> getPdbFileNames() {
+    public Set<PdbInfo> getPdbFileNames() {
         return allPDBFileNamesForProtein;
     }
 
