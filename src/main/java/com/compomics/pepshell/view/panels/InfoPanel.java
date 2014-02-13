@@ -39,7 +39,7 @@ public class InfoPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         sequenceCoveragePanel = new com.compomics.pepshell.view.panels.SequenceCoveragePanel();
-        peptidesProteinsOverlapPanel1 = new com.compomics.pepshell.view.panels.ReferenceExperimentPanel();
+        referenceExperimentPanel = new com.compomics.pepshell.view.panels.ReferenceExperimentPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
 
@@ -70,16 +70,16 @@ public class InfoPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(peptidesProteinsOverlapPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(peptidesProteinsOverlapPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -87,16 +87,16 @@ public class InfoPanel extends javax.swing.JPanel {
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
         sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein().iterator(), true);
-        ProgramVariables.SCALE = (peptidesProteinsOverlapPanel1.getWidth() - 100) / proteinOfInterest.getProteinSequence().length();
-        peptidesProteinsOverlapPanel1.setProtein(proteinOfInterest);
-        peptidesProteinsOverlapPanel1.revalidate();
-        peptidesProteinsOverlapPanel1.repaint();
+        ProgramVariables.SCALE = (referenceExperimentPanel.getWidth() - 100) / proteinOfInterest.getProteinSequence().length();
+        referenceExperimentPanel.updateProtein(proteinOfInterest);
+        referenceExperimentPanel.revalidate();
+        referenceExperimentPanel.repaint();
         updatePeptideGraphics(proteinOfInterest);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.compomics.pepshell.view.panels.ReferenceExperimentPanel peptidesProteinsOverlapPanel1;
+    private com.compomics.pepshell.view.panels.ReferenceExperimentPanel referenceExperimentPanel;
     private com.compomics.pepshell.view.panels.SequenceCoveragePanel sequenceCoveragePanel;
     // End of variables declaration//GEN-END:variables
 
@@ -133,7 +133,7 @@ public class InfoPanel extends javax.swing.JPanel {
 
     public void setReferenceExperiment(Experiment aReferenceExperiment) {
         this.referenceExperiment = aReferenceExperiment;
-        peptidesProteinsOverlapPanel1.setReferenceExperiment(referenceExperiment);
+        referenceExperimentPanel.setReferenceExperiment(referenceExperiment);
     }
 
     public final void setExperimentsToDisplay(List<Experiment> experiments) {

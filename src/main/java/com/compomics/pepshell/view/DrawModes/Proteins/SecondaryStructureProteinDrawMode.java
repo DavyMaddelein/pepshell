@@ -4,7 +4,6 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.secondarystructureprediction.UniprotSecondaryStructurePrediction;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
@@ -17,8 +16,6 @@ import java.io.IOException;
 /**
  *
  * @author Davy
- *
- * @param <F>
  * @param <T>
  * @param <W>
  */

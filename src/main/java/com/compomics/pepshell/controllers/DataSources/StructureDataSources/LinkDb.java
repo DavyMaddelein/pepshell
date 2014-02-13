@@ -63,7 +63,7 @@ public class LinkDb implements StructureDataSource {
     public List<Domain> getDomainData(Protein aProtein) throws DataRetrievalException {
         List<Domain> foundDomains = new ArrayList<Domain>();
         try {
-            foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getProteinAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
+            foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getVisibleAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
         } catch (IOException ex) {
             throw new DataRetrievalException("", ex);
         } catch (ConversionException ex) {

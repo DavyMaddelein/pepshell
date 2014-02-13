@@ -25,7 +25,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="sequenceCoveragePanel" max="32767" attributes="0"/>
-                  <Component id="peptidesProteinsOverlapPanel1" alignment="1" max="32767" attributes="0"/>
+                  <Component id="referenceExperimentPanel" alignment="1" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -35,9 +35,9 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="peptidesProteinsOverlapPanel1" min="-2" pref="132" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="255" max="32767" attributes="0"/>
+              <Component id="referenceExperimentPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="202" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="sequenceCoveragePanel" min="-2" pref="231" max="-2" attributes="0"/>
           </Group>
@@ -47,7 +47,7 @@
   <SubComponents>
     <Component class="com.compomics.pepshell.view.panels.SequenceCoveragePanel" name="sequenceCoveragePanel">
     </Component>
-    <Component class="com.compomics.pepshell.view.panels.ReferenceExperimentPanel" name="peptidesProteinsOverlapPanel1">
+    <Component class="com.compomics.pepshell.view.panels.ReferenceExperimentPanel" name="referenceExperimentPanel">
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <Properties>
