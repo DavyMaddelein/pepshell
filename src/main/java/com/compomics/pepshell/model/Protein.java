@@ -18,7 +18,7 @@ public class Protein {
     private String sequence = "";
     private List<Domain> domainsFoundInProtein = new ArrayList<Domain>();
     private List<PeptideGroup> peptideGroupsForProtein = new ArrayList<PeptideGroup>();
-    private Set<PdbInfo> allPDBFileNamesForProtein = new HashSet<PdbInfo>();
+    private Set<PdbInfo> allPDBFileInfoForProtein = new HashSet<PdbInfo>();
     private String proteinName;
     private String originalAccession;
     private String visibleAccession;
@@ -95,18 +95,19 @@ public class Protein {
         return visibleAccession;
     }
 
-    public void addPdbFileNames(Set<PdbInfo> allPDBFileNamesForProtein) {
-        this.allPDBFileNamesForProtein.addAll(allPDBFileNamesForProtein);
+    public void addPdbFileInfo(Set<PdbInfo> allPDBFileNamesForProtein) {
+        this.allPDBFileInfoForProtein.addAll(allPDBFileNamesForProtein);
     }
 
     public Set<PdbInfo> getPdbFileNames() {
-        return allPDBFileNamesForProtein;
+        return allPDBFileInfoForProtein;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 59 * hash + (this.accession != null ? this.accession.hashCode() : 0);
+        hash = 59 * hash + (this.visibleAccession != null ? this.visibleAccession.hashCode() : 0);
         hash = 59 * hash + (this.sequence != null ? this.sequence.hashCode() : 0);
         return hash;
     }

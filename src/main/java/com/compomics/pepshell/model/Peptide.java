@@ -14,6 +14,7 @@ public class Peptide {
 
     /**
      * create a peptide object instance
+     *
      * @param sequence the peptide sequence
      */
     public Peptide(String sequence) {
@@ -58,5 +59,35 @@ public class Peptide {
 
     public void setIsMiscleaved(boolean isMiscleaved) {
         this.isMiscleaved = isMiscleaved;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + (this.sequence != null ? this.sequence.hashCode() : 0);
+        hash = 71 * hash + this.beginningProteinMatch;
+        hash = 71 * hash + this.endProteinMatch;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Peptide other = (Peptide) obj;
+        if ((this.sequence == null) ? (other.getSequence() != null) : !this.sequence.equals(other.getSequence())) {
+            return false;
+        }
+        if (this.beginningProteinMatch != other.getBeginningProteinMatch()) {
+            return false;
+        }
+        if (this.endProteinMatch != other.getEndProteinMatch()) {
+            return false;
+        }
+        return true;
     }
 }

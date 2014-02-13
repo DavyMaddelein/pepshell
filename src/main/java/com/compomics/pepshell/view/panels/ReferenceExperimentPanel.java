@@ -4,6 +4,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
@@ -61,15 +62,11 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         this.protein = protein;
         if (pdbSelectionComboBox.isVisible()) {
             if (protein.getPdbFileNames().isEmpty()) {
-                try {
-                    PDBDAO.getPDBFileAccessionsForProtein(protein);
-                } catch (IOException ex) {
-                    Logger.getLogger(ReferenceExperimentPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ConversionException ex) {
-                    Logger.getLogger(ReferenceExperimentPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPDBInfoForProtein(protein));
             }
-            //pdbSelectionComboBox.addItem(this);
+            for (PdbInfo info : protein.getPdbFileNames()) {
+                pdbSelectionComboBox.addItem(info);
+            }
         }
     }
 

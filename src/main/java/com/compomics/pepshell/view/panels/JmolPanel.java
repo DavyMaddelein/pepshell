@@ -163,7 +163,7 @@ public class JmolPanel extends javax.swing.JPanel {
 
     public void preparePDBPanelForProtein(Protein protein) throws ConversionException {
         try {
-            PDBFileComboBox.setModel(new DefaultComboBoxModel(PDBDAO.getPDBFileAccessionsForProtein(protein).toArray()));
+            PDBFileComboBox.setModel(new DefaultComboBoxModel(PDBDAO.getInstance().getPDBInfoForProtein(protein).toArray()));
         } catch (MalformedURLException ex) {
             faultBarrier.handleException(ex);
         } catch (IOException ex) {
@@ -185,7 +185,7 @@ public class JmolPanel extends javax.swing.JPanel {
                     pdbAccessions.addAll(DatabasePDBDAO.getPDBFileAccessionsForProtein(protein));
                     if (pdbAccessions.isEmpty()) {
                         try {
-                            pdbAccessions.addAll(PDBDAO.getPDBFileAccessionsForProtein(protein));
+                            pdbAccessions.addAll(PDBDAO.getInstance().getPDBInfoForProtein(protein));
                         } catch (MalformedURLException ex) {
                             Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (ConversionException ex) {
@@ -193,12 +193,9 @@ public class JmolPanel extends javax.swing.JPanel {
                         }
                     }
                 } catch (IOException ioe) {
-                    try {
-                        // try offline repository if any
-                        pdbAccessions.addAll(PDBDAO.getPdbFileForProteinFromRepository(protein));
-                    } catch (SQLException ex) {
-                        Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                       // try offline repository if any
+                    //pdbAccessions.addAll(PDBDAO.getInstance().getPdbFileInfoForProteinFromRepository(protein));
+
                 } catch (ConversionException ex) {
                     Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }

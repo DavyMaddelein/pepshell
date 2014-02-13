@@ -2,9 +2,11 @@ package com.compomics.pepshell.controllers.DataSources;
 
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
+import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -35,4 +37,6 @@ public interface StructureDataSource extends AbstractDataSource {
     public void getSecondaryStructureForResidue(Protein protein, int location);
 
     public List<InteractionPartner> getInteractionPartnersForPDBName(String string);
+
+    public Set<PdbInfo> getPDBInfoForProtein(Protein protein);
 }

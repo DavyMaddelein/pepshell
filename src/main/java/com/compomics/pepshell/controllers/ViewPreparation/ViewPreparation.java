@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Set;
+import javax.swing.JPanel;
+import javax.swing.ProgressMonitor;
 
 /**
  *
@@ -27,6 +29,12 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
     boolean hasToAddQuantData = false;
     boolean hasToTranslateAccessions = false;
     boolean hasToRetrievePDBData = false;
+
+    final ProgressMonitor progressMonitor = new ProgressMonitor(new JPanel(), "retrieving data", "retrieving data", 0, 100);
+
+    public void start(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
+        retrieveData(referenceExperiment, ExperimentsToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
+    }
 
     public abstract T retrieveData(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject);
 

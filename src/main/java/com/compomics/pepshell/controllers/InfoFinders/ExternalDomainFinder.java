@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamException;
  * Created with IntelliJ IDEA. User: Davy Date: 3/7/13 Time: 8:14 AM To change
  * this template use File | Settings | File Templates.
  */
-public class ExternalDomainFinder implements DataRetieverInterface {
+public class ExternalDomainFinder implements DataRetievalStep {
 
     public void execute(List<Protein> proteinList) {
         for (Protein protein : proteinList) {

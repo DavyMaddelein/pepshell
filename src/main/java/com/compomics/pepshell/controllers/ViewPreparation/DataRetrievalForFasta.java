@@ -32,7 +32,7 @@ import java.util.List;
  * @param <T>
  * @param <V>
  */
-public class ViewPreparationForFastaData<T extends Experiment, V extends Protein> extends ViewPreparation<T, V> {
+public class DataRetrievalForFasta<T extends Experiment, V extends Protein> extends ViewPreparation<T, V> {
 
     //TODO: this entire thing needs cleaning up
     private File fastaFile;
@@ -47,15 +47,28 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
                 DbDAO.fetchProteins(referenceExperiment);
                 if (hasToMask) {
+                    progressMonitor.setNote("masking proteins");
+                    progressMonitor.setMaximum(101);
+                    progressMonitor.setMinimum(0);
+                    int counter = 0;
                     for (Protein maskingProtein : maskingSet) {
+                        counter += 1;
+                        progressMonitor.setProgress(((counter) / maskingSet.size()) * 100);
                         if (referenceExperiment.getProteins().contains(maskingProtein)) {
                             referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(maskingProtein)).setVisibleAccession(maskingProtein.getVisibleAccession());
                         }
                     }
                 }
                 if (hasToTranslateAccessions) {
-                    //todo multithread with countdownlatch
+                    //todo multithread
+                    progressMonitor.setNote("translating accessions");
+                    progressMonitor.setProgress(0);
+                    progressMonitor.setMinimum(0);
+                    int size = referenceExperiment.getProteins().size();
+                    int counter = 0;
                     for (Protein aProtein : referenceExperiment.getProteins()) {
+                        counter += 1;
+                        progressMonitor.setProgress(((counter) / size) * 100);
                         try {
                             aProtein.setAccession(AccessionConverter.toUniprot(aProtein.getOriginalAccession()));
                         } catch (ConversionException ex) {
@@ -64,7 +77,10 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
                     }
                 }
                 if (hasToFilter) {
+                    progressMonitor.setProgress(0);
+                    progressMonitor.setNote("filtering");
                     referenceExperiment.setProteins(filter.filter(referenceExperiment.getProteins(), filterList));
+                    progressMonitor.setProgress(100);
                 }
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
@@ -132,8 +148,11 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
     @Override
     protected void retrieveSecondaryData(T experiment) {
 //TODO add preliminary checks to see if the server is accessible, if not, skip and warn user       
-//TODO move this to separate place and work with countdownlatches
+
         if (hasToFetchDomainData) {
+            progressMonitor.setNote("fetching domain data");
+            progressMonitor.setProgress(0);
+            progressMonitor.setMinimum(0);
             for (final List<Protein> partitionedExperimentProteins : Lists.partition(experiment.getProteins(), Runtime.getRuntime().availableProcessors())) {
                 new Runnable() {
                     public void run() {
@@ -145,16 +164,23 @@ public class ViewPreparationForFastaData<T extends Experiment, V extends Protein
                                 FaultBarrier.getInstance().handleException(ex);
                             }
                         }
+                        System.out.println(progressMonitor.getMaximum() / Runtime.getRuntime().availableProcessors());
+                        progressMonitor.setProgress(progressMonitor.getMaximum() / Runtime.getRuntime().availableProcessors());
                     }
-
                 }.run();
             }
         }
         if (hasToRetrievePDBData) {
-            //TODO move this to separate place and work with countdownlatches
+            progressMonitor.setNote("fetching PDB data");
+            progressMonitor.setProgress(0);
+            progressMonitor.setMinimum(0);
+            int counter = 0;
+            progressMonitor.setMaximum(experiment.getProteins().size());
             for (Protein aProtein : experiment.getProteins()) {
+                counter += 1;
+                progressMonitor.setProgress(counter);
                 try {
-                    aProtein.addPdbFileNames(PDBDAO.getPDBFileAccessionsForProtein(aProtein));
+                    aProtein.addPdbFileInfo(PDBDAO.getInstance().getPDBInfoForProtein(aProtein));
                 } catch (IOException ex) {
                     FaultBarrier.getInstance().handleException(ex);
                 } catch (ConversionException ex) {
