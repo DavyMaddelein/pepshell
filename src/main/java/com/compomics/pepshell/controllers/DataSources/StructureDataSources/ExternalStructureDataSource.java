@@ -2,9 +2,11 @@ package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 
 import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.model.Domain;
+import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -62,6 +64,10 @@ public class ExternalStructureDataSource implements StructureDataSource {
 
     public StructureDataSource getInstance() {
         return new ExternalStructureDataSource();
+    }
+
+    public Set<PdbInfo> getPDBInfoForProtein(Protein protein) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

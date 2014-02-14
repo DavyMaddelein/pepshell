@@ -8,11 +8,11 @@ import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Graphics;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 
@@ -43,6 +43,10 @@ public class ReferenceProteinDrawPanel extends JPanel {
      */
     private DrawModeInterface secondaryDrawMode;
     /**
+     * The PDB accession
+     */
+    private String pdbAccession;
+    /**
      * The domain draw mode
      */
     private DrawModeInterface domainDrawMode;
@@ -71,12 +75,14 @@ public class ReferenceProteinDrawPanel extends JPanel {
     }
 
     /**
-     * Update the secondary structure to draw
+     * Update the secondary structure to draw.
      *
      * @param secondaryDrawMode
+     * @param pdbAccession
      */
-    public void updateSecondaryDrawMode(DrawModeInterface secondaryDrawMode) {
+    public void updateSecondaryDrawMode(DrawModeInterface secondaryDrawMode, String pdbAccession) {
         this.secondaryDrawMode = secondaryDrawMode;
+        this.pdbAccession = pdbAccession;
         this.revalidate();
         this.repaint();
     }
@@ -88,6 +94,21 @@ public class ReferenceProteinDrawPanel extends JPanel {
      */
     public void updatePeptideDrawMode(DrawModeInterface peptideDrawMode) {
         this.peptideDrawMode = peptideDrawMode;
+        this.revalidate();
+        this.repaint();
+    }
+
+    /**
+     * Update the PDB accession
+     *
+     * @param pdbAccession the PDB accession
+     */
+    public void updatePdbAccession(String pdbAccession) {
+        if (!(pdbAccession == null || pdbAccession.equals(ReferenceExperimentPanel.NO_PDB_FILES_FOUND))) {
+            this.pdbAccession = pdbAccession;
+        } else {
+            pdbAccession = null;
+        }        
         this.revalidate();
         this.repaint();
     }
@@ -109,6 +130,9 @@ public class ReferenceProteinDrawPanel extends JPanel {
 
                 secondaryDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 50, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
                 if (secondaryDrawMode instanceof GradientDrawModeInterface) {
+                    if (secondaryDrawMode instanceof PdbGradientDrawModeInterface) {
+                        ((PdbGradientDrawModeInterface) secondaryDrawMode).setPdbAccession(pdbAccession);
+                    }
                     ((GradientDrawModeInterface) secondaryDrawMode).drawColorLegend(HORIZONTAL_OFFSET + scaledHorizontalBarSize + 15, VERTICAL_OFFSET + 50, g);
                 }
                 try {

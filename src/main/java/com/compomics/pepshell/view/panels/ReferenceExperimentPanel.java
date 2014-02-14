@@ -1,11 +1,10 @@
 package com.compomics.pepshell.view.panels;
 
-import com.compomics.pepshell.controllers.DAO.PDBDAO;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
-import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.FreeEnergyProteinDrawMode;
@@ -14,14 +13,7 @@ import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinD
 import com.compomics.pepshell.view.DrawModes.Proteins.SolventAccessibleProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.util.Set;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -29,21 +21,17 @@ import org.apache.log4j.Logger;
  */
 public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
-    private static final Logger LOGGER = Logger.getLogger(ReferenceExperimentPanel.class);
+    public static final String NO_PDB_FILES_FOUND = "no PDBs found";
 
     private Experiment referenceExperiment;
-    private ComboBoxModel<PdbInfo> pdbSelectionComboBoxModel;
 
     /**
      * Creates new form ReferenceExperimentPanel
      */
     public ReferenceExperimentPanel() {
         initComponents();
-                
-        pdbSelectionComboBoxModel = new DefaultComboBoxModel<PdbInfo>();
-        pdbSelectionComboBox.setModel(pdbSelectionComboBoxModel);
-        
-        pdbSelectionComboBox.setVisible(false);
+
+        pdbSelectionComboBox.setEnabled(false);
         //this.addMouseListener(new popupMenuListener());
     }
 
@@ -52,26 +40,22 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setText(project.getExperimentName());
     }
 
-    public void updateProtein(Protein protein) {        
-            pdbSelectionComboBox.removeAllItems();
-            
-            if (protein.getPdbFileNames().isEmpty()) {
-                try {
-                    protein.addPdbFileNames(PDBDAO.getPDBFileAccessionsForProtein(protein));
-                } catch (IOException ex) {
-                    LOGGER.error(ex);
-                } catch (ConversionException ex) {
-                    LOGGER.error(ex);
-                }
-            }
-            
-            if(protein.getPdbFileNames().isEmpty()){
-               protein.a 
-            }
-            else{
-                for(PdbInfo pdbInfo : protein.getPdbFileNames()){
+    public void updateProtein(Protein protein) {
+        pdbSelectionComboBox.removeAllItems();
+
+        if (protein.getPdbFileNames().isEmpty()) {
+            //retrieve the PDB info objects and add them to the protein
+            protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPDBInfoForProtein(protein));
+        }
+        //check after retrieval if any PDB info is available
+        if (protein.getPdbFileNames().isEmpty()) {
+            //add a default item
+            pdbSelectionComboBox.addItem(NO_PDB_FILES_FOUND);
+        } else {
+            for (PdbInfo pdbInfo : protein.getPdbFileNames()) {
                 pdbSelectionComboBox.addItem(pdbInfo);
-            }                        
+            }
+        }
 
         //update the draw panel
         referenceProteinDrawPanel.updateProtein(protein);
@@ -80,27 +64,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     public void setReferenceExperiment(Experiment reference) {
         this.referenceExperiment = reference;
         projectNameLabel.setText(referenceExperiment.getExperimentName());
-    }
-
-    //@TODO remove this method
-    private class popupMenuListener extends MouseAdapter {
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        private void maybeShowPopup(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                experimentPopupMenu.show(e.getComponent(),
-                        e.getX(), e.getY());
-            }
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -150,7 +113,8 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
             }
         });
 
-        pdbSelectionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        pdbSelectionComboBox.setMinimumSize(new java.awt.Dimension(122, 20));
+        pdbSelectionComboBox.setPreferredSize(new java.awt.Dimension(122, 20));
         pdbSelectionComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pdbSelectionComboBoxActionPerformed(evt);
@@ -170,11 +134,11 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 .addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(optionsPanelLayout.createSequentialGroup()
                         .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(quantCheckBox)
-                        .addGap(0, 624, Short.MAX_VALUE))
+                        .addGap(0, 579, Short.MAX_VALUE))
                     .addComponent(projectNameLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -219,6 +183,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
     private void drawModeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawModeChooserActionPerformed
         DrawModeInterface secondaryDrawMode;
+        String pdbAccession = null;
 
         switch (drawModeChooser.getSelectedIndex()) {
             case 0:
@@ -229,18 +194,20 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 break;
             case 2:
                 secondaryDrawMode = new FreeEnergyProteinDrawMode();
-                pdbSelectionComboBox.setVisible(true);
+                pdbSelectionComboBox.setEnabled(true);
+                pdbAccession = (String) pdbSelectionComboBox.getItemAt(0);
                 break;
             case 3:
                 secondaryDrawMode = new SolventAccessibleProteinDrawMode();
-                pdbSelectionComboBox.setVisible(true);
+                pdbSelectionComboBox.setEnabled(true);
+                pdbAccession = (String) pdbSelectionComboBox.getItemAt(0);
                 break;
             default:
                 secondaryDrawMode = new HydrophobicityProteinDrawMode();
                 break;
         }
 
-        referenceProteinDrawPanel.updateSecondaryDrawMode(secondaryDrawMode);
+        referenceProteinDrawPanel.updateSecondaryDrawMode(secondaryDrawMode, pdbAccession);
     }//GEN-LAST:event_drawModeChooserActionPerformed
 
     private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
@@ -248,7 +215,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
         if (quantCheckBox.isSelected()) {
             peptideDrawMode = new QuantedPeptideDrawMode<QuantedPeptide>();
-            //((DrawableProtein) protein).drawAllPeptideGroups(horizontalOffset, verticalOffset + 25, g);
         } else {
             peptideDrawMode = new StandardPeptideProteinDrawMode();
         }
@@ -263,9 +229,9 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_changeNameOptionActionPerformed
 
     private void pdbSelectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdbSelectionComboBoxActionPerformed
-        // TODO add your handling code here:
+        String pdbAccession = (String) pdbSelectionComboBox.getSelectedItem();
 
-        //(String) pdbSelectionComboBox.getSelectedItem();
+        referenceProteinDrawPanel.updatePdbAccession(pdbAccession);
     }//GEN-LAST:event_pdbSelectionComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

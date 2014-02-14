@@ -1,6 +1,7 @@
 package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 
 import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
@@ -9,6 +10,7 @@ import com.compomics.pepshell.controllers.InfoFinders.ExternalDomainFinder;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
+import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
@@ -18,16 +20,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 
 /**
  *
  * @author Davy
- * @param <T>
  */
 public class LinkDb implements StructureDataSource {
 //TODO subtype this to uniprot protein since we need to be sure we have uniprot accessions
@@ -42,34 +43,41 @@ public class LinkDb implements StructureDataSource {
             try {
                 while (rs.next()) {
                     pdbData = "technique: " + rs.getString("technique") + " \n" + "resolution: " + rs.getString("resolution");
-                    try {
-                        PDBDAO.getPdbInfoForPdbAccession(pdbName);
-                        //TODO if online fetch title from pbd
-                    } catch (IOException ex) {
-                        Logger.getLogger(LinkDb.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (XMLStreamException ex) {
-                        Logger.getLogger(LinkDb.class.getName()).log(Level.SEVERE, null, ex);
+                    if (ProgramVariables.USEINTERNETSOURCES) {
+                        try {
+                            //TODO if online fetch title from pbd
+                            PDBDAO.getPdbInfoForPdbAccession(pdbName);
+                        } catch (IOException ex) {
+                            FaultBarrier.getInstance().handleException(ex);
+                        } catch (XMLStreamException ex) {
+                        }
                     }
                 }
             } catch (SQLException sqle) {
+                FaultBarrier.getInstance().handleException(sqle);
             }
         } catch (SQLException sqle) {
+            FaultBarrier.getInstance().handleException(sqle);
         }
 
         return pdbData;
 
     }
 
+    //todo, add domain data for protein to link db
     public List<Domain> getDomainData(Protein aProtein) throws DataRetrievalException {
         List<Domain> foundDomains = new ArrayList<Domain>();
-        try {
-            foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getVisibleAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
-        } catch (IOException ex) {
-            throw new DataRetrievalException("", ex);
-        } catch (ConversionException ex) {
-            throw new DataRetrievalException("", ex);
-        } catch (XMLStreamException ex) {
-            throw new DataRetrievalException("", ex);
+        //try and get from link db, 
+        if (foundDomains.isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
+            try {
+                foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getProteinAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
+            } catch (IOException ex) {
+                throw new DataRetrievalException("");
+            } catch (ConversionException ex) {
+                throw new DataRetrievalException("");
+            } catch (XMLStreamException ex) {
+                throw new DataRetrievalException("");
+            }
         }
         return foundDomains;
     }
@@ -118,7 +126,7 @@ public class LinkDb implements StructureDataSource {
 
     public boolean isAbleToGetSolventAccessibility() {
         return true;
-    }
+    }    
 
     public Map<Integer, Double> getFreeEnergyForStructure(Protein protein, String pdbAccession) {
         Map<Integer, Double> freeEnergyValues = new HashMap<Integer, Double>();
@@ -147,7 +155,7 @@ public class LinkDb implements StructureDataSource {
 
         return freeEnergyValues;
     }
-
+    
     public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(Protein protein, String pdbAccession) {
         Map<Integer, Double> relSasValues = new HashMap<Integer, Double>();
 
@@ -200,5 +208,27 @@ public class LinkDb implements StructureDataSource {
 
     public StructureDataSource getInstance() {
         return new LinkDb();
+    }
+
+    public Set<PdbInfo> getPDBInfoForProtein(Protein protein) {
+        Set<PdbInfo> infoSet = new HashSet<PdbInfo>();
+        PreparedStatement stat = null;
+        try {
+            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbInfoForProtein());
+            //stat.setString(1, pdbName);
+            ResultSet rs = stat.executeQuery();
+            try {
+                while (rs.next()) {
+                    PdbInfo info = new PdbInfo();
+                    info.setMethod(rs.getString("PDB"));
+                    info.setName(rs.getString("title"));
+                    info.setResolution(Double.parseDouble(rs.getString("resolution")));
+                    infoSet.add(info);
+                }
+            } catch (SQLException sqle) {
+            }
+        } catch (SQLException sqle) {
+        }
+        return infoSet;
     }
 }

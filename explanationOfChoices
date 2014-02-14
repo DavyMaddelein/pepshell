@@ -11,3 +11,5 @@ accession masking is used to make sure you can find data about hybrid proteins t
 when using a pdb file to display secondary features, the standard pdb that is used, is the one with the highest resolution, displaying others can be done by selecting another one from a combobox
 
 the handling of accession masking, fetching, and filtering, is done in that particular order when not specifying your own order when loading in your data. 
+
+does not handle protein inference, expects this to be done by an outside agent or on the dataset beforehand

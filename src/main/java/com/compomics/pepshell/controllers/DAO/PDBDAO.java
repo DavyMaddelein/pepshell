@@ -1,6 +1,5 @@
 package com.compomics.pepshell.controllers.DAO;
 
-import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
@@ -24,16 +22,25 @@ import javax.xml.stream.XMLStreamException;
  */
 public class PDBDAO {
 
-    public static Set<PdbInfo> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
+    private static PDBDAO instance;
+
+    public static PDBDAO getInstance() {
+        if (instance == null) {
+            instance = new PDBDAO();
+        }
+        return instance;
+    }
+
+    public Set<PdbInfo> getPDBInfoForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
         String pdbLine;
-        Set<PdbInfo> pdbFilesToReturn = new HashSet<PdbInfo>();
+        Set<PdbInfo> pdbInfoToReturn = new HashSet<PdbInfo>();
         BufferedReader br = URLController.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(protein.getVisibleAccession()));
         while ((pdbLine = br.readLine()) != null) {
             if (pdbLine.contains("Uniprot to PDB mapping")) {
-                pdbFilesToReturn = startUniprotPDBParsing(br);
+                pdbInfoToReturn = startUniprotPDBParsing(br);
             }
         }
-        return pdbFilesToReturn;
+        return pdbInfoToReturn;
     }
 
     public static File getPdbFile(String aPdbAccession) throws IOException {
@@ -90,13 +97,6 @@ public class PDBDAO {
             }
         }
         return info;
-    }
-
-    //get uniprot accessions from pdb from http://www.pdb.org/pdb/rest/describeMol?structureId=4hhb
-    public static Set<PdbInfo> getPdbFileForProteinFromRepository(Protein protein) throws SQLException {
-        Set<PdbInfo> pdbNames = new HashSet<PdbInfo>();
-        SQLStatements.getPdbFilesFromDb();
-        return pdbNames;
     }
 
     public static String getSequenceFromPdbFile(String pdbFileInMem) {

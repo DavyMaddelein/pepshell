@@ -14,6 +14,7 @@ import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.filters.RegexFilter;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.ProgressMessage;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
@@ -43,7 +44,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private static FaultBarrier faultBarrier;
     private List<Protein> proteinsToDisplay = new ArrayList<Protein>();
     private RegexFilter filter = new RegexFilter();
-
+    
     public MainWindow() {
         faultBarrier = FaultBarrier.getInstance();
         initComponents();
@@ -58,6 +59,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             //JOptionpane ask about wanting to connect to link db
             askLinkDbLoginQuestion();
         }
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().addObserver(this);
         for (AnalysisGroup experiments : analysisList) {
             DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.getExperiments().iterator(), false);
             infoPanel1.setReferenceExperiment(referenceExperiment);
@@ -86,7 +88,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             //tabsPane.setIconAt(tabsPane.getTabCount() - 1, UIManager.getIcon("OptionPane.warningIcon"));
             //TODO show in error pane
             ((Exception) o1).printStackTrace();
-        }
+        } 
     }
 
     @SuppressWarnings("unchecked")

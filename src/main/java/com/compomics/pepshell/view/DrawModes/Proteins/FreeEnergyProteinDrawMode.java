@@ -5,7 +5,7 @@ import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
-import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -17,16 +17,17 @@ import java.util.Map;
  * @param <T>
  * @param <U>
  */
-public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> extends StandardPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> extends StandardPeptideProteinDrawMode<T, U> implements PdbGradientDrawModeInterface<T, U> {
+    
+    private String pdbAccession;
     
     @Override
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
 
         int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
-
-//        Map<Integer, Double> relSasValues = ProgramVariables.STRUCTUREDATASOURCE.getRelativeSolventAccessibilityForStructure(protein, protein.getPdbFileNames().get(0));
-        Map<Integer, Double> freeEnergyValues = ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForStructure(protein, "3NY5");
-        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy()) {
+        
+        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy() && pdbAccession != null) {
+            Map<Integer, Double> freeEnergyValues = ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForStructure(protein, pdbAccession);
             //go over all locations retrieved from the data source
             for (int location : freeEnergyValues.keySet()) {
                 Double relSasValue = freeEnergyValues.get(location);
@@ -61,6 +62,10 @@ public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> ext
             colorIncrement += 1 / 64;
             g.fillRect(xOffset + i * 5, yOffset, 5, ProgramVariables.VERTICALSIZE);
         }
+    }
+
+    public void setPdbAccession(String pdbAccession) {
+        this.pdbAccession = pdbAccession;
     }
 
 }
