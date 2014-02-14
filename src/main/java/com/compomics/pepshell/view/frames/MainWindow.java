@@ -14,7 +14,6 @@ import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.filters.RegexFilter;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.ProgressMessage;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;

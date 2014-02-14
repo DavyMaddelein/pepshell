@@ -1,8 +1,11 @@
 package com.compomics.pepshell.view.panels;
 
+import com.compomics.pepshell.DataModeController;
+import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.DefaultListModel;
@@ -35,6 +38,7 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
         retrievalStepsList = new javax.swing.JList<DataRetrievalStep>();
         disableStepsButton = new javax.swing.JButton();
         enableStepsButton = new javax.swing.JButton();
+        acceptStepsButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -43,6 +47,7 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        retrievalStepsList.setDragEnabled(true);
         retrievalStepsList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 retrievalStepsListMouseClicked(evt);
@@ -64,6 +69,13 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
             }
         });
 
+        acceptStepsButton.setText("accept order");
+        acceptStepsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptStepsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,7 +86,8 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(disableStepsButton)
-                    .addComponent(enableStepsButton))
+                    .addComponent(enableStepsButton)
+                    .addComponent(acceptStepsButton))
                 .addContainerGap(145, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -86,6 +99,8 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
                         .addComponent(disableStepsButton)
                         .addGap(18, 18, 18)
                         .addComponent(enableStepsButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(acceptStepsButton)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))
                 .addContainerGap())
@@ -106,49 +121,21 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_retrievalStepsListMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+    private void acceptStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptStepsButtonActionPerformed
+        // TODO add your handling code here:
+        LinkedList<DataRetrievalStep> linkedSteps = new LinkedList<DataRetrievalStep>();
+        for (int i = 0; i > retrievalStepsList.getModel().getSize(); i++) {
+            try {
+                linkedSteps.add((DataRetrievalStep)((DefaultListModel) retrievalStepsList.getModel()).elementAt(i));
+            } catch (ClassCastException e) {
+                FaultBarrier.getInstance().handleException(e);
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DataRetrievalStepsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DataRetrievalStepsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DataRetrievalStepsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DataRetrievalStepsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                DataRetrievalStepsDialog dialog = new DataRetrievalStepsDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(linkedSteps);
+    }//GEN-LAST:event_acceptStepsButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton acceptStepsButton;
     private javax.swing.JButton disableStepsButton;
     private javax.swing.JButton enableStepsButton;
     private javax.swing.JScrollPane jScrollPane1;
@@ -159,10 +146,15 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
         List<String> failedToLoadList = new ArrayList<String>();
         for (Entry aClassReference : ProgramProperties.getInstance().getProperties().entrySet()) {
             try {
-                ((DefaultListModel) retrievalStepsList.getModel()).addElement(ClassLoader.getSystemClassLoader().loadClass((String) aClassReference.getValue()));
+                if (aClassReference.getValue() instanceof String) {
+                    ((DefaultListModel) retrievalStepsList.getModel()).addElement(ClassLoader.getSystemClassLoader().loadClass((String) aClassReference.getValue()));
+                } else {
+                    throw new ClassCastException("can only  load string references to classes");
+                }
             } catch (ClassCastException ex) {
-
+                FaultBarrier.getInstance().handleException(ex);
             } catch (ClassNotFoundException ex) {
+                FaultBarrier.getInstance().handleException(ex);
             }
         }
     }

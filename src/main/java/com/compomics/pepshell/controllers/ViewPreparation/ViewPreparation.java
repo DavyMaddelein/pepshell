@@ -1,16 +1,21 @@
 package com.compomics.pepshell.controllers.ViewPreparation;
 
 import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
+import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
+import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionConverting;
+import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionMasking;
+import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddDomains;
+import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddPdbInfo;
+import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.ProteinFiltering;
 import com.compomics.pepshell.filters.FilterParent;
 import com.compomics.pepshell.filters.NaiveFilter;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
-import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.ProgressMonitor;
 
@@ -22,13 +27,16 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
 
     protected FilterParent<Protein> filter = new NaiveFilter<Protein>();
     protected List<Protein> filterList = new ArrayList<Protein>();
-    boolean hasToFilter = false;
-    boolean hasToMask = false;
-    Set<V> maskingSet = new HashSet<V>();
-    boolean hasToFetchDomainData = false;
-    boolean hasToAddQuantData = false;
-    boolean hasToTranslateAccessions = false;
-    boolean hasToRetrievePDBData = false;
+    LinkedList<DataRetrievalStep> linkedSteps = new LinkedList<DataRetrievalStep>() {
+        {
+            //default order
+            this.add(new AccessionMasking());
+            this.add(new AccessionConverting());
+            this.add(new ProteinFiltering());
+            this.add(new AddDomains());
+            this.add(new AddPdbInfo());
+        }
+    };
 
     final ProgressMonitor progressMonitor = new ProgressMonitor(new JPanel(), "retrieving data", "retrieving data", 0, 100);
 
@@ -42,7 +50,6 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
 
     protected abstract boolean checkAndAddQuantToProteinsInExperiment(T anExperiment);
 
-    // this doesn't do what is advertised, review this, and rename this to checkReferenceProteinOccurencesInExperiments or something
     protected boolean removeProteinsNotInReferenceExperiment(T referenceProject, T projectToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         //perhaps change with list so it is easier to notify observers of progress
         boolean finished = false;
@@ -70,38 +77,11 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
         this.filter = aFilter;
     }
 
-    /**
-     * public FilterParent<V> getFilter() { return filter; }
-     */
     public void setProteinsToFilter(List<Protein> aFilterList) {
         this.filterList = aFilterList;
     }
 
-    public void hasToFilter(boolean decision) {
-        this.hasToFilter = decision;
-    }
-
-    public void hasToMask(boolean decision) {
-        this.hasToMask = decision;
-    }
-
-    public void setProteinMasks(Set<V> masks) {
-        this.maskingSet = masks;
-    }
-
-    public void hasToFetchDomainData(boolean decision) {
-        this.hasToFetchDomainData = decision;
-    }
-
-    public void hasToAddQuantDataToExperiments(boolean decision) {
-        this.hasToAddQuantData = decision;
-    }
-
-    public void hasToTranslateAccessions(boolean decision) {
-        this.hasToTranslateAccessions = decision;
-    }
-
-    public void hasToRetrievePDBData(boolean decision) {
-        this.hasToRetrievePDBData = decision;
+    public void setDataRetievalSteps(LinkedList<DataRetrievalStep> linkedSteps) {
+        this.linkedSteps = linkedSteps;
     }
 }

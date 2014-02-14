@@ -211,7 +211,7 @@ public class LinkDb implements StructureDataSource {
             try {
                 while (rs.next()) {
                     PdbInfo info = new PdbInfo();
-                    info.setMethod(rs.getString("PDB"));
+                    info.setPdbAccession(rs.getString("PDB"));
                     info.setName(rs.getString("title"));
                     info.setResolution(Double.parseDouble(rs.getString("resolution")));
                     infoSet.add(info);

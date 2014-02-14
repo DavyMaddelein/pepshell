@@ -10,6 +10,7 @@ import com.compomics.pepshell.controllers.DAO.FastaDAO;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
+import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
@@ -46,48 +47,16 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
         try {
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
                 DbDAO.fetchProteins(referenceExperiment);
-                if (hasToMask) {
-                    progressMonitor.setNote("masking proteins");
-                    progressMonitor.setMaximum(101);
-                    progressMonitor.setMinimum(0);
-                    int counter = 0;
-                    for (Protein maskingProtein : maskingSet) {
-                        counter += 1;
-                        progressMonitor.setProgress(((counter) / maskingSet.size()) * 100);
-                        if (referenceExperiment.getProteins().contains(maskingProtein)) {
-                            referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(maskingProtein)).setVisibleAccession(maskingProtein.getVisibleAccession());
-                        }
+                for (DataRetrievalStep aStep : linkedSteps) {
+                    if (aStep.isMultithreadAble()) {
+                        //doooooosmeihting
                     }
-                }
-                if (hasToTranslateAccessions) {
-                    //todo multithread
-                    progressMonitor.setNote("translating accessions");
-                    progressMonitor.setProgress(0);
-                    progressMonitor.setMinimum(0);
-                    int size = referenceExperiment.getProteins().size();
-                    int counter = 0;
-                    for (Protein aProtein : referenceExperiment.getProteins()) {
-                        counter += 1;
-                        progressMonitor.setProgress(((counter) / size) * 100);
-                        try {
-                            aProtein.setAccession(AccessionConverter.toUniprot(aProtein.getOriginalAccession()));
-                        } catch (ConversionException ex) {
-                            FaultBarrier.getInstance().handleException(ex);
-                        }
-                    }
-                }
-                if (hasToFilter) {
-                    progressMonitor.setProgress(0);
-                    progressMonitor.setNote("filtering");
-                    referenceExperiment.setProteins(filter.filter(referenceExperiment.getProteins(), filterList));
-                    progressMonitor.setProgress(100);
+                    aStep.execute(referenceExperiment.getProteins());
                 }
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
-                if (hasToAddQuantData) {
-                    checkAndAddQuantToProteinsInExperiment(referenceExperiment);
-                }
-            } else {
+                checkAndAddQuantToProteinsInExperiment(referenceExperiment);
+
                 FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, referenceExperiment);
             }
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
@@ -95,9 +64,8 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
                     T anExperimentToCompareWith = experimentsToCompareWith.next();
                     DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
                     FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith.getProteins());
-                    if (hasToAddQuantData) {
-                        checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
-                    }
+                    checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
+
                 }
             } else {
                 while (experimentsToCompareWith.hasNext()) {
@@ -148,45 +116,5 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
     @Override
     protected void retrieveSecondaryData(T experiment) {
 //TODO add preliminary checks to see if the server is accessible, if not, skip and warn user       
-
-        if (hasToFetchDomainData) {
-            progressMonitor.setNote("fetching domain data");
-            progressMonitor.setProgress(0);
-            progressMonitor.setMinimum(0);
-            for (final List<Protein> partitionedExperimentProteins : Lists.partition(experiment.getProteins(), Runtime.getRuntime().availableProcessors())) {
-                new Runnable() {
-                    public void run() {
-                        StructureDataSource domainDataFetcher = ProgramVariables.STRUCTUREDATASOURCE.getInstance();
-                        for (Protein anExperimentProtein : partitionedExperimentProteins) {
-                            try {
-                                anExperimentProtein.addDomains(domainDataFetcher.getDomainData(anExperimentProtein));
-                            } catch (DataRetrievalException ex) {
-                                FaultBarrier.getInstance().handleException(ex);
-                            }
-                        }
-                        System.out.println(progressMonitor.getMaximum() / Runtime.getRuntime().availableProcessors());
-                        progressMonitor.setProgress(progressMonitor.getMaximum() / Runtime.getRuntime().availableProcessors());
-                    }
-                }.run();
-            }
-        }
-        if (hasToRetrievePDBData) {
-            progressMonitor.setNote("fetching PDB data");
-            progressMonitor.setProgress(0);
-            progressMonitor.setMinimum(0);
-            int counter = 0;
-            progressMonitor.setMaximum(experiment.getProteins().size());
-            for (Protein aProtein : experiment.getProteins()) {
-                counter += 1;
-                progressMonitor.setProgress(counter);
-                try {
-                    aProtein.addPdbFileInfo(PDBDAO.getInstance().getPDBInfoForProtein(aProtein));
-                } catch (IOException ex) {
-                    FaultBarrier.getInstance().handleException(ex);
-                } catch (ConversionException ex) {
-                    FaultBarrier.getInstance().handleException(ex);
-                }
-            }
-        }
     }
 }
