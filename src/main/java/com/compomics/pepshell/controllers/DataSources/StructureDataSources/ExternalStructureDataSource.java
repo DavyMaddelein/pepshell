@@ -4,6 +4,7 @@ import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,21 +35,13 @@ public class ExternalStructureDataSource implements StructureDataSource {
         return false;
     }
 
-    public double getRelativeSolventAccessibilityForResidue(String proteinAccession, int location) {
+    public double getRelativeSolventAccessibilityForStructure(String proteinAccession, int location) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Map<Integer, Double> getFreeEnergyForStructure(Protein protein, String psbAccession) {
+    public double getFreeEnergyForResidue(Protein protein, int location) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }       
-
-    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(Protein protein, String structureName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void getSecondaryStructureForResidue(Protein protein, int location) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }    
 
     public List getInteractionPartners(Protein aProtein) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -66,8 +59,19 @@ public class ExternalStructureDataSource implements StructureDataSource {
         return new ExternalStructureDataSource();
     }
 
-    public Set<PdbInfo> getPDBInfoForProtein(Protein protein) {
+    public Set<PdbInfo> getPdbInforForProtein(Protein protein, Comparator<PdbInfo> sortingComparator) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public Map<Integer, Double> getFreeEnergyForStructure(Protein protein, String psbAccession) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(Protein protein, String psbAccession) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void getSecondaryStructureForResidue(Protein protein, int location) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -108,7 +108,7 @@ public class ReferenceProteinDrawPanel extends JPanel {
             this.pdbAccession = pdbAccession;
         } else {
             pdbAccession = null;
-        }        
+        }
         this.revalidate();
         this.repaint();
     }
@@ -128,11 +128,12 @@ public class ReferenceProteinDrawPanel extends JPanel {
                     peptideDrawMode.drawPeptide(aGroup.getShortestPeptide(), g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 25, ProgramVariables.VERTICALSIZE);
                 }
 
+                //pass the PDB accession if necessary
+                if (secondaryDrawMode instanceof PdbGradientDrawModeInterface) {
+                    ((PdbGradientDrawModeInterface) secondaryDrawMode).setPdbAccession(pdbAccession);
+                }
                 secondaryDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 50, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
                 if (secondaryDrawMode instanceof GradientDrawModeInterface) {
-                    if (secondaryDrawMode instanceof PdbGradientDrawModeInterface) {
-                        ((PdbGradientDrawModeInterface) secondaryDrawMode).setPdbAccession(pdbAccession);
-                    }
                     ((GradientDrawModeInterface) secondaryDrawMode).drawColorLegend(HORIZONTAL_OFFSET + scaledHorizontalBarSize + 15, VERTICAL_OFFSET + 50, g);
                 }
                 try {

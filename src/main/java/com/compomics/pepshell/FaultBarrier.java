@@ -12,6 +12,7 @@ public class FaultBarrier extends Observable {
     private static final FaultBarrier instance = new FaultBarrier();
     private static final Logger logger = Logger.getLogger(FaultBarrier.class);
 
+    //TODO needs a lot more work since this is being used pretty much everywhere
     public final void handleException(Exception e) {
         logger.error(e);
         e.printStackTrace();

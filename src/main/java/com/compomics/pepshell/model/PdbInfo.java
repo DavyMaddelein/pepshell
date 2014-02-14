@@ -65,17 +65,38 @@ public class PdbInfo {
         this.method = method;
     }
 
+//    @Override
+//    public boolean equals(Object obj) {
+//        boolean equal = false;
+//        if (obj instanceof PdbInfo) {
+//            if (((PdbInfo) obj).getPdbAccession().toLowerCase().equals(this.pdbAccession.toLowerCase())) {
+//                equal = true;
+//            }
+//        }
+//        return equal;
+//    }
     @Override
-    public boolean equals(Object obj) {
-        boolean equal = false;
-        if (obj instanceof PdbInfo) {
-            if (((PdbInfo) obj).getPdbAccession().toLowerCase().equals(this.pdbAccession.toLowerCase())) {
-                equal = true;
-            }
-        }
-        return equal;
+    public int hashCode() {
+        int hash = 5;
+        hash = 31 * hash + (this.pdbAccession != null ? this.pdbAccession.hashCode() : 0);
+        return hash;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PdbInfo other = (PdbInfo) obj;
+        if ((this.pdbAccession == null) ? (other.pdbAccession != null) : !this.pdbAccession.equals(other.pdbAccession)) {
+            return false;
+        }
+        return true;
+    }    
+    
     @Override
     public String toString() {
         return this.pdbAccession;

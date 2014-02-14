@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamException;
  * Created with IntelliJ IDEA. User: Davy Date: 3/7/13 Time: 8:14 AM To change
  * this template use File | Settings | File Templates.
  */
-public class ExternalDomainFinder implements DataRetievalStep {
+public class ExternalDomainFinder implements DataRetrievalStep {
 
     public void execute(List<Protein> proteinList) {
         for (Protein protein : proteinList) {
@@ -69,6 +69,5 @@ public class ExternalDomainFinder implements DataRetievalStep {
 
     public static void addDomainsToProtein(Protein protein) throws IOException, ConversionException, XMLStreamException {
         protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
-
     }
 }

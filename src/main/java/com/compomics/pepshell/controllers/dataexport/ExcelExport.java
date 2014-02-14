@@ -25,7 +25,7 @@ public class ExcelExport {
 
     private static void excelPDBExportOfProtein(Protein protein, Row pdbRow) {
         pdbRow.createCell(0).setCellValue(protein.getProteinAccession());
-        pdbRow.createCell(1).setCellValue(DataPreparationForExport.returnListCommaSeparated(protein.getPdbFileNames()));
+        pdbRow.createCell(1).setCellValue(DataPreparationForExport.returnListCommaSeparated(protein.getPdbFilesInfo()));
     }
 
     private static void addHeadersToPDBSheet(Sheet PDBSheet) {

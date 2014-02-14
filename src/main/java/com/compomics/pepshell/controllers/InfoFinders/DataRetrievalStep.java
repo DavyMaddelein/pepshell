@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author Davy
  */
-public interface DataRetievalStep {
+public interface DataRetrievalStep {
     
     public void execute(List<Protein> proteinList);
     
