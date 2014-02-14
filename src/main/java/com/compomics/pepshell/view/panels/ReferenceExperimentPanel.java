@@ -56,6 +56,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 pdbSelectionComboBox.addItem(pdbInfo);
             }
         }
+
         //set selected item
         pdbSelectionComboBox.setSelectedIndex(0);
 
@@ -187,7 +188,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private void drawModeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawModeChooserActionPerformed
         DrawModeInterface secondaryDrawMode;
         String pdbAccession = null;
-        
+
         //disable PDB selection combobox
         pdbSelectionComboBox.setEnabled(false);
 
@@ -235,9 +236,11 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_changeNameOptionActionPerformed
 
     private void pdbSelectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdbSelectionComboBoxActionPerformed
-        String pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
-
-        referenceProteinDrawPanel.updatePdbAccession(pdbAccession);
+        if (pdbSelectionComboBox.getSelectedItem() != null) {
+            String pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
+            
+            referenceProteinDrawPanel.updatePdbAccession(pdbAccession);
+        }        
     }//GEN-LAST:event_pdbSelectionComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

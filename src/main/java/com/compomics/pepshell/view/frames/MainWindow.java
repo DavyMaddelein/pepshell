@@ -48,7 +48,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     public MainWindow() {
         faultBarrier = FaultBarrier.getInstance();
         initComponents();
-        downloadBar.setVisible(false);
+//        downloadBar.setVisible(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -62,16 +62,16 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         DataModeController.getDb().getDataMode().getViewPreparationForMode().addObserver(this);
         for (AnalysisGroup experiments : analysisList) {
             DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.getExperiments().iterator(), false);
-            infoPanel1.setReferenceExperiment(referenceExperiment);
+            proteinDetailPanel.setReferenceExperiment(referenceExperiment);
             statisticsTabbedPane.add(experiments.getName(), new StatisticsPanel(experiments));
-            infoPanel1.setExperimentsToDisplay(experiments.getExperiments(), false);
+            proteinDetailPanel.setExperimentsToDisplay(experiments.getExperiments(), false);
         }
 
 //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
         proteinsToDisplay = referenceExperiment.getProteins();
         //this totally does not have to happen with anonymous stuff
         proteinList.setListData(proteinsToDisplay.toArray());
-        jScrollPane1.setViewportView(proteinList);
+        proteinListScrollPane.setViewportView(proteinList);
         pdbProteinList.setListData(proteinsToDisplay.toArray());
         jScrollPane2.setViewportView(pdbProteinList);
     }
@@ -97,13 +97,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         tabsPane = new javax.swing.JTabbedPane();
         mainViewPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        proteinsOverviewPanel = new javax.swing.JPanel();
+        proteinListScrollPane = new javax.swing.JScrollPane();
         proteinList = new javax.swing.JList();
-        accessionLabel = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        infoPanel1 = new com.compomics.pepshell.view.panels.InfoPanel();
         filterTextField = new javax.swing.JTextField();
-        downloadBar = new javax.swing.JProgressBar();
+        proteinDetailPanel = new com.compomics.pepshell.view.panels.InfoPanel();
         PDBViewPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         pdbProteinList = new javax.swing.JList();
@@ -124,15 +122,15 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         jPanel2 = new javax.swing.JPanel();
         statisticsTabbedPane = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        fileMenu = new javax.swing.JMenu();
         newViewMenuItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
+        saveToCsvMenuItem = new javax.swing.JMenuItem();
+        saveToExcelMenuItem = new javax.swing.JMenuItem();
+        exportOptionsMenuItem = new javax.swing.JMenuItem();
+        ViewOptionsMenu = new javax.swing.JMenu();
+        accessionMenuItem = new javax.swing.JMenu();
+        uniProtRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        originalAccessionRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         setAccessionMaskOption = new javax.swing.JMenuItem();
         preferencesMenu = new javax.swing.JMenu();
 
@@ -152,28 +150,24 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         mainViewPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        proteinsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("reference proteins"));
+        proteinsOverviewPanel.setOpaque(false);
+
+        proteinListScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         proteinList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         proteinList.setMaximumSize(new java.awt.Dimension(99, 90));
         proteinList.setMinimumSize(new java.awt.Dimension(99, 90));
         proteinList.setPreferredSize(null);
         proteinList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                proteinListMouseClicked(evt);
-            }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 proteinListMouseReleased(evt);
             }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                proteinListMouseClicked(evt);
+            }
         });
-        jScrollPane1.setViewportView(proteinList);
-
-        accessionLabel.setText("found reference proteins");
-
-        jSeparator1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jSeparator1.setMinimumSize(new java.awt.Dimension(50, 3));
-        jSeparator1.setPreferredSize(new java.awt.Dimension(50, 3));
+        proteinListScrollPane.setViewportView(proteinList);
 
         filterTextField.setText("search for ...");
         filterTextField.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -182,45 +176,45 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             }
         });
 
+        javax.swing.GroupLayout proteinsOverviewPanelLayout = new javax.swing.GroupLayout(proteinsOverviewPanel);
+        proteinsOverviewPanel.setLayout(proteinsOverviewPanelLayout);
+        proteinsOverviewPanelLayout.setHorizontalGroup(
+            proteinsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(proteinsOverviewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(proteinsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(proteinListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        proteinsOverviewPanelLayout.setVerticalGroup(
+            proteinsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(proteinsOverviewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(filterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(proteinListScrollPane)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout mainViewPanelLayout = new javax.swing.GroupLayout(mainViewPanel);
         mainViewPanel.setLayout(mainViewPanelLayout);
         mainViewPanelLayout.setHorizontalGroup(
             mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainViewPanelLayout.createSequentialGroup()
-                .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainViewPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(accessionLabel)
-                                .addGroup(mainViewPanelLayout.createSequentialGroup()
-                                    .addGap(12, 12, 12)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                            .addComponent(filterTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(infoPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(downloadBar, javax.swing.GroupLayout.PREFERRED_SIZE, 1567, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(proteinsOverviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(proteinDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1395, Short.MAX_VALUE)
                 .addContainerGap())
         );
         mainViewPanelLayout.setVerticalGroup(
             mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainViewPanelLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(downloadBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(mainViewPanelLayout.createSequentialGroup()
-                        .addComponent(infoPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
-                        .addGap(19, 19, 19))
-                    .addGroup(mainViewPanelLayout.createSequentialGroup()
-                        .addComponent(accessionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainViewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(mainViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(proteinDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+                    .addComponent(proteinsOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -269,6 +263,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         );
 
         tabsPane.addTab("pdb view panel", PDBViewPanel);
+
+        exportPanel.setOpaque(false);
 
         jCheckBox1.setText("export all projects");
 
@@ -379,7 +375,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jMenu1.setText("File");
+        fileMenu.setText("File");
 
         newViewMenuItem.setText("load new view ...");
         newViewMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -387,45 +383,45 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 newViewMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(newViewMenuItem);
+        fileMenu.add(newViewMenuItem);
 
-        jMenuItem1.setText("save to CSV file");
-        jMenu1.add(jMenuItem1);
+        saveToCsvMenuItem.setText("save to CSV file");
+        fileMenu.add(saveToCsvMenuItem);
 
-        jMenuItem2.setText("save to excel file");
-        jMenu1.add(jMenuItem2);
+        saveToExcelMenuItem.setText("save to excel file");
+        fileMenu.add(saveToExcelMenuItem);
 
-        jMenuItem3.setText("export options ...");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        exportOptionsMenuItem.setText("export options ...");
+        exportOptionsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                exportOptionsMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem3);
+        fileMenu.add(exportOptionsMenuItem);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(fileMenu);
 
-        jMenu2.setText("view options");
+        ViewOptionsMenu.setText("View options");
 
-        jMenu3.setText("accession");
+        accessionMenuItem.setText("accession");
 
-        jRadioButtonMenuItem1.setSelected(true);
-        jRadioButtonMenuItem1.setText("uniprot");
-        jRadioButtonMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        uniProtRadioButtonMenuItem.setSelected(true);
+        uniProtRadioButtonMenuItem.setText("uniprot");
+        uniProtRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonMenuItem1ActionPerformed(evt);
+                uniProtRadioButtonMenuItemActionPerformed(evt);
             }
         });
-        jMenu3.add(jRadioButtonMenuItem1);
+        accessionMenuItem.add(uniProtRadioButtonMenuItem);
 
-        jRadioButtonMenuItem2.setSelected(true);
-        jRadioButtonMenuItem2.setText("original accession");
-        jRadioButtonMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        originalAccessionRadioButtonMenuItem.setSelected(true);
+        originalAccessionRadioButtonMenuItem.setText("original accession");
+        originalAccessionRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonMenuItem2ActionPerformed(evt);
+                originalAccessionRadioButtonMenuItemActionPerformed(evt);
             }
         });
-        jMenu3.add(jRadioButtonMenuItem2);
+        accessionMenuItem.add(originalAccessionRadioButtonMenuItem);
 
         setAccessionMaskOption.setText("set mask for accessions ...");
         setAccessionMaskOption.addActionListener(new java.awt.event.ActionListener() {
@@ -433,13 +429,13 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 setAccessionMaskOptionActionPerformed(evt);
             }
         });
-        jMenu3.add(setAccessionMaskOption);
+        accessionMenuItem.add(setAccessionMaskOption);
 
-        jMenu2.add(jMenu3);
+        ViewOptionsMenu.add(accessionMenuItem);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(ViewOptionsMenu);
 
-        preferencesMenu.setText("preferences...");
+        preferencesMenu.setText("Preferences...");
         preferencesMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 preferencesMenuActionPerformed(evt);
@@ -515,7 +511,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                     //faultBarrier.handleException(ex);
                 }
             }
-            infoPanel1.updateProteinGraphics(proteinOfInterest);
+            proteinDetailPanel.updateProteinGraphics(proteinOfInterest);
         } catch (SQLException ex) {
             faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(null, "there has been a connection error while retrieving the protein sequence:\n" + ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
@@ -545,17 +541,17 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     }//GEN-LAST:event_preferencesMenuActionPerformed
 
-    private void jRadioButtonMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem1ActionPerformed
+    private void uniProtRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uniProtRadioButtonMenuItemActionPerformed
         //change this to popup progress bar
-        downloadBar.setMaximum(proteinsToDisplay.size());
-        downloadBar.setValue(0);
-        downloadBar.setVisible(true);
-        downloadBar.setStringPainted(true);
+//        downloadBar.setMaximum(proteinsToDisplay.size());
+//        downloadBar.setValue(0);
+//        downloadBar.setVisible(true);
+//        downloadBar.setStringPainted(true);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         for (final Protein aProtein : proteinsToDisplay) {
             try {
-                downloadBar.setString("fetching accession for: " + aProtein.getVisibleAccession());
-                downloadBar.setValue(downloadBar.getValue() + 1);
+//                downloadBar.setString("fetching accession for: " + aProtein.getVisibleAccession());
+//                downloadBar.setValue(downloadBar.getValue() + 1);
                 new Thread() {
 
                     @Override
@@ -575,17 +571,17 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             } catch (Exception e) {
             }
         }
-        downloadBar.setVisible(false);
+//        downloadBar.setVisible(false);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         this.revalidate();
         this.repaint();
-    }//GEN-LAST:event_jRadioButtonMenuItem1ActionPerformed
+    }//GEN-LAST:event_uniProtRadioButtonMenuItemActionPerformed
 
-    private void jRadioButtonMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem2ActionPerformed
+    private void originalAccessionRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalAccessionRadioButtonMenuItemActionPerformed
         for (Protein aProtein : proteinsToDisplay) {
             aProtein.setAccession(aProtein.getOriginalAccession());
         }
-    }//GEN-LAST:event_jRadioButtonMenuItem2ActionPerformed
+    }//GEN-LAST:event_originalAccessionRadioButtonMenuItemActionPerformed
 
     private void filterTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTextFieldKeyTyped
         // TODO add your handling code here:
@@ -605,10 +601,10 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         }
     }//GEN-LAST:event_filterTextFieldKeyTyped
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void exportOptionsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportOptionsMenuItemActionPerformed
         // TODO add your handling code here:
         //new exportoptionspanel
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    }//GEN-LAST:event_exportOptionsMenuItemActionPerformed
 
     private void newViewMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newViewMenuItemActionPerformed
         int selection = JOptionPane.showConfirmDialog(null, "Select a new set of experiments?", "new view", JOptionPane.YES_NO_OPTION);
@@ -628,12 +624,13 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PDBViewPanel;
-    private javax.swing.JLabel accessionLabel;
-    private javax.swing.JProgressBar downloadBar;
+    private javax.swing.JMenu ViewOptionsMenu;
+    private javax.swing.JMenu accessionMenuItem;
     private javax.swing.JButton exportButton;
+    private javax.swing.JMenuItem exportOptionsMenuItem;
     private javax.swing.JPanel exportPanel;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JTextField filterTextField;
-    private com.compomics.pepshell.view.panels.InfoPanel infoPanel1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
@@ -642,31 +639,28 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JCheckBox jCheckBox6;
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
     private com.compomics.pepshell.view.panels.JmolPanel jmolPanel1;
     private javax.swing.JPanel mainViewPanel;
     private javax.swing.JMenuItem newViewMenuItem;
+    private javax.swing.JRadioButtonMenuItem originalAccessionRadioButtonMenuItem;
     private javax.swing.JList pdbProteinList;
     private javax.swing.JMenu preferencesMenu;
+    private com.compomics.pepshell.view.panels.InfoPanel proteinDetailPanel;
     private javax.swing.JList proteinList;
+    private javax.swing.JScrollPane proteinListScrollPane;
+    private javax.swing.JPanel proteinsOverviewPanel;
+    private javax.swing.JMenuItem saveToCsvMenuItem;
+    private javax.swing.JMenuItem saveToExcelMenuItem;
     private javax.swing.JMenuItem setAccessionMaskOption;
     private javax.swing.JTabbedPane statisticsTabbedPane;
     private javax.swing.JTabbedPane tabsPane;
+    private javax.swing.JRadioButtonMenuItem uniProtRadioButtonMenuItem;
     // End of variables declaration//GEN-END:variables
 
     private void askLinkDbLoginQuestion() {
