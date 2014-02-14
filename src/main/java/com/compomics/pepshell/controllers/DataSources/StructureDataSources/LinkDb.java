@@ -14,14 +14,21 @@ import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Ordering;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -210,9 +217,30 @@ public class LinkDb implements StructureDataSource {
                     infoSet.add(info);
                 }
             } catch (SQLException sqle) {
+                FaultBarrier.getInstance().handleException(sqle);
             }
         } catch (SQLException sqle) {
+            FaultBarrier.getInstance().handleException(sqle);
+        }
+        if (ProgramVariables.USEINTERNETSOURCES && infoSet.isEmpty()) {
+            try {
+                infoSet.addAll(PDBDAO.getInstance().getPDBInfoForProtein(protein));
+            } catch (IOException ex) {
+                FaultBarrier.getInstance().handleException(ex);
+            } catch (ConversionException ex) {
+                FaultBarrier.getInstance().handleException(ex);
+            }
         }
         return infoSet;
+    }
+
+    public Set<PdbInfo> getPdbInforForProtein(Protein protein, Comparator<PdbInfo> sortingComparator) {
+        Set<PdbInfo> info = getPDBInfoForProtein(protein);
+        if (sortingComparator != null) {
+            Ordering<PdbInfo> resolutionOrdering = Ordering.from(sortingComparator);
+            info = ImmutableSortedSet.orderedBy(resolutionOrdering).addAll(info).build();
+
+        }
+        return info;
     }
 }

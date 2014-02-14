@@ -99,7 +99,7 @@ public class Protein {
         this.allPDBFileInfoForProtein.addAll(allPDBFileNamesForProtein);
     }
 
-    public Set<PdbInfo> getPdbFileNames() {
+    public Set<PdbInfo> getPdbFilesInfo() {
         return allPDBFileInfoForProtein;
     }
 

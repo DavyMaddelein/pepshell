@@ -2,8 +2,11 @@ package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 
 import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.model.Domain;
+import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -63,4 +66,7 @@ public class ExternalStructureDataSource implements StructureDataSource {
         return new ExternalStructureDataSource();
     }
 
+    public Set<PdbInfo> getPdbInforForProtein(Protein protein, Comparator<PdbInfo> sortingComparator) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

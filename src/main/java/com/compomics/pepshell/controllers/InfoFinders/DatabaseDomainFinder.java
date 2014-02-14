@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author Davy
  */
-public class DatabaseDomainFinder implements DataRetievalStep {
+public class DatabaseDomainFinder implements DataRetrievalStep {
 
     public void execute(List<Protein> proteinList) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

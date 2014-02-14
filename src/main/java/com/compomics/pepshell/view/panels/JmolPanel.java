@@ -4,6 +4,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.DatabasePDBDAO;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
+import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
 import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.PdbInfo;
@@ -17,11 +18,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -173,58 +169,26 @@ public class JmolPanel extends javax.swing.JPanel {
 
     }
 
-    public void setPDBProtein(final Protein protein) throws MalformedURLException, ConversionException, SQLException {
-        final Set<PdbInfo> pdbAccessions = new HashSet<PdbInfo>();
+    public void setPDBProtein(Protein protein) throws MalformedURLException, ConversionException, SQLException {
         sequenceCoveragePanel1.showProteinCoverage(protein.getProteinSequence(), protein.getPeptideGroupsForProtein().iterator());
         jProgressBar1.setIndeterminate(true);
         jProgressBar1.setString("fetching pdb files");
-        new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    pdbAccessions.addAll(DatabasePDBDAO.getPDBFileAccessionsForProtein(protein));
-                    if (pdbAccessions.isEmpty()) {
-                        try {
-                            pdbAccessions.addAll(PDBDAO.getInstance().getPDBInfoForProtein(protein));
-                        } catch (MalformedURLException ex) {
-                            Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (ConversionException ex) {
-                            Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                } catch (IOException ioe) {
-                       // try offline repository if any
-                    //pdbAccessions.addAll(PDBDAO.getInstance().getPdbFileInfoForProteinFromRepository(protein));
-
-                } catch (ConversionException ex) {
-                    Logger.getLogger(JmolPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        ;
-        }.run();
+        //todo remove this and actually multithread it
+        if (protein.getPdbFilesInfo().isEmpty()) {
+            protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein, new ComparePdbInfoByResolution()));
+        }
         PDBFileComboBox.removeAllItems();
-        if (pdbAccessions.isEmpty()) {
+        if (protein.getPdbFilesInfo().isEmpty()) {
             PDBFileComboBox.addItem("no pdb accessions found for protein");
             PDBFileComboBox.addItem("some test accessions");
             PDBFileComboBox.addItem("1GZX");
             PDBFileComboBox.addItem("3Q4C");
             PDBFileComboBox.addItem("3C4C");
         } else {
-            Ordering<PdbInfo> resolutionOrdering = Ordering.natural().onResultOf(getResolution);
-            SortedSet<PdbInfo> infoSet = ImmutableSortedSet.orderedBy(resolutionOrdering).addAll(pdbAccessions).build();
-            for (PdbInfo aPDBFileAccession : infoSet) {
+            for (PdbInfo aPDBFileAccession : protein.getPdbFilesInfo()) {
                 PDBFileComboBox.addItem(aPDBFileAccession);
             }
         }
         jProgressBar1.setIndeterminate(false);
     }
-    Function<PdbInfo, Double> getResolution = new Function<PdbInfo, Double>() {
-        public Double apply(PdbInfo input) {
-            Double toReturn = 10000.0;
-            if (input.getResolution() != null) {
-                toReturn = input.getResolution();
-            }
-            return toReturn;
-        }
-    };
 }

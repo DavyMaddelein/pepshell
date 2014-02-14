@@ -3,6 +3,7 @@ package com.compomics.pepshell.view.panels;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
+import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.PeptideGroup;
@@ -61,10 +62,10 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     public void setProtein(Protein protein) {
         this.protein = protein;
         if (pdbSelectionComboBox.isVisible()) {
-            if (protein.getPdbFileNames().isEmpty()) {
-                protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPDBInfoForProtein(protein));
+            if (protein.getPdbFilesInfo().isEmpty()) {
+                protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein, new ComparePdbInfoByResolution()));
             }
-            for (PdbInfo info : protein.getPdbFileNames()) {
+            for (PdbInfo info : protein.getPdbFilesInfo()) {
                 pdbSelectionComboBox.addItem(info);
             }
         }
