@@ -1,28 +1,19 @@
 package com.compomics.pepshell.view.panels;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PdbInfo;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
-import com.compomics.pepshell.model.exceptions.DataRetrievalException;
-import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
-import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
-import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.FreeEnergyProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.SolventAccessibleProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,22 +22,17 @@ import javax.swing.JOptionPane;
  */
 public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
-    private int horizontalOffset = this.getX() + 15;
-    private int verticalOffset = 50;
-    private Protein protein;
-    private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
-    private DrawModeInterface proteinDrawMode = new StandardPeptideProteinDrawMode();
-    private DrawModeInterface secondaryDrawMode = new HydrophobicityProteinDrawMode();
-    private DrawModeInterface domainDrawMode = new DomainProteinDrawMode();
+    public static final String NO_PDB_FILES_FOUND = "no PDBs found";
+
     private Experiment referenceExperiment;
 
     /**
-     * Creates new form PeptidesProteinsOverlapGUI
+     * Creates new form ReferenceExperimentPanel
      */
     public ReferenceExperimentPanel() {
         initComponents();
-        pdbSelectionComboBox.setVisible(false);
-        this.addMouseListener(new popupMenuListener());
+
+        pdbSelectionComboBox.setEnabled(false);
     }
 
     public ReferenceExperimentPanel(Experiment project) {
@@ -54,25 +40,33 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setText(project.getExperimentName());
     }
 
-    public void setProtein(Protein protein) {
-        this.protein = protein;
-        if (pdbSelectionComboBox.isVisible()) {
-            if (protein.getPdbFilesInfo().isEmpty()) {
-                protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein, new ComparePdbInfoByResolution()));
-            }
-            for (PdbInfo info : protein.getPdbFilesInfo()) {
-                pdbSelectionComboBox.addItem(info);
+    public void updateProtein(Protein protein) {
+        pdbSelectionComboBox.removeAllItems();
+
+        if (protein.getPdbFilesInfo().isEmpty()) {
+            //retrieve the PDB info objects and add them to the protein
+            protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein, new ComparePdbInfoByResolution()));
+        }
+        //check after retrieval if any PDB info is available
+        if (protein.getPdbFilesInfo().isEmpty()) {
+            //add a default item
+            pdbSelectionComboBox.addItem(NO_PDB_FILES_FOUND);
+        } else {
+            for (PdbInfo pdbInfo : protein.getPdbFilesInfo()) {
+                pdbSelectionComboBox.addItem(pdbInfo);
             }
         }
+
+        //set selected item
+        pdbSelectionComboBox.setSelectedIndex(0);
+
+        //update the draw panel
+        referenceProteinDrawPanel.updateProtein(protein);
     }
 
     public void setReferenceExperiment(Experiment reference) {
         this.referenceExperiment = reference;
         projectNameLabel.setText(referenceExperiment.getExperimentName());
-    }
-
-    public String getProjectNameForPanel() {
-        return projectNameLabel.getText();
     }
 
     @SuppressWarnings("unchecked")
@@ -82,10 +76,12 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         experimentPopupMenu = new javax.swing.JPopupMenu();
         changeNameOption = new javax.swing.JMenuItem();
         exportImageToPDFOption = new javax.swing.JMenuItem();
-        projectNameLabel = new javax.swing.JLabel();
-        drawModeChooser = new javax.swing.JComboBox();
+        optionsPanel = new javax.swing.JPanel();
         quantCheckBox = new javax.swing.JCheckBox();
+        drawModeChooser = new javax.swing.JComboBox();
         pdbSelectionComboBox = new javax.swing.JComboBox();
+        projectNameLabel = new javax.swing.JLabel();
+        referenceProteinDrawPanel = new com.compomics.pepshell.view.panels.ReferenceProteinDrawPanel();
 
         changeNameOption.setText("change name of the selected experiment");
         changeNameOption.addActionListener(new java.awt.event.ActionListener() {
@@ -100,11 +96,32 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        setName("[1000, 80]"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(1000, 80));
-        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                formMouseMoved(evt);
+        setName(""); // NOI18N
+        setPreferredSize(new java.awt.Dimension(1000, 180));
+
+        optionsPanel.setOpaque(false);
+
+        quantCheckBox.setText("show quantitfied range");
+        quantCheckBox.setOpaque(false);
+        quantCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quantCheckBoxActionPerformed(evt);
+            }
+        });
+
+        drawModeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "hydrophobicity", "secondary structure", "free energy", "solvent accessibility" }));
+        drawModeChooser.setPreferredSize(new java.awt.Dimension(122, 25));
+        drawModeChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                drawModeChooserActionPerformed(evt);
+            }
+        });
+
+        pdbSelectionComboBox.setMinimumSize(new java.awt.Dimension(122, 25));
+        pdbSelectionComboBox.setPreferredSize(new java.awt.Dimension(122, 25));
+        pdbSelectionComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pdbSelectionComboBoxActionPerformed(evt);
             }
         });
 
@@ -112,73 +129,69 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setMinimumSize(new java.awt.Dimension(50, 30));
         projectNameLabel.setPreferredSize(new java.awt.Dimension(50, 30));
 
-        drawModeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "hydrophobicity", "secondary structure", "free energy", "solvent accessibility" }));
-        drawModeChooser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                drawModeChooserActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(optionsPanel);
+        optionsPanel.setLayout(optionsPanelLayout);
+        optionsPanelLayout.setHorizontalGroup(
+            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(optionsPanelLayout.createSequentialGroup()
+                        .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(quantCheckBox)
+                        .addGap(0, 513, Short.MAX_VALUE))
+                    .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        optionsPanelLayout.setVerticalGroup(
+            optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(quantCheckBox)
+                    .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, Short.MAX_VALUE))
+        );
 
-        quantCheckBox.setText("show quantitfied range");
-        quantCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quantCheckBoxActionPerformed(evt);
-            }
-        });
-
-        pdbSelectionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        pdbSelectionComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pdbSelectionComboBoxActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout referenceProteinDrawPanelLayout = new javax.swing.GroupLayout(referenceProteinDrawPanel);
+        referenceProteinDrawPanel.setLayout(referenceProteinDrawPanelLayout);
+        referenceProteinDrawPanelLayout.setHorizontalGroup(
+            referenceProteinDrawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        referenceProteinDrawPanelLayout.setVerticalGroup(
+            referenceProteinDrawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 103, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(quantCheckBox)
-                        .addGap(0, 627, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(referenceProteinDrawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(drawModeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(quantCheckBox)
-                    .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(referenceProteinDrawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        //todo actually take a look at this
-        /*if (evt.getY() >= verticalOffset + 5 && evt.getY() <= verticalOffset + proteinBarSize) {
-         System.out.println(evt.getY());
-         System.out.println(evt.getX());
-         for (PeptideGroup peptideGroup : protein.getPeptideGroupsForProtein()) {
-         if (evt.getX() >= horizontalOffset + peptideGroup.getStartingAlignmentPosition() && evt.getX() <= horizontalOffset + peptideGroup.getEndAlignmentPosition()) {
-         ProteinInfoFrame frame = new ProteinInfoFrame(protein, peptideGroup);
-         }
-         }
-         }
-         */
-    }//GEN-LAST:event_formMouseMoved
-
     private void drawModeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawModeChooserActionPerformed
-        // TODO add your handling code here:
+        DrawModeInterface secondaryDrawMode;
+        String pdbAccession = null;
+
+        //disable PDB selection combobox
+        pdbSelectionComboBox.setEnabled(false);
+
         switch (drawModeChooser.getSelectedIndex()) {
             case 0:
                 secondaryDrawMode = new HydrophobicityProteinDrawMode();
@@ -188,30 +201,32 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 break;
             case 2:
                 secondaryDrawMode = new FreeEnergyProteinDrawMode();
-                pdbSelectionComboBox.setVisible(true);
+                pdbSelectionComboBox.setEnabled(true);
+                pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
                 break;
             case 3:
                 secondaryDrawMode = new SolventAccessibleProteinDrawMode();
-                pdbSelectionComboBox.setVisible(true);
+                pdbSelectionComboBox.setEnabled(true);
+                pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
                 break;
             default:
                 secondaryDrawMode = new HydrophobicityProteinDrawMode();
                 break;
         }
-        this.revalidate();
-        this.repaint();
+
+        referenceProteinDrawPanel.updateSecondaryDrawMode(secondaryDrawMode, pdbAccession);
     }//GEN-LAST:event_drawModeChooserActionPerformed
 
     private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
-        // TODO add your handling code here:
+        DrawModeInterface peptideDrawMode;
+
         if (quantCheckBox.isSelected()) {
             peptideDrawMode = new QuantedPeptideDrawMode<QuantedPeptide>();
-            //((DrawableProtein) protein).drawAllPeptideGroups(horizontalOffset, verticalOffset + 25, g);
         } else {
             peptideDrawMode = new StandardPeptideProteinDrawMode();
         }
-        this.revalidate();
-        this.repaint();
+
+        referenceProteinDrawPanel.updatePeptideDrawMode(peptideDrawMode);
     }//GEN-LAST:event_quantCheckBoxActionPerformed
 
     private void changeNameOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeNameOptionActionPerformed
@@ -221,9 +236,11 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_changeNameOptionActionPerformed
 
     private void pdbSelectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdbSelectionComboBoxActionPerformed
-        // TODO add your handling code here:
-
-        //(String) pdbSelectionComboBox.getSelectedItem();
+        if (pdbSelectionComboBox.getSelectedItem() != null) {
+            String pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
+            
+            referenceProteinDrawPanel.updatePdbAccession(pdbAccession);
+        }        
     }//GEN-LAST:event_pdbSelectionComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -231,59 +248,11 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox drawModeChooser;
     private javax.swing.JPopupMenu experimentPopupMenu;
     private javax.swing.JMenuItem exportImageToPDFOption;
+    private javax.swing.JPanel optionsPanel;
     private javax.swing.JComboBox pdbSelectionComboBox;
     private javax.swing.JLabel projectNameLabel;
     private javax.swing.JCheckBox quantCheckBox;
+    private com.compomics.pepshell.view.panels.ReferenceProteinDrawPanel referenceProteinDrawPanel;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (protein != null) {
-            try {
-                verticalOffset = this.projectNameLabel.getY() + 20;
-                int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
-
-                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 25, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
-                for (PeptideGroup aGroup : protein.getPeptideGroupsForProtein()) {
-                    peptideDrawMode.drawPeptide(aGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 25, ProgramVariables.VERTICALSIZE);
-                }
-
-                secondaryDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 50, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
-                if (secondaryDrawMode instanceof GradientDrawModeInterface) {
-                    ((GradientDrawModeInterface) secondaryDrawMode).drawColorLegend(horizontalOffset + scaledHorizontalBarSize + 15, verticalOffset + 50, g);
-                }
-                try {
-                    if (protein.getDomains().isEmpty()) {
-                        ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein);
-                    }
-                    domainDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
-                } catch (DataRetrievalException e) {
-
-                }
-            } catch (UndrawableException ex) {
-                FaultBarrier.getInstance().handleException(ex);
-            }
-        }
-    }
-
-    private class popupMenuListener extends MouseAdapter {
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        private void maybeShowPopup(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                experimentPopupMenu.show(e.getComponent(),
-                        e.getX(), e.getY());
-            }
-        }
-    }
 }

@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class LinkDb implements StructureDataSource {
 //TODO subtype this to uniprot protein since we need to be sure we have uniprot accessions
+    private static final Double NO_RESOLUTION_RETRIEVED_VALUE = 20D;
 
     public String getPDBDataForPDBName(String pdbName) {
         String pdbData = "no data found";
@@ -74,13 +75,13 @@ public class LinkDb implements StructureDataSource {
         //try and get from link db, 
         if (foundDomains.isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
             try {
-                foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getProteinAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
+                foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getVisibleAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
             } catch (IOException ex) {
-                throw new DataRetrievalException("");
+                throw new DataRetrievalException(ex.getMessage(), ex);
             } catch (ConversionException ex) {
-                throw new DataRetrievalException("");
+                throw new DataRetrievalException(ex.getMessage(), ex);
             } catch (XMLStreamException ex) {
-                throw new DataRetrievalException("");
+                throw new DataRetrievalException(ex.getMessage(), ex);
             }
         }
         return foundDomains;
@@ -224,9 +225,14 @@ public class LinkDb implements StructureDataSource {
             try {
                 while (rs.next()) {
                     PdbInfo info = new PdbInfo();
+                    info.setMethod(rs.getString("technique"));
                     info.setPdbAccession(rs.getString("PDB"));
                     info.setName(rs.getString("title"));
-                    info.setResolution(Double.parseDouble(rs.getString("resolution")));
+                    try {
+                        info.setResolution(Double.parseDouble(rs.getString("resolution")));
+                    } catch (NumberFormatException nfe) {
+                        info.setResolution(NO_RESOLUTION_RETRIEVED_VALUE);
+                    }
                     infoSet.add(info);
                 }
             } catch (SQLException sqle) {

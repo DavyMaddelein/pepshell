@@ -7,6 +7,8 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DataModes.FastaDataMode;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.InternetStructureDataSource;
+import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
+import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.model.AnalysisGroup;
@@ -14,15 +16,15 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Property;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
+import com.compomics.pepshell.view.panels.DataRetrievalStepsDialog;
 import com.compomics.pepshell.view.panels.LoginDialog;
 import java.awt.Point;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
@@ -33,12 +35,13 @@ import javax.swing.tree.TreeNode;
  *
  * @author Davy
  */
-public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Observer {
+public class ProjectSelectionTreeFrame extends javax.swing.JFrame {
 
     private List<Experiment> selectedProjectsList = new ArrayList<Experiment>();
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Experiment referenceProject;
     private File fastaFile;
+    private LinkedList<DataRetrievalStep> dataRetrievalSteps = new LinkedList<DataRetrievalStep>();
 
     /**
      * Creates new form ProjectSelectionTreeFrame all this is pretty much unsafe
@@ -116,6 +119,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         genbankTranslationRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         fetchDomainDataCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         fetchPdbDataCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
+        editRetrievalStepsMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("project selection");
@@ -260,6 +264,14 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         fetchPdbDataCheckBoxMenuItem.setSelected(true);
         fetchPdbDataCheckBoxMenuItem.setText("fetch pdb data for proteins");
         jMenu2.add(fetchPdbDataCheckBoxMenuItem);
+
+        editRetrievalStepsMenuItem.setText("edit retrievalsteps");
+        editRetrievalStepsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editRetrievalStepsMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(editRetrievalStepsMenuItem);
 
         jMenuBar1.add(jMenu2);
 
@@ -442,7 +454,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         }
         if (filterSubsetCheckBox.isSelected()) {
             if (!preloadProteinFilterPanel1.getProteinsToFilterWith().isEmpty()) {
-                DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(preloadProteinFilterPanel1.getProteinsToFilterWith());
+                //DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(preloadProteinFilterPanel1.getProteinsToFilterWith());
             } else {
                 JOptionPane.showMessageDialog(this, "empty filter set, was ignored");
             }
@@ -454,14 +466,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
             }
         }
 
-        if (fetchDomainDataCheckBoxMenuItem.isSelected()) {
-        }
-
-        if (fetchPdbDataCheckBoxMenuItem.isSelected()) {
-        }
-
-        if (uniprotTranslateRadioButtonMenuItem.isSelected() || swissprotTranslationRadioButtonMenuItem.isSelected() || genbankTranslationRadioButtonMenuItem.isSelected()) {
-        }
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(dataRetrievalSteps);
 
         if (goAhead) {
             MainWindow window = new MainWindow();
@@ -513,6 +518,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         if (useLinkDbCheckBox.isSelected()) {
             LinkDbLoginDialog loginDialog = new LinkDbLoginDialog();
             loginDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            ProgramVariables.STRUCTUREDATASOURCE = new LinkDb();
         } else {
             if (useInternetCheckBox.isSelected()) {
                 ProgramVariables.STRUCTUREDATASOURCE = new InternetStructureDataSource();
@@ -520,7 +526,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
                 //accept own implementation or local sources? if own, make pluggable
             }
         }
-
     }//GEN-LAST:event_useLinkDbCheckBoxActionPerformed
 
     private void makeDbConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeDbConnectionButtonActionPerformed
@@ -552,11 +557,18 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         }
     }//GEN-LAST:event_maskProteinsCheckBoxActionPerformed
 
+    private void editRetrievalStepsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editRetrievalStepsMenuItemActionPerformed
+        // TODO add your handling code here:
+        DataRetrievalStepsDialog dialog = new DataRetrievalStepsDialog(this, true, dataRetrievalSteps);
+
+    }//GEN-LAST:event_editRetrievalStepsMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAnalysisGroupButton;
     private javax.swing.JButton addFastaButton;
     private javax.swing.JButton addReferenceProjectButton;
     private javax.swing.JButton analyseButton;
+    private javax.swing.JMenuItem editRetrievalStepsMenuItem;
     private javax.swing.JTextField fastaLocationTextField;
     private javax.swing.JCheckBoxMenuItem fetchDomainDataCheckBoxMenuItem;
     private javax.swing.JCheckBoxMenuItem fetchPdbDataCheckBoxMenuItem;
@@ -586,14 +598,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     private javax.swing.JCheckBoxMenuItem useInternetCheckBox;
     private javax.swing.JCheckBoxMenuItem useLinkDbCheckBox;
     // End of variables declaration//GEN-END:variables
-
-    public void update(Observable o, Object o1) {
-        if (o1 != null) {
-            if (o1 instanceof Exception) {
-                faultBarrier.handleException((Exception) o1);
-            }
-        }
-    }
 
     private void fillProjectList() throws SQLException {
         projectList.setListData(DbDAO.getProjects().toArray());
