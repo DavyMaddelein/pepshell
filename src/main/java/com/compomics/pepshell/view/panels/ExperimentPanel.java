@@ -124,7 +124,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
             while (peptideGroupIter.hasNext()) {
                 PeptideGroup peptideGroup = peptideGroupIter.next();
                 if (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() / ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() / ProgramVariables.SCALE)) {
-                    ((InfoPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), peptideGroup);
+                    ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), peptideGroup);
                 }
             }
         }

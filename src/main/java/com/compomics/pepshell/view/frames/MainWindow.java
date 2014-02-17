@@ -14,11 +14,10 @@ import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.filters.RegexFilter;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.ProgressMessage;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
-import com.compomics.pepshell.view.panels.InfoPanel;
+import com.compomics.pepshell.view.panels.ProteinDetailPanel;
 import com.compomics.pepshell.view.panels.StatisticsPanel;
 
 import javax.swing.*;
@@ -44,7 +43,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private static FaultBarrier faultBarrier;
     private List<Protein> proteinsToDisplay = new ArrayList<Protein>();
     private RegexFilter filter = new RegexFilter();
-    
+
     public MainWindow() {
         faultBarrier = FaultBarrier.getInstance();
         initComponents();
@@ -76,19 +75,19 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         jScrollPane2.setViewportView(pdbProteinList);
     }
 
-    public void collectAndShowData(Experiment referenceExperiment, List<Experiment> experiments, InfoPanel anInfoPanel) {
-        DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.iterator(), false);
-        anInfoPanel.setExperimentsToDisplay(experiments);
-
-    }
-
+//    @TODO remove this method
+//    public void collectAndShowData(Experiment referenceExperiment, List<Experiment> experiments, ProteinDetailPanel proteinDetailPanel1) {
+//        DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.iterator(), false);
+//        proteinDetailPanel1.setExperimentsToDisplay(experiments);
+//
+//    }
     public void update(Observable o, Object o1) {
         if (o1 != null && o1 instanceof Exception) {
             //tabsPane.setFont(new Font(null, Font.BOLD, 12));
             //tabsPane.setIconAt(tabsPane.getTabCount() - 1, UIManager.getIcon("OptionPane.warningIcon"));
             //TODO show in error pane
             ((Exception) o1).printStackTrace();
-        } 
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -101,7 +100,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         proteinListScrollPane = new javax.swing.JScrollPane();
         proteinList = new javax.swing.JList();
         filterTextField = new javax.swing.JTextField();
-        proteinDetailPanel = new com.compomics.pepshell.view.panels.InfoPanel();
+        proteinDetailPanel = new com.compomics.pepshell.view.panels.ProteinDetailPanel();
         PDBViewPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         pdbProteinList = new javax.swing.JList();
@@ -119,7 +118,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         exportButton = new javax.swing.JButton();
         jCheckBox7 = new javax.swing.JCheckBox();
         jTextField1 = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
+        statisticsPanel = new javax.swing.JPanel();
         statisticsTabbedPane = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -358,20 +357,20 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         tabsPane.addTab("exportPanel", exportPanel);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout statisticsPanelLayout = new javax.swing.GroupLayout(statisticsPanel);
+        statisticsPanel.setLayout(statisticsPanelLayout);
+        statisticsPanelLayout.setHorizontalGroup(
+            statisticsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statisticsPanelLayout.createSequentialGroup()
                 .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1567, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        statisticsPanelLayout.setVerticalGroup(
+            statisticsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
         );
 
-        tabsPane.addTab("statistics", jPanel2);
+        tabsPane.addTab("statistics", statisticsPanel);
 
         jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -475,11 +474,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                     jmolPanel1.setPDBProtein((Protein) pdbProteinList.getSelectedValue());
                 } catch (MalformedURLException ex) {
                     faultBarrier.handleException(ex);
-                } catch (IOException ex) {
-                    faultBarrier.handleException(ex);
-                } catch (ConversionException ex) {
-                    faultBarrier.handleException(ex);
-                } catch (SQLException ex) {
+                } catch (ConversionException | SQLException ex) {
                     faultBarrier.handleException(ex);
                 }
             }
@@ -640,7 +635,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator2;
@@ -651,13 +645,14 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JRadioButtonMenuItem originalAccessionRadioButtonMenuItem;
     private javax.swing.JList pdbProteinList;
     private javax.swing.JMenu preferencesMenu;
-    private com.compomics.pepshell.view.panels.InfoPanel proteinDetailPanel;
+    private com.compomics.pepshell.view.panels.ProteinDetailPanel proteinDetailPanel;
     private javax.swing.JList proteinList;
     private javax.swing.JScrollPane proteinListScrollPane;
     private javax.swing.JPanel proteinsOverviewPanel;
     private javax.swing.JMenuItem saveToCsvMenuItem;
     private javax.swing.JMenuItem saveToExcelMenuItem;
     private javax.swing.JMenuItem setAccessionMaskOption;
+    private javax.swing.JPanel statisticsPanel;
     private javax.swing.JTabbedPane statisticsTabbedPane;
     private javax.swing.JTabbedPane tabsPane;
     private javax.swing.JRadioButtonMenuItem uniProtRadioButtonMenuItem;
