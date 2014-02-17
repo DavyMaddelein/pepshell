@@ -10,4 +10,12 @@ public class DataRetrievalException extends Exception {
         super(message);
     }
 
+    public DataRetrievalException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DataRetrievalException(Throwable cause) {
+        super(cause);
+    }        
+
 }

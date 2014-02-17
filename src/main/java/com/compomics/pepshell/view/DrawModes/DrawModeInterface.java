@@ -8,6 +8,8 @@ import java.awt.Graphics;
 /**
  *
  * @author Davy
+ * @param <T>
+ * @param <U>
  */
 public interface DrawModeInterface<T extends Protein, U extends Peptide> {
 

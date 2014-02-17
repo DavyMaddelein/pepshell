@@ -9,6 +9,8 @@ import java.awt.Graphics;
 /**
  *
  * @author Davy
+ * @param <T>
+ * @param <U>
  */
 public interface GradientDrawModeInterface<T extends Protein, U extends Peptide> extends DrawModeInterface<T, U> {
 

@@ -13,6 +13,11 @@ public class ProgressMessage {
         this.taskName = aTaskName;
     }
 
+    public ProgressMessage(String aTaskName, int aPercentage) {
+        this.taskName = aTaskName;
+        this.progressPercentage = aPercentage;
+    }
+
     public int getProgressPercentage() {
         return progressPercentage;
     }

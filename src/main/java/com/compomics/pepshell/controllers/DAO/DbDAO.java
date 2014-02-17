@@ -24,7 +24,7 @@ import java.util.Observable;
  */
 public class DbDAO extends Observable {
 
-    public static boolean fetchProteins(Experiment project) throws SQLException {
+    public static List<Protein> fetchProteins(Experiment project) throws SQLException {
         Protein protToAdd;
         List<Protein> fetchedProteins = new ArrayList<Protein>();
         PreparedStatement stat = null;
@@ -46,8 +46,7 @@ public class DbDAO extends Observable {
                 stat.close();
             }
         }
-        project.setProteins(fetchedProteins);
-        return true;
+        return fetchedProteins;
     }
 
     public static boolean fetchPeptidesAndProteins(Experiment project) throws SQLException, IOException {

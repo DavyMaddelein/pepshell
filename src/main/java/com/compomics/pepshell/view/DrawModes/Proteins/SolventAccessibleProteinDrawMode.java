@@ -5,49 +5,51 @@ import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
-import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Map;
 
 /**
  *
  * @author Davy
  * @param <T>
- * @param <N>
  * @param <U>
  */
-public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Peptide> extends StandardPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Peptide> extends StandardPeptideProteinDrawMode<T, U> implements PdbGradientDrawModeInterface<T, U> {
+
+    private String pdbAccession;
 
     @Override
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
 
         int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
-        for (int previousEnd = 0; previousEnd < protein.getProteinSequence().length(); previousEnd++) {
-            try {
-                g.setColor(calculateAminoAcidGradient(protein, previousEnd));
-            } catch (CalculationException ex) {
-                g.setColor(Color.black);
-                g.drawString("could not draw the solvent accessibility", horizontalOffset, verticalOffset + 5);
-                throw new UndrawableException("could not calculate gradient");
+
+        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetSolventAccessibility() && pdbAccession != null) {
+            Map<Integer, Double> relSasValues = ProgramVariables.STRUCTUREDATASOURCE.getRelativeSolventAccessibilityForStructure(protein, pdbAccession);
+            //go over all locations retrieved from the data source
+            for (int location : relSasValues.keySet()) {
+                Double relSasValue = relSasValues.get(location);
+                //check for null values
+                if (relSasValue != null) {
+                    Color relativeAccessibilityGradientColor = new Color(Math.min((int) Math.ceil(relSasValue * 255), 255), 255, 125);
+                    g.setColor(relativeAccessibilityGradientColor);
+                } else {
+                    g.setColor(Color.WHITE);
+                }
+                g.fillRect(horizontalOffset + (location * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarWidth);
             }
-            g.fillRect(horizontalOffset + (previousEnd * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarWidth);
+        } else {
+            g.setColor(Color.black);
+            g.drawString("could not draw the solvent accessibility", horizontalOffset, verticalOffset + 5);
+            throw new UndrawableException("could not calculate gradient");
         }
+
     }
 
     public Color calculateAminoAcidGradient(T protein, int location) throws CalculationException {
-        Color relativeAccessibilityGradientColor = ProgramVariables.PROTEINCOLOR;
-        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetSolventAccessibility()) {
-            try {
-                relativeAccessibilityGradientColor = new Color((int) Math.ceil(ProgramVariables.STRUCTUREDATASOURCE.getRelativeSolventAccessibilityForResidue(protein, location)) * 255, 255, 125);
-            } catch (Exception e) {
-                relativeAccessibilityGradientColor = new Color(255, 255, 255);
-                //throw new CalculationException("cannot retrieve solvent accessability values for protein");
-            }
-        } else {
-            throw new CalculationException("cannot retrieve solvent accessability values for protein");
-        }
-        return relativeAccessibilityGradientColor;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Color calculatePeptideGradient(U peptide) throws CalculationException {
@@ -61,5 +63,9 @@ public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Pepti
             colorIncrement += 255 / 64;
             g.fillRect(xOffset + (i * 5), yOffset, 5, ProgramVariables.VERTICALSIZE);
         }
+    }
+
+    public void setPdbAccession(String pdbAccession) {
+        this.pdbAccession = pdbAccession;
     }
 }

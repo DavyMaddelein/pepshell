@@ -14,17 +14,12 @@ import java.util.Iterator;
  *
  * @author Davy
  */
-public class PreparationForDbData<T extends Experiment,V extends Protein> extends ViewPreparation<T,V> {
-
-    FaultBarrier barrier = FaultBarrier.getInstance();
+public class PreparationForDbData<T extends Experiment, V extends Protein> extends ViewPreparation<T, V> {
 
     @Override
     public T retrieveData(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         try {
             DbDAO.fetchPeptidesAndProteins(referenceExperiment);
-            if (!filterList.isEmpty()) {
-                this.filter.filter(referenceExperiment.getProteins(), filterList);
-            }
             checkAndAddQuantToProteinsInExperiment(referenceExperiment);
             while (ExperimentsToCompareWith.hasNext()) {
                 T anExperimentToCompareWith = ExperimentsToCompareWith.next();
@@ -33,9 +28,9 @@ public class PreparationForDbData<T extends Experiment,V extends Protein> extend
                 removeProteinsNotInReferenceExperiment(referenceExperiment, anExperimentToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
             }
         } catch (SQLException ex) {
-            barrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (IOException ex) {
-            barrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
         return referenceExperiment;
     }
@@ -51,9 +46,9 @@ public class PreparationForDbData<T extends Experiment,V extends Protein> extend
                 dataAdded = true;
             }
         } catch (SQLException ex) {
-            barrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (IOException ex) {
-            barrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
         return dataAdded;
     }

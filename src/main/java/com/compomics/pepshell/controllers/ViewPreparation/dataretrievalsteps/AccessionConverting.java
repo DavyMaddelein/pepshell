@@ -6,7 +6,9 @@ import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  *
@@ -14,15 +16,20 @@ import java.util.List;
  */
 public class AccessionConverting implements DataRetrievalStep {
 
-    public enum ConversionTo {
+    private Observable notifier = new Observable();
 
-        TO_UNIPROT;
-
-    }
+    private List<Protein> proteinList = new ArrayList<Protein>();
 
     private ConversionTo coTo = ConversionTo.TO_UNIPROT;
 
-    public List<Protein> execute(List<Protein> proteinList) {
+    public AccessionConverting(List<Protein> aProteinList) {
+        this.proteinList = aProteinList;
+    }
+
+    public AccessionConverting() {
+    }
+
+    public List<Protein> call() throws Exception {
         for (Protein aProtein : proteinList) {
             try {
                 try {
@@ -39,11 +46,21 @@ public class AccessionConverting implements DataRetrievalStep {
         return proteinList;
     }
 
-    public void setConversionTo(ConversionTo convertTo) {
-        this.coTo = convertTo;
+    public DataRetrievalStep getInstance(List<Protein> aProteinList) {
+        return new AccessionConverting(aProteinList);
     }
 
-    public boolean isMultithreadAble() {
-        return true;
+    public Observable getNotifier() {
+        return this.notifier;
+    }
+
+    public enum ConversionTo {
+
+        TO_UNIPROT;
+
+    }
+
+    public void setConversionTo(ConversionTo convertTo) {
+        this.coTo = convertTo;
     }
 }

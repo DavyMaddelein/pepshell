@@ -3,7 +3,6 @@ package com.compomics.pepshell.view.DrawModes.Proteins;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.gradientMaps.HydrophobicityMaps;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;

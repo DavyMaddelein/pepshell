@@ -442,7 +442,6 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         }
         if (filterSubsetCheckBox.isSelected()) {
             if (!preloadProteinFilterPanel1.getProteinsToFilterWith().isEmpty()) {
-                DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToFilter(true);
                 DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(preloadProteinFilterPanel1.getProteinsToFilterWith());
             } else {
                 JOptionPane.showMessageDialog(this, "empty filter set, was ignored");
@@ -450,24 +449,18 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         }
         if (maskProteinsCheckBox.isSelected()) {
             if (!preloadProteinMaskPanel1.getProteinsToMaskWith().isEmpty()) {
-                DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToMask(true);
-                DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinMasks(preloadProteinMaskPanel1.getProteinsToMaskWith());
             } else {
                 JOptionPane.showMessageDialog(this, "empty masking set, was ignored");
             }
         }
 
         if (fetchDomainDataCheckBoxMenuItem.isSelected()) {
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToFetchDomainData(true);
         }
 
         if (fetchPdbDataCheckBoxMenuItem.isSelected()) {
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToRetrievePDBData(true);
         }
 
         if (uniprotTranslateRadioButtonMenuItem.isSelected() || swissprotTranslationRadioButtonMenuItem.isSelected() || genbankTranslationRadioButtonMenuItem.isSelected()) {
-            //TODO actually set what to translate to
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().hasToTranslateAccessions(false);
         }
 
         if (goAhead) {
