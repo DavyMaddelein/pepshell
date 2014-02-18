@@ -15,15 +15,15 @@ import java.util.List;
  *
  * @author Davy
  */
-public class InfoPanel extends javax.swing.JPanel {
+public class ProteinDetailPanel extends javax.swing.JPanel {
 
     private Experiment referenceExperiment;
 
-    public InfoPanel() {
+    public ProteinDetailPanel() {
         initComponents();
     }
 
-    public InfoPanel(Experiment referenceExperiment, AnalysisGroup aGroup) {
+    public ProteinDetailPanel(Experiment referenceExperiment, AnalysisGroup aGroup) {
         this();
         this.referenceExperiment = referenceExperiment;
         setExperimentsToDisplay(aGroup.getExperiments());
@@ -49,7 +49,7 @@ public class InfoPanel extends javax.swing.JPanel {
         referenceExperimentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("reference protein"));
         referenceExperimentPanel.setPreferredSize(new java.awt.Dimension(1000, 205));
 
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("experiments"));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -86,9 +86,9 @@ public class InfoPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

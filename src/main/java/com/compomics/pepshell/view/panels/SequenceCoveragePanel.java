@@ -243,10 +243,11 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         proteinCoveragePane = new javax.swing.JEditorPane();
 
+        jScrollPane2.setBorder(null);
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         proteinCoveragePane.setEditable(false);
-        proteinCoveragePane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        proteinCoveragePane.setBorder(null);
         proteinCoveragePane.setContentType("text/html"); // NOI18N
         jScrollPane2.setViewportView(proteinCoveragePane);
 

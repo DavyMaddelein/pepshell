@@ -33,7 +33,7 @@ public class PDBDAO {
 
     public Set<PdbInfo> getPDBInfoForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
         String pdbLine;
-        Set<PdbInfo> pdbInfoToReturn = new HashSet<PdbInfo>();
+        Set<PdbInfo> pdbInfoToReturn = new HashSet<>();
         BufferedReader br = URLController.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(protein.getVisibleAccession()));
         while ((pdbLine = br.readLine()) != null) {
             if (pdbLine.contains("Uniprot to PDB mapping")) {
