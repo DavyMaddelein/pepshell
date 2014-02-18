@@ -17,7 +17,7 @@ public class ProgramVariables {
     public static Color PROTEINCOLOR = new Color(93, 100, 202);
     public static Color PEPTIDECOLOR = new Color(223, 156, 55);
     public static Color DOMAINCOLOR = Color.GREEN;
-    public static double SCALE = 1;
+    public static int SCALE = 1;
     public static int VERTICALSIZE = 15;
     public static boolean RESIZEPANELS = true;
     public static File EXPORTFOLDER = new File("C:/Users/Davy");

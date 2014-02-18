@@ -26,12 +26,11 @@ public class HydrophobicityProteinDrawMode extends StandardPeptideProteinDrawMod
 
     @Override
     public void drawProtein(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
-
-        int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
         for (int previousEnd = 0; previousEnd < protein.getProteinSequence().length(); previousEnd++) {
             g.setColor(HydrophobicityMaps.hydrophobicityMapPh7.get(protein.getProteinSequence().charAt(previousEnd)));
-            g.fillRect(horizontalOffset + (previousEnd * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarWidth);
+            g.fillRect(horizontalOffset + (previousEnd * ProgramVariables.SCALE), verticalOffset, ProgramVariables.SCALE, verticalBarWidth);
         }
+
     }
 
     @Override

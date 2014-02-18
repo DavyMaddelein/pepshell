@@ -5,12 +5,12 @@ import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.border.EtchedBorder;
 
 /**
  *
@@ -19,10 +19,10 @@ import javax.swing.border.EtchedBorder;
 public class ProteinDetailPanel extends javax.swing.JPanel {
 
     private Experiment referenceExperiment;
+    private Protein referenceProtein;
 
     public ProteinDetailPanel() {
         initComponents();
-        
         experimentsScrollPane.getViewport().setOpaque(false);
     }
 
@@ -98,7 +98,9 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
         sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein().iterator(), true);
-        ProgramVariables.SCALE = (referenceExperimentPanel.getWidth() - 100) / proteinOfInterest.getProteinSequence().length();
+        referenceProtein = proteinOfInterest;
+        this.revalidate();
+        this.repaint();
         referenceExperimentPanel.updateProtein(proteinOfInterest);
         referenceExperimentPanel.revalidate();
         referenceExperimentPanel.repaint();
@@ -167,6 +169,21 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
     protected void setSequenceCoverageToOriginal() {
         if (!sequenceCoveragePanel.isOriginalCoverage()) {
             sequenceCoveragePanel.setOriginalCoverage();
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (referenceProtein != null) {
+            double tempscale = (double) (referenceExperimentPanel.getWidth() - 100) / referenceProtein.getProteinSequence().length();
+            if (tempscale < 1) {
+                ProgramVariables.SCALE = 1;
+            } else {
+                ProgramVariables.SCALE = (int) Math.floor(tempscale);
+
+            }
+
         }
     }
 }

@@ -265,7 +265,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap()
                 .addGroup(pdbViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pdbProteinsOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jmolPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 556, Short.MAX_VALUE))
+                    .addComponent(jmolPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -420,7 +420,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         if (evt.getClickCount() == 2) {
             try {
                 JOptionPane.showMessageDialog(this, "opening uniprot accession");
-                Desktop.getDesktop().browse(new URI(ViewProperties.getInstance().getProperty("protein.externaldatalocation") + AccessionConverter.toUniprot(((Protein) proteinList.getSelectedValue()).getProteinAccession())));
+                Desktop.getDesktop().browse(new URI(ViewProperties.getInstance().getProperty("protein.externaldatalocation") + AccessionConverter.toUniprot(((Protein) proteinList.getSelectedValue()).getVisibleAccession())));
             } catch (URISyntaxException ex) {
                 faultBarrier.handleException(ex);
             } catch (IOException ex) {

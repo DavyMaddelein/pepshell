@@ -215,8 +215,10 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
         referenceProjectTextBox.setColumns(20);
         referenceProjectTextBox.setRows(5);
+        referenceProjectTextBox.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         referenceProjectTextBox.setEnabled(false);
         referenceProjectTextBox.setMinimumSize(new java.awt.Dimension(232, 92));
+        referenceProjectTextBox.setOpaque(false);
         jScrollPane2.setViewportView(referenceProjectTextBox);
 
         projectTree.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));

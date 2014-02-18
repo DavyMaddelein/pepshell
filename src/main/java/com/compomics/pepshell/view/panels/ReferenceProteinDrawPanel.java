@@ -118,9 +118,9 @@ public class ReferenceProteinDrawPanel extends JPanel {
         super.paintComponent(g);
 
         if (protein != null) {
-
             LOGGER.error("started painting");
             try {
+                System.out.println(ProgramVariables.SCALE);
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
 
                 proteinDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 25, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
