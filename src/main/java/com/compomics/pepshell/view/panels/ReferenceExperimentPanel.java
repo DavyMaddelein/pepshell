@@ -83,7 +83,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         drawModeChooser = new javax.swing.JComboBox();
         pdbSelectionComboBox = new javax.swing.JComboBox();
         projectNameLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
         referenceProteinDrawPanel = new com.compomics.pepshell.view.panels.ReferenceProteinDrawPanel();
 
         changeNameOption.setText("change name of the selected experiment");
@@ -145,7 +144,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                         .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(quantCheckBox)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 513, Short.MAX_VALUE))
                     .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -161,34 +160,30 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, Short.MAX_VALUE))
         );
 
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
         javax.swing.GroupLayout referenceProteinDrawPanelLayout = new javax.swing.GroupLayout(referenceProteinDrawPanel);
         referenceProteinDrawPanel.setLayout(referenceProteinDrawPanelLayout);
         referenceProteinDrawPanelLayout.setHorizontalGroup(
             referenceProteinDrawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 998, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         referenceProteinDrawPanelLayout.setVerticalGroup(
             referenceProteinDrawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 103, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(referenceProteinDrawPanel);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
+            .addComponent(referenceProteinDrawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                .addComponent(referenceProteinDrawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -259,7 +254,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox drawModeChooser;
     private javax.swing.JPopupMenu experimentPopupMenu;
     private javax.swing.JMenuItem exportImageToPDFOption;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel optionsPanel;
     private javax.swing.JComboBox pdbSelectionComboBox;
     private javax.swing.JLabel projectNameLabel;

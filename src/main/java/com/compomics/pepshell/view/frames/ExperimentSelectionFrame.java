@@ -51,6 +51,10 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     public ExperimentSelectionFrame(Point aPoint) {
         initComponents();
 
+        jScrollPane1.getViewport().setOpaque(false);
+        jScrollPane2.getViewport().setOpaque(false);
+        jScrollPane3.getViewport().setOpaque(false);
+
         preloadProteinFilterPanel1.setVisible(false);
         preloadProteinMaskPanel1.setVisible(false);
 
@@ -86,7 +90,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         jScrollPane1 = new javax.swing.JScrollPane();
         projectList = new javax.swing.JList();
         removeProjectButton = new javax.swing.JButton();
-        removeAnalysisGroupButton = new javax.swing.JButton();
         toProjectTreeButton = new javax.swing.JButton();
         addAnalysisGroupButton = new javax.swing.JButton();
         removeReferenceProjectButton = new javax.swing.JButton();
@@ -95,6 +98,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         referenceProjectTextBox = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         projectTree = new com.compomics.pepshell.view.components.DragAndDropTree();
+        removeProjectGroupButton = new javax.swing.JButton();
         preloadProteinFilterPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinFilterPanel();
         preloadProteinMaskPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinMaskPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -131,6 +135,9 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
         addFastaButton.setText("add fasta");
         addFastaButton.setEnabled(false);
+        addFastaButton.setMaximumSize(new java.awt.Dimension(83, 23));
+        addFastaButton.setMinimumSize(new java.awt.Dimension(83, 23));
+        addFastaButton.setPreferredSize(new java.awt.Dimension(83, 23));
         addFastaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addFastaButtonActionPerformed(evt);
@@ -141,6 +148,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
         maskProteinsCheckBox.setText("mask proteins");
         maskProteinsCheckBox.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        maskProteinsCheckBox.setOpaque(false);
         maskProteinsCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 maskProteinsCheckBoxActionPerformed(evt);
@@ -149,6 +157,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
         filterSubsetCheckBox.setText("filter proteins");
         filterSubsetCheckBox.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        filterSubsetCheckBox.setOpaque(false);
         filterSubsetCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filterSubsetCheckBoxActionPerformed(evt);
@@ -157,6 +166,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
         ownFastaCheckBox.setText("use own fasta file");
         ownFastaCheckBox.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        ownFastaCheckBox.setOpaque(false);
         ownFastaCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ownFastaCheckBoxActionPerformed(evt);
@@ -172,20 +182,19 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         jScrollPane1.setViewportView(projectList);
 
         removeProjectButton.setText("remove project");
+        removeProjectButton.setMaximumSize(new java.awt.Dimension(177, 23));
+        removeProjectButton.setMinimumSize(new java.awt.Dimension(177, 23));
+        removeProjectButton.setPreferredSize(new java.awt.Dimension(177, 23));
         removeProjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeProjectButtonActionPerformed(evt);
             }
         });
 
-        removeAnalysisGroupButton.setText("remove selected projectgroup");
-        removeAnalysisGroupButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeAnalysisGroupButtonActionPerformed(evt);
-            }
-        });
-
         toProjectTreeButton.setText("add project");
+        toProjectTreeButton.setMaximumSize(new java.awt.Dimension(177, 23));
+        toProjectTreeButton.setMinimumSize(new java.awt.Dimension(177, 23));
+        toProjectTreeButton.setPreferredSize(new java.awt.Dimension(177, 23));
         toProjectTreeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toProjectTreeButtonActionPerformed(evt);
@@ -193,6 +202,9 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         });
 
         addAnalysisGroupButton.setText("add a projectgroup");
+        addAnalysisGroupButton.setMaximumSize(new java.awt.Dimension(177, 23));
+        addAnalysisGroupButton.setMinimumSize(new java.awt.Dimension(177, 23));
+        addAnalysisGroupButton.setPreferredSize(new java.awt.Dimension(177, 23));
         addAnalysisGroupButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addAnalysisGroupButtonActionPerformed(evt);
@@ -200,6 +212,9 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         });
 
         removeReferenceProjectButton.setText("remove reference project");
+        removeReferenceProjectButton.setMaximumSize(new java.awt.Dimension(177, 23));
+        removeReferenceProjectButton.setMinimumSize(new java.awt.Dimension(177, 23));
+        removeReferenceProjectButton.setPreferredSize(new java.awt.Dimension(177, 23));
         removeReferenceProjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeReferenceProjectButtonActionPerformed(evt);
@@ -207,11 +222,16 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         });
 
         addReferenceProjectButton.setText("add reference project");
+        addReferenceProjectButton.setMaximumSize(new java.awt.Dimension(177, 23));
+        addReferenceProjectButton.setMinimumSize(new java.awt.Dimension(177, 23));
+        addReferenceProjectButton.setPreferredSize(new java.awt.Dimension(177, 23));
         addReferenceProjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addReferenceProjectButtonActionPerformed(evt);
             }
         });
+
+        jScrollPane2.setOpaque(false);
 
         referenceProjectTextBox.setColumns(20);
         referenceProjectTextBox.setRows(5);
@@ -225,6 +245,16 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         projectTree.setMinimumSize(new java.awt.Dimension(113, 19));
         jScrollPane3.setViewportView(projectTree);
 
+        removeProjectGroupButton.setText("remove projectgroup");
+        removeProjectGroupButton.setMaximumSize(new java.awt.Dimension(177, 23));
+        removeProjectGroupButton.setMinimumSize(new java.awt.Dimension(177, 23));
+        removeProjectGroupButton.setPreferredSize(new java.awt.Dimension(177, 23));
+        removeProjectGroupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeProjectGroupButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout experimentSelectionPanelLayout = new javax.swing.GroupLayout(experimentSelectionPanel);
         experimentSelectionPanel.setLayout(experimentSelectionPanelLayout);
         experimentSelectionPanelLayout.setHorizontalGroup(
@@ -233,27 +263,26 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
                 .addContainerGap()
                 .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
                         .addGap(32, 32, 32)
                         .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(removeAnalysisGroupButton)
-                            .addComponent(removeProjectButton)
-                            .addComponent(toProjectTreeButton)
-                            .addComponent(addAnalysisGroupButton)
-                            .addComponent(removeReferenceProjectButton)
-                            .addComponent(addReferenceProjectButton)))
+                            .addComponent(removeProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(toProjectTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addAnalysisGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(removeReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(removeProjectGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                        .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maskProteinsCheckBox)
                             .addComponent(ownFastaCheckBox))
-                        .addGap(0, 0, 0)
+                        .addGap(20, 20, 20)
                         .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(filterSubsetCheckBox)
                             .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
                                 .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(addFastaButton)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(addFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -261,27 +290,28 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
                     .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3)
-                            .addComponent(jScrollPane2))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         experimentSelectionPanelLayout.setVerticalGroup(
             experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
                         .addGap(50, 50, 50)
-                        .addComponent(addReferenceProjectButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(removeReferenceProjectButton)
-                        .addGap(57, 57, 57)
-                        .addComponent(addAnalysisGroupButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(toProjectTreeButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(removeProjectButton)
+                        .addComponent(addReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeAnalysisGroupButton))
+                        .addComponent(removeReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(98, 98, 98)
+                        .addComponent(addAnalysisGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(removeProjectGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(toProjectTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -294,12 +324,17 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
                 .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ownFastaCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addFastaButton))
-                .addGap(5, 5, 5)
+                    .addComponent(addFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(analyseButton)
-                    .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(maskProteinsCheckBox)
+                    .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
+                            .addGap(5, 5, 5)
+                            .addComponent(analyseButton))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(maskProteinsCheckBox)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(filterSubsetCheckBox)))
                 .addContainerGap())
         );
@@ -524,15 +559,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         }
     }//GEN-LAST:event_removeProjectButtonActionPerformed
 
-    private void removeAnalysisGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAnalysisGroupButtonActionPerformed
-
-        if (projectTree.getSelectionPath() != null) {
-            if (projectTree.getSelectionPath().getLastPathComponent() instanceof AnalysisGroup) {
-                projectTree.removeCurrentNode();
-            }
-        }
-    }//GEN-LAST:event_removeAnalysisGroupButtonActionPerformed
-
     private void addFastaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFastaButtonActionPerformed
         JFileChooser fastaChooser = new JFileChooser();
         fastaChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -580,6 +606,14 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         }
     }//GEN-LAST:event_maskProteinsCheckBoxActionPerformed
 
+    private void removeProjectGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeProjectGroupButtonActionPerformed
+        if (projectTree.getSelectionPath() != null) {
+            if (projectTree.getSelectionPath().getLastPathComponent() instanceof AnalysisGroup) {
+                projectTree.removeCurrentNode();
+            }
+        }
+    }//GEN-LAST:event_removeProjectGroupButtonActionPerformed
+
     private void dbConnectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         DbLoginDialog dialog = new DbLoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
@@ -623,8 +657,8 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     private javax.swing.JList projectList;
     private com.compomics.pepshell.view.components.DragAndDropTree projectTree;
     private javax.swing.JTextArea referenceProjectTextBox;
-    private javax.swing.JButton removeAnalysisGroupButton;
     private javax.swing.JButton removeProjectButton;
+    private javax.swing.JButton removeProjectGroupButton;
     private javax.swing.JButton removeReferenceProjectButton;
     private javax.swing.JRadioButtonMenuItem swissprotTranslationRadioButtonMenuItem;
     private javax.swing.JButton toProjectTreeButton;
