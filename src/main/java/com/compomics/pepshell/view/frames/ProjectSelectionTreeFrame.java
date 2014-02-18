@@ -1,6 +1,5 @@
 package com.compomics.pepshell.view.frames;
 
-import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
 import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
@@ -14,7 +13,8 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Property;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
-import com.compomics.pepshell.view.panels.LoginDialog;
+import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
+import com.compomics.pepshell.view.panels.DbLoginDialog;
 import java.awt.Point;
 import java.io.File;
 import java.sql.SQLException;
@@ -53,20 +53,20 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
         preloadProteinFilterPanel1.setVisible(false);
         preloadProteinMaskPanel1.setVisible(false);
         //went faster than setting bounds
-        int x = aPoint.x - (this.getWidth() / 2);
-        int y = aPoint.y - (this.getHeight() / 2);
-        if (x < 0) {
-            x = 0;
-        }
-        if (y < 0) {
-            y = 0;
-        }
-        this.setLocation(x, y);
+//        int x = aPoint.x - (this.getWidth() / 2);
+//        int y = aPoint.y - (this.getHeight() / 2);
+//        if (x < 0) {
+//            x = 0;
+//        }
+//        if (y < 0) {
+//            y = 0;
+//        }
+//        this.setLocation(x, y);
         this.pack();
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
-        new LoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
-                DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
-                DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey())).setLocationRelativeTo(this);
+        
+        
         try {
             fillProjectList();
         } catch (Exception ex) {
@@ -531,7 +531,7 @@ public class ProjectSelectionTreeFrame extends javax.swing.JFrame implements Obs
     }//GEN-LAST:event_useLinkDbCheckBoxActionPerformed
 
     private void makeDbConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeDbConnectionButtonActionPerformed
-        LoginDialog dialog = new LoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
+        DbLoginDialog dialog = new DbLoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
         dialog.setLocationRelativeTo(this);
