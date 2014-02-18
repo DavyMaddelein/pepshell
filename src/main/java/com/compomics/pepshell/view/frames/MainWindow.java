@@ -17,7 +17,6 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
-import com.compomics.pepshell.view.panels.ProteinDetailPanel;
 import com.compomics.pepshell.view.panels.StatisticsPanel;
 
 import javax.swing.*;
