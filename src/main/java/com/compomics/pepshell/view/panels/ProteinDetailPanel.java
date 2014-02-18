@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.border.EtchedBorder;
 
 /**
  *
@@ -76,7 +77,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 988, Short.MAX_VALUE)
+                    .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
@@ -119,11 +120,11 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         jPanel1.setLayout(new GridBagLayout());
         for (int i = 0; i < experiments.size(); i++) {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.fill = GridBagConstraints.BOTH;
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints.weightx = 1.0;
             gridBagConstraints.weighty = 1.0;
             gridBagConstraints.gridy = i;
-            gridBagConstraints.anchor = GridBagConstraints.CENTER;
+            gridBagConstraints.anchor = GridBagConstraints.FIRST_LINE_START;
             ExperimentPanel panel = new ExperimentPanel(experiments.get(i));
             panel.setExperiment(experiments.get(i));
             panel.setYOffset(panel.getSize().getHeight() * i);
