@@ -22,6 +22,8 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
 
     public ProteinDetailPanel() {
         initComponents();
+        
+        experimentsScrollPane.getViewport().setOpaque(false);
     }
 
     public ProteinDetailPanel(Experiment referenceExperiment, AnalysisGroup aGroup) {
@@ -40,7 +42,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         referenceExperimentPanel = new com.compomics.pepshell.view.panels.ReferenceExperimentPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        experimentsScrollPane = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         sequenceCoveragePanel = new com.compomics.pepshell.view.panels.SequenceCoveragePanel();
 
@@ -50,7 +52,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         referenceExperimentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("reference protein"));
         referenceExperimentPanel.setPreferredSize(new java.awt.Dimension(1000, 205));
 
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("experiments"));
+        experimentsScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("experiments"));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -65,7 +67,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
             .addGap(0, 280, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(jPanel1);
+        experimentsScrollPane.setViewportView(jPanel1);
 
         sequenceCoveragePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("sequence coverage"));
 
@@ -78,7 +80,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(experimentsScrollPane, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -87,7 +89,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -103,8 +105,8 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         updatePeptideGraphics(proteinOfInterest);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane experimentsScrollPane;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private com.compomics.pepshell.view.panels.ReferenceExperimentPanel referenceExperimentPanel;
     private com.compomics.pepshell.view.panels.SequenceCoveragePanel sequenceCoveragePanel;
     // End of variables declaration//GEN-END:variables
