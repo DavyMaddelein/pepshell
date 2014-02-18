@@ -24,12 +24,12 @@
                 <Property name="text" type="java.lang.String" value="use internet sources"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="dbConnectMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="connect to data db"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dbConnectMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

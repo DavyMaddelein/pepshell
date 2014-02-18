@@ -17,6 +17,7 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+import com.compomics.pepshell.view.panels.CombinedLoginDialog;
 import com.compomics.pepshell.view.panels.StatisticsPanel;
 
 import javax.swing.*;
@@ -590,7 +591,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private void newViewMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newViewMenuItemActionPerformed
         int selection = JOptionPane.showConfirmDialog(null, "Select a new set of experiments?", "new view", JOptionPane.YES_NO_OPTION);
         if (selection == JOptionPane.YES_OPTION) {
-            new ModeSelectionFrame().setVisible(true);
+            CombinedLoginDialog combinedLoginDialog = new CombinedLoginDialog();
+            combinedLoginDialog.pack();
+            combinedLoginDialog.setLocationRelativeTo(null);
+            combinedLoginDialog.setVisible(true);
+
             this.dispose();
         }
     }//GEN-LAST:event_newViewMenuItemActionPerformed

@@ -40,7 +40,7 @@ public class ExternalDomainFinder {
 
         PFAM,
         SMART,
-        PROSITE,
+        //PROSITE,
         UNIPROT
     }
 
@@ -52,8 +52,9 @@ public class ExternalDomainFinder {
             features = DasParser.getAllDasFeatures(URLController.readUrl("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession));
         } else if (aDomainWebSite == DomainWebSites.SMART) {
             features = DasParser.getAllDasFeatures(URLController.readUrl("http://smart.embl.de/smart/das/smart/features?segment=" + aUniProtAccession));
-        } else if (aDomainWebSite == DomainWebSites.PROSITE) {
-            features = DasParser.getAllDasFeatures(URLController.readUrl("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
+//        } else if (aDomainWebSite == DomainWebSites.PROSITE) {
+//            features = DasParser.getAllDasFeatures(URLController.readUrl("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
+//        } 
         } else if (aDomainWebSite == DomainWebSites.UNIPROT) {
 
             features = Lists.newArrayList(Collections2.filter(DasParser.getAllDasFeatures(URLController.readUrl("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + aUniProtAccession)), new Predicate<DasFeature>() {

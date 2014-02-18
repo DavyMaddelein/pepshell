@@ -4,6 +4,7 @@ import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.ProgramPropertyEnum;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,9 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -21,6 +21,7 @@ import javax.swing.JFileChooser;
  */
 public class AccessionMaskDialog extends javax.swing.JDialog {
 
+    private static final Logger LOGGER = Logger.getLogger(AccessionMaskDialog.class);
     private static Map<Protein, String> maskMap = new HashMap<Protein, String>();
     private boolean accept = false;
 
@@ -29,7 +30,10 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
      */
     public AccessionMaskDialog(java.awt.Frame parent, boolean modal, List<Protein> proteinsToDisplay) {
         super(parent, modal);
+
         initComponents();
+
+        this.getContentPane().setBackground(Color.WHITE);
         proteinList.setListData(proteinsToDisplay.toArray(new Protein[0]));
     }
 
@@ -42,17 +46,21 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        loadAccessionMaskButton = new javax.swing.JButton();
-        exportAccessionMaskButton = new javax.swing.JButton();
+        topPanel = new javax.swing.JPanel();
+        originalAccessionLabel = new javax.swing.JLabel();
+        acceptAccessionMaskButton = new javax.swing.JButton();
+        originalAccessionTextField = new javax.swing.JTextField();
+        maskingAccessionLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         proteinList = new javax.swing.JList();
-        originalAccessionTextField = new javax.swing.JTextField();
         accessionMaskTextField = new javax.swing.JTextField();
-        acceptAccessionMaskButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        bottomPanel = new javax.swing.JPanel();
+        acceptButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
+        maskDialogMenu = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        loadFileMenuItem = new javax.swing.JMenuItem();
+        exportFileMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("add a masking for accessions");
@@ -62,25 +70,26 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
             }
         });
 
-        loadAccessionMaskButton.setText("load a accession masking file");
-        loadAccessionMaskButton.addActionListener(new java.awt.event.ActionListener() {
+        topPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        topPanel.setOpaque(false);
+
+        originalAccessionLabel.setText("original accession");
+
+        acceptAccessionMaskButton.setText("add/remove");
+        acceptAccessionMaskButton.setToolTipText("add or remove the current masking");
+        acceptAccessionMaskButton.setMaximumSize(new java.awt.Dimension(100, 25));
+        acceptAccessionMaskButton.setMinimumSize(new java.awt.Dimension(100, 25));
+        acceptAccessionMaskButton.setPreferredSize(new java.awt.Dimension(100, 25));
+        acceptAccessionMaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadAccessionMaskButtonActionPerformed(evt);
+                acceptAccessionMaskButtonActionPerformed(evt);
             }
         });
 
-        exportAccessionMaskButton.setText("export the current accession masking");
-        exportAccessionMaskButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exportAccessionMaskButtonActionPerformed(evt);
-            }
-        });
+        originalAccessionTextField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
 
-        proteinList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        maskingAccessionLabel.setText("masking accession");
+
         proteinList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 proteinListMouseClicked(evt);
@@ -88,91 +97,131 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(proteinList);
 
-        originalAccessionTextField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-
         accessionMaskTextField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
 
-        acceptAccessionMaskButton.setText("add/remove masking");
-        acceptAccessionMaskButton.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
+        topPanel.setLayout(topPanelLayout);
+        topPanelLayout.setHorizontalGroup(
+            topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(accessionMaskTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(originalAccessionTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topPanelLayout.createSequentialGroup()
+                        .addGap(0, 136, Short.MAX_VALUE)
+                        .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(maskingAccessionLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(originalAccessionLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(acceptAccessionMaskButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+        topPanelLayout.setVerticalGroup(
+            topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(topPanelLayout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(originalAccessionLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(originalAccessionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(maskingAccessionLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(accessionMaskTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(acceptAccessionMaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        bottomPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        bottomPanel.setOpaque(false);
+
+        acceptButton.setText("accept");
+        acceptButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        acceptButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        acceptButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                acceptAccessionMaskButtonActionPerformed(evt);
+                acceptButtonActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("original accession");
-
-        jLabel2.setText("masking accession");
-
-        jButton1.setText("mask and return");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setText("cancel");
+        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setText("cancel");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
+        bottomPanel.setLayout(bottomPanelLayout);
+        bottomPanelLayout.setHorizontalGroup(
+            bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        bottomPanelLayout.setVerticalGroup(
+            bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        fileMenu.setText("File");
+
+        loadFileMenuItem.setText("export current masking...");
+        loadFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                loadFileMenuItemActionPerformed(evt);
             }
         });
+        fileMenu.add(loadFileMenuItem);
+
+        exportFileMenuItem.setText("load masking...");
+        exportFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportFileMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exportFileMenuItem);
+
+        maskDialogMenu.add(fileMenu);
+
+        setJMenuBar(maskDialogMenu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(loadAccessionMaskButton)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(exportAccessionMaskButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(accessionMaskTextField, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(originalAccessionTextField, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(acceptAccessionMaskButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING))))
-                        .addContainerGap())))
+                    .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(originalAccessionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(accessionMaskTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(acceptAccessionMaskButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addGap(0, 7, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loadAccessionMaskButton)
-                    .addComponent(exportAccessionMaskButton))
+                .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -191,25 +240,40 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
         proteinList.repaint();
     }//GEN-LAST:event_acceptAccessionMaskButtonActionPerformed
 
-    private void loadAccessionMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadAccessionMaskButtonActionPerformed
-        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
-        accessionMaskingChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        accessionMaskingChooser.showOpenDialog(this);
-        File selectedFile = accessionMaskingChooser.getSelectedFile();
-        try {
-            maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
+    private void proteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseClicked
+        // TODO add your handling code here:
+        Protein selectedProtein = ((Protein) proteinList.getSelectedValue());
+        originalAccessionTextField.setText(selectedProtein.getOriginalAccession());
+        if (!selectedProtein.getOriginalAccession().equals(selectedProtein.getVisibleAccession())) {
+            accessionMaskTextField.setText(selectedProtein.getVisibleAccession());
+        } else {
+            accessionMaskTextField.setText("");
+        }
+    }//GEN-LAST:event_proteinListMouseClicked
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        // TODO add your handling code here:
+        accept = true;
+        this.dispose();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        if (!accept) {
             for (int i = 0; i < proteinList.getModel().getSize(); i++) {
                 if (maskMap.containsKey((Protein) proteinList.getModel().getElementAt(i))) {
-                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(maskMap.get((Protein) proteinList.getModel().getElementAt(i)));
-                    proteinList.repaint();
+                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(((Protein) proteinList.getModel().getElementAt(i)).getOriginalAccession());
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(AccessionMaskDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_loadAccessionMaskButtonActionPerformed
+    }//GEN-LAST:event_formWindowClosing
 
-    private void exportAccessionMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportAccessionMaskButtonActionPerformed
+    private void loadFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadFileMenuItemActionPerformed
         FileWriter saveWriter = null;
         try {
             // TODO add your handling code here:
@@ -224,7 +288,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
                 saveWriter.append(anAccessionMaskingEntry.getKey().getOriginalAccession()).append("=").append(anAccessionMaskingEntry.getValue()).append("\n");
             }
         } catch (IOException ex) {
-            Logger.getLogger(AccessionMaskDialog.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage(), ex);
         } finally {
             try {
                 if (saveWriter != null) {
@@ -232,56 +296,45 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
                     saveWriter.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(AccessionMaskDialog.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
-    }//GEN-LAST:event_exportAccessionMaskButtonActionPerformed
+    }//GEN-LAST:event_loadFileMenuItemActionPerformed
 
-    private void proteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseClicked
-        // TODO add your handling code here:
-        Protein selectedProtein = ((Protein) proteinList.getSelectedValue());
-        originalAccessionTextField.setText(selectedProtein.getOriginalAccession());
-        if (!selectedProtein.getOriginalAccession().equals(selectedProtein.getVisibleAccession())) {
-            accessionMaskTextField.setText(selectedProtein.getVisibleAccession());
-        } else {
-            accessionMaskTextField.setText("");
-        }
-    }//GEN-LAST:event_proteinListMouseClicked
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        accept = true;
-        this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-        if (!accept) {
+    private void exportFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileMenuItemActionPerformed
+        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+        accessionMaskingChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        accessionMaskingChooser.showOpenDialog(this);
+        File selectedFile = accessionMaskingChooser.getSelectedFile();
+        try {
+            maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
             for (int i = 0; i < proteinList.getModel().getSize(); i++) {
                 if (maskMap.containsKey((Protein) proteinList.getModel().getElementAt(i))) {
-                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(((Protein) proteinList.getModel().getElementAt(i)).getOriginalAccession());
+                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(maskMap.get((Protein) proteinList.getModel().getElementAt(i)));
+                    proteinList.repaint();
                 }
             }
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
         }
-    }//GEN-LAST:event_formWindowClosing
+    }//GEN-LAST:event_exportFileMenuItemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptAccessionMaskButton;
+    private javax.swing.JButton acceptButton;
     private javax.swing.JTextField accessionMaskTextField;
-    private javax.swing.JButton exportAccessionMaskButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel bottomPanel;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JMenuItem exportFileMenuItem;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton loadAccessionMaskButton;
+    private javax.swing.JMenuItem loadFileMenuItem;
+    private javax.swing.JMenuBar maskDialogMenu;
+    private javax.swing.JLabel maskingAccessionLabel;
+    private javax.swing.JLabel originalAccessionLabel;
     private javax.swing.JTextField originalAccessionTextField;
     private javax.swing.JList proteinList;
+    private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

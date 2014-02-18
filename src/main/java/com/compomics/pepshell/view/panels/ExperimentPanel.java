@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 public class ExperimentPanel extends javax.swing.JPanel {
 
     private int horizontalOffset = this.getX() + 15;
-    private int verticalOffset = 20;
+    private int verticalOffset = 25;
     private Protein protein;
     private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
     private DrawModeInterface proteinDrawMode = new StandardPeptideProteinDrawMode();
@@ -86,9 +86,9 @@ public class ExperimentPanel extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
         setForeground(new java.awt.Color(255, 255, 255));
-        setMaximumSize(new java.awt.Dimension(1000, 45));
-        setMinimumSize(new java.awt.Dimension(1000, 45));
-        setPreferredSize(new java.awt.Dimension(1000, 45));
+        setMaximumSize(new java.awt.Dimension(1000, 65));
+        setMinimumSize(new java.awt.Dimension(1000, 65));
+        setPreferredSize(new java.awt.Dimension(1000, 65));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);
@@ -112,8 +112,8 @@ public class ExperimentPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -123,7 +123,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
             Iterator<PeptideGroup> peptideGroupIter = protein.getPeptideGroupsForProtein().iterator();
             while (peptideGroupIter.hasNext()) {
                 PeptideGroup peptideGroup = peptideGroupIter.next();
-                if (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() / ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() / ProgramVariables.SCALE)) {
+                if (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * ProgramVariables.SCALE)) {
                     ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), peptideGroup);
                 }
             }

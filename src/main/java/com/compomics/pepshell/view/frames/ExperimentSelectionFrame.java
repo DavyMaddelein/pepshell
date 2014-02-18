@@ -1,6 +1,5 @@
 package com.compomics.pepshell.view.frames;
 
-import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
 import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
@@ -14,7 +13,8 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Property;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
-import com.compomics.pepshell.view.panels.LoginDialog;
+import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
+import com.compomics.pepshell.view.panels.DbLoginDialog;
 import java.awt.Point;
 import java.io.File;
 import java.sql.SQLException;
@@ -50,26 +50,17 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
     public ExperimentSelectionFrame(Point aPoint) {
         initComponents();
+
         preloadProteinFilterPanel1.setVisible(false);
         preloadProteinMaskPanel1.setVisible(false);
-        //went faster than setting bounds
-        int x = aPoint.x - (this.getWidth() / 2);
-        int y = aPoint.y - (this.getHeight() / 2);
-        if (x < 0) {
-            x = 0;
-        }
-        if (y < 0) {
-            y = 0;
-        }
-        this.setLocation(x, y);
+
         this.pack();
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
-        new LoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
-                DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
-                DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey())).setLocationRelativeTo(this);
+
         try {
             fillProjectList();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(this, "something went wrong while retrieving the list of projects:\n" + ex.getMessage());
         }
@@ -110,7 +101,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         jMenu1 = new javax.swing.JMenu();
         useLinkDbCheckBox = new javax.swing.JCheckBoxMenuItem();
         useInternetCheckBox = new javax.swing.JCheckBoxMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        dbConnectMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         uniprotTranslateRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
@@ -355,13 +346,13 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         useInternetCheckBox.setText("use internet sources");
         jMenu1.add(useInternetCheckBox);
 
-        jMenuItem1.setText("connect to data db");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        dbConnectMenuItem.setText("connect to data db");
+        dbConnectMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                dbConnectMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenu1.add(dbConnectMenuItem);
 
         jMenuBar1.add(jMenu1);
 
@@ -421,8 +412,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     }//GEN-LAST:event_useLinkDbCheckBoxActionPerformed
 
     private void analyseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analyseButtonActionPerformed
-        // TODO add your handling code here:
-
         boolean goAhead = false;
         //can we actually continue?
         List<AnalysisGroup> analysisList = new ArrayList<AnalysisGroup>();
@@ -498,7 +487,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             referenceProject = (Experiment) projectList.getSelectedValue();
             referenceProjectTextBox.setText(referenceProject.getExperimentName());
         }
-// TODO add your handling code here:
     }//GEN-LAST:event_addReferenceProjectButtonActionPerformed
 
     private void removeReferenceProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeReferenceProjectButtonActionPerformed
@@ -506,11 +494,9 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             referenceProject = null;
             referenceProjectTextBox.setText("");
         }
-        // TODO add your handling code here:
     }//GEN-LAST:event_removeReferenceProjectButtonActionPerformed
 
     private void addAnalysisGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAnalysisGroupButtonActionPerformed
-        // TODO add your handling code here:
         String temp = JOptionPane.showInputDialog(this);
         if (temp != null) {
             if (!temp.isEmpty()) {
@@ -528,8 +514,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     }//GEN-LAST:event_toProjectTreeButtonActionPerformed
 
     private void removeProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeProjectButtonActionPerformed
-        // TODO add your handling code here:
-        // TODO add your handling code here:
         if (projectTree.getSelectionPath() != null) {
             if (projectTree.getSelectionPath().getLastPathComponent() instanceof Experiment) {
                 selectedProjectsList.remove((Experiment) projectTree.getSelectionPath().getLastPathComponent());
@@ -544,7 +528,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             if (projectTree.getSelectionPath().getLastPathComponent() instanceof AnalysisGroup) {
                 projectTree.removeCurrentNode();
             }
-        }// TODO add your handling code here:
+        }
     }//GEN-LAST:event_removeAnalysisGroupButtonActionPerformed
 
     private void addFastaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFastaButtonActionPerformed
@@ -557,7 +541,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             fastaLocationTextField.setText(fastaFile.getName());
             ViewProperties.getInstance().setProperty(new Property(ViewPropertyEnum.PROTEINFASTALOCATION, fastaFile.getAbsolutePath()));
         }
-        // TODO add your handling code here:
     }//GEN-LAST:event_addFastaButtonActionPerformed
 
     private void ownFastaCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownFastaCheckBoxActionPerformed
@@ -572,7 +555,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     }//GEN-LAST:event_ownFastaCheckBoxActionPerformed
 
     private void filterSubsetCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterSubsetCheckBoxActionPerformed
-        // TODO add your handling code here:
         if (filterSubsetCheckBox.isSelected()) {
             preloadProteinFilterPanel1.setVisible(true);
             this.pack();
@@ -585,7 +567,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     }//GEN-LAST:event_filterSubsetCheckBoxActionPerformed
 
     private void maskProteinsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maskProteinsCheckBoxActionPerformed
-        // TODO add your handling code here:
         if (maskProteinsCheckBox.isSelected()) {
             preloadProteinMaskPanel1.setVisible(true);
             this.pack();
@@ -597,9 +578,8 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         }
     }//GEN-LAST:event_maskProteinsCheckBoxActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-        LoginDialog dialog = new LoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
+    private void dbConnectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
+        DbLoginDialog dialog = new DbLoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
         dialog.setLocationRelativeTo(this);
@@ -612,13 +592,14 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         }
         this.revalidate();
         this.repaint();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAnalysisGroupButton;
     private javax.swing.JButton addFastaButton;
     private javax.swing.JButton addReferenceProjectButton;
     private javax.swing.JButton analyseButton;
+    private javax.swing.JMenuItem dbConnectMenuItem;
     private javax.swing.JPanel experimentSelectionPanel;
     private javax.swing.JTextField fastaLocationTextField;
     private javax.swing.JCheckBoxMenuItem fetchDomainDataCheckBoxMenuItem;
@@ -629,7 +610,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
