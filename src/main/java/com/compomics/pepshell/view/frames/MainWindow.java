@@ -14,7 +14,6 @@ import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.filters.RegexFilter;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.ProgressMessage;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
@@ -44,7 +43,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private static FaultBarrier faultBarrier;
     private List<Protein> proteinsToDisplay = new ArrayList<Protein>();
     private RegexFilter filter = new RegexFilter();
-    
+
     public MainWindow() {
         faultBarrier = FaultBarrier.getInstance();
         initComponents();
@@ -88,7 +87,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             //tabsPane.setIconAt(tabsPane.getTabCount() - 1, UIManager.getIcon("OptionPane.warningIcon"));
             //TODO show in error pane
             ((Exception) o1).printStackTrace();
-        } 
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -170,6 +169,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         proteinListScrollPane.setViewportView(proteinList);
 
         filterTextField.setText("search for ...");
+        filterTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                filterTextFieldFocusGained(evt);
+            }
+        });
         filterTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 filterTextFieldKeyTyped(evt);
@@ -542,36 +546,18 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_preferencesMenuActionPerformed
 
     private void uniProtRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uniProtRadioButtonMenuItemActionPerformed
-        //change this to popup progress bar
-//        downloadBar.setMaximum(proteinsToDisplay.size());
-//        downloadBar.setValue(0);
-//        downloadBar.setVisible(true);
-//        downloadBar.setStringPainted(true);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         for (final Protein aProtein : proteinsToDisplay) {
             try {
-//                downloadBar.setString("fetching accession for: " + aProtein.getVisibleAccession());
-//                downloadBar.setValue(downloadBar.getValue() + 1);
-                new Thread() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
-                        } catch (IOException ex) {
-                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (ConversionException ex) {
-                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }.run();
-
-                proteinList.revalidate();
-                proteinList.repaint();
-            } catch (Exception e) {
+                aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
+            } catch (IOException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ConversionException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
+            proteinList.revalidate();
+            proteinList.repaint();
         }
-//        downloadBar.setVisible(false);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         this.revalidate();
         this.repaint();
@@ -621,6 +607,12 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         proteinList.repaint();
         pdbProteinList.repaint();
     }//GEN-LAST:event_setAccessionMaskOptionActionPerformed
+
+    private void filterTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_filterTextFieldFocusGained
+        if (!filterTextField.getText().isEmpty() && filterTextField.getText().equals("search for ...")) {
+            filterTextField.setText("");
+        }
+    }//GEN-LAST:event_filterTextFieldFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PDBViewPanel;

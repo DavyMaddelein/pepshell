@@ -1,6 +1,7 @@
 package com.compomics.pepshell.view.panels;
 
 import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
 import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PdbInfo;
@@ -198,6 +199,10 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 break;
             case 1:
                 secondaryDrawMode = new SecondaryStructureProteinDrawMode();
+                if (ProgramVariables.STRUCTUREDATASOURCE instanceof LinkDb) {
+                    pdbSelectionComboBox.setEnabled(true);
+                    pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
+                }
                 break;
             case 2:
                 secondaryDrawMode = new FreeEnergyProteinDrawMode();
@@ -238,9 +243,9 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private void pdbSelectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdbSelectionComboBoxActionPerformed
         if (pdbSelectionComboBox.getSelectedItem() != null) {
             String pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
-            
+
             referenceProteinDrawPanel.updatePdbAccession(pdbAccession);
-        }        
+        }
     }//GEN-LAST:event_pdbSelectionComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

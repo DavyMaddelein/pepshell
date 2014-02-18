@@ -57,12 +57,15 @@ public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Pepti
     }
 
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
-        double colorIncrement = 255 / 64;
-        for (int i = 0; i > 64; i++) {
-            g.setColor(new Color((int) Math.ceil((colorIncrement)) * 255, 255, 125));
-            colorIncrement += 255 / 64;
-            g.fillRect(xOffset + (i * 5), yOffset, 5, ProgramVariables.VERTICALSIZE);
+        int colorCounter = 0;
+        while (colorCounter < 64) {
+            g.setColor(new Color(colorCounter * 4, 255, 125));
+            g.fillRect(xOffset + colorCounter, yOffset, 5, ProgramVariables.VERTICALSIZE);
+            colorCounter += 1;
         }
+        g.setColor(Color.black);
+        g.drawString("low", xOffset, yOffset + 25);
+        g.drawString("high", xOffset + colorCounter - 5, yOffset + 25);
     }
 
     public void setPdbAccession(String pdbAccession) {

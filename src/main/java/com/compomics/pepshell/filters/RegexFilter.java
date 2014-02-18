@@ -47,7 +47,7 @@ public class RegexFilter extends FilterParent<String> {
          */
         for (String aString : regexesToFilterAgainst) {
             for (Protein aProtein : listToFilter) {
-                if (aProtein.getProteinAccession().matches(aString)) {
+                if (aProtein.getVisibleAccession().matches(aString)) {
                     matchedItems.add(aProtein);
                 }
             }

@@ -2,6 +2,8 @@ package com.compomics.pepshell.controllers.secondarystructureprediction;
 
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -10,8 +12,8 @@ import java.io.IOException;
 public class PDBSecondaryStructurePredictor extends SecondaryStructurePrediction {
 
     @Override
-    public String getPrediction(String pdbAccession) throws IOException {
-        StringBuilder secondaryStructure = new StringBuilder();
+    public List<String> getPrediction(String pdbAccession) throws IOException {
+        List<String> secondaryStructure = new ArrayList<String>();
         String pdbFile = PDBDAO.getPdbFileInMem(pdbAccession);
         String[] pdbLines = pdbFile.split("\n");
         for (String aPdbLine : pdbLines) {
@@ -22,7 +24,7 @@ public class PDBSecondaryStructurePredictor extends SecondaryStructurePrediction
                 aPdbLine.split(" ");
             }
         }
-        return secondaryStructure.toString();
+        return secondaryStructure;
     }
 
 }

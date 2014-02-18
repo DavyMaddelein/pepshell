@@ -18,22 +18,22 @@ import java.util.Map;
  * @param <U>
  */
 public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> extends StandardPeptideProteinDrawMode<T, U> implements PdbGradientDrawModeInterface<T, U> {
-    
+
     private String pdbAccession;
-    
+
     @Override
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
 
         int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
-        
+
         if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy() && pdbAccession != null) {
             Map<Integer, Double> freeEnergyValues = ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForStructure(protein, pdbAccession);
             //go over all locations retrieved from the data source
             for (int location : freeEnergyValues.keySet()) {
-                Double relSasValue = freeEnergyValues.get(location);
+                Double freeEnergyValue = freeEnergyValues.get(location);
                 //check for null values
-                if (relSasValue != null) {
-                    Color freeEnergyGradientColor = new Color(Math.min((int) Math.ceil(relSasValue * 255), 255), 255, 125);
+                if (freeEnergyValue != null) {
+                    Color freeEnergyGradientColor = new Color(Math.min((int) Math.ceil(freeEnergyValue * 255), 255), 255, 125);
                     g.setColor(freeEnergyGradientColor);
                 } else {
                     g.setColor(Color.WHITE);
@@ -56,12 +56,16 @@ public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> ext
     }
 
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
-        double colorIncrement = 1 / 64;
-        for (int i = 0; i > 64; i++) {
-            g.setColor(new Color((int) Math.ceil((255 * colorIncrement)), 125, 125));
-            colorIncrement += 1 / 64;
-            g.fillRect(xOffset + i * 5, yOffset, 5, ProgramVariables.VERTICALSIZE);
+        int colorCounter = 0;
+        while (colorCounter < 64) {
+            g.setColor(new Color(colorCounter * 4, 255, 125));
+            g.fillRect(xOffset + colorCounter, yOffset, 5, ProgramVariables.VERTICALSIZE);
+            colorCounter += 1;
         }
+        g.setColor(Color.black);
+        g.drawString("low", xOffset, yOffset + 25);
+        g.drawString("high", xOffset + colorCounter - 5, yOffset + 25);
+
     }
 
     public void setPdbAccession(String pdbAccession) {

@@ -8,13 +8,13 @@ import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.controllers.InfoFinders.ExternalDomainFinder;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
+import com.compomics.pepshell.controllers.secondarystructureprediction.UniprotSecondaryStructurePrediction;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
 import java.io.IOException;
@@ -28,9 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -40,6 +37,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class LinkDb implements StructureDataSource {
 //TODO subtype this to uniprot protein since we need to be sure we have uniprot accessions
+
     private static final Double NO_RESOLUTION_RETRIEVED_VALUE = 20D;
 
     public String getPDBDataForPDBName(String pdbName) {
@@ -79,7 +77,10 @@ public class LinkDb implements StructureDataSource {
         //try and get from link db, 
         if (foundDomains.isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
             try {
-                foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getVisibleAccession()), ExternalDomainFinder.DomainWebSites.PFAM);
+                foundDomains = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(AccessionConverter.toUniprot(aProtein.getVisibleAccession()), ProgramVariables.DOMAINWEBSITE);
+                if (foundDomains.isEmpty()) {
+                    foundDomains = ExternalDomainFinder.getDomainsFromAllSitesForUniprotAccession(AccessionConverter.toUniprot(aProtein.getVisibleAccession()));
+                }
             } catch (IOException ex) {
                 throw new DataRetrievalException(ex.getMessage(), ex);
             } catch (ConversionException ex) {
@@ -193,8 +194,42 @@ public class LinkDb implements StructureDataSource {
         return relSasValues;
     }
 
-    public void getSecondaryStructureForResidue(Protein protein, int location) {
-        //PDBDAO.(protein)
+    public Map<Integer, String> getSecondaryStructureForStructure(Protein protein, String pdbAccession) {
+        Map<Integer, String> secondaryStructureValues = new HashMap<Integer, String>();
+
+        PreparedStatement stat = null;
+        try {
+            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getSecondaryStructureForStructure());
+            stat.setString(1, protein.getVisibleAccession());
+            stat.setString(2, pdbAccession);
+            ResultSet rs = stat.executeQuery();
+            try {
+                while (rs.next()) {
+                    Integer location = rs.getInt("numbering_fasta");
+                    String secondaryStructure = rs.getString("secondary_structure");
+                    if (!secondaryStructure.isEmpty() || !secondaryStructure.equals("ND")) {
+                        secondaryStructureValues.put(location, secondaryStructure);
+                    } else {
+                        secondaryStructureValues.put(location, null);
+                    }
+                }
+            } catch (SQLException sqle) {
+                FaultBarrier.getInstance().handleException(sqle);
+            }
+        } catch (SQLException sqle) {
+            FaultBarrier.getInstance().handleException(sqle);
+        }
+
+        if (secondaryStructureValues.isEmpty()
+                && ProgramVariables.USEINTERNETSOURCES) {
+            try {
+                UniprotSecondaryStructurePrediction structurePredictor = new UniprotSecondaryStructurePrediction();
+                structurePredictor.getPrediction(AccessionConverter.toUniprot(protein.getVisibleAccession()));
+            } catch (IOException ex) {
+            } catch (ConversionException ex) {
+            }
+        }
+        return secondaryStructureValues;
     }
 
     public List<InteractionPartner> getInteractionPartnersForPDBName(String pdbName) {
@@ -265,5 +300,9 @@ public class LinkDb implements StructureDataSource {
 
         }
         return info;
+    }
+
+    public boolean isAbleTogetSecondaryStructure() {
+        return true;
     }
 }

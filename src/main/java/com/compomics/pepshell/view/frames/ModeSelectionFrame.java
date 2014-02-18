@@ -109,7 +109,7 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
 
         if (dbSelectionRadioButton.isSelected()) {
             this.dispose();
-            ProjectSelectionTreeFrame frame = new ProjectSelectionTreeFrame(this.getLocation());            
+            ExperimentSelectionFrame frame = new ExperimentSelectionFrame(this.getLocation());            
         } else if (fastaSelectionRadioButton.isSelected()) {
             new OfflineFileSelectionFrame().setVisible(true);
             this.dispose();

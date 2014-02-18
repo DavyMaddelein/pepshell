@@ -27,15 +27,20 @@ public class DomainProteinDrawMode<T extends Protein, U extends Peptide> extends
     }
 
     public void drawDomains(Protein protein, Graphics g, int horizontalOffset, int verticalOffset, int verticalBarSize) {
-        g.setColor(ProgramVariables.DOMAINCOLOR);
         Iterator<Domain> it = protein.getDomains().iterator();
+        int scaler = 0;
         while (it.hasNext()) {
+            if (scaler == 6) {
+                scaler = 0;
+            }
+            g.setColor(ProgramVariables.DOMAINCOLOR);
             Domain domain = it.next();
             int domainSize = (int) Math.ceil((((double) (domain.getStopPosition() - domain.getStartPosition())) * ProgramVariables.SCALE));
             int startingLocation = (int) Math.ceil(((double) (domain.getStartPosition()) * ProgramVariables.SCALE));
             g.fillRect(horizontalOffset + startingLocation, verticalOffset, domainSize, verticalBarSize);
             g.setColor(Color.BLACK);
-            g.drawString(domain.getDomainName(), horizontalOffset + startingLocation, verticalOffset + 7);
+            g.drawString(domain.getDomainName(), horizontalOffset + startingLocation, verticalOffset + 7 + scaler);
+            scaler += 2;
         }
     }
 }

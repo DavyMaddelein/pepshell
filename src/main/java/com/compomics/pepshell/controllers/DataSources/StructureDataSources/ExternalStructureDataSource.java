@@ -41,7 +41,7 @@ public class ExternalStructureDataSource implements StructureDataSource {
 
     public double getFreeEnergyForResidue(Protein protein, int location) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }    
+    }
 
     public List getInteractionPartners(Protein aProtein) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -71,7 +71,11 @@ public class ExternalStructureDataSource implements StructureDataSource {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void getSecondaryStructureForResidue(Protein protein, int location) {
+    public Map<Integer, String> getSecondaryStructureForStructure(Protein protein, String pdbAccession) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean isAbleTogetSecondaryStructure() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -26,6 +26,7 @@ public class SQLStatements {
     private static String GET_INTERACTIONPARTNERS_FOR_PDB;
     private static String GET_PDB_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN;
     private static String GET_PDB_INFO_FOR_PROTEIN;
+    private static String GET_SECONDARY_STRUCTURE_FOR_PDB;
 
     public static void instantiateColimsStatements() {
         SQLStatements.SELECT_PROTEINS = SELECT_COLIMS_PROTEINS;
@@ -59,7 +60,7 @@ public class SQLStatements {
         SQLStatements.GET_INTERACTIONPARTNERS_FOR_PDB = GET_INTERACTION_PARTNERS_FOR_PDB_FROM_LINKDB;
         SQLStatements.GET_PDB_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN = GET_PDBFILE_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN_FROM_LINKDB;
         SQLStatements.GET_PDB_INFO_FOR_PROTEIN = GET_PDBINFO_FOR_PROTEIN_FROM_LINKDB;
-        
+        SQLStatements.GET_SECONDARY_STRUCTURE_FOR_PDB = GET_SECONDARY_STRUCTURE_FOR_PDB_FROM_LINKDB;
     }
 
     //TODO move these to enums, split up peptide/protein queries(ms-colims) and structural db queries (link db)
@@ -89,6 +90,7 @@ public class SQLStatements {
     private static final String SELECT_PEPTIDES_WITH_QUANT_FOR_MS_LIMS_PROJECT = "and steal this";
     private static final String GET_INTERACTION_PARTNERS_FOR_PDB_FROM_LINKDB = "select interaction.* from interaction,residue,chain,structure where chain.idchain = residue.chain_id and chain.structure_id = structure.idstructure and residue_id_partner2 = residue.idresidue and structure.PDB = ?";
     private static final String GET_PDBFILE_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN_FROM_LINKDB = "select PDB from structure order by resolution desc limit 1";
+    private static final String GET_SECONDARY_STRUCTURE_FOR_PDB_FROM_LINKDB ="select residue.numbering_fasta, residue.secondary_structure from residue, ( select chain.idchain as chain_id from protein, protein_chain, chain, structure where protein.uniprot_id = ? and protein_chain.protein_id = protein.idprotein and protein_chain.chain_id = chain.idchain and structure.PDB = ? and chain.structure_id = structure.idstructure order by chain_label asc limit 1) as chain_id_sub where residue.chain_id = chain_id_sub.chain_id;"; 
     
     
     public static String selectAllProteins() {
@@ -162,4 +164,9 @@ public class SQLStatements {
     public static String getPdbInfoForProtein(){
         return GET_PDB_INFO_FOR_PROTEIN;
     }
+
+    public static String getSecondaryStructureForStructure() {
+        return GET_SECONDARY_STRUCTURE_FOR_PDB;
+    }
+    
 }

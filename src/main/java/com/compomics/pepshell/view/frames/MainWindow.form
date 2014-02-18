@@ -263,6 +263,7 @@
                     <Property name="text" type="java.lang.String" value="search for ..."/>
                   </Properties>
                   <Events>
+                    <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="filterTextFieldFocusGained"/>
                     <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="filterTextFieldKeyTyped"/>
                   </Events>
                 </Component>

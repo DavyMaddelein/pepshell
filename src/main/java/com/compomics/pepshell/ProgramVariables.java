@@ -2,6 +2,7 @@ package com.compomics.pepshell;
 
 import com.compomics.pepshell.controllers.DataSources.StructureDataSource;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
+import com.compomics.pepshell.controllers.InfoFinders.ExternalDomainFinder;
 import java.awt.Color;
 import java.io.File;
 
@@ -20,6 +21,7 @@ public class ProgramVariables {
     public static int VERTICALSIZE = 15;
     public static boolean RESIZEPANELS = true;
     public static File EXPORTFOLDER = new File("C:/Users/Davy");
+    public static ExternalDomainFinder.DomainWebSites DOMAINWEBSITE = ExternalDomainFinder.DomainWebSites.UNIPROT;
     //database properties
     public static StructureDataSource STRUCTUREDATASOURCE = new LinkDb();
     public static boolean USEINTERNETSOURCES = true;

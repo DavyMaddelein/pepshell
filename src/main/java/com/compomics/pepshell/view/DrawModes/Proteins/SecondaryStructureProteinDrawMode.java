@@ -1,17 +1,17 @@
 package com.compomics.pepshell.view.DrawModes.Proteins;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.controllers.secondarystructureprediction.UniprotSecondaryStructurePrediction;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
-import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
+import com.compomics.pepshell.model.exceptions.UndrawableException;
+import com.compomics.pepshell.model.gradientMaps.SecondaryStructureMaps;
+import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -19,23 +19,31 @@ import java.io.IOException;
  * @param <T>
  * @param <W>
  */
-public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Peptide> extends StandardPeptideProteinDrawMode<T, W> implements GradientDrawModeInterface<T, W> {
+public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Peptide> extends StandardPeptideProteinDrawMode<T, W> implements PdbGradientDrawModeInterface<T, W> {
 
-    private static UniprotSecondaryStructurePrediction predictor = new UniprotSecondaryStructurePrediction();
-    private static final Font font = new Font("Dialog", Font.PLAIN, 24);
+    private String pdbAccession;
 
     @Override
-    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarSize) {
-        try {
-            g.setFont(font);
-            g.drawString(predictor.getPrediction(protein.getProteinAccession()), horizontalOffset, verticalOffset);
-        } catch (IOException ex) {
-            FaultBarrier.getInstance().handleException(ex);
+    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarSize) throws UndrawableException {
+        int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
+        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleTogetSecondaryStructure() && pdbAccession != null) {
+            Map<Integer, String> secondaryStructurePrediction = ProgramVariables.STRUCTUREDATASOURCE.getSecondaryStructureForStructure(protein, pdbAccession);
+            for (Entry<Integer, String> location : secondaryStructurePrediction.entrySet()) {
+                if (location.getValue() != null) {
+                    g.setColor(SecondaryStructureMaps.getColorMap().get(location.getValue()));
+                } else {
+                    g.setColor(Color.black);
+                }
+                g.fillRect(horizontalOffset + (location.getKey() * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarSize);
+            }
+        } else {
+            g.setColor(Color.black);
+            g.drawString("could not draw the secondary structure", horizontalOffset, verticalOffset + 5);
+            throw new UndrawableException("could not calculate gradient");
         }
     }
 
     public Color calculateAminoAcidGradient(T protein, int location) throws CalculationException {
-        ProgramVariables.STRUCTUREDATASOURCE.getSecondaryStructureForResidue(protein, location);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -44,22 +52,18 @@ public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Pept
     }
 
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
+        int colorCounter = 0;
+        for (Entry<String, Color> entry : SecondaryStructureMaps.getColorMap().entrySet()) {
+            g.setColor(entry.getValue());
+            g.fillRect(xOffset + colorCounter, yOffset, 5, ProgramVariables.VERTICALSIZE);
+            g.drawString(entry.getKey(), xOffset + 10 + colorCounter, yOffset + 7);
+            colorCounter += ProgramVariables.VERTICALSIZE;
+            colorCounter += 15;
+        }
 
     }
 
-    /**
-     * public void drawPeptides(List<PeptideGroup> peptideGroups, Graphics g,
-     * int horizontalOffset, int verticalOffset, int size, int width) { for
-     * (PeptideGroup peptideGroup : peptideGroups) { g.setColor(new Color(255,
-     * 255, 255)); g.fillRect(horizontalOffset +
-     * peptideGroup.getStartingAlignmentPosition(), verticalOffset,
-     * peptideGroup.getEndAlignmentPosition() -
-     * peptideGroup.getStartingAlignmentPosition(), width); } }
-     *
-     * public void drawPeptide(PeptideGroup peptideGroup, Graphics g, int
-     * horizontalOffset, int verticalOffset, int size, int width,int barSize,
-     * int colourScale) { throw new UnsupportedOperationException("Not supported
-     * yet."); //To change body of generated methods, choose Tools | Templates.
-     * }
-     */
+    public void setPdbAccession(String pdbAccession) {
+        this.pdbAccession = pdbAccession;
+    }
 }
