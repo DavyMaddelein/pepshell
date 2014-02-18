@@ -31,7 +31,7 @@
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="sequenceCoveragePanel" max="32767" attributes="0"/>
                   <Component id="referenceExperimentPanel" alignment="1" pref="0" max="32767" attributes="0"/>
-                  <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="experimentsScrollPane" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
@@ -43,7 +43,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="referenceExperimentPanel" min="-2" pref="207" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="219" max="32767" attributes="0"/>
+              <Component id="experimentsScrollPane" pref="219" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="sequenceCoveragePanel" min="-2" pref="193" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -64,7 +64,7 @@
         </Property>
       </Properties>
     </Component>
-    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+    <Container class="javax.swing.JScrollPane" name="experimentsScrollPane">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
