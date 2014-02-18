@@ -50,26 +50,17 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
     public ExperimentSelectionFrame(Point aPoint) {
         initComponents();
+
         preloadProteinFilterPanel1.setVisible(false);
         preloadProteinMaskPanel1.setVisible(false);
-        //went faster than setting bounds
-//        int x = aPoint.x - (this.getWidth() / 2);
-//        int y = aPoint.y - (this.getHeight() / 2);
-//        if (x < 0) {
-//            x = 0;
-//        }
-//        if (y < 0) {
-//            y = 0;
-//        }
-//        this.setLocation(x, y);
+
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-        
-        
+
         try {
             fillProjectList();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(this, "something went wrong while retrieving the list of projects:\n" + ex.getMessage());
         }

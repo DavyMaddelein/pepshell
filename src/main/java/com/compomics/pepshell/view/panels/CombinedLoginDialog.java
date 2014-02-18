@@ -6,7 +6,7 @@ import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionControll
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
 import com.compomics.pepshell.model.Property;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
-import com.compomics.pepshell.view.frames.ProjectSelectionTreeFrame;
+import com.compomics.pepshell.view.frames.ExperimentSelectionFrame;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -234,9 +234,9 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
                 DbConnectionController.createLinkDbConnection(linkDbLoginPanel.getUsernameTextField().getText(), new String(linkDbLoginPanel.getPasswordField().getPassword()), linkDbLoginPanel.getUrlTextField().getText(), linkDbLoginPanel.getDatabaseNameTextField().getText());
                 storeLinkDbCredentials(linkDbLoginPanel.getStoreCredentialsCheckBox().isSelected());                
 
-                new ProjectSelectionTreeFrame();
-                
                 this.dispose();
+                
+                new ExperimentSelectionFrame();                                
             } catch (SQLException sqle) {
                 FaultBarrier.getInstance().handleException(sqle);
                 JOptionPane.showMessageDialog(this, "there has been an error while trying to log in.\n" + sqle.getMessage());
