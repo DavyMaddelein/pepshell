@@ -72,12 +72,8 @@ public class ReferenceProteinDrawPanel extends JPanel {
     public void updateProtein(Protein protein) {
         this.protein = protein;
 
-        LOGGER.error("width before: " + this.getWidth());
-
         this.revalidate();
         this.repaint();
-
-        LOGGER.error("width after: " + this.getWidth());
     }
 
     /**
@@ -133,7 +129,6 @@ public class ReferenceProteinDrawPanel extends JPanel {
         super.paintComponent(g);
 
         if (protein != null) {
-            LOGGER.error("started painting");
             try {
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
 
@@ -161,7 +156,6 @@ public class ReferenceProteinDrawPanel extends JPanel {
             } catch (UndrawableException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
-            LOGGER.error("finished painting");
         }
     }
 

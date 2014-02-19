@@ -5,7 +5,6 @@ import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
