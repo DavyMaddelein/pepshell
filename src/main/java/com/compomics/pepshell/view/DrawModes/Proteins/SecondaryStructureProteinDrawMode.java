@@ -25,7 +25,7 @@ public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Pept
 
     @Override
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarSize) throws UndrawableException {
-        int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
+
         if (ProgramVariables.STRUCTUREDATASOURCE.isAbleTogetSecondaryStructure() && pdbAccession != null) {
             Map<Integer, String> secondaryStructurePrediction = ProgramVariables.STRUCTUREDATASOURCE.getSecondaryStructureForStructure(protein, pdbAccession);
             for (Entry<Integer, String> location : secondaryStructurePrediction.entrySet()) {
@@ -34,7 +34,7 @@ public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Pept
                 } else {
                     g.setColor(Color.black);
                 }
-                g.fillRect(horizontalOffset + (location.getKey() * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarSize);
+                g.fillRect(horizontalOffset + (location.getKey() * ProgramVariables.SCALE), verticalOffset, ProgramVariables.SCALE, verticalBarSize);
             }
         } else {
             g.setColor(Color.black);

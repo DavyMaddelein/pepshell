@@ -21,9 +21,11 @@
               <Component id="accessionScrollPane" min="-2" pref="267" max="-2" attributes="0"/>
               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="importSubsetButton" min="-2" max="-2" attributes="0"/>
                   <Component id="filterCheckbox" min="-2" max="-2" attributes="0"/>
-                  <Component id="saveSubsetButton" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="importSubsetButton" alignment="0" max="32767" attributes="0"/>
+                      <Component id="saveSubsetButton" alignment="0" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace min="-2" pref="176" max="-2" attributes="0"/>
           </Group>

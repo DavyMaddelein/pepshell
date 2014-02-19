@@ -15,6 +15,7 @@ import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
 import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
 import com.compomics.pepshell.view.panels.DbLoginDialog;
+import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
 import java.sql.SQLException;
@@ -49,11 +50,11 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     }
 
     public ExperimentSelectionFrame(Point aPoint) {
-        initComponents();
+        initComponents();            
 
-        jScrollPane1.getViewport().setOpaque(false);
-        jScrollPane2.getViewport().setOpaque(false);
-        jScrollPane3.getViewport().setOpaque(false);
+        projectListScrollPane.getViewport().setOpaque(false);
+        referenceProjectTextBoxScrollPane.getViewport().setOpaque(false);
+        projectTreeScrollPane.getViewport().setOpaque(false);
 
         preloadProteinFilterPanel1.setVisible(false);
         preloadProteinMaskPanel1.setVisible(false);
@@ -87,18 +88,21 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         maskProteinsCheckBox = new javax.swing.JCheckBox();
         filterSubsetCheckBox = new javax.swing.JCheckBox();
         ownFastaCheckBox = new javax.swing.JCheckBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        projectList = new javax.swing.JList();
+        jPanel3 = new javax.swing.JPanel();
+        buttonPanel = new javax.swing.JPanel();
+        removeProjectGroupButton = new javax.swing.JButton();
+        addAnalysisGroupButton = new javax.swing.JButton();
         removeProjectButton = new javax.swing.JButton();
         toProjectTreeButton = new javax.swing.JButton();
-        addAnalysisGroupButton = new javax.swing.JButton();
-        removeReferenceProjectButton = new javax.swing.JButton();
         addReferenceProjectButton = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        removeReferenceProjectButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        referenceProjectTextBoxScrollPane = new javax.swing.JScrollPane();
         referenceProjectTextBox = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        projectTreeScrollPane = new javax.swing.JScrollPane();
         projectTree = new com.compomics.pepshell.view.components.DragAndDropTree();
-        removeProjectGroupButton = new javax.swing.JButton();
+        projectListScrollPane = new javax.swing.JScrollPane();
+        projectList = new javax.swing.JList();
         preloadProteinFilterPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinFilterPanel();
         preloadProteinMaskPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinMaskPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -119,7 +123,8 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         setBackground(new java.awt.Color(255, 255, 255));
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
         setForeground(java.awt.Color.white);
-        setMaximumSize(new java.awt.Dimension(708, 807));
+        setMaximumSize(new java.awt.Dimension(1200, 1200));
+        setPreferredSize(new java.awt.Dimension(900, 600));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -127,6 +132,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         experimentSelectionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         analyseButton.setText("proceed...");
+        analyseButton.setPreferredSize(new java.awt.Dimension(83, 25));
         analyseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 analyseButtonActionPerformed(evt);
@@ -173,18 +179,34 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             }
         });
 
-        jScrollPane1.setMinimumSize(new java.awt.Dimension(199, 354));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(199, 354));
+        jPanel3.setOpaque(false);
 
-        projectList.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
-        projectList.setMinimumSize(new java.awt.Dimension(199, 354));
-        projectList.setPreferredSize(new java.awt.Dimension(199, 354));
-        jScrollPane1.setViewportView(projectList);
+        buttonPanel.setOpaque(false);
+
+        removeProjectGroupButton.setText("remove projectgroup");
+        removeProjectGroupButton.setMaximumSize(new java.awt.Dimension(177, 25));
+        removeProjectGroupButton.setMinimumSize(new java.awt.Dimension(177, 25));
+        removeProjectGroupButton.setPreferredSize(new java.awt.Dimension(177, 25));
+        removeProjectGroupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeProjectGroupButtonActionPerformed(evt);
+            }
+        });
+
+        addAnalysisGroupButton.setText("add a projectgroup");
+        addAnalysisGroupButton.setMaximumSize(new java.awt.Dimension(177, 25));
+        addAnalysisGroupButton.setMinimumSize(new java.awt.Dimension(177, 25));
+        addAnalysisGroupButton.setPreferredSize(new java.awt.Dimension(177, 25));
+        addAnalysisGroupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addAnalysisGroupButtonActionPerformed(evt);
+            }
+        });
 
         removeProjectButton.setText("remove project");
-        removeProjectButton.setMaximumSize(new java.awt.Dimension(177, 23));
-        removeProjectButton.setMinimumSize(new java.awt.Dimension(177, 23));
-        removeProjectButton.setPreferredSize(new java.awt.Dimension(177, 23));
+        removeProjectButton.setMaximumSize(new java.awt.Dimension(177, 25));
+        removeProjectButton.setMinimumSize(new java.awt.Dimension(177, 25));
+        removeProjectButton.setPreferredSize(new java.awt.Dimension(177, 25));
         removeProjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeProjectButtonActionPerformed(evt);
@@ -192,151 +214,175 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         });
 
         toProjectTreeButton.setText("add project");
-        toProjectTreeButton.setMaximumSize(new java.awt.Dimension(177, 23));
-        toProjectTreeButton.setMinimumSize(new java.awt.Dimension(177, 23));
-        toProjectTreeButton.setPreferredSize(new java.awt.Dimension(177, 23));
+        toProjectTreeButton.setMaximumSize(new java.awt.Dimension(177, 25));
+        toProjectTreeButton.setMinimumSize(new java.awt.Dimension(177, 25));
+        toProjectTreeButton.setPreferredSize(new java.awt.Dimension(177, 25));
         toProjectTreeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toProjectTreeButtonActionPerformed(evt);
             }
         });
 
-        addAnalysisGroupButton.setText("add a projectgroup");
-        addAnalysisGroupButton.setMaximumSize(new java.awt.Dimension(177, 23));
-        addAnalysisGroupButton.setMinimumSize(new java.awt.Dimension(177, 23));
-        addAnalysisGroupButton.setPreferredSize(new java.awt.Dimension(177, 23));
-        addAnalysisGroupButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addAnalysisGroupButtonActionPerformed(evt);
-            }
-        });
-
-        removeReferenceProjectButton.setText("remove reference project");
-        removeReferenceProjectButton.setMaximumSize(new java.awt.Dimension(177, 23));
-        removeReferenceProjectButton.setMinimumSize(new java.awt.Dimension(177, 23));
-        removeReferenceProjectButton.setPreferredSize(new java.awt.Dimension(177, 23));
-        removeReferenceProjectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeReferenceProjectButtonActionPerformed(evt);
-            }
-        });
-
         addReferenceProjectButton.setText("add reference project");
-        addReferenceProjectButton.setMaximumSize(new java.awt.Dimension(177, 23));
-        addReferenceProjectButton.setMinimumSize(new java.awt.Dimension(177, 23));
-        addReferenceProjectButton.setPreferredSize(new java.awt.Dimension(177, 23));
+        addReferenceProjectButton.setMaximumSize(new java.awt.Dimension(177, 25));
+        addReferenceProjectButton.setMinimumSize(new java.awt.Dimension(177, 25));
+        addReferenceProjectButton.setPreferredSize(new java.awt.Dimension(177, 25));
         addReferenceProjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addReferenceProjectButtonActionPerformed(evt);
             }
         });
 
-        jScrollPane2.setOpaque(false);
+        removeReferenceProjectButton.setText("remove reference project");
+        removeReferenceProjectButton.setMaximumSize(new java.awt.Dimension(177, 25));
+        removeReferenceProjectButton.setMinimumSize(new java.awt.Dimension(177, 25));
+        removeReferenceProjectButton.setPreferredSize(new java.awt.Dimension(177, 25));
+        removeReferenceProjectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeReferenceProjectButtonActionPerformed(evt);
+            }
+        });
 
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(removeProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(removeReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(removeProjectGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addAnalysisGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(toProjectTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(addReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(removeReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(addAnalysisGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(removeProjectGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(toProjectTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(removeProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
+        );
+
+        jPanel2.setOpaque(false);
+        jPanel2.setPreferredSize(new java.awt.Dimension(270, 361));
+
+        referenceProjectTextBoxScrollPane.setBackground(new java.awt.Color(255, 255, 255));
+        referenceProjectTextBoxScrollPane.setPreferredSize(new java.awt.Dimension(270, 96));
+
+        referenceProjectTextBox.setEditable(false);
         referenceProjectTextBox.setColumns(20);
         referenceProjectTextBox.setRows(5);
         referenceProjectTextBox.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        referenceProjectTextBox.setEnabled(false);
         referenceProjectTextBox.setMinimumSize(new java.awt.Dimension(232, 92));
-        referenceProjectTextBox.setOpaque(false);
-        jScrollPane2.setViewportView(referenceProjectTextBox);
+        referenceProjectTextBoxScrollPane.setViewportView(referenceProjectTextBox);
+
+        projectTreeScrollPane.setPreferredSize(new java.awt.Dimension(270, 322));
 
         projectTree.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
         projectTree.setMinimumSize(new java.awt.Dimension(113, 19));
-        jScrollPane3.setViewportView(projectTree);
+        projectTree.setPreferredSize(new java.awt.Dimension(270, 16));
+        projectTreeScrollPane.setViewportView(projectTree);
 
-        removeProjectGroupButton.setText("remove projectgroup");
-        removeProjectGroupButton.setMaximumSize(new java.awt.Dimension(177, 23));
-        removeProjectGroupButton.setMinimumSize(new java.awt.Dimension(177, 23));
-        removeProjectGroupButton.setPreferredSize(new java.awt.Dimension(177, 23));
-        removeProjectGroupButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeProjectGroupButtonActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(referenceProjectTextBoxScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+            .addComponent(projectTreeScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(referenceProjectTextBoxScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addComponent(projectTreeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+        );
+
+        projectListScrollPane.setMinimumSize(new java.awt.Dimension(199, 354));
+        projectListScrollPane.setPreferredSize(new java.awt.Dimension(270, 354));
+
+        projectList.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
+        projectList.setMinimumSize(new java.awt.Dimension(199, 354));
+        projectList.setPreferredSize(new java.awt.Dimension(265, 354));
+        projectListScrollPane.setViewportView(projectList);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(projectListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+            .addComponent(projectListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout experimentSelectionPanelLayout = new javax.swing.GroupLayout(experimentSelectionPanel);
         experimentSelectionPanel.setLayout(experimentSelectionPanelLayout);
         experimentSelectionPanelLayout.setHorizontalGroup(
             experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
-                        .addGap(32, 32, 32)
-                        .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(removeProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(toProjectTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addAnalysisGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(removeReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(removeProjectGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
                         .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(maskProteinsCheckBox)
-                            .addComponent(ownFastaCheckBox))
-                        .addGap(20, 20, 20)
+                            .addComponent(ownFastaCheckBox)
+                            .addComponent(maskProteinsCheckBox))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(filterSubsetCheckBox)
                             .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                                .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(addFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(analyseButton))
-                    .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))))
+                                .addComponent(filterSubsetCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(analyseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
+                                .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(addFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         experimentSelectionPanelLayout.setVerticalGroup(
             experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(addReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeReferenceProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(98, 98, 98)
-                        .addComponent(addAnalysisGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(removeProjectGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(toProjectTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
-                                .addComponent(jScrollPane2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ownFastaCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
-                            .addGap(5, 5, 5)
-                            .addComponent(analyseButton))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(maskProteinsCheckBox)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, experimentSelectionPanelLayout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(analyseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(experimentSelectionPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ownFastaCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(fastaLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filterSubsetCheckBox)))
-                .addContainerGap())
+                        .addGroup(experimentSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(maskProteinsCheckBox)
+                            .addComponent(filterSubsetCheckBox))
+                        .addGap(13, 13, 13))))
         );
 
         preloadProteinFilterPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -352,23 +398,24 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(experimentSelectionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(preloadProteinFilterPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(preloadProteinMaskPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE))
+                    .addComponent(preloadProteinMaskPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 827, Short.MAX_VALUE)
+                    .addComponent(experimentSelectionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(experimentSelectionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(experimentSelectionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(preloadProteinFilterPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(preloadProteinMaskPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(preloadProteinMaskPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
-        jMenu1.setText("data sources");
+        jMenu1.setText("Data sources");
 
         useLinkDbCheckBox.setSelected(true);
         useLinkDbCheckBox.setText("use link db");
@@ -393,7 +440,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("retrieval steps");
+        jMenu2.setText("Retrieval steps");
 
         jMenu3.setText("translate accessions to");
 
@@ -635,6 +682,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     private javax.swing.JButton addFastaButton;
     private javax.swing.JButton addReferenceProjectButton;
     private javax.swing.JButton analyseButton;
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JMenuItem dbConnectMenuItem;
     private javax.swing.JPanel experimentSelectionPanel;
     private javax.swing.JTextField fastaLocationTextField;
@@ -647,16 +695,18 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JCheckBox maskProteinsCheckBox;
     private javax.swing.JCheckBox ownFastaCheckBox;
     private com.compomics.pepshell.view.panels.PreloadProteinFilterPanel preloadProteinFilterPanel1;
     private com.compomics.pepshell.view.panels.PreloadProteinMaskPanel preloadProteinMaskPanel1;
     private javax.swing.JList projectList;
+    private javax.swing.JScrollPane projectListScrollPane;
     private com.compomics.pepshell.view.components.DragAndDropTree projectTree;
+    private javax.swing.JScrollPane projectTreeScrollPane;
     private javax.swing.JTextArea referenceProjectTextBox;
+    private javax.swing.JScrollPane referenceProjectTextBoxScrollPane;
     private javax.swing.JButton removeProjectButton;
     private javax.swing.JButton removeProjectGroupButton;
     private javax.swing.JButton removeReferenceProjectButton;

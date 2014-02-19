@@ -24,8 +24,6 @@ public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> ext
     @Override
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
 
-        int sizePerAminoAcid = (int) Math.ceil(horizontalBarSize / protein.getProteinSequence().length());
-
         if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy() && pdbAccession != null) {
             Map<Integer, Double> freeEnergyValues = ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForStructure(protein, pdbAccession);
             //go over all locations retrieved from the data source
@@ -38,7 +36,7 @@ public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> ext
                 } else {
                     g.setColor(Color.WHITE);
                 }
-                g.fillRect(horizontalOffset + (location * sizePerAminoAcid), verticalOffset, sizePerAminoAcid, verticalBarWidth);
+                g.fillRect(horizontalOffset + (location * ProgramVariables.SCALE), verticalOffset, ProgramVariables.SCALE, verticalBarWidth);
             }
         } else {
             g.setColor(Color.black);

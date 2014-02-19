@@ -185,7 +185,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap()
                 .addComponent(filterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(proteinListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addComponent(proteinListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -242,7 +242,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             pdbProteinsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pdbProteinsOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pdbProteinListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
+                .addComponent(pdbProteinListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -265,7 +265,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap()
                 .addGroup(pdbViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pdbProteinsOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jmolPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE))
+                    .addComponent(jmolPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -281,7 +281,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         );
         statisticsPanelLayout.setVerticalGroup(
             statisticsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
+            .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
         );
 
         tabsPane.addTab("statistics", statisticsPanel);
