@@ -64,6 +64,10 @@ public class ReferenceProteinDrawPanel extends JPanel {
         setOpaque(false);
     }
 
+    public Protein getProtein() {
+        return protein;
+    }        
+
     /**
      * Update the protein to draw.
      *

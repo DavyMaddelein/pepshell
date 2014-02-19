@@ -14,7 +14,6 @@ import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawM
 import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.SolventAccessibleProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
-import java.awt.Component;
 import javax.swing.BorderFactory;
 
 import javax.swing.JOptionPane;
@@ -198,39 +197,43 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void drawModeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawModeChooserActionPerformed
-        DrawModeInterface secondaryDrawMode;
-        String pdbAccession = null;
+        if (referenceProteinDrawPanel.getProtein() != null) {
+            DrawModeInterface secondaryDrawMode;
+            String pdbAccession = null;
 
-        //disable PDB selection combobox
-        pdbSelectionComboBox.setEnabled(false);
+            //disable PDB selection combobox
+            pdbSelectionComboBox.setEnabled(false);
 
-        switch (drawModeChooser.getSelectedIndex()) {
-            case 0:
-                secondaryDrawMode = new HydrophobicityProteinDrawMode();
-                break;
-            case 1:
-                secondaryDrawMode = new SecondaryStructureProteinDrawMode();
-                if (ProgramVariables.STRUCTUREDATASOURCE instanceof LinkDb) {
+            switch (drawModeChooser.getSelectedIndex()) {
+                case 0:
+                    secondaryDrawMode = new HydrophobicityProteinDrawMode();
+                    break;
+                case 1:
+                    secondaryDrawMode = new SecondaryStructureProteinDrawMode();
+                    if (ProgramVariables.STRUCTUREDATASOURCE instanceof LinkDb) {
+                        pdbSelectionComboBox.setEnabled(true);
+                        pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
+                    }
+                    break;
+                case 2:
+                    secondaryDrawMode = new FreeEnergyProteinDrawMode();
                     pdbSelectionComboBox.setEnabled(true);
                     pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
-                }
-                break;
-            case 2:
-                secondaryDrawMode = new FreeEnergyProteinDrawMode();
-                pdbSelectionComboBox.setEnabled(true);
-                pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
-                break;
-            case 3:
-                secondaryDrawMode = new SolventAccessibleProteinDrawMode();
-                pdbSelectionComboBox.setEnabled(true);
-                pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
-                break;
-            default:
-                secondaryDrawMode = new HydrophobicityProteinDrawMode();
-                break;
-        }
+                    break;
+                case 3:
+                    secondaryDrawMode = new SolventAccessibleProteinDrawMode();
+                    pdbSelectionComboBox.setEnabled(true);
+                    pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
+                    break;
+                default:
+                    secondaryDrawMode = new HydrophobicityProteinDrawMode();
+                    break;
+            }
 
-        referenceProteinDrawPanel.updateSecondaryDrawMode(secondaryDrawMode, pdbAccession);
+            referenceProteinDrawPanel.updateSecondaryDrawMode(secondaryDrawMode, pdbAccession);
+        } else {
+           JOptionPane.showMessageDialog(this.getParent(), "Please select a protein from the list.", "Draw mode selection", JOptionPane.INFORMATION_MESSAGE); 
+        }
     }//GEN-LAST:event_drawModeChooserActionPerformed
 
     private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
@@ -271,9 +274,5 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private com.compomics.pepshell.view.panels.ReferenceProteinDrawPanel referenceProteinDrawPanel;
     private javax.swing.JScrollPane referenceProteinScrollPane;
     // End of variables declaration//GEN-END:variables
-
-    Component getReferenceProteinDrawPanel() {
-        return this.referenceProteinDrawPanel;
-    }
 
 }
