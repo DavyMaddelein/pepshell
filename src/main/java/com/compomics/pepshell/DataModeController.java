@@ -52,25 +52,15 @@ public class DataModeController {
     }
 
     public static void checkDbScheme() throws SQLException {
-        PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS);
-            ResultSet rs = stat.executeQuery();
-            try {
-                if (rs.next()) {
-                    SQLStatements.instantiateColimsStatements();
-                    iScheme = Db.COLIMS;
-                } else {
-                    SQLStatements.instantiateMslimsStatements();
-                    iScheme = Db.MSLIMS;
-                    SQLStatements.instantiateLinkDbStatements();
-                }
-            } finally {
-                rs.close();
-            }
-        } finally {
-            if (stat != null) {
-                stat.close();
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS); 
+                ResultSet rs = stat.executeQuery()) {
+            if (rs.next()) {
+                SQLStatements.instantiateColimsStatements();
+                iScheme = Db.COLIMS;
+            } else {
+                SQLStatements.instantiateMslimsStatements();
+                iScheme = Db.MSLIMS;
+                SQLStatements.instantiateLinkDbStatements();
             }
         }
     }

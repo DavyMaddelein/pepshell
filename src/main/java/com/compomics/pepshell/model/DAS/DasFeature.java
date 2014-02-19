@@ -11,8 +11,8 @@ import java.util.Set;
  */
 public class DasFeature {
 
-    private List<String> features = new ArrayList<String>();
-    private Set<String> secondaryStructures = new HashSet<String>();
+    private List<String> features = new ArrayList<>();
+    private Set<String> secondaryStructures = new HashSet<>();
     private String featureId;
     private String featureLabel;
     private String typeId;
@@ -28,8 +28,8 @@ public class DasFeature {
     private double score;
     private String orientation;
     private String phase;
-    private List<String> note = new ArrayList<String>();
-    private List<Link> links = new ArrayList<Link>();
+    private List<String> note = new ArrayList<>();
+    private List<Link> links = new ArrayList<>();
     private boolean valid = true;
 
     public DasFeature(String feature) {

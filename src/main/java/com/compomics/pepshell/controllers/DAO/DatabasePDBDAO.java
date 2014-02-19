@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class DatabasePDBDAO extends PDBDAO {
 
-    private static DatabasePDBDAO instance;
+    private static volatile DatabasePDBDAO instance;
 
     public static DatabasePDBDAO getInstance() {
         if (instance == null) {
@@ -32,9 +32,10 @@ public class DatabasePDBDAO extends PDBDAO {
     }
 
     public static Set<PdbInfo> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
-        Set<PdbInfo> infoSet = new HashSet<PdbInfo>();
+        Set<PdbInfo> infoSet = new HashSet<>();
         try {
-            PreparedStatement stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbFilesFromDb());
+            PreparedStatement stat;
+            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbFilesFromDb());
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {
                 PdbInfo pdbInfo = new PdbInfo();
@@ -42,16 +43,17 @@ public class DatabasePDBDAO extends PDBDAO {
                 infoSet.add(pdbInfo);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DatabasePDBDAO.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
         return infoSet;
     }
 
     @Override
     public Set<PdbInfo> getPDBInfoForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
-        Set<PdbInfo> infoSet = new HashSet<PdbInfo>();
+        Set<PdbInfo> infoSet = new HashSet<>();
+        PreparedStatement stat = null;
         try {
-            PreparedStatement stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbInfoForProtein());
+            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbInfoForProtein());
             //stat.setString(1,protein.getVisibleAccession);
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {

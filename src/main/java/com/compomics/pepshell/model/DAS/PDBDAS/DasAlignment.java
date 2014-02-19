@@ -20,7 +20,7 @@ public class DasAlignment {
     private String title = "";
     private String pdbAccession = "";
     private String spAccession = "";
-    private List<DasBlock> alignmentBlocks = new ArrayList<DasBlock>();
+    private List<DasBlock> alignmentBlocks = new ArrayList<>();
     private String pdbGroup = "";
 
     public DasAlignment(String aDasAlignment) {

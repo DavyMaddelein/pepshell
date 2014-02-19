@@ -1,6 +1,5 @@
 package com.compomics.pepshell.controllers;
 
-import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.ProteinInfo;
 
 /**

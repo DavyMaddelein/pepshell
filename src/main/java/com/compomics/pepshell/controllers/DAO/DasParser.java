@@ -14,7 +14,7 @@ import javax.xml.stream.XMLStreamException;
 public class DasParser {
 
     public static List<DasFeature> getAllDasFeatures(String webPage) throws XMLStreamException {
-        List<DasFeature> allFeatures = new ArrayList<DasFeature>();
+        List<DasFeature> allFeatures = new ArrayList<>();
         String[] allSplitfeatures = webPage.split("<FEATURE");
         for (int i = 1; i < allSplitfeatures.length; i++) {
             allFeatures.add(new DasFeature(allSplitfeatures[i]));

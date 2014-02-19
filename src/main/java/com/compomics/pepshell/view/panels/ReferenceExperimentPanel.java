@@ -241,7 +241,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         } else {
             peptideDrawMode = new StandardPeptideProteinDrawMode();
         }
-
         referenceProteinDrawPanel.updatePeptideDrawMode(peptideDrawMode);
     }//GEN-LAST:event_quantCheckBoxActionPerformed
 

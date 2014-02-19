@@ -39,10 +39,12 @@ public class HydrophobicityProteinDrawMode extends StandardPeptideProteinDrawMod
 
     }
 
+    @Override
     public Color calculatePeptideGradient(Peptide peptide) throws CalculationException {
         return ProgramVariables.PEPTIDECOLOR;
     }
 
+    @Override
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
         //order colors by red value
         if (colorLegend == null) {
@@ -61,6 +63,7 @@ public class HydrophobicityProteinDrawMode extends StandardPeptideProteinDrawMod
     }
 
     Function<Color, Integer> getRedValue = new Function<Color, Integer>() {
+        @Override
         public Integer apply(Color input) {
             return input.getRed();
         }

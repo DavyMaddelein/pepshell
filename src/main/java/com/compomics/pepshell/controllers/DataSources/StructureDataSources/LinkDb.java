@@ -143,7 +143,7 @@ public class LinkDb implements StructureDataSource {
 
         PreparedStatement stat = null;
         try {
-            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.GetFreeEnergyForStructure());
+            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getFreeEnergyForStructure());
             stat.setString(1, protein.getVisibleAccession());
             stat.setString(2, pdbAccession);
             ResultSet rs = stat.executeQuery();

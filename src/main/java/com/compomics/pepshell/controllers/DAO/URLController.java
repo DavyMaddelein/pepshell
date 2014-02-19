@@ -18,13 +18,13 @@ public class URLController {
     public static String readUrl(String aUrl) throws IOException {
         StringBuilder input = new StringBuilder();
         String htmlPage;
-        Reader r = openReader(aUrl);
-        CharBuffer buffer = CharBuffer.allocate(256);
-        while ((r.read(buffer)) != -1) {
-            input.append(buffer.flip());
-            buffer.clear();
+        try (Reader r = openReader(aUrl)) {
+            CharBuffer buffer = CharBuffer.allocate(256);
+            while ((r.read(buffer)) != -1) {
+                input.append(buffer.flip());
+                buffer.clear();
+            }
         }
-        r.close();
         htmlPage = input.toString();
         return htmlPage;
     }

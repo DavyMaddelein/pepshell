@@ -18,10 +18,12 @@ public enum PDBPropertyEnum implements PropertyEnum {
         this.defaultValue = aDefaultValue;
     }
 
+    @Override
     public String getKey() {
         return this.keyName;
     }
 
+    @Override
     public String getDefaultValue() {
         return defaultValue;
     }

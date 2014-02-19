@@ -11,29 +11,31 @@ import java.util.Map;
  */
 public class Proteases {
 
-    private static final Map<String, Protease> proteaseMap = new HashMap<String, Protease>() {
-        {
-            put("trypsin", new Protease("P07477", new ArrayList<String>() {
-                {
-                    add("R");
-                    add("K");
-                }
-            }, new ArrayList<String>() {
-                {
-                    add("R");
-                    add("K");
-                }
-            }, new ArrayList<String>() {
-                {
-                    add("P");
-                }
-            }, new ArrayList<String>() {
-                {
-                    add("P");
-                }
-            }));
-        }
-    };
+    private static final Map<String, Protease> proteaseMap = new HashMap<String, Protease>();
+
+    public Proteases() {
+
+        proteaseMap.put("trypsin", new Protease("P07477", new ArrayList<String>() {
+            {
+                add("R");
+                add("K");
+            }
+        }, new ArrayList<String>() {
+            {
+                add("R");
+                add("K");
+            }
+        }, new ArrayList<String>() {
+            {
+                add("P");
+            }
+        }, new ArrayList<String>() {
+            {
+                add("P");
+            }
+        }));
+
+    }
 
     public static Map<String, Protease> getProteaseMap() {
         return Collections.unmodifiableMap(proteaseMap);

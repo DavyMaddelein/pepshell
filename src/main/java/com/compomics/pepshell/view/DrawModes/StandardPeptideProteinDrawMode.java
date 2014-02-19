@@ -16,11 +16,13 @@ import java.awt.Graphics2D;
  */
 public class StandardPeptideProteinDrawMode<T extends Protein, U extends Peptide> implements DrawModeInterface<T, U> {
 
+    @Override
     public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarSize) throws UndrawableException {
         g.setColor(ProgramVariables.PROTEINCOLOR);
         g.fillRect(horizontalOffset, verticalOffset, horizontalBarSize, verticalBarSize);
     }
 
+    @Override
     public void drawPeptide(U peptide, Graphics g, int horizontalOffset, int verticalOffset, int verticalBarSize) throws UndrawableException {
         g.setColor(ProgramVariables.PEPTIDECOLOR);
         if (peptide.getEndProteinMatch() == -1 || peptide.getBeginningProteinMatch() == -1) {

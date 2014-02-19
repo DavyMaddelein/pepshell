@@ -91,7 +91,7 @@ public class PdbInfo {
             return false;
         }
         final PdbInfo other = (PdbInfo) obj;
-        if ((this.pdbAccession == null) ? (other.pdbAccession != null) : !this.pdbAccession.equals(other.pdbAccession)) {
+        if ((this.pdbAccession == null) ? (other.getPdbAccession() != null) : !this.pdbAccession.equals(other.getPdbAccession())) {
             return false;
         }
         return true;

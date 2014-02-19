@@ -13,7 +13,7 @@ public class PeptideGroup {
     private int startingAlignmentPosition;
     private int endAlignmentPostition;
     private int shortestPeptideIndex = -1;
-    private List<Peptide> listOfPeptides = new ArrayList<Peptide>();
+    private List<Peptide> listOfPeptides = new ArrayList<>();
 
     public PeptideGroup() {
         super();

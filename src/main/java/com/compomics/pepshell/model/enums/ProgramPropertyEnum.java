@@ -16,10 +16,12 @@ public enum ProgramPropertyEnum implements PropertyEnum {
         this.defaultValue = defaultValue;
     }
 
+    @Override
     public String getKey() {
         return this.keyName;
     }
 
+    @Override
     public String getDefaultValue() {
         return this.defaultValue;
     }

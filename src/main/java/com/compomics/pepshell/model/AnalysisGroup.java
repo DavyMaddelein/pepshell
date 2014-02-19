@@ -12,7 +12,7 @@ import java.util.List;
 public class AnalysisGroup {
 
     private String analysisName;
-    private List<Experiment> groupedExperiments = new ArrayList<Experiment>();
+    private List<Experiment> groupedExperiments = new ArrayList<>();
 
     public AnalysisGroup(String analysisName) {
         super();

@@ -22,10 +22,12 @@ public enum ViewPropertyEnum implements PropertyEnum {
         this.defaultValue = defaultValue;
     }
 
+    @Override
     public String getKey() {
         return property;
     }
 
+    @Override
     public String getDefaultValue() {
         return defaultValue;
     }

@@ -37,7 +37,7 @@ import javax.swing.tree.TreeNode;
  */
 public class ExperimentSelectionFrame extends javax.swing.JFrame implements Observer {
 
-    private List<Experiment> selectedProjectsList = new ArrayList<Experiment>();
+    private List<Experiment> selectedProjectsList = new ArrayList<>();
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Experiment referenceProject;
     private File fastaFile;
@@ -69,7 +69,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             fillProjectList();
         } catch (SQLException ex) {
             faultBarrier.handleException(ex);
-            JOptionPane.showMessageDialog(this, "something went wrong while retrieving the list of projects:\n" + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "something went wrong while retrieving the list of projects:\n" + ex.getMessage());
         }
     }
 
@@ -719,6 +719,15 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     private javax.swing.JCheckBoxMenuItem useInternetCheckBox;
     private javax.swing.JCheckBoxMenuItem useLinkDbCheckBox;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Observable o, Object o1) {
+        if (o1 != null) {
+            if (o1 instanceof Exception) {
+                faultBarrier.handleException((Exception) o1);
+            }
+        }
+    }
 
     private void fillProjectList() throws SQLException {
         projectList.setListData(DbDAO.getProjects().toArray());

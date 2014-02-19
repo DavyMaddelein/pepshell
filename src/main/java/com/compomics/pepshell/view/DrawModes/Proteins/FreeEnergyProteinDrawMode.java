@@ -45,14 +45,17 @@ public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> ext
         }
     }
 
+    @Override
     public Color calculateAminoAcidGradient(T protein, int location) throws CalculationException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public Color calculatePeptideGradient(U peptide) throws CalculationException {
         return ProgramVariables.PEPTIDECOLOR;
     }
 
+    @Override
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
         int colorCounter = 0;
         while (colorCounter < 64) {

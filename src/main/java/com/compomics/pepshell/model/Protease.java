@@ -60,7 +60,7 @@ public class Protease extends Protein {
     }
 
     public List<String> digest(String proteinSequence) {
-        List<String> peptideList = new ArrayList<String>();
+        List<String> peptideList = new ArrayList<>();
         //peptideList = proteinSequence. split with regex arrays.aslist();
         return peptideList;
     }

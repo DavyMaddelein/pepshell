@@ -43,11 +43,8 @@ public class PDFExport extends ImageExport {
                 document.close();
             } catch (FileNotFoundException ex) {
                 FaultBarrier.getInstance().handleException(ex);
-            } catch (DocumentException ex) {
-                Logger.getLogger(PDFExport.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(PDFExport.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } catch (    DocumentException | IOException ex) {
+             FaultBarrier.getInstance().handleException(ex);}
         }
     }
 

@@ -29,24 +29,23 @@ public class QuantedPeptideDrawMode<U extends QuantedPeptide> extends StandardPe
         super.drawPeptide(peptide, g, horizontalOffset, verticalOffset, verticalBarSize);
     }
 
+    @Override
     public Color calculatePeptideGradient(U peptide) throws CalculationException {
         //log quant code from rover
         Color gradientColor = null;
-        if (peptide instanceof QuantedPeptide) {
-            QuantedPeptide aQuantedPeptide = (QuantedPeptide) peptide;
-            //returnValue = (int) Math.ceil(125 * aQuantedPeptideGroup.getLogRatio());
-
-        } else {
-            gradientColor = ProgramVariables.PEPTIDECOLOR;
-        }
+        QuantedPeptide aQuantedPeptide = (QuantedPeptide) peptide;
+        //returnValue = (int) Math.ceil(125 * aQuantedPeptideGroup.getLogRatio());
+        gradientColor = ProgramVariables.PEPTIDECOLOR;
         return gradientColor;
 
     }
 
+    @Override
     public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
         return ProgramVariables.PROTEINCOLOR;
     }
 
+    @Override
     public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

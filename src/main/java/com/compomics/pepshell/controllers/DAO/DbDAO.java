@@ -26,32 +26,31 @@ public class DbDAO extends Observable {
 
     public static List<Protein> fetchProteins(Experiment project) throws SQLException {
         Protein protToAdd;
-        List<Protein> fetchedProteins = new ArrayList<Protein>();
-        PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllProteins());
+        List<Protein> fetchedProteins = new ArrayList<>();
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllProteins())) {
             stat.setInt(1, project.getExperimentId());
-            ResultSet rs = stat.executeQuery();
-            try {
+            try (ResultSet rs = stat.executeQuery()) {
                 while (rs.next()) {
                     protToAdd = new Protein(rs.getString("accession"));
                     protToAdd.setProjectId(project.getExperimentId());
                     fetchedProteins.add(protToAdd);
                 }
-            } finally {
-                rs.close();
-            }
-        } finally {
-            if (stat != null) {
-                stat.close();
             }
         }
         return fetchedProteins;
     }
 
     public static boolean fetchPeptidesAndProteins(Experiment project) throws SQLException, IOException {
-        fetchProteins(project);
-        addPeptideGroupsToProteins(project.getProteins());
+        return fetchPeptidesAndProteins(project, false);
+    }
+
+    public static boolean fetchPeptidesAndProteins(Experiment experiment, boolean addQuant) throws SQLException, IOException {
+        fetchProteins(experiment);
+        if (addQuant) {
+            addQuantedPeptideGroupsToProteins(experiment.getProteins());
+        } else {
+            addPeptideGroupsToProteins(experiment.getProteins());
+        }
         return true;
     }
 
@@ -62,83 +61,50 @@ public class DbDAO extends Observable {
     }
 
     public static void addPeptideGroupsToProteins(List<Protein> proteins) throws SQLException {
-        PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllPeptidesGrouped());
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllPeptidesGrouped())) {
+            //obvious location for improving speed if needed
             for (Protein protein : proteins) {
                 stat.setInt(1, protein.getProjectid());
                 stat.setString(2, protein.getProteinAccession());
-                ResultSet rs = stat.executeQuery();
-                try {
+                try (ResultSet rs = stat.executeQuery()) {
                     protein.setPeptideGroupsForProtein(PeptideGroupController.createPeptideGroups(rs));
-                } finally {
-                    rs.close();
                 }
             }
-        } finally {
-            if (stat != null) {
-                stat.close();
+        }
+    }
+    
+    private static void addQuantedPeptideGroupsToProteins(List<Protein> fetchedProteins) throws SQLException {
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups())) {
+            for (Protein protein : fetchedProteins) {
+                stat.setInt(1, protein.getProjectid());
+                stat.setString(2, protein.getProteinAccession());
+                try (ResultSet rs = stat.executeQuery()) {
+                    protein.setPeptideGroupsForProtein(PeptideGroupController.createPeptideGroups(rs));
+                }
             }
         }
     }
 
     public static List<PeptideGroup> getPeptideGroupsForAccession(String proteinAccession, int projectid) throws SQLException {
-        PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllPeptidesGroupedForProteinAccession());
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllPeptidesGroupedForProteinAccession())) {
             stat.setInt(1, projectid);
             stat.setString(2, proteinAccession);
-            ResultSet rs = stat.executeQuery();
-            try {
+            try (ResultSet rs = stat.executeQuery()) {
                 return PeptideGroupController.createPeptideGroups(rs);
-            } finally {
-                rs.close();
-            }
-        } finally {
-            if (stat != null) {
-                stat.close();
             }
         }
     }
 
-    private static void addQuantedPeptideGroupsToProteins(List<Protein> fetchedProteins) throws SQLException {
-        PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups());
-            for (Protein protein : fetchedProteins) {
-                stat.setInt(1, protein.getProjectid());
-                stat.setString(2, protein.getProteinAccession());
-                ResultSet rs = stat.executeQuery();
-                try {
-                    protein.setPeptideGroupsForProtein(PeptideGroupController.createPeptideGroups(rs));
-                } finally {
-                    rs.close();
-                }
-            }
-        } finally {
-            if (stat != null) {
-                stat.close();
-            }
-        }
-    }
+    
 
     public static boolean projectHasQuant(Experiment project) throws SQLException {
         boolean projectHasQuant = true;
-        PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.QuantedCheck());
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.quantedCheck())) {
             stat.setInt(1, project.getExperimentId());
-            ResultSet rs = stat.executeQuery();
-            try {
+            try (ResultSet rs = stat.executeQuery()) {
                 if (!rs.next()) {
                     projectHasQuant = false;
                 }
-            } finally {
-                rs.close();
-            }
-        } finally {
-            if (stat != null) {
-                stat.close();
             }
         }
         return projectHasQuant;
@@ -146,43 +112,39 @@ public class DbDAO extends Observable {
     }
 
     public static List<Experiment> getProjects() throws SQLException {
-        List<Experiment> projects = new ArrayList<Experiment>();
-        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllProjects());
-        ResultSet rs = stat.executeQuery();
-        while (rs.next()) {
-            projects.add(new Experiment(rs.getInt("projectid"), rs.getInt("projectid") + " - " + rs.getString("title")));
+        List<Experiment> projects = new ArrayList<>();
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllProjects())) {
+            ResultSet rs = stat.executeQuery();
+            while (rs.next()) {
+                projects.add(new Experiment(rs.getInt("projectid"), rs.getInt("projectid") + " - " + rs.getString("title")));
+            }
+            rs.close();
         }
-        rs.close();
-        stat.close();
         return projects;
     }
 
     public static Experiment getProject(int projectid, boolean addProteins) throws SQLException, NullPointerException, URISyntaxException, MalformedURLException, IOException {
         Experiment project = null;
-        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectASingleProject());
-        stat.setInt(1, projectid);
-        ResultSet rs = stat.executeQuery();
-        while (rs.next()) {
-            project = new Experiment(projectid, projectid + " - " + rs.getString("title"));
+        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectASingleProject())) {
+            stat.setInt(1, projectid);
+            ResultSet rs = stat.executeQuery();
+            while (rs.next()) {
+                project = new Experiment(projectid, projectid + " - " + rs.getString("title"));
+            }
+            if (addProteins) {
+                DbDAO.fetchPeptidesAndProteins(project);
+            }
+            rs.close();
         }
-        if (addProteins) {
-            DbDAO.fetchPeptidesAndProteins(project);
-        }
-        rs.close();
-        stat.close();
         return project;
     }
 
-    public static boolean ProjectIsQuanted(Experiment project) throws SQLException {
+    public static boolean projectIsQuanted(Experiment project) throws SQLException {
         boolean projectIsQuanted;
-        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.QuantedCheck());
+        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.quantedCheck());
         stat.setInt(1, project.getExperimentId());
         ResultSet rs = stat.executeQuery();
-        if (rs.isBeforeFirst() && rs.isAfterLast()) {
-            projectIsQuanted = false;
-        } else {
-            projectIsQuanted = true;
-        }
+        projectIsQuanted = !rs.isBeforeFirst() || !rs.isAfterLast();
         return projectIsQuanted;
     }
 }

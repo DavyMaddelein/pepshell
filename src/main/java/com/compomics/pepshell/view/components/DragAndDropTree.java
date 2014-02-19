@@ -120,6 +120,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
     }
 
     // DragGestureListener
+    @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
         // find object at this x,y
         Point clickPoint = dge.getDragOrigin();
@@ -133,32 +134,40 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
     }
     // DragSourceListener events
 
+    @Override
     public void dragDropEnd(DragSourceDropEvent dsde) {
         dropTargetNode = null;
         draggedNode = null;
         repaint();
     }
 
+    @Override
     public void dragEnter(DragSourceDragEvent dsde) {
     }
 
+    @Override
     public void dragExit(DragSourceEvent dse) {
     }
 
+    @Override
     public void dragOver(DragSourceDragEvent dsde) {
     }
 
+    @Override
     public void dropActionChanged(DragSourceDragEvent dsde) {
     }
     // DropTargetListener events
 
+    @Override
     public void dragEnter(DropTargetDragEvent dtde) {
         dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
     }
 
+    @Override
     public void dragExit(DropTargetEvent dte) {
     }
 
+    @Override
     public void dragOver(DropTargetDragEvent dtde) {
 
         // figure out which cell it's over, no drag to self
@@ -172,6 +181,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
         repaint();
     }
 
+    @Override
     public void drop(DropTargetDropEvent dtde) {
         Point dropPoint = dtde.getLocation();
         // int index = locationToIndex (dropPoint);
@@ -197,7 +207,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
                 if (dropNode.isLeaf()) {
                     if (dropNode.getUserObject() instanceof AnalysisGroup && droppedNode.getUserObject() != null) {
                         if (droppedNode.getUserObject() instanceof AnalysisGroup) {
-                            ((DefaultMutableTreeNode) dropNode.getParent()).insert(droppedNode, 0);
+                            ((MutableTreeNode) dropNode.getParent()).insert(droppedNode, 0);
                         } else {
                             ((AnalysisGroup) dropNode.getUserObject()).getExperiments().add((Experiment) droppedNode.getUserObject());
                             dropNode.insert(droppedNode, 0);
@@ -224,13 +234,14 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
                 ((DefaultTreeModel) getModel()).insertNodeInto(droppedNode, (MutableTreeNode) getModel().getRoot(), 0);
             }
             dropped = true;
-        } catch (Exception e) {
+        } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
         }
         dtde.dropComplete(dropped);
         repaint();
     }
 
+    @Override
     public void dropActionChanged(DropTargetDragEvent dtde) {
     }
 
@@ -242,6 +253,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
             object = o;
         }
 
+        @Override
         public Object getTransferData(DataFlavor df) throws UnsupportedFlavorException, IOException {
             if (isDataFlavorSupported(df)) {
                 return object;
@@ -250,10 +262,12 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
             }
         }
 
+        @Override
         public boolean isDataFlavorSupported(DataFlavor df) {
             return (df.equals(localObjectFlavor));
         }
 
+        @Override
         public DataFlavor[] getTransferDataFlavors() {
             return supportedFlavors;
         }

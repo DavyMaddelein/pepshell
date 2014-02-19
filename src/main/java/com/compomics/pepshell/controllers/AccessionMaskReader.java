@@ -16,13 +16,14 @@ import java.util.Map;
 public class AccessionMaskReader {
 
     public static Map<Protein, String> parseAccessionFile(File selectedFile) throws FileNotFoundException, IOException {
-        Map<Protein, String> accessionMasks = new HashMap<Protein, String>();
+        Map<Protein, String> accessionMasks = new HashMap<>();
         if (selectedFile != null && selectedFile.exists()) {
-            BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] splitLines = line.split("=");
-                accessionMasks.put(new Protein(splitLines[0]), splitLines[1]);
+            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] splitLines = line.split("=");
+                    accessionMasks.put(new Protein(splitLines[0]), splitLines[1]);
+                }
             }
         }
         return accessionMasks;

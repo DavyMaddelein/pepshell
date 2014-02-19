@@ -7,7 +7,7 @@ package com.compomics.pepshell.model;
 public class ProgressMessage {
 
     private int progressPercentage;
-    private String taskName;
+    private final String taskName;
 
     public ProgressMessage(String aTaskName) {
         this.taskName = aTaskName;

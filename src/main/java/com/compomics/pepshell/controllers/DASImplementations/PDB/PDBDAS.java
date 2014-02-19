@@ -8,9 +8,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import org.biojava.bio.program.ssbind.AlignmentStAXHandler;
 
 /**
  *
@@ -20,7 +18,7 @@ public class PDBDAS extends DasParser {
 
     //TODO redo this with an xml parser
     public static List<DasAlignment> getAllAlignments(XMLEventReader dasXMLFile) throws XMLStreamException {
-        List<DasAlignment> alignments = new ArrayList<DasAlignment>();
+        List<DasAlignment> alignments = new ArrayList<>();
         XMLEvent dasEvent;
         while (dasXMLFile.hasNext()) {
             if ((dasEvent = dasXMLFile.nextEvent()).isStartElement()) {
@@ -36,7 +34,7 @@ public class PDBDAS extends DasParser {
     }
 
     public static List<DasBlock> getAllBlocks(XMLEventReader dasXMLFile) throws XMLStreamException {
-        List<DasBlock> blocks = new ArrayList<DasBlock>();
+        List<DasBlock> blocks = new ArrayList<>();
         XMLEvent dasEvent;
         
         while(dasXMLFile.hasNext()){

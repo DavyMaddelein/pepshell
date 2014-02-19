@@ -117,7 +117,7 @@ public class SQLStatements {
         return SELECT_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION;
     }
 
-    public static String QuantedCheck() {
+    public static String quantedCheck() {
         return CHECK_IF_PROJECT_HAS_QUANTDATA;
     }
 
@@ -133,7 +133,7 @@ public class SQLStatements {
         return GET_PDB_DATA_FROM_DB;
     }
 
-    public static String GetFreeEnergyForStructure() {
+    public static String getFreeEnergyForStructure() {
         return GET_FREE_ENERGY_FOR_STRUCTURE;
     }
 
