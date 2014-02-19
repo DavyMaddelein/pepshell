@@ -1,5 +1,6 @@
 package com.compomics.pepshell.controllers.secondarystructureprediction;
 
+import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.DasParser;
 import com.compomics.pepshell.controllers.DAO.URLController;
@@ -7,6 +8,7 @@ import static com.compomics.pepshell.controllers.secondarystructureprediction.Se
 import com.compomics.pepshell.controllers.comparators.CompareDasFeatures;
 import com.compomics.pepshell.model.DAS.DasFeature;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+import java.awt.Color;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,31 +25,31 @@ import javax.xml.stream.XMLStreamException;
 public class UniprotSecondaryStructurePrediction extends SecondaryStructurePrediction {
 
     @Override
-    public String getPrediction(String anUniprotAccession) throws IOException {
+    public List<String> getPrediction(String anUniprotAccession) throws IOException {
 
-        StringBuilder predictionResult = new StringBuilder();
+        List<String> predictionResult = new ArrayList<String>();
         List<DasFeature> features = new ArrayList<DasFeature>();
         try {
             features = DasParser.getAllDasFeatures(URLController.readUrl("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + AccessionConverter.toUniprot(anUniprotAccession)));
         } catch (XMLStreamException ex) {
-            Logger.getLogger(UniprotSecondaryStructurePrediction.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (ConversionException ex) {
-            Logger.getLogger(UniprotSecondaryStructurePrediction.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
         Collections.sort(features, new CompareDasFeatures());
         int aminoAcidLocation = 0;
         for (DasFeature feature : features) {
             if ((secStructMap.containsKey(feature.getType()))) {
                 do {
-                    predictionResult.append("-");
+                    predictionResult.add(secStructMap.get("coil"));
                     aminoAcidLocation++;
                 } while (aminoAcidLocation < feature.getStart());
                 do {
-                    predictionResult.append(secStructMap.get(feature.getType()));
+                    predictionResult.add(secStructMap.get(feature.getType()));
                     aminoAcidLocation++;
                 } while (aminoAcidLocation < feature.getEnd());
             }
         }
-        return predictionResult.toString();
+        return predictionResult;
     }
 }

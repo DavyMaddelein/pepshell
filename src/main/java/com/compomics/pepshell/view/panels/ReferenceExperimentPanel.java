@@ -1,6 +1,7 @@
 package com.compomics.pepshell.view.panels;
 
 import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
 import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PdbInfo;
@@ -13,6 +14,8 @@ import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawM
 import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.SolventAccessibleProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
+import java.awt.Component;
+import javax.swing.BorderFactory;
 
 import javax.swing.JOptionPane;
 
@@ -32,6 +35,8 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     public ReferenceExperimentPanel() {
         initComponents();
 
+        referenceProteinScrollPane.getViewport().setOpaque(false);
+        referenceProteinScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
         pdbSelectionComboBox.setEnabled(false);
     }
 
@@ -81,6 +86,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         drawModeChooser = new javax.swing.JComboBox();
         pdbSelectionComboBox = new javax.swing.JComboBox();
         projectNameLabel = new javax.swing.JLabel();
+        referenceProteinScrollPane = new javax.swing.JScrollPane();
         referenceProteinDrawPanel = new com.compomics.pepshell.view.panels.ReferenceProteinDrawPanel();
 
         changeNameOption.setText("change name of the selected experiment");
@@ -95,8 +101,8 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         experimentPopupMenu.add(exportImageToPDFOption);
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         setName(""); // NOI18N
+        setOpaque(false);
         setPreferredSize(new java.awt.Dimension(1000, 180));
 
         optionsPanel.setOpaque(false);
@@ -142,7 +148,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                         .addComponent(pdbSelectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(quantCheckBox)
-                        .addGap(0, 513, Short.MAX_VALUE))
+                        .addGap(0, 515, Short.MAX_VALUE))
                     .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -158,6 +164,10 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, Short.MAX_VALUE))
         );
 
+        referenceProteinScrollPane.setBorder(null);
+        referenceProteinScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        referenceProteinScrollPane.setOpaque(false);
+
         javax.swing.GroupLayout referenceProteinDrawPanelLayout = new javax.swing.GroupLayout(referenceProteinDrawPanel);
         referenceProteinDrawPanel.setLayout(referenceProteinDrawPanelLayout);
         referenceProteinDrawPanelLayout.setHorizontalGroup(
@@ -166,22 +176,24 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         );
         referenceProteinDrawPanelLayout.setVerticalGroup(
             referenceProteinDrawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 103, Short.MAX_VALUE)
+            .addGap(0, 105, Short.MAX_VALUE)
         );
+
+        referenceProteinScrollPane.setViewportView(referenceProteinDrawPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(referenceProteinDrawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(referenceProteinScrollPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(referenceProteinDrawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(referenceProteinScrollPane))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -198,6 +210,10 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
                 break;
             case 1:
                 secondaryDrawMode = new SecondaryStructureProteinDrawMode();
+                if (ProgramVariables.STRUCTUREDATASOURCE instanceof LinkDb) {
+                    pdbSelectionComboBox.setEnabled(true);
+                    pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
+                }
                 break;
             case 2:
                 secondaryDrawMode = new FreeEnergyProteinDrawMode();
@@ -238,9 +254,9 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private void pdbSelectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdbSelectionComboBoxActionPerformed
         if (pdbSelectionComboBox.getSelectedItem() != null) {
             String pdbAccession = pdbSelectionComboBox.getSelectedItem().toString();
-            
+
             referenceProteinDrawPanel.updatePdbAccession(pdbAccession);
-        }        
+        }
     }//GEN-LAST:event_pdbSelectionComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -253,6 +269,11 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private javax.swing.JLabel projectNameLabel;
     private javax.swing.JCheckBox quantCheckBox;
     private com.compomics.pepshell.view.panels.ReferenceProteinDrawPanel referenceProteinDrawPanel;
+    private javax.swing.JScrollPane referenceProteinScrollPane;
     // End of variables declaration//GEN-END:variables
+
+    Component getReferenceProteinDrawPanel() {
+        return this.referenceProteinDrawPanel;
+    }
 
 }

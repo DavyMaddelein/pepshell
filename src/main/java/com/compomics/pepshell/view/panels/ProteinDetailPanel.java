@@ -5,25 +5,30 @@ import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
 
 /**
  *
  * @author Davy
  */
-public class InfoPanel extends javax.swing.JPanel {
+public class ProteinDetailPanel extends javax.swing.JPanel {
 
     private Experiment referenceExperiment;
+    private Protein referenceProtein;
 
-    public InfoPanel() {
+    public ProteinDetailPanel() {
         initComponents();
+        experimentsScrollPane.getViewport().setOpaque(false);
+        experimentsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
     }
 
-    public InfoPanel(Experiment referenceExperiment, AnalysisGroup aGroup) {
+    public ProteinDetailPanel(Experiment referenceExperiment, AnalysisGroup aGroup) {
         this();
         this.referenceExperiment = referenceExperiment;
         setExperimentsToDisplay(aGroup.getExperiments());
@@ -39,32 +44,33 @@ public class InfoPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         referenceExperimentPanel = new com.compomics.pepshell.view.panels.ReferenceExperimentPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
+        experimentsScrollPane = new javax.swing.JScrollPane();
+        experimentsPanel = new com.compomics.pepshell.view.panels.ExperimentsPanel();
         sequenceCoveragePanel = new com.compomics.pepshell.view.panels.SequenceCoveragePanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder("protein details"));
 
         referenceExperimentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("reference protein"));
-        referenceExperimentPanel.setPreferredSize(new java.awt.Dimension(1000, 205));
+        referenceExperimentPanel.setPreferredSize(new java.awt.Dimension(1000, 227));
 
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        experimentsScrollPane.setBackground(new java.awt.Color(255, 255, 255));
+        experimentsScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("experiments"));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        experimentsPanel.setPreferredSize(new java.awt.Dimension(200, 100));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 983, Short.MAX_VALUE)
+        javax.swing.GroupLayout experimentsPanelLayout = new javax.swing.GroupLayout(experimentsPanel);
+        experimentsPanel.setLayout(experimentsPanelLayout);
+        experimentsPanelLayout.setHorizontalGroup(
+            experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 540, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 280, Short.MAX_VALUE)
+        experimentsPanelLayout.setVerticalGroup(
+            experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 165, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(jPanel1);
+        experimentsScrollPane.setViewportView(experimentsPanel);
 
         sequenceCoveragePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("sequence coverage"));
 
@@ -75,35 +81,38 @@ public class InfoPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 988, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                    .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(experimentsScrollPane, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
         sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein().iterator(), true);
-        ProgramVariables.SCALE = (referenceExperimentPanel.getWidth() - 100) / proteinOfInterest.getProteinSequence().length();
+        referenceProtein = proteinOfInterest;
+        this.revalidate();
+        this.repaint();
         referenceExperimentPanel.updateProtein(proteinOfInterest);
         referenceExperimentPanel.revalidate();
         referenceExperimentPanel.repaint();
+        experimentsPanel.setReferenceProtein(referenceProtein);
         updatePeptideGraphics(proteinOfInterest);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private com.compomics.pepshell.view.panels.ExperimentsPanel experimentsPanel;
+    private javax.swing.JScrollPane experimentsScrollPane;
     private com.compomics.pepshell.view.panels.ReferenceExperimentPanel referenceExperimentPanel;
     private com.compomics.pepshell.view.panels.SequenceCoveragePanel sequenceCoveragePanel;
     // End of variables declaration//GEN-END:variables
@@ -116,23 +125,22 @@ public class InfoPanel extends javax.swing.JPanel {
      * @param condense should the experiments be treated as a group or not
      */
     public void setExperimentsToDisplay(List<Experiment> experiments, boolean condense) {
-        jPanel1.setLayout(new GridBagLayout());
+        experimentsPanel.setLayout(new GridBagLayout());
         for (int i = 0; i < experiments.size(); i++) {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.fill = GridBagConstraints.BOTH;
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints.weightx = 1.0;
             gridBagConstraints.weighty = 1.0;
             gridBagConstraints.gridy = i;
-            gridBagConstraints.anchor = GridBagConstraints.CENTER;
+            gridBagConstraints.anchor = GridBagConstraints.FIRST_LINE_START;
             ExperimentPanel panel = new ExperimentPanel(experiments.get(i));
             panel.setExperiment(experiments.get(i));
             panel.setYOffset(panel.getSize().getHeight() * i);
             //change with smarter clustering jpanel
-            jPanel1.add(panel, gridBagConstraints);
+            experimentsPanel.add(panel, gridBagConstraints);
         }
-        jPanel1.revalidate();
-        jPanel1.repaint();
-
+        experimentsPanel.revalidate();
+        experimentsPanel.repaint();
     }
 
     public Experiment getReferenceExperiment() {
@@ -149,8 +157,8 @@ public class InfoPanel extends javax.swing.JPanel {
     }
 
     private void updatePeptideGraphics(Protein aProtein) {
-        for (int i = 0; i < jPanel1.getComponents().length; i++) {
-            ((ExperimentPanel) jPanel1.getComponent(i)).setProtein(aProtein);
+        for (int i = 0; i < experimentsPanel.getComponents().length; i++) {
+            ((ExperimentPanel) experimentsPanel.getComponent(i)).setProtein(aProtein);
         }
     }
 
@@ -164,6 +172,21 @@ public class InfoPanel extends javax.swing.JPanel {
     protected void setSequenceCoverageToOriginal() {
         if (!sequenceCoveragePanel.isOriginalCoverage()) {
             sequenceCoveragePanel.setOriginalCoverage();
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (referenceProtein != null) {
+            double tempscale = (double) (referenceExperimentPanel.getWidth() - 100) / referenceProtein.getProteinSequence().length();
+            if (tempscale < 1) {
+                ProgramVariables.SCALE = 1;
+            } else {
+                ProgramVariables.SCALE = (int) Math.floor(tempscale);
+
+            }
+
         }
     }
 }

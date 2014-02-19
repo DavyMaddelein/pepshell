@@ -13,33 +13,32 @@ import javax.swing.JOptionPane;
  *
  * @author Davy
  */
-public class LinkDbLoginDialog extends LoginDialog {
-
+public class LinkDbLoginDialog extends DbLoginDialog {
+    
     public LinkDbLoginDialog() {
         super(new javax.swing.JFrame(), true, DatabaseProperties.getInstance().getProperty(DataBasePropertyEnum.LINKDBUSERNAME.getKey()), DatabaseProperties.getInstance().getProperty(DataBasePropertyEnum.LINKDBURL.getKey()), DatabaseProperties.getInstance().getProperty(DataBasePropertyEnum.LINKDBNAME.getKey()));
-        this.setTitle("log in to Link Db");
-        this.loginCredentialLabel.setText("please enter your Link Db login credentials");
+        this.setTitle("link database login");
+        loginPanel.getLoginInfoLabel().setText("please enter your link database login credentials");
     }
-
+    
     @Override
-    void executeLogin() {
+    public void executeLogin() {
         try {
-            DbConnectionController.createLinkDbConnection(usernameTextField.getText(), new String(passwordField.getPassword()), urlTextField.getText(), databaseNameTextField.getText());
+            DbConnectionController.createLinkDbConnection(loginPanel.getUsernameTextField().getText(), new String(loginPanel.getPasswordField().getPassword()), loginPanel.getUrlTextField().getText(), loginPanel.getDatabaseNameTextField().getText());
         } catch (SQLException sqle) {
             FaultBarrier.getInstance().handleException(sqle);
             JOptionPane.showMessageDialog(this, "there has been an error while trying to log in.\n" + sqle.getMessage());
         }
-
     }
-
+    
     @Override
-    void storeCredentials(boolean store) {
+    public void storeCredentials(boolean store) {
         if (store) {
             DatabaseProperties.getInstance().setProperties(new ArrayList<Property>() {
                 {
-                    this.add(new Property(DataBasePropertyEnum.LINKDBUSERNAME, usernameTextField.getText()));
-                    this.add(new Property(DataBasePropertyEnum.LINKDBURL, urlTextField.getText()));
-                    this.add(new Property(DataBasePropertyEnum.LINKDBNAME, databaseNameTextField.getText()));
+                    this.add(new Property(DataBasePropertyEnum.LINKDBUSERNAME, loginPanel.getUsernameTextField().getText()));
+                    this.add(new Property(DataBasePropertyEnum.LINKDBURL, loginPanel.getUrlTextField().getText()));
+                    this.add(new Property(DataBasePropertyEnum.LINKDBNAME, loginPanel.getDatabaseNameTextField().getText()));
                 }
             });
         } else {
@@ -52,5 +51,5 @@ public class LinkDbLoginDialog extends LoginDialog {
             });
         }
     }
-
+    
 }

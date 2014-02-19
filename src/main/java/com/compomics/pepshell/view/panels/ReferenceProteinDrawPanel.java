@@ -12,6 +12,7 @@ import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
@@ -70,6 +71,7 @@ public class ReferenceProteinDrawPanel extends JPanel {
      */
     public void updateProtein(Protein protein) {
         this.protein = protein;
+
         this.revalidate();
         this.repaint();
     }
@@ -114,12 +116,19 @@ public class ReferenceProteinDrawPanel extends JPanel {
     }
 
     @Override
+    public Dimension getPreferredSize() {
+        if (protein != null) {
+            return new Dimension((int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE) + 150, this.getHeight());
+        } else {
+            return super.getPreferredSize();
+        }
+    }
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         if (protein != null) {
-
-            LOGGER.error("started painting");
             try {
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
 
@@ -147,7 +156,6 @@ public class ReferenceProteinDrawPanel extends JPanel {
             } catch (UndrawableException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
-            LOGGER.error("finished painting");
         }
     }
 

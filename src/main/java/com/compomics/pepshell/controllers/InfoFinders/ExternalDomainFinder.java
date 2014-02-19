@@ -1,11 +1,15 @@
 package com.compomics.pepshell.controllers.InfoFinders;
 
+import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DasParser;
 import com.compomics.pepshell.controllers.DAO.URLController;
 import com.compomics.pepshell.model.DAS.DasFeature;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +22,18 @@ import javax.xml.stream.XMLStreamException;
  */
 public class ExternalDomainFinder {
 
+    public void execute(List<Protein> proteinList) {
+        for (Protein protein : proteinList) {
+            try {
+                protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
+            } catch (IOException ex) {
+               FaultBarrier.getInstance().handleException(ex);
+            } catch (XMLStreamException ex) {
+               FaultBarrier.getInstance().handleException(ex);
+            }
+        }
+    }
+
     //TODO move this to internetstructuredatasource
     
     public enum DomainWebSites {
@@ -25,7 +41,8 @@ public class ExternalDomainFinder {
 
         PFAM,
         SMART,
-        PROSITE
+        //PROSITE,
+        UNIPROT
     }
 
     public static List<Domain> getDomainsForUniprotAccessionFromSingleSource(String aUniProtAccession, DomainWebSites aDomainWebSite) throws IOException, XMLStreamException {
@@ -33,12 +50,20 @@ public class ExternalDomainFinder {
         List<Domain> foundDomains = new ArrayList<Domain>();
         List<DasFeature> features = new ArrayList<DasFeature>();
         if (aDomainWebSite == DomainWebSites.PFAM) {
-            //TODO check if das is parsed decently for pfam
             features = DasParser.getAllDasFeatures(URLController.readUrl("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession));
         } else if (aDomainWebSite == DomainWebSites.SMART) {
             features = DasParser.getAllDasFeatures(URLController.readUrl("http://smart.embl.de/smart/das/smart/features?segment=" + aUniProtAccession));
-        } else if (aDomainWebSite == DomainWebSites.PROSITE) {
-            features = DasParser.getAllDasFeatures(URLController.readUrl("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
+//        } else if (aDomainWebSite == DomainWebSites.PROSITE) {
+//            features = DasParser.getAllDasFeatures(URLController.readUrl("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
+//        } 
+        } else if (aDomainWebSite == DomainWebSites.UNIPROT) {
+
+            features = Lists.newArrayList(Collections2.filter(DasParser.getAllDasFeatures(URLController.readUrl("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + aUniProtAccession)), new Predicate<DasFeature>() {
+
+                public boolean apply(DasFeature input) {
+                    return input.getFeatureId().contains("DOMAIN");
+                }
+            }));
         }
         for (DasFeature feature : features) {
             foundDomains.add(new Domain(feature.getFeatureLabel(), feature.getStart(), feature.getEnd(), aDomainWebSite.toString()));
