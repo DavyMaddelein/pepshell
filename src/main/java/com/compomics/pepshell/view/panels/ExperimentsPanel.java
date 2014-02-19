@@ -3,6 +3,7 @@ package com.compomics.pepshell.view.panels;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Protein;
+import java.awt.Component;
 import java.awt.Dimension;
 
 /**
@@ -27,7 +28,11 @@ public class ExperimentsPanel extends javax.swing.JPanel {
         @Override
     public Dimension getPreferredSize() {
         if (referenceProtein != null) {
-            return new Dimension((int) Math.ceil(referenceProtein.getProteinSequence().length() * ProgramVariables.SCALE) + 150, this.getHeight());
+            int height = 0;
+            for(Component component : this.getComponents()){
+                height += component.getPreferredSize().height;
+            }
+            return new Dimension((int) Math.ceil(referenceProtein.getProteinSequence().length() * ProgramVariables.SCALE) + 150, height);
         } else {
             return super.getPreferredSize();
         }
