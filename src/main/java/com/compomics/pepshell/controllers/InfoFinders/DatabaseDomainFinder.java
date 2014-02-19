@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class DatabaseDomainFinder implements DataRetrievalStep {
 
+    @Override
     public void execute(List<Protein> proteinList) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

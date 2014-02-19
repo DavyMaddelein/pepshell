@@ -19,10 +19,12 @@ public enum ExportPropertyEnum implements PropertyEnum{
         this.defaultValue = defaultValue;
     }
     
+    @Override
     public String getKey(){
         return key;
     }
     
+    @Override
     public String getDefaultValue() {
         return defaultValue;
     }

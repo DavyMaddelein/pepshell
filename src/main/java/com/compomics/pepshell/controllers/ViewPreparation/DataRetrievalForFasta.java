@@ -123,17 +123,18 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups());
-            for (Protein protein : anExperiment.getProteins()) {
-                stat.setInt(1, anExperiment.getExperimentId());
-                stat.setString(1, protein.getProteinAccession());
-                ResultSet rs = stat.executeQuery();
-                try {
-                    while (rs.next()) {
-
+            stat.setInt(1, anExperiment.getExperimentId());
+            ResultSet rs = stat.executeQuery();
+            try {
+                while (rs.next()) {
+                    Protein tempProtein = new Protein(rs.getString("accession"));
+                    if (anExperiment.getProteins().contains(tempProtein)){
+                        anExperiment.getProteins().get(anExperiment.getProteins().indexOf(tempProtein));
                     }
-                } catch (SQLException sqle) {
                 }
+            } catch (SQLException sqle) {
             }
+
         } catch (SQLException sqle) {
 
         }
@@ -155,6 +156,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
             progressMonitor.setMinimum(0);
             for (final List<Protein> partitionedExperimentProteins : Lists.partition(experiment.getProteins(), Runtime.getRuntime().availableProcessors())) {
                 new Runnable() {
+                    @Override
                     public void run() {
                         StructureDataSource domainDataFetcher = ProgramVariables.STRUCTUREDATASOURCE.getInstance();
                         for (Protein anExperimentProtein : partitionedExperimentProteins) {

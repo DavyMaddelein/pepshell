@@ -20,7 +20,7 @@ public class HomologueFinder {
     }
 
     public static HashMap<String,HashSet<String>> findHomologueForNcbiAccessions(ArrayList<String> NcbiAccessions) throws IOException {
-        HashMap<String,HashSet<String>>  accessionsToHomologues = new HashMap<String, HashSet<String>>();
+        HashMap<String,HashSet<String>>  accessionsToHomologues = new HashMap<>();
         for (String aNcbiAccession : NcbiAccessions) {
             accessionsToHomologues.put(aNcbiAccession,findHomologueForNcbiAccession(aNcbiAccession));
         }
@@ -29,7 +29,7 @@ public class HomologueFinder {
 
     public static HashSet<String> findHomologuesFromHtml(String aHtml){
         int startPos = 0;
-        HashSet<String> accessions = new HashSet<String>();
+        HashSet<String> accessions = new HashSet<>();
         while(aHtml.indexOf("prot-acc", startPos) > 0){
             String acc = aHtml.substring(aHtml.indexOf("prot-acc &quot;",startPos) + 15 , aHtml.indexOf("&quot;",aHtml.indexOf("prot-acc &quot;",startPos) + 15));
             accessions.add(acc);

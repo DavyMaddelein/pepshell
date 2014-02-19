@@ -42,16 +42,16 @@ public class DataExport {
     }
 
     private void writeFileToDisk(Workbook workBook, File saveLocation) throws FileNotFoundException, IOException {
-        FileOutputStream fos = new FileOutputStream(saveLocation);
-        workBook.write(fos);
-        fos.flush();
-        fos.close();
+        try (FileOutputStream fos = new FileOutputStream(saveLocation)) {
+            workBook.write(fos);
+            fos.flush();
+        }
     }
 
     private void writeFileToDisk(String output, File saveLocation) throws IOException {
-        FileWriter fileWriter = new FileWriter(saveLocation);
-        fileWriter.write(output);
-        fileWriter.flush();
-        fileWriter.close();
+        try (FileWriter fileWriter = new FileWriter(saveLocation)) {
+            fileWriter.write(output);
+            fileWriter.flush();
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA. User: Davy Date: 3/4/13 Time: 11:16 AM To change
@@ -15,7 +16,7 @@ public class AccessionConverter {
 
     public static List<String> spToUniProt(String aSpAccession) throws IOException {
         String xmlPage = URLController.readUrl("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=SWISSPROT");
-        List<String> accessions = new ArrayList<String>();
+        List<String> accessions = new ArrayList<>();
         int startIndex = 0;
         while (xmlPage.indexOf("<ns2:databaseDescription>UniProtKB/Swiss-Prot</ns2:databaseDescription>", startIndex) != -1) {
             startIndex = xmlPage.indexOf("<ns2:databaseDescription>UniProtKB/Swiss-Prot</ns2:databaseDescription>", startIndex) + 1;
@@ -29,7 +30,7 @@ public class AccessionConverter {
 
     public static List<String> refSeqToSp(String aNcbiAccession) throws IOException {
         int startIndex = 0;
-        List<String> accessions = new ArrayList<String>();
+        List<String> accessions = new ArrayList<>();
         String xmlPage = URLController.readUrl("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aNcbiAccession + "&database=swissprot");
         while (xmlPage.indexOf("<ns2:databaseDescription>SWISSPROT</ns2:databaseDescription>", startIndex) != -1) {
             startIndex = xmlPage.indexOf("<ns2:databaseDescription>SWISSPROT</ns2:databaseDescription>", startIndex) + 1;
@@ -43,7 +44,7 @@ public class AccessionConverter {
 
     public static List<String> spToRefSeq(String aSpAccession) throws IOException {
         int startIndex = 0;
-        List<String> ncbiAccessions = new ArrayList<String>();
+        List<String> ncbiAccessions = new ArrayList<>();
         String xmlPage = URLController.readUrl("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=REFSEQ");
         while (xmlPage.indexOf("<ns2:databaseDescription>RefSeq release + updates</ns2:databaseDescription>", startIndex) != -1) {
             startIndex = xmlPage.indexOf("<ns2:databaseDescription>RefSeq release + updates</ns2:databaseDescription>", startIndex) + 1;
@@ -57,14 +58,14 @@ public class AccessionConverter {
 
     public static List<String> uniProtToSp(String aUniprotAccession) {
         int startIndex = 0;
-        List<String> accessions = new ArrayList<String>();
+        List<String> accessions = new ArrayList<>();
 
         return accessions;
     }
 
     public static List<String> uniProtToRefSeq(String aUniprotAccession) {
         int startIndex = 0;
-        List<String> accessions = new ArrayList<String>();
+        List<String> accessions = new ArrayList<>();
 
         return accessions;
     }
@@ -85,16 +86,16 @@ public class AccessionConverter {
         String tempaccession = accession;
         if (isGIAccession(accession)) {
             tempaccession = GIToUniprot(accession);
-        } else if (isSwissprotAccession(accession)) {
+        } //else if (isSwissprotAccession(accession)) {
             //TODO check if it is possible to get the isoform data from swissprot to uniprot
             // tempaccession = spToUniProt(accession).get(0);
             //}
-        }
+        //}
         return tempaccession;
     }
 
     private static boolean isGIAccession(String accession) {
-        return accession.toLowerCase().contains("gi");
+        return accession.toLowerCase(Locale.UK).contains("gi");
         //return accession.matches("^(GI|gi)\\|[0-9]");
     }
 

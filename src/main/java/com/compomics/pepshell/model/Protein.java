@@ -16,9 +16,9 @@ public class Protein {
     private String accession;
     private int projectId;
     private String sequence = "";
-    private List<Domain> domainsFoundInProtein = new ArrayList<Domain>();
-    private List<PeptideGroup> peptideGroupsForProtein = new ArrayList<PeptideGroup>();
-    private Set<PdbInfo> allPDBFileInfoForProtein = new HashSet<PdbInfo>();
+    private List<Domain> domainsFoundInProtein = new ArrayList<>();
+    private List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
+    private Set<PdbInfo> allPDBFileInfoForProtein = new HashSet<>();
     private String proteinName;
     private String originalAccession;
     private String visibleAccession;

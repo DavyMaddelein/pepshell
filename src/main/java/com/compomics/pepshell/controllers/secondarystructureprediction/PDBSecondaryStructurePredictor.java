@@ -13,7 +13,7 @@ public class PDBSecondaryStructurePredictor extends SecondaryStructurePrediction
 
     @Override
     public List<String> getPrediction(String pdbAccession) throws IOException {
-        List<String> secondaryStructure = new ArrayList<String>();
+        List<String> secondaryStructure = new ArrayList<>();
         String pdbFile = PDBDAO.getPdbFileInMem(pdbAccession);
         String[] pdbLines = pdbFile.split("\n");
         for (String aPdbLine : pdbLines) {

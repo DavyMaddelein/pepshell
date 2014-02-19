@@ -1,5 +1,6 @@
 package com.compomics.pepshell.controllers.InfoFinders;
 
+import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DasParser;
 import com.compomics.pepshell.controllers.DAO.URLController;
 import com.compomics.pepshell.model.DAS.DasFeature;
@@ -27,10 +28,8 @@ public class ExternalDomainFinder {
         for (Protein protein : proteinList) {
             try {
                 protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
-            } catch (IOException ex) {
-                Logger.getLogger(ExternalDomainFinder.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (XMLStreamException ex) {
-                Logger.getLogger(ExternalDomainFinder.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (    IOException | XMLStreamException ex) {
+                FaultBarrier.getInstance().handleException(ex);
             }
         }
     }
@@ -46,8 +45,8 @@ public class ExternalDomainFinder {
 
     public static List<Domain> getDomainsForUniprotAccessionFromSingleSource(String aUniProtAccession, DomainWebSites aDomainWebSite) throws IOException, XMLStreamException {
 
-        List<Domain> foundDomains = new ArrayList<Domain>();
-        List<DasFeature> features = new ArrayList<DasFeature>();
+        List<Domain> foundDomains = new ArrayList<>();
+        List<DasFeature> features = new ArrayList<>();
         if (aDomainWebSite == DomainWebSites.PFAM) {
             features = DasParser.getAllDasFeatures(URLController.readUrl("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession));
         } else if (aDomainWebSite == DomainWebSites.SMART) {
@@ -59,6 +58,7 @@ public class ExternalDomainFinder {
 
             features = Lists.newArrayList(Collections2.filter(DasParser.getAllDasFeatures(URLController.readUrl("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + aUniProtAccession)), new Predicate<DasFeature>() {
 
+                @Override
                 public boolean apply(DasFeature input) {
                     return input.getFeatureId().contains("DOMAIN");
                 }
@@ -72,7 +72,7 @@ public class ExternalDomainFinder {
     }
 
     public static List<Domain> getDomainsFromAllSitesForUniprotAccession(String aUniProtAccession) throws IOException, XMLStreamException {
-        List<Domain> foundDomains = new ArrayList<Domain>();
+        List<Domain> foundDomains = new ArrayList<>();
         for (DomainWebSites aDomainWebSite : DomainWebSites.values()) {
             foundDomains.addAll(getDomainsForUniprotAccessionFromSingleSource(aUniProtAccession, aDomainWebSite));
         }

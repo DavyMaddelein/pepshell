@@ -23,8 +23,8 @@ public class PeptideGroupController {
 
     public static List<PeptideGroup> createPeptideGroups(ResultSet rs) throws SQLException {
         //TODO make this check for quantpeptides first, also use comparators and equals for this
-        List<PeptideGroup> peptideGroups = new ArrayList<PeptideGroup>();
-        Map<String, PeptideGroup> peptideGroupHolder = new HashMap<String, PeptideGroup>();
+        List<PeptideGroup> peptideGroups = new ArrayList<>();
+        Map<String, PeptideGroup> peptideGroupHolder = new HashMap<>();
         String peptideSequence;
 
         while (rs.next()) {
@@ -32,6 +32,7 @@ public class PeptideGroupController {
             if (peptideGroupHolder.containsKey(peptideSequence)) {
                 peptideGroupHolder.get(peptideSequence).getShortestPeptide().incrementTimesFound();
             } else {
+                //do not know if this is wanted behaviour
                 if (!isPartiallyPresent(rs, peptideGroupHolder)) {
                     PeptideGroup addedGroup = new PeptideGroup();
                     Peptide peptideToAdd = new Peptide(peptideSequence);
@@ -52,8 +53,8 @@ public class PeptideGroupController {
 
     public static List<QuantedPeptideGroup> createQuantedPeptideGroups(ResultSet rs) throws SQLException {
         //TODO make this check for quantpeptides first, if nullpointer or sqlexception do normal peptides
-        List<QuantedPeptideGroup> peptideGroups = new ArrayList<QuantedPeptideGroup>();
-        Map<String, QuantedPeptideGroup> peptideGroupHolder = new HashMap<String, QuantedPeptideGroup>();
+        List<QuantedPeptideGroup> peptideGroups = new ArrayList<>();
+        Map<String, QuantedPeptideGroup> peptideGroupHolder = new HashMap<>();
         String peptideSequence;
 
         while (rs.next()) {
@@ -78,6 +79,7 @@ public class PeptideGroupController {
      * @param peptideHolder
      */
     protected static void checkForShortestPeptideSequence(String peptideSequence, Map<String, PeptideGroup> peptideHolder) {
+        //revise this now that peptides have an equals method
         Iterator<String> peptideSequences = peptideHolder.keySet().iterator();
         Peptide peptideToAdd = new Peptide(peptideSequence);
         String sequenceInHash;

@@ -33,6 +33,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -41,7 +42,7 @@ import java.util.logging.Logger;
 public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private static FaultBarrier faultBarrier;
-    private List<Protein> proteinsToDisplay = new ArrayList<Protein>();
+    private List<Protein> proteinsToDisplay = new ArrayList<>();
     private RegexFilter filter = new RegexFilter();
 
     public MainWindow() {
@@ -81,6 +82,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 //        proteinDetailPanel1.setExperimentsToDisplay(experiments);
 //
 //    }
+    @Override
     public void update(Observable o, Object o1) {
         if (o1 != null && o1 instanceof Exception) {
             //tabsPane.setFont(new Font(null, Font.BOLD, 12));
@@ -403,8 +405,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             if (ProgramVariables.USEINTERNETSOURCES && proteinOfInterest.getProteinSequence().isEmpty()) {
                 try {
                     proteinOfInterest.setSequence(WebDAO.fetchSequence(proteinOfInterest.getProteinAccession()));
-                } catch (Exception ex) {
-                    //faultBarrier.handleException(ex);
+                } catch (IOException | ConversionException ex) {
+                    FaultBarrier.getInstance().handleException(ex);
                 }
             }
             proteinDetailPanel.updateProteinGraphics(proteinOfInterest);
@@ -421,11 +423,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             try {
                 JOptionPane.showMessageDialog(this, "opening uniprot accession");
                 Desktop.getDesktop().browse(new URI(ViewProperties.getInstance().getProperty("protein.externaldatalocation") + AccessionConverter.toUniprot(((Protein) proteinList.getSelectedValue()).getVisibleAccession())));
-            } catch (URISyntaxException ex) {
-                faultBarrier.handleException(ex);
-            } catch (IOException ex) {
-                faultBarrier.handleException(ex);
-            } catch (ConversionException ex) {
+            } catch (URISyntaxException | IOException | ConversionException ex) {
                 faultBarrier.handleException(ex);
             }
         }
@@ -442,10 +440,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         for (final Protein aProtein : proteinsToDisplay) {
             try {
                 aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
-            } catch (IOException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ConversionException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException | ConversionException ex) {
+                FaultBarrier.getInstance().handleException(ex);
             }
             proteinList.revalidate();
             proteinList.repaint();
@@ -463,7 +459,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void filterTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTextFieldKeyTyped
         // TODO add your handling code here:
-        String searchTerm = ((JTextField) evt.getComponent()).getText();
+        String searchTerm = ((JTextComponent) evt.getComponent()).getText();
         if (!searchTerm.isEmpty()) {
             if (!searchTerm.endsWith("$")) {
                 searchTerm += ".*";
@@ -471,7 +467,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             if (!searchTerm.startsWith("^")) {
                 searchTerm = ".*" + searchTerm;
             }
-            List<String> searchRegex = new ArrayList<String>(1);
+            List<String> searchRegex = new ArrayList<>(1);
             searchRegex.add(searchTerm);
             proteinList.setListData(filter.filterProtein(proteinsToDisplay, searchRegex).toArray(new Protein[0]));
         } else {

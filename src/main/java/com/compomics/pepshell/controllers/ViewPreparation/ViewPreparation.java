@@ -20,11 +20,11 @@ import javax.swing.ProgressMonitor;
  */
 public abstract class ViewPreparation<T extends Experiment, V extends Protein> extends Observable {
 
-    protected FilterParent<Protein> filter = new NaiveFilter<Protein>();
-    protected List<Protein> filterList = new ArrayList<Protein>();
+    protected FilterParent<Protein> filter = new NaiveFilter<>();
+    protected List<Protein> filterList = new ArrayList<>();
     boolean hasToFilter = false;
     boolean hasToMask = false;
-    Set<V> maskingSet = new HashSet<V>();
+    Set<V> maskingSet = new HashSet<>();
     boolean hasToFetchDomainData = false;
     boolean hasToAddQuantData = false;
     boolean hasToTranslateAccessions = false;
@@ -74,7 +74,8 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
      * public FilterParent<V> getFilter() { return filter; }
      */
     public void setProteinsToFilter(List<Protein> aFilterList) {
-        this.filterList = aFilterList;
+        this.filterList.clear();
+        this.filterList.addAll(aFilterList);
     }
 
     public void hasToFilter(boolean decision) {
@@ -86,7 +87,8 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
     }
 
     public void setProteinMasks(Set<V> masks) {
-        this.maskingSet = masks;
+        
+        this.maskingSet.addAll(masks);
     }
 
     public void hasToFetchDomainData(boolean decision) {

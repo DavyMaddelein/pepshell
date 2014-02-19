@@ -19,7 +19,7 @@ public class AggregateFastaReadingException extends IOException {
         super(message);
     }
     
-    private List<FastaCouldNotBeReadException> exceptionList = new ArrayList<FastaCouldNotBeReadException>();
+    private List<FastaCouldNotBeReadException> exceptionList = new ArrayList<>();
     
     public void addFastaReadingException(FastaCouldNotBeReadException ex) {
         exceptionList.add(ex);

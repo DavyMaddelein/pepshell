@@ -20,10 +20,12 @@ public enum DataRetrievalPropertyEnum implements PropertyEnum {
         this.defaultValue = value;
     }
 
+    @Override
     public String getKey() {
         return key;
     }
 
+    @Override
     public String getDefaultValue() {
         return defaultValue;
     }

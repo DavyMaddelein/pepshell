@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 
@@ -22,7 +23,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class PDBDAO {
 
-    private static PDBDAO instance;
+    private static volatile PDBDAO instance;
 
     public static PDBDAO getInstance() {
         if (instance == null) {
@@ -46,9 +47,9 @@ public class PDBDAO {
     public static File getPdbFile(String aPdbAccession) throws IOException {
         File pdbFile = File.createTempFile(aPdbAccession, ".pdb");
         pdbFile.deleteOnExit();
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdbFile), "UTF-8"));
-        bw.write(URLController.readUrl("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase() + ".ent"));
-        bw.close();
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdbFile), "UTF-8"))) {
+            bw.write(URLController.readUrl("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase(Locale.UK) + ".ent"));
+        }
         return pdbFile;
     }
 
@@ -62,7 +63,7 @@ public class PDBDAO {
     }
 
     private static Set<PdbInfo> startUniprotPDBParsing(BufferedReader br) throws IOException {
-        Set<PdbInfo> pdbFilesToReturn = new HashSet<PdbInfo>();
+        Set<PdbInfo> pdbFilesToReturn = new HashSet<>();
         String pdbLine = "#";
         while ((pdbLine = br.readLine()) != null) {
             if (!pdbLine.startsWith("#")) {

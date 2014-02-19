@@ -45,6 +45,7 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
 
         dataCollectionFrameButton.setText("continue...");
         dataCollectionFrameButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dataCollectionFrameButtonActionPerformed(evt);
             }

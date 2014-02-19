@@ -33,6 +33,7 @@ public class EntryPoint
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 CombinedLoginDialog loginDialog = new CombinedLoginDialog();
                 loginDialog.pack();

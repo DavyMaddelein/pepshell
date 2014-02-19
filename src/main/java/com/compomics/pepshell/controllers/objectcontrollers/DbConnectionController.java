@@ -10,8 +10,9 @@ import java.sql.SQLException;
  */
 public class DbConnectionController {
 
-    private static Connection connection;
-    private static Connection linkdbConnection;
+//change to connectionpool
+    private static volatile Connection connection;
+    private static volatile Connection linkdbConnection;
 
     public static Connection createConnection(String username, String password, String url, String database) throws SQLException {
         if (connection == null) {

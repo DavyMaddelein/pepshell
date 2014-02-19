@@ -37,7 +37,7 @@ public class RegexFilter extends FilterParent<String> {
     }
 
     public List<Protein> filterProtein(List<Protein> listToFilter, List<String> regexesToFilterAgainst) {
-        List<Protein> matchedItems = new ArrayList<Protein>();
+        List<Protein> matchedItems = new ArrayList<>();
         /**
          * for (String aRegex : regexesToFilterAgainst) { if (inclusive) {
          * matchedItems.addAll(Collections2.filter(listToFilter,

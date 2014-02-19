@@ -10,7 +10,9 @@ import java.util.Comparator;
  * this template use File | Settings | File Templates.
  */
 public class CompareDasFeatures implements Comparator<DasFeature>, Serializable {
+    private static final long serialVersionUID = 1L;
 
+    @Override
     public int compare(DasFeature dasFeature1, DasFeature dasFeature2) {
         int returnValue;
         if (dasFeature1.getEnd() < dasFeature2.getEnd()) {

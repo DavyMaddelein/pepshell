@@ -20,10 +20,12 @@ public enum DataBasePropertyEnum implements PropertyEnum {
         this.defaultValue = defaultValue;
     }
 
+    @Override
     public String getKey() {
         return keyName;
     }
 
+    @Override
     public String getDefaultValue() {
         return defaultValue;
     }

@@ -12,7 +12,7 @@ public class Experiment {
 
     private final int experimentId;
     private final String experimentName;
-    private List<Protein> proteinList = new ArrayList<Protein>();
+    private List<Protein> proteinList = new ArrayList<>();
 
     public Experiment(int experimentId, String experimentName) {
         this.experimentId = experimentId;
@@ -27,8 +27,8 @@ public class Experiment {
         proteinList.clear();
         proteinList.addAll(fetchedProteins);
     }
-    
-    public void addProteins(List<Protein> proteins){
+
+    public void addProteins(List<Protein> proteins) {
         proteinList.addAll(proteins);
     }
 
@@ -70,10 +70,10 @@ public class Experiment {
             return false;
         }
         final Experiment other = (Experiment) obj;
-        if (this.experimentId != other.experimentId) {
+        if (this.experimentId != other.getExperimentId()) {
             return false;
         }
-        if ((this.experimentName == null) ? (other.experimentName != null) : !this.experimentName.equals(other.experimentName)) {
+        if ((this.experimentName == null) ? (other.getExperimentName() != null) : !this.experimentName.equals(other.getExperimentName())) {
             return false;
         }
         return true;

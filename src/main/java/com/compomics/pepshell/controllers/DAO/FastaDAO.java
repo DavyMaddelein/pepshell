@@ -68,7 +68,7 @@ public class FastaDAO {
      */
     //TODO perhaps make multithreaded?
     public static void setProjectProteinsToMultipleFastaFileProteins(List<File> fastaFiles, Experiment projectToAddProteinsTo) throws IOException, FileNotFoundException, AggregateFastaReadingException {
-        Set<Protein> uniqueProteinsToAdd = new HashSet<Protein>();
+        Set<Protein> uniqueProteinsToAdd = new HashSet<>();
         AggregateFastaReadingException arex = new AggregateFastaReadingException("one or more fasta files could not be read");
         for (File aFastaFile : fastaFiles) {
             try {
@@ -100,7 +100,7 @@ public class FastaDAO {
 
     private static List<Protein> getListOfProteinsFromFastaFile(File fastaFile, boolean digest) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
         LineNumberReader lineReader = null;
-        List<Protein> parsedProteins = new ArrayList<Protein>();
+        List<Protein> parsedProteins = new ArrayList<>();
         try {
             lineReader = new LineNumberReader(new FileReader(fastaFile));
             String header = "";

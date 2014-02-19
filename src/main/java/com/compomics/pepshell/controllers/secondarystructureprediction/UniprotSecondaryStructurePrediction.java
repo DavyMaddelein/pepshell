@@ -8,14 +8,11 @@ import static com.compomics.pepshell.controllers.secondarystructureprediction.Se
 import com.compomics.pepshell.controllers.comparators.CompareDasFeatures;
 import com.compomics.pepshell.model.DAS.DasFeature;
 import com.compomics.pepshell.model.exceptions.ConversionException;
-import java.awt.Color;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -27,13 +24,11 @@ public class UniprotSecondaryStructurePrediction extends SecondaryStructurePredi
     @Override
     public List<String> getPrediction(String anUniprotAccession) throws IOException {
 
-        List<String> predictionResult = new ArrayList<String>();
-        List<DasFeature> features = new ArrayList<DasFeature>();
+        List<String> predictionResult = new ArrayList<>();
+        List<DasFeature> features = new ArrayList<>();
         try {
             features = DasParser.getAllDasFeatures(URLController.readUrl("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + AccessionConverter.toUniprot(anUniprotAccession)));
-        } catch (XMLStreamException ex) {
-            FaultBarrier.getInstance().handleException(ex);
-        } catch (ConversionException ex) {
+        } catch (XMLStreamException | ConversionException ex) {
             FaultBarrier.getInstance().handleException(ex);
         }
         Collections.sort(features, new CompareDasFeatures());
