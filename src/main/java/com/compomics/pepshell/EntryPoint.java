@@ -7,13 +7,11 @@ import org.apache.log4j.Logger;
  * Hello world!
  *
  */
-public class EntryPoint 
-{
-    
+public class EntryPoint {
+
     private static final Logger LOGGER = Logger.getLogger(EntryPoint.class);
-    
-    public static void main( String[] args )
-    {
+
+    public static void main(String[] args) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

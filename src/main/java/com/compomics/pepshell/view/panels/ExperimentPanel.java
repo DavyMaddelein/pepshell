@@ -141,7 +141,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JLabel projectNameLabel;
     // End of variables declaration//GEN-END:variables
-
+        
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
