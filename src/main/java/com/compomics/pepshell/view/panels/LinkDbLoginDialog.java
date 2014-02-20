@@ -25,6 +25,7 @@ public class LinkDbLoginDialog extends DbLoginDialog {
     public void executeLogin() {
         try {
             DbConnectionController.createLinkDbConnection(loginPanel.getUsernameTextField().getText(), new String(loginPanel.getPasswordField().getPassword()), loginPanel.getUrlTextField().getText(), loginPanel.getDatabaseNameTextField().getText());
+            JOptionPane.showMessageDialog(this, "login was successful to link db");
         } catch (SQLException sqle) {
             FaultBarrier.getInstance().handleException(sqle);
             JOptionPane.showMessageDialog(this, "there has been an error while trying to log in.\n" + sqle.getMessage());
