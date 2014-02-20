@@ -190,6 +190,7 @@ public class DbLoginDialog extends javax.swing.JDialog {
         try {
             DbConnectionController.createConnection(loginPanel.getUsernameTextField().getText(), new String(loginPanel.getPasswordField().getPassword()), loginPanel.getUrlTextField().getText(), loginPanel.getDatabaseNameTextField().getText());
             DataModeController.checkDbScheme();
+            JOptionPane.showMessageDialog(this,"login was successful to" + DataModeController.getDb().name());
         } catch (SQLException sqle) {
             FaultBarrier.getInstance().handleException(sqle);
             JOptionPane.showMessageDialog(this, "there has been an error while trying to log in.\n" + sqle.getMessage());
