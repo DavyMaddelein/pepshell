@@ -20,7 +20,6 @@ public class AddDomains implements DataRetrievalStep {
 
     private Observable notifier = new Observable();
 
-    
     private AddDomains(List<Protein> aProteinList) {
         this.proteinList = aProteinList;
     }
@@ -43,7 +42,13 @@ public class AddDomains implements DataRetrievalStep {
         return Collections.unmodifiableList(proteinList);
     }
 
+    @Override
     public Observable getNotifier() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return notifier;
+    }
+    
+    @Override
+    public String toString() {
+        return "Add Domains";
     }
 }

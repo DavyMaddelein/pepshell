@@ -43,6 +43,7 @@ public class ProteinFiltering implements DataRetrievalStep {
         return toReturn;
     }
 
+    @Override
     public List<Protein> call() throws Exception {
 
         List<Protein> returnList = proteinList;
@@ -53,7 +54,13 @@ public class ProteinFiltering implements DataRetrievalStep {
 
     }
 
+    @Override
     public Observable getNotifier() {
         return this.notifier;
+    }
+
+    @Override
+    public String toString() {
+        return "Protein Filtering";
     }
 }

@@ -63,4 +63,9 @@ public class AccessionConverting implements DataRetrievalStep {
     public void setConversionTo(ConversionTo convertTo) {
         this.coTo = convertTo;
     }
+    
+    @Override
+    public String toString(){
+        return "Convert Accessions";
+    }
 }

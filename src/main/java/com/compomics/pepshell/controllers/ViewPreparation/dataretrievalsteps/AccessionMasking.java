@@ -53,7 +53,13 @@ public class AccessionMasking implements DataRetrievalStep {
         this.maskingSet.addAll(aMaskingSet);
     }
 
+    @Override
     public Observable getNotifier() {
         return this.notifier;
+    }
+    
+    @Override
+    public String toString(){
+        return "Accession Masking";
     }
 }

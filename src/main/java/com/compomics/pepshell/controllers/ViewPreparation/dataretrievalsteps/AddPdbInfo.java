@@ -37,7 +37,13 @@ public class AddPdbInfo implements DataRetrievalStep {
         return Collections.unmodifiableList(proteinList);
     }
 
+    @Override
     public Observable getNotifier() {
         return this.notifier;
+    }
+
+    @Override
+    public String toString() {
+        return "Add PDB info";
     }
 }

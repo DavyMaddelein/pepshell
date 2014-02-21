@@ -6,7 +6,6 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DataModes.FastaDataMode;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.InternetStructureDataSource;
-import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
@@ -15,9 +14,9 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Property;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
+import com.compomics.pepshell.view.panels.DataRetrievalStepsDialog;
 import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
 import com.compomics.pepshell.view.panels.DbLoginDialog;
-import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
 import java.sql.SQLException;
@@ -35,7 +34,7 @@ import javax.swing.tree.TreeNode;
  *
  * @author Davy
  */
-public class ExperimentSelectionFrame extends javax.swing.JFrame implements Observer {
+public class ExperimentSelectionFrame extends javax.swing.JFrame {
 
     private List<Experiment> selectedProjectsList = new ArrayList<>();
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
@@ -52,7 +51,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     }
 
     public ExperimentSelectionFrame(Point aPoint) {
-        initComponents();            
+        initComponents();
 
         projectListScrollPane.getViewport().setOpaque(false);
         referenceProjectTextBoxScrollPane.getViewport().setOpaque(false);
@@ -466,7 +465,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
         fetchPdbDataCheckBoxMenuItem.setText("fetch pdb data for proteins");
         jMenu2.add(fetchPdbDataCheckBoxMenuItem);
 
-        editRetrievalStepsMenuItem.setText("edit retrievalsteps");
+        editRetrievalStepsMenuItem.setText("edit retrieval steps");
         editRetrievalStepsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editRetrievalStepsMenuItemActionPerformed(evt);
@@ -549,7 +548,9 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
             }
         }
 
-        DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(dataRetrievalSteps);
+        if (!dataRetrievalSteps.isEmpty()) {
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(dataRetrievalSteps);
+        }
 
         if (goAhead) {
             MainWindow window = new MainWindow();
@@ -676,8 +677,9 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
 
     private void editRetrievalStepsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editRetrievalStepsMenuItemActionPerformed
         // TODO add your handling code here:
-        DataRetrievalStepsDialog dialog = new DataRetrievalStepsDialog(this, true, dataRetrievalSteps);
-
+        DataRetrievalStepsDialog dialog = new DataRetrievalStepsDialog(this, true);
+        dialog.setVisible(true);
+        dataRetrievalSteps = dialog.getRetrievalSteps();
     }//GEN-LAST:event_editRetrievalStepsMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -687,6 +689,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     private javax.swing.JButton analyseButton;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JMenuItem dbConnectMenuItem;
+    private javax.swing.JMenuItem editRetrievalStepsMenuItem;
     private javax.swing.JPanel experimentSelectionPanel;
     private javax.swing.JTextField fastaLocationTextField;
     private javax.swing.JCheckBoxMenuItem fetchDomainDataCheckBoxMenuItem;
@@ -719,15 +722,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame implements Obse
     private javax.swing.JCheckBoxMenuItem useInternetCheckBox;
     private javax.swing.JCheckBoxMenuItem useLinkDbCheckBox;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void update(Observable o, Object o1) {
-        if (o1 != null) {
-            if (o1 instanceof Exception) {
-                faultBarrier.handleException((Exception) o1);
-            }
-        }
-    }
 
     private void fillProjectList() throws SQLException {
         projectList.setListData(DbDAO.getProjects().toArray());

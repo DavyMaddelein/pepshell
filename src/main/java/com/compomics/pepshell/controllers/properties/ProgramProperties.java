@@ -1,7 +1,7 @@
 package com.compomics.pepshell.controllers.properties;
 
 import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
+import com.compomics.pepshell.model.enums.ProgramPropertyEnum;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
@@ -26,10 +26,10 @@ public class ProgramProperties extends PropertiesController {
     public static ProgramProperties getInstance() {
         if (programProperties == null) {
             try {
-                programProperties = new ProgramProperties(propertyFile, DataBasePropertyEnum.allEnumValues);
+                programProperties = new ProgramProperties(propertyFile, ProgramPropertyEnum.allEnumValues);
             } catch (IOException ex) {
                 FaultBarrier.getInstance().handleException(ex);
-                programProperties = new ProgramProperties(DataBasePropertyEnum.allEnumValues);
+                programProperties = new ProgramProperties(ProgramPropertyEnum.allEnumValues);
             }
         }
         return programProperties;

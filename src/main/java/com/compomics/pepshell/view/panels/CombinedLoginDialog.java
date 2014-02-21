@@ -45,8 +45,8 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
         //select dbSelectionRadioButton
         dbSelectionRadioButton.setSelected(true);
         //@TODO enable this again as soon as it works
-        fastaSelectionRadioButton.setEnabled(false);  
-        
+        fastaSelectionRadioButton.setEnabled(false);
+
         //set card names
         modeSelectionPanel.setName(MODE_SELECTION_CARD);
         dbLoginPanel.setName(DB_LOGIN_CARD);
@@ -61,7 +61,6 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
                     case MODE_SELECTION_CARD:
                         if (dbSelectionRadioButton.isSelected()) {
                             initDbLogin();
-
                             //go to the next card
                             getCardLayout().next(topPanel);
                         } else if (fastaSelectionRadioButton.isSelected()) {
@@ -70,9 +69,11 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
                         break;
                     case DB_LOGIN_CARD:
                         onDbLogin();
+                        dbLoginPanel.getUsernameTextField().requestFocus();
                         break;
                     case LINK_DB_LOGIN_CARD:
                         onLinkDbLogin();
+                        linkDbLoginPanel.getUsernameTextField().requestFocus();
                         break;
                     default:
                         break;
@@ -95,7 +96,7 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
      */
     private void initDbLogin() {
         linkDbLoginPanel.getLoginInfoLabel().setText("please enter your link database login credentials");
-        
+
         dbLoginPanel.getUsernameTextField().setText(DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()));
         dbLoginPanel.getUrlTextField().setText(DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()));
         dbLoginPanel.getDatabaseNameTextField().setText(DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
@@ -195,7 +196,7 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
             try {
                 DbConnectionController.createConnection(dbLoginPanel.getUsernameTextField().getText(), new String(dbLoginPanel.getPasswordField().getPassword()), dbLoginPanel.getUrlTextField().getText(), dbLoginPanel.getDatabaseNameTextField().getText());
                 DataModeController.checkDbScheme();
-
+                JOptionPane.showMessageDialog(this, "login was successful to data db");
                 storeDbCredentials(dbLoginPanel.getStoreCredentialsCheckBox().isSelected());
 
                 //go to the next card
@@ -232,11 +233,12 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
         if (validateLinkDbLogin()) {
             try {
                 DbConnectionController.createLinkDbConnection(linkDbLoginPanel.getUsernameTextField().getText(), new String(linkDbLoginPanel.getPasswordField().getPassword()), linkDbLoginPanel.getUrlTextField().getText(), linkDbLoginPanel.getDatabaseNameTextField().getText());
-                storeLinkDbCredentials(linkDbLoginPanel.getStoreCredentialsCheckBox().isSelected());                
+                JOptionPane.showMessageDialog(this, "login was successful to link db");
+                storeLinkDbCredentials(linkDbLoginPanel.getStoreCredentialsCheckBox().isSelected());
 
                 this.dispose();
-                
-                new ExperimentSelectionFrame();                                
+
+                new ExperimentSelectionFrame();
             } catch (SQLException sqle) {
                 FaultBarrier.getInstance().handleException(sqle);
                 JOptionPane.showMessageDialog(this, "there has been an error while trying to log in.\n" + sqle.getMessage());
@@ -408,6 +410,11 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
         proceedButton.setMaximumSize(new java.awt.Dimension(80, 25));
         proceedButton.setMinimumSize(new java.awt.Dimension(80, 25));
         proceedButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        proceedButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                proceedButtonKeyTyped(evt);
+            }
+        });
 
         cancelButton.setText("cancel");
         cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -467,6 +474,13 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void proceedButtonKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_proceedButtonKeyTyped
+        // TODO add your handling code here:
+        if (evt.getKeyChar() == KeyEvent.VK_ENTER) {
+            proceedButton.doClick();
+        }
+    }//GEN-LAST:event_proceedButtonKeyTyped
 
     /**
      * Get the name of the component currently visible in the card layout

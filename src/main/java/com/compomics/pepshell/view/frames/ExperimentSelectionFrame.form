@@ -73,6 +73,14 @@
                 <Property name="text" type="java.lang.String" value="fetch pdb data for proteins"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="editRetrievalStepsMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="edit retrieval steps"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editRetrievalStepsMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>
