@@ -3,20 +3,14 @@ package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.model.Protein;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
 
 /**
  *
  * @author Davy
  */
-public class AddPdbInfo implements DataRetrievalStep {
-
-    private Observable notifier = new Observable();
-
-    private List<Protein> proteinList = new ArrayList<Protein>();
+public class AddPdbInfo extends DataRetrievalStep {
 
     private AddPdbInfo(List<Protein> aProteinList) {
         this.proteinList = aProteinList;
@@ -25,21 +19,20 @@ public class AddPdbInfo implements DataRetrievalStep {
     public AddPdbInfo() {
     }
 
+    @Override
     public DataRetrievalStep getInstance(List<Protein> aProteinList) {
         return new AddPdbInfo(aProteinList);
     }
 
+    @Override
     public List<Protein> call() throws Exception {
 
         for (Protein aProtein : proteinList) {
             aProtein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(aProtein, null));
+            this.setChanged();
+            this.notifyObservers("added PDB info to" + aProtein.getProteinAccession());
         }
         return Collections.unmodifiableList(proteinList);
-    }
-
-    @Override
-    public Observable getNotifier() {
-        return this.notifier;
     }
 
     @Override

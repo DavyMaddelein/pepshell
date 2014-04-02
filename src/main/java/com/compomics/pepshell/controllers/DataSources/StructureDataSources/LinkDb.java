@@ -73,7 +73,7 @@ public class LinkDb implements StructureDataSource {
 
     //todo, add domain data for protein to link db
     public List<Domain> getDomainData(Protein aProtein) throws DataRetrievalException {
-        List<Domain> foundDomains = new ArrayList<Domain>();
+        List<Domain> foundDomains = new ArrayList<>();
         //try and get from link db, 
         if (foundDomains.isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
             try {
@@ -81,11 +81,7 @@ public class LinkDb implements StructureDataSource {
                 if (foundDomains.isEmpty()) {
                     foundDomains = ExternalDomainFinder.getDomainsFromAllSitesForUniprotAccession(AccessionConverter.toUniprot(aProtein.getVisibleAccession()));
                 }
-            } catch (IOException ex) {
-                throw new DataRetrievalException(ex.getMessage(), ex);
-            } catch (ConversionException ex) {
-                throw new DataRetrievalException(ex.getMessage(), ex);
-            } catch (XMLStreamException ex) {
+            } catch (    IOException | ConversionException | XMLStreamException ex) {
                 throw new DataRetrievalException(ex.getMessage(), ex);
             }
         }
@@ -283,9 +279,7 @@ public class LinkDb implements StructureDataSource {
         if (ProgramVariables.USEINTERNETSOURCES && infoSet.isEmpty()) {
             try {
                 infoSet.addAll(PDBDAO.getInstance().getPDBInfoForProtein(protein));
-            } catch (IOException ex) {
-                FaultBarrier.getInstance().handleException(ex);
-            } catch (ConversionException ex) {
+            } catch (    IOException | ConversionException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
         }

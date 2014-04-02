@@ -26,6 +26,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         initComponents();
         experimentsScrollPane.getViewport().setOpaque(false);
         experimentsScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+        experimentsScrollPane.getHorizontalScrollBar().setModel(referenceExperimentPanel.getHorizontalScrollBarModel());
     }
 
     public ProteinDetailPanel(Experiment referenceExperiment, AnalysisGroup aGroup) {
@@ -67,7 +68,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         );
         experimentsPanelLayout.setVerticalGroup(
             experimentsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 165, Short.MAX_VALUE)
+            .addGap(0, 148, Short.MAX_VALUE)
         );
 
         experimentsScrollPane.setViewportView(experimentsPanel);
@@ -90,11 +91,11 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(experimentsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

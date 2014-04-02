@@ -22,6 +22,7 @@ public class Protein {
     private String proteinName;
     private String originalAccession;
     private String visibleAccession;
+    private List<PeptideGroup> CPDTCleavageList = new ArrayList<>();
 
     public Protein(String accession) {
         this.accession = accession;
@@ -62,7 +63,7 @@ public class Protein {
         return Collections.unmodifiableList(peptideGroupsForProtein);
     }
 
-    public void setPeptideGroupsForProtein(List<PeptideGroup> listOfPeptides) {
+    public <T extends PeptideGroup> void setPeptideGroupsForProtein(List<T> listOfPeptides) {
         peptideGroupsForProtein.addAll(listOfPeptides);
     }
 
@@ -96,11 +97,12 @@ public class Protein {
     }
 
     public void addPdbFileInfo(Set<PdbInfo> allPDBFileNamesForProtein) {
+        this.allPDBFileInfoForProtein.clear();
         this.allPDBFileInfoForProtein.addAll(allPDBFileNamesForProtein);
     }
 
     public Set<PdbInfo> getPdbFilesInfo() {
-        return allPDBFileInfoForProtein;
+        return Collections.unmodifiableSet(allPDBFileInfoForProtein);
     }
 
     @Override
@@ -156,5 +158,18 @@ public class Protein {
 
     public void setVisibleAccession(String visibleAccession) {
         this.visibleAccession = visibleAccession;
+    }
+
+    public void setCPDTPeptideList(List<PeptideGroup> CPDTList) {
+        this.CPDTCleavageList.clear();
+        this.CPDTCleavageList.addAll(CPDTList);
+    }
+
+    public void addCPDTPeptides(List<PeptideGroup> parseCPDTOutput) {
+        this.CPDTCleavageList.addAll(parseCPDTOutput);
+    }
+
+    public List<PeptideGroup> getCPDTPeptideGroups() {
+        return Collections.unmodifiableList(this.CPDTCleavageList);
     }
 }

@@ -13,7 +13,8 @@ public enum ProgramPropertyEnum implements PropertyEnum {
     ADD_DOMAINS("pepshell.dataretrievalstep.add_domains", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddDomains"),
     ADD_PDB_INFO("pepshell.dataretrievalstep.add_pdb_info", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddPdbInfo"),
     ACCESSION_CONVERTING("pepshell.dataretrievalstep.accession_converting", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionConverting"),
-    PROTEIN_FILTERING("pepshell,dataretrievalstep.protein_filtering", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.ProteinFiltering");
+    PROTEIN_FILTERING("pepshell.dataretrievalstep.protein_filtering", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.ProteinFiltering"),
+    CPDT_ANALYSIS("pepshell.dataretrievalstep.CPDTAnalysis", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.CPDTAnalysis");
     private final String keyName;
     private final String defaultValue;
 

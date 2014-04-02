@@ -5,21 +5,28 @@ package com.compomics.pepshell.model;
  * @author Davy
  */
 public class QuantedPeptideGroup extends PeptideGroup {
-    
-    int ratio;
+
+    Integer ratio;
     private int timesHeavyFound = 0;
     private int timesLightFound = 0;
     private ProjectInfo projectInfo;
-    
-    public int getRatio(){
+
+    public QuantedPeptideGroup() {
+        super();
+    }
+
+    public int getRatio() {
+        if (ratio == null) {
+
+        }
         return ratio;
     }
-    
-    public double getLogRatio(){
-        return Math.log(ratio);
+
+    public double getLogRatio() {
+        return Math.log(getRatio());
     }
-    
-        public int getTimesHeavyFound() {
+
+    public int getTimesHeavyFound() {
         return timesHeavyFound;
     }
 
@@ -46,5 +53,5 @@ public class QuantedPeptideGroup extends PeptideGroup {
     public ProjectInfo getProjectInfo() {
         return this.projectInfo;
     }
-    
+
 }

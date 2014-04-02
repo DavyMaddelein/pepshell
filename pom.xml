@@ -26,7 +26,7 @@
                     <source>1.7</source>
                     <target>1.7</target>
                     <showDeprecation>true</showDeprecation>
-                    <debug>true</debug>
+                    <debug>false</debug>
                 </configuration>
             </plugin>
             
@@ -63,8 +63,16 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>
+                        <manifestEntries>
+                            <Class-Path>resources/CPDT.exe</Class-Path>
+                        </manifestEntries>
                     </archive>
                     <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                    <excludes>
+                        <exclude>CPDT.exe</exclude>
+                        <exclude>pepshelltestdbs.zip</exclude>
+                        <exclude>todo.txt</exclude>
+                    </excludes>
                 </configuration>
             </plugin>            
             
@@ -76,6 +84,38 @@
                         <goals>
                             <goal>checkstyle-aggregate</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <id>copy-package-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}/resources
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>CPDT.exe</include>
+                                        <include>vcredist_x86.exe</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>
+                                            pepshelltestdbs.zip
+                                        </exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -139,94 +179,6 @@
                 <exclusion>
                     <artifactId>bytecode</artifactId>
                     <groupId>org.biojava.utils</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.compomics</groupId>
-            <artifactId>utilities</artifactId>
-            <version>3.14.42</version>
-            <type>jar</type>
-            <exclusions>
-                <exclusion>
-                    <artifactId>cpdetector</artifactId>
-                    <groupId>cpdetector</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>derby</artifactId>
-                    <groupId>org.apache.derby</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>com.springsource.org.apache.commons.io</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>com.springsource.org.apache.log4j</artifactId>
-                    <groupId>org.apache.log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jaxb-api</artifactId>
-                    <groupId>javax.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jaxb-impl</artifactId>
-                    <groupId>com.sun.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jaxb-xjc</artifactId>
-                    <groupId>com.sun.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jmzml</artifactId>
-                    <groupId>uk.ac.ebi.jmzml</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>ols-client</artifactId>
-                    <groupId>uk.ac.ebi.ols</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>ols-dialog</artifactId>
-                    <groupId>no.uib</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>sqlite-jdbc</artifactId>
-                    <groupId>org.xerial</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>relaxngDatatype</artifactId>
-                    <groupId>msv</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>braf</artifactId>
-                    <groupId>uk.ac.ebi.pride.tools</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>isorelax</artifactId>
-                    <groupId>msv</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jfreechart</artifactId>
-                    <groupId>jfree</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jsparklines</artifactId>
-                    <groupId>no.uib</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>looks</artifactId>
-                    <groupId>com.jgoodies</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xz</artifactId>
-                    <groupId>org.tukaani</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

@@ -6,20 +6,15 @@ import com.compomics.pepshell.filters.NaiveFilter;
 import com.compomics.pepshell.model.Protein;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 /**
  *
  * @author Davy
  */
-public class ProteinFiltering implements DataRetrievalStep {
+public class ProteinFiltering extends DataRetrievalStep {
 
-    private FilterParent<Protein> filter = new NaiveFilter<Protein>();
-    private List<Protein> filterList = new ArrayList<Protein>();
-
-    private List<Protein> proteinList = new ArrayList<Protein>();
-
-    private Observable notifier = new Observable();
+    private FilterParent<Protein> filter = new NaiveFilter<>();
+    private List<Protein> filterList = new ArrayList<>();
 
     private ProteinFiltering(List<Protein> aProteinList) {
         this.proteinList = aProteinList;
@@ -48,15 +43,14 @@ public class ProteinFiltering implements DataRetrievalStep {
 
         List<Protein> returnList = proteinList;
         if (!filterList.isEmpty()) {
+            this.setChanged();
+            this.notifyObservers("filtering protein list");
             returnList = filter.filter(proteinList, filterList);
+            this.notifyObservers("done filtering");
+
         }
         return returnList;
 
-    }
-
-    @Override
-    public Observable getNotifier() {
-        return this.notifier;
     }
 
     @Override

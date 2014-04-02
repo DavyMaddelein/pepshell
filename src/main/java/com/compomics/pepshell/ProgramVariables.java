@@ -25,4 +25,5 @@ public class ProgramVariables {
     //database properties
     public static StructureDataSource STRUCTUREDATASOURCE = new LinkDb();
     public static boolean USEINTERNETSOURCES = true;
+    public static String CPDTLOCATION;
 }

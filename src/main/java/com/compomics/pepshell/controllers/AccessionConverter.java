@@ -96,7 +96,7 @@ public class AccessionConverter {
 
     private static boolean isGIAccession(String accession) {
         return accession.toLowerCase(Locale.UK).contains("gi");
-        //return accession.matches("^(GI|gi)\\|[0-9]");
+        //return accession.matches("^(GI|gi)\\|[0-9].*");
     }
 
     private static boolean isSwissprotAccession(String accession) {

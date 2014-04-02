@@ -15,6 +15,7 @@ import com.compomics.pepshell.view.DrawModes.Proteins.SecondaryStructureProteinD
 import com.compomics.pepshell.view.DrawModes.Proteins.SolventAccessibleProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 import javax.swing.BorderFactory;
+import javax.swing.BoundedRangeModel;
 
 import javax.swing.JOptionPane;
 
@@ -167,6 +168,8 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         referenceProteinScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         referenceProteinScrollPane.setOpaque(false);
 
+        referenceProteinDrawPanel.setPreferredSize(new java.awt.Dimension(0, 135));
+
         javax.swing.GroupLayout referenceProteinDrawPanelLayout = new javax.swing.GroupLayout(referenceProteinDrawPanel);
         referenceProteinDrawPanel.setLayout(referenceProteinDrawPanelLayout);
         referenceProteinDrawPanelLayout.setHorizontalGroup(
@@ -175,7 +178,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         );
         referenceProteinDrawPanelLayout.setVerticalGroup(
             referenceProteinDrawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 105, Short.MAX_VALUE)
+            .addGap(0, 135, Short.MAX_VALUE)
         );
 
         referenceProteinScrollPane.setViewportView(referenceProteinDrawPanel);
@@ -185,14 +188,18 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(referenceProteinScrollPane)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(referenceProteinScrollPane)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(referenceProteinScrollPane))
+                .addComponent(referenceProteinScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -232,7 +239,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
             referenceProteinDrawPanel.updateSecondaryDrawMode(secondaryDrawMode, pdbAccession);
         } else {
-           JOptionPane.showMessageDialog(this.getParent(), "Please select a protein from the list.", "Draw mode selection", JOptionPane.INFORMATION_MESSAGE); 
+            JOptionPane.showMessageDialog(this.getParent(), "Please select a protein from the list.", "Draw mode selection", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_drawModeChooserActionPerformed
 
@@ -273,5 +280,9 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private com.compomics.pepshell.view.panels.ReferenceProteinDrawPanel referenceProteinDrawPanel;
     private javax.swing.JScrollPane referenceProteinScrollPane;
     // End of variables declaration//GEN-END:variables
+
+    BoundedRangeModel getHorizontalScrollBarModel() {
+        return referenceProteinScrollPane.getHorizontalScrollBar().getModel();
+    }
 
 }

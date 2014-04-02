@@ -9,6 +9,7 @@ import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.Proteins.CPDTCleavedProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
@@ -53,6 +54,11 @@ public class ReferenceProteinDrawPanel extends JPanel {
     private DrawModeInterface domainDrawMode;
 
     /**
+     *the CPDT cleavage algorithm draw mode
+     */
+    private DrawModeInterface cpdtDrawMode;
+
+    /**
      * Constructor
      */
     public ReferenceProteinDrawPanel() {
@@ -60,13 +66,14 @@ public class ReferenceProteinDrawPanel extends JPanel {
         peptideDrawMode = new StandardPeptideProteinDrawMode();
         secondaryDrawMode = new HydrophobicityProteinDrawMode();
         domainDrawMode = new DomainProteinDrawMode();
+        cpdtDrawMode = new CPDTCleavedProteinDrawMode();
 
         setOpaque(false);
     }
 
     public Protein getProtein() {
         return protein;
-    }        
+    }
 
     /**
      * Update the protein to draw.
@@ -156,6 +163,15 @@ public class ReferenceProteinDrawPanel extends JPanel {
                     domainDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
                 } catch (DataRetrievalException e) {
                     LOGGER.error(e.getMessage(), e);
+                }
+                try {
+                    g.drawString("CPDT", HORIZONTAL_OFFSET + scaledHorizontalBarSize + 15, VERTICAL_OFFSET + 87);
+                    cpdtDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 75, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
+                    for (PeptideGroup aCPDTGroup: protein.getCPDTPeptideGroups()){
+                        cpdtDrawMode.drawPeptide(aCPDTGroup.getShortestPeptide(), g,  HORIZONTAL_OFFSET, VERTICAL_OFFSET + 75, ProgramVariables.VERTICALSIZE);
+                    }
+                } catch (UndrawableException ex) {
+
                 }
             } catch (UndrawableException ex) {
                 FaultBarrier.getInstance().handleException(ex);

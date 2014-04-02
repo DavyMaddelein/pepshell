@@ -14,3 +14,9 @@ the handling of accession masking, fetching, and filtering, is done in that part
 extra dataretrieval steps can be added by putting the class reference in the dataretrievalpreference file and putting the class on the classpath of the program
 
 does not handle protein inference, expects this to be done by an outside agent or on the dataset beforehand
+
+a peptidegroup is a grouping of peptides on a protein where the largest in the group contains all the smaller ones in his start to end location.
+Peptides are also grouped when being of the same length. The smallest peptide in the group is always represented visually.
+This approach breaks down when using multiple proteases, and as such, are not supported.
+
+CPDT is a C++ program compiled in visual studio and therefor needs the redistributable of that version. it is added in the resources folder but there is no first time prompt as of yet 

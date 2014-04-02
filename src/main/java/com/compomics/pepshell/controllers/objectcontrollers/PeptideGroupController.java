@@ -47,12 +47,12 @@ public class PeptideGroupController {
                 }
             }
         }
+        rs.beforeFirst();
         peptideGroups.addAll(peptideGroupHolder.values());
         return peptideGroups;
     }
 
     public static List<QuantedPeptideGroup> createQuantedPeptideGroups(ResultSet rs) throws SQLException {
-        //TODO make this check for quantpeptides first, if nullpointer or sqlexception do normal peptides
         List<QuantedPeptideGroup> peptideGroups = new ArrayList<>();
         Map<String, QuantedPeptideGroup> peptideGroupHolder = new HashMap<>();
         String peptideSequence;
@@ -66,6 +66,7 @@ public class PeptideGroupController {
                 checkForShortestPeptideSequence(peptide, peptideGroupHolder);
             }
         }
+        rs.beforeFirst();
         peptideGroups.addAll(peptideGroupHolder.values());
         return peptideGroups;
     }

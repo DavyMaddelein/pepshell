@@ -62,7 +62,7 @@ public class DbDAO extends Observable {
 
     public static void addPeptideGroupsToProteins(List<Protein> proteins) throws SQLException {
         try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllPeptidesGrouped())) {
-            //obvious location for improving speed if needed
+            //todo change this to not execute the query per protein
             for (Protein protein : proteins) {
                 stat.setInt(1, protein.getProjectid());
                 stat.setString(2, protein.getProteinAccession());
@@ -72,14 +72,16 @@ public class DbDAO extends Observable {
             }
         }
     }
-    
+
+    //this could be in one method, and return the quanted peptide groups instead of adding them
     private static void addQuantedPeptideGroupsToProteins(List<Protein> fetchedProteins) throws SQLException {
         try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups())) {
+            //todo change this to not execute the query per protein
             for (Protein protein : fetchedProteins) {
                 stat.setInt(1, protein.getProjectid());
                 stat.setString(2, protein.getProteinAccession());
                 try (ResultSet rs = stat.executeQuery()) {
-                    protein.setPeptideGroupsForProtein(PeptideGroupController.createPeptideGroups(rs));
+                    protein.setPeptideGroupsForProtein(PeptideGroupController.createQuantedPeptideGroups(rs));
                 }
             }
         }
@@ -94,8 +96,6 @@ public class DbDAO extends Observable {
             }
         }
     }
-
-    
 
     public static boolean projectHasQuant(Experiment project) throws SQLException {
         boolean projectHasQuant = true;

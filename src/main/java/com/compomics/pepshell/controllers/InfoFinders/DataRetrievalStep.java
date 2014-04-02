@@ -1,6 +1,7 @@
 package com.compomics.pepshell.controllers.InfoFinders;
 
 import com.compomics.pepshell.model.Protein;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.Callable;
@@ -9,10 +10,25 @@ import java.util.concurrent.Callable;
  *
  * @author Davy
  */
-public interface DataRetrievalStep extends Callable<List<Protein>> {
+public abstract class DataRetrievalStep extends Observable implements Callable<List<Protein>> {
 
-    public DataRetrievalStep getInstance(List<Protein> aProteinList);
+    protected List<Protein> proteinList = new ArrayList<>();
+    private boolean execute;
 
-    public Observable getNotifier();
+    public DataRetrievalStep() {
+    }
 
+    public DataRetrievalStep(List<Protein> aProteinList) {
+        this.proteinList = aProteinList;
+    }
+
+    public abstract DataRetrievalStep getInstance(List<Protein> aProteinList);
+
+    public boolean executeStep() {
+        return execute;
+    }
+
+    public void setExecute(boolean toExecute) {
+        this.execute = toExecute;
+    }
 }

@@ -31,8 +31,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -43,7 +41,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private static FaultBarrier faultBarrier;
     private List<Protein> proteinsToDisplay = new ArrayList<>();
-    private RegexFilter filter = new RegexFilter();
+    private final RegexFilter filter = new RegexFilter();
 
     public MainWindow() {
         faultBarrier = FaultBarrier.getInstance();
@@ -59,13 +57,13 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             //JOptionpane ask about wanting to connect to link db
             askLinkDbLoginQuestion();
         }
+        this.setEnabled(false);
         for (AnalysisGroup experiments : analysisList) {
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().retrieveData(referenceExperiment, experiments.getExperiments().iterator(), false);
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().start(referenceExperiment, experiments.getExperiments().iterator(), false);
             proteinDetailPanel.setReferenceExperiment(referenceExperiment);
             statisticsTabbedPane.add(experiments.getName(), new StatisticsPanel(experiments));
             proteinDetailPanel.setExperimentsToDisplay(experiments.getExperiments(), false);
         }
-
 //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
         proteinsToDisplay = referenceExperiment.getProteins();
         //this totally does not have to happen with anonymous stuff
@@ -73,6 +71,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         proteinListScrollPane.setViewportView(proteinList);
         pdbProteinList.setListData(proteinsToDisplay.toArray());
         pdbProteinListScrollPane.setViewportView(pdbProteinList);
+        this.setEnabled(true);
     }
 
 //    @TODO remove this method
@@ -398,7 +397,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_pdbProteinListMouseClicked
 
     private void proteinListMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseReleased
-
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
             Protein proteinOfInterest = (Protein) proteinList.getSelectedValue();
             if (ProgramVariables.USEINTERNETSOURCES && proteinOfInterest.getProteinSequence().isEmpty()) {
@@ -415,6 +414,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         } catch (NullPointerException ex) {
             faultBarrier.handleException(ex);
         }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_proteinListMouseReleased
 
     private void proteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseClicked

@@ -6,7 +6,8 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DataModes.FastaDataMode;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.InternetStructureDataSource;
-import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
+import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionMasking;
+import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.ProteinFiltering;
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.model.AnalysisGroup;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -40,7 +40,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     private FaultBarrier faultBarrier = FaultBarrier.getInstance();
     private Experiment referenceProject;
     private File fastaFile;
-    private LinkedList<DataRetrievalStep> dataRetrievalSteps = new LinkedList<DataRetrievalStep>();
+    private DataRetrievalStepsDialog dialog = new DataRetrievalStepsDialog(this, true);
 
     /**
      * Creates new form ProjectSelectionTreeFrame all this is pretty much unsafe
@@ -536,20 +536,32 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         }
         if (filterSubsetCheckBox.isSelected()) {
             if (!preloadProteinFilterPanel1.getProteinsToFilterWith().isEmpty()) {
-                //DataModeController.getDb().getDataMode().getViewPreparationForMode().setProteinsToFilter(preloadProteinFilterPanel1.getProteinsToFilterWith());
+                int index = dialog.getRetrievalSteps().indexOf(new ProteinFiltering());
+                if (index > -1) {
+                    ((ProteinFiltering) dialog.getRetrievalSteps().get(index)).setFilterList(preloadProteinFilterPanel1.getProteinsToFilterWith());
+                } else {
+                    JOptionPane.showMessageDialog(this, "filtering step was not selected, entries ignored");
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "empty filter set, was ignored");
             }
         }
         if (maskProteinsCheckBox.isSelected()) {
             if (!preloadProteinMaskPanel1.getProteinsToMaskWith().isEmpty()) {
+                int index = dialog.getRetrievalSteps().indexOf(new AccessionMasking());
+                if (index > -1) {
+                    ((AccessionMasking) dialog.getRetrievalSteps().get(index)).setMaskingSet(preloadProteinMaskPanel1.getProteinsToMaskWith());
+                } else {
+                    JOptionPane.showMessageDialog(this, "masking step was not selected, entries ignored");
+                }
+
             } else {
                 JOptionPane.showMessageDialog(this, "empty masking set, was ignored");
             }
         }
 
-        if (!dataRetrievalSteps.isEmpty()) {
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(dataRetrievalSteps);
+        if (dialog != null && !dialog.getRetrievalSteps().isEmpty()) {
+            DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(dialog.getRetrievalSteps());
         }
 
         if (goAhead) {
@@ -677,9 +689,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
 
     private void editRetrievalStepsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editRetrievalStepsMenuItemActionPerformed
         // TODO add your handling code here:
-        DataRetrievalStepsDialog dialog = new DataRetrievalStepsDialog(this, true);
         dialog.setVisible(true);
-        dataRetrievalSteps = dialog.getRetrievalSteps();
     }//GEN-LAST:event_editRetrievalStepsMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -43,6 +43,7 @@ public class FastaDAO {
 
     public static <T extends Protein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<T> experimentToAddSequencesTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
 
+        //todo this can be better
         for (Protein aParsedProtein : getListOfProteinsFromFastaFile(fastaFile)) {
             Iterator<T> proteinIterator = experimentToAddSequencesTo.iterator();
             while (proteinIterator.hasNext()) {

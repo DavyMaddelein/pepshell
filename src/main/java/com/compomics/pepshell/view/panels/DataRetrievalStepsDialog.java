@@ -4,6 +4,7 @@ import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
+import com.compomics.pepshell.view.componentmodels.DataRetrievalStepsDialogListCellRenderer;
 import com.google.common.collect.Lists;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import javax.swing.DefaultListModel;
  */
 public class DataRetrievalStepsDialog extends javax.swing.JDialog {
 
-    private LinkedList<DataRetrievalStep> retrievalSteps;
+    private static LinkedList<DataRetrievalStep> retrievalSteps = new LinkedList<>();
     private DefaultListModel<DataRetrievalStep> listModel = new DefaultListModel<>();
 
     /**
@@ -95,12 +96,14 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("drag and drop order"));
+        jPanel2.setOpaque(false);
 
         retrievalStepsList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        retrievalStepsList.setCellRenderer(new DataRetrievalStepsDialogListCellRenderer());
         retrievalStepsList.setDragEnabled(true);
         retrievalStepsList.setDropMode(javax.swing.DropMode.ON_OR_INSERT);
         retrievalStepsList.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -178,48 +181,47 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
 
     private void disableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disableStepsButtonActionPerformed
 
-        for (int i = 0; i < retrievalStepsList.getModel().getSize(); i++) {
+        for (int i = 0; i < listModel.getSize(); i++) {
             if (retrievalStepsList.getSelectionModel().isSelectedIndex(i)) {
-                retrievalStepsList.getComponent(i).setEnabled(false);
+                retrievalStepsList.getModel().getElementAt(i).setExecute(false);
                 retrievalSteps.remove((retrievalStepsList.getModel()).getElementAt(i));
             }
         }
+        retrievalStepsList.repaint();
     }//GEN-LAST:event_disableStepsButtonActionPerformed
 
     private void enableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableStepsButtonActionPerformed
         // TODO add your handling code here:
-        for (int i = 0; i < retrievalStepsList.getModel().getSize(); i++) {
-            if (retrievalStepsList.getSelectionModel().isSelectedIndex(i) || retrievalStepsList.getComponent(i).isEnabled()) {
+        retrievalSteps.clear();
+        for (int i = 0; i < listModel.getSize(); i++) {
+            if (retrievalStepsList.getSelectionModel().isSelectedIndex(i) || retrievalStepsList.getModel().getElementAt(i).executeStep()) {
                 retrievalSteps.add(retrievalStepsList.getModel().getElementAt(i));
                 if (retrievalStepsList.getSelectionModel().isSelectedIndex(i)) {
-                    retrievalStepsList.getComponent(i).setEnabled(true);
+                    //visual representation of going to execute
+                    retrievalStepsList.getModel().getElementAt(i).setExecute(true);
                 }
             }
         }
+        retrievalStepsList.repaint();
     }//GEN-LAST:event_enableStepsButtonActionPerformed
 
     private void retrievalStepsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_retrievalStepsListMouseClicked
         // TODO add your handling code here:
-        if (evt.getClickCount() == 2){
+        if (evt.getClickCount() == 2) {
             //retrievalStepsList.gets
         }
     }//GEN-LAST:event_retrievalStepsListMouseClicked
 
     private void acceptStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptStepsButtonActionPerformed
         // TODO add your handling code here:
-        LinkedList<DataRetrievalStep> linkedSteps = new LinkedList<>();
-        for (int i = 0; i > retrievalStepsList.getComponentCount(); i++) {
-            if (retrievalStepsList.getComponent(i).isEnabled()) {
-                linkedSteps.add(listModel.elementAt(i));
-            }
-        }
-        DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(linkedSteps);
+        DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(retrievalSteps);
+        this.setVisible(false);
     }//GEN-LAST:event_acceptStepsButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
         retrievalSteps = new LinkedList<>();
-        this.dispose();
+        this.setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
