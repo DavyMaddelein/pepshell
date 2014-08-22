@@ -40,7 +40,7 @@ public class ProteinInfoFrame extends javax.swing.JFrame {
             proteinTextArea.append("\n" + peptideGroup.getEndAlignmentPosition());
             proteinTextArea.append("\nmiscleaved: " + peptide.isIsMiscleaved());
             if (peptide instanceof QuantedPeptide) {
-                proteinTextArea.append("\nquantitation type: " + ((QuantedPeptide) peptide).getQuantitationType());
+                //proteinTextArea.append("\nquantitation type: " + ((QuantedPeptide) peptide).getQuantitationType());
             }
         }
     }

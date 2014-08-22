@@ -1,4 +1,4 @@
-package com.compomics.pepshell.filters;
+package com.compomics.pepshell.controllers.filters;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;

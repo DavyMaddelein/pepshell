@@ -27,7 +27,8 @@ public class SQLStatements {
     private static String GET_PDB_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN;
     private static String GET_PDB_INFO_FOR_PROTEIN;
     private static String GET_SECONDARY_STRUCTURE_FOR_PDB;
-
+    private static String GET_QUANT_FOR_PEPTIDE;
+    
     public static void instantiateColimsStatements() {
         SQLStatements.SELECT_PROTEINS = SELECT_COLIMS_PROTEINS;
         SQLStatements.SELECT_PROJECTS = SELECT_COLIMS_PROJECTS;
@@ -48,6 +49,7 @@ public class SQLStatements {
         SQLStatements.CHECK_IF_PROJECT_HAS_QUANTDATA = CHECK_IF_MSLIMS_PROJECT_HAS_QUANTDATA;
         SQLStatements.GET_QUANT_FOR_EXPERIMENT = SELECT_QUANT_DATA_FOR_MS_LIMS_PROJECT;
         SQLStatements.GET_PEPTIDES_WITH_QUANT = SELECT_PEPTIDES_WITH_QUANT_FOR_MS_LIMS_PROJECT;
+        SQLStatements.GET_QUANT_FOR_PEPTIDE = SELECT_QUANT_FOR_MS_LIMS_IDENTIFICATION;
     }
 
     public static void instantiateLinkDbStatements() {
@@ -67,7 +69,7 @@ public class SQLStatements {
     private static final String SELECT_MSLIMS_PROTEINS = "select distinct accession from identification,spectrum where l_spectrumid = spectrumid and l_projectid = ? order by accession";
     private static final String SELECT_COLIMS_PROTEINS = "";
     private static final String SELECT_LINKDB_PROTEINS = "select * from protein";
-    private static final String SELECT_MSLIMS_PEPTIDEGROUPS = "select identification.sequence,identification.start,identification.end from identification,spectrum where l_spectrumid = spectrumid and l_projectid = ? and identification.accession = ?";
+    private static final String SELECT_MSLIMS_PEPTIDEGROUPS = "select identification.identificationid,identification.sequence,identification.start,identification.end,spectrum.total_spectrum_intensity from identification,spectrum where l_spectrumid = spectrumid and l_projectid = ? and identification.accession = ?";
     private static final String SELECT_COLIMS_PEPTIDEGROUPS = "";
     private static final String SELECT_MSLIMS_PROJECTS = "select projectid,title from project order by projectid";
     private static final String SELECT_COLIMS_PROJECTS = "something something experiment";
@@ -75,7 +77,7 @@ public class SQLStatements {
     private static final String SELECT_COLIMS_SINGLE_PROJECT = "";
     private static final String SELECT_MSLIMS_PEPTIDEGROUPS_FOR_ACCESSION = "select sequence from identification,spectrum where l_spectrumid = spectrumid and l_projectid = ? and identification.accession = ?";
     private static final String SELECT_COLIMS_PEPTIDEGROUPS_FOR_ACCESSION = "";
-    private static final String SELECT_MSLIMS_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION = "select l_quantitation_groupid,ratio,result.sequence,type,result.id from identification_to_quantitation,quantitation,(select identificationid as id,sequence from identification,spectrum where l_spectrumid = spectrumid and l_projectid = ? and identification.accession = ?) as result where result.id = identification_to_quantitation.l_identificationid and identification_to_quantitation.l_quantitation_groupid = quantitation.l_quantitation_groupid";
+    private static final String SELECT_MSLIMS_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION = "select identification_to_quantitation.l_quantitation_groupid,ratio,result.sequence,identification_to_quantitation.type,result.id from identification_to_quantitation,quantitation,(select identificationid as id,sequence from identification,spectrum where l_spectrumid = spectrumid and l_projectid = ? and identification.accession = ?) as result where result.id = identification_to_quantitation.l_identificationid and identification_to_quantitation.l_quantitation_groupid = quantitation.l_quantitation_groupid";
     private static final String SELECT_COLIMS_PEPTIDEGROUPS_WITH_QUANTITATION_FOR_ACCESSION = "";
     private static final String CHECK_IF_MSLIMS_PROJECT_HAS_QUANTDATA = "select l_identificationid from identification_to_quantitation,(select identificationid as ident_id from identification,(select spectrumid as spec_id from spectrum where l_projectid = ? limit 1)as spectrum_result where l_spectrumid = spectrum_result.spec_id limit 1) as ident_result where ident_result.ident_id = l_identificationid limit 1";
     private static final String CHECK_IF_COLIMS_PROJECT_HAS_QUANTDATA = "";
@@ -91,7 +93,8 @@ public class SQLStatements {
     private static final String GET_INTERACTION_PARTNERS_FOR_PDB_FROM_LINKDB = "select interaction.* from interaction,residue,chain,structure where chain.idchain = residue.chain_id and chain.structure_id = structure.idstructure and residue_id_partner2 = residue.idresidue and structure.PDB = ?";
     private static final String GET_PDBFILE_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN_FROM_LINKDB = "select PDB from structure order by resolution desc limit 1";
     private static final String GET_SECONDARY_STRUCTURE_FOR_PDB_FROM_LINKDB ="select residue.numbering_fasta, residue.secondary_structure from residue, ( select chain.idchain as chain_id from protein, protein_chain, chain, structure where protein.uniprot_id = ? and protein_chain.protein_id = protein.idprotein and protein_chain.chain_id = chain.idchain and structure.PDB = ? and chain.structure_id = structure.idstructure order by chain_label asc limit 1) as chain_id_sub where residue.chain_id = chain_id_sub.chain_id;"; 
-    
+    private static final String SELECT_QUANT_FOR_MS_LIMS_IDENTIFICATION = "select quantitation.ratio from quantitation, identification_to_quantitation where quantitation.l_quantitation_groupid = identification_to_quantitation.l_quantitation_groupid and l_identificationid = ?";
+
     
     public static String selectAllProteins() {
         return SELECT_PROTEINS;
@@ -167,6 +170,10 @@ public class SQLStatements {
 
     public static String getSecondaryStructureForStructure() {
         return GET_SECONDARY_STRUCTURE_FOR_PDB;
+    }
+
+    public static String getQuantForPeptideIdentifier() {
+        return GET_QUANT_FOR_PEPTIDE;
     }
     
 }

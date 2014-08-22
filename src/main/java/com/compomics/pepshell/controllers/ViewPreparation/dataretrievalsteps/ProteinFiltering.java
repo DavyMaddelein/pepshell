@@ -1,8 +1,8 @@
 package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
-import com.compomics.pepshell.filters.FilterParent;
-import com.compomics.pepshell.filters.NaiveFilter;
+import com.compomics.pepshell.controllers.filters.FilterParent;
+import com.compomics.pepshell.controllers.filters.NaiveFilter;
 import com.compomics.pepshell.model.Protein;
 import java.util.ArrayList;
 import java.util.List;

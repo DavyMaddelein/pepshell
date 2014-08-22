@@ -167,7 +167,7 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="com.compomics.pepshell.view.panels.LoginPanel" name="linkDbLoginPanel">
+            <Component class="com.compomics.pepshell.view.panels.StructureDbLoginPanel" name="linkDbLoginPanel">
               <AccessibilityProperties>
                 <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="linkDbLogin"/>
               </AccessibilityProperties>

@@ -9,7 +9,11 @@ import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.CPDTAnalysis;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.Peptide;
+import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,6 +46,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
             if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
                 referenceExperiment.addProteins(DbDAO.fetchProteins(referenceExperiment));
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
+                setIntensityValuesForExperiment(referenceExperiment);
             } else {
                 if (linkedSteps.indexOf(new CPDTAnalysis()) < 0) {
                     linkedSteps.add(new CPDTAnalysis());
@@ -58,6 +63,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
                     anExperimentToCompareWith.addProteins(DbDAO.fetchProteins(anExperimentToCompareWith));
                     FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith.getProteins());
                     DbDAO.addPeptideGroupsToProteins(anExperimentToCompareWith.getProteins());
+                    setIntensityValuesForExperiment(anExperimentToCompareWith);
                 } else {
                     //something something peptide protein file
                 }
@@ -75,6 +81,8 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
             FaultBarrier.getInstance().handleException(ex);
         } catch (IOException | SQLException ex) {
             FaultBarrier.getInstance().handleException(ex);
+        } catch (CalculationException ex) {
+            FaultBarrier.getInstance().handleException(ex);
         }
         return referenceExperiment;
     }
@@ -82,24 +90,23 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
     @Override
     protected boolean checkAndAddQuantToProteinsInExperiment(T anExperiment) {
         PreparedStatement stat = null;
-        try {
-            stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups());
-            stat.setInt(1, anExperiment.getExperimentId());
-            ResultSet rs = stat.executeQuery();
+        for (Protein aProtein : anExperiment.getProteins()) {
             try {
-                while (rs.next()) {
-                    Protein tempProtein = new Protein(rs.getString("accession"));
-                    if (anExperiment.getProteins().contains(tempProtein)) {
-                        anExperiment.getProteins().get(anExperiment.getProteins().indexOf(tempProtein));
+                stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups());
+                stat.setInt(1, anExperiment.getExperimentId());
+                stat.setString(2, aProtein.getOriginalAccession());
+                try (ResultSet rs = stat.executeQuery()) {
+                    while (rs.next()) {
+
                     }
+                } catch (SQLException sqle) {
+                    FaultBarrier.getInstance().handleException(sqle);
                 }
             } catch (SQLException sqle) {
+                FaultBarrier.getInstance().handleException(sqle);
             }
-
-        } catch (SQLException sqle) {
-
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -113,6 +120,33 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
             new WaitForFutures(experiment, this).execute();
         } catch (Exception ex) {
             Logger.getLogger(DataRetrievalForFasta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    //clear sign that the db dao needs to be redone
+    private void setIntensityValuesForExperiment(T experiment) throws CalculationException {
+        for (Protein aProtein : experiment.getProteins()) {
+            for (PeptideGroup aPeptideGroup : aProtein.getPeptideGroupsForProtein()) {
+                for (Peptide aPeptide : aPeptideGroup.getPeptideList()) {
+                    double currentIntensity = aPeptide.getTotalSpectrumIntensity();
+                    if (currentIntensity < experiment.getMinIntensity() || experiment.getMinIntensity() == 0.0) {
+                        experiment.setMinIntensity(currentIntensity);
+                    }
+                    //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
+                    if (currentIntensity > experiment.getMaxIntensity() || experiment.getMaxIntensity() == 0.0) {
+                        experiment.setMaxIntensity(currentIntensity);
+                    }
+                    if (aPeptide instanceof QuantedPeptide) {
+                        Double currentRatio = ((QuantedPeptide) aPeptide).getRatio();
+                        //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
+                        if (currentRatio != null) {
+                            if (experiment.getMaxRatio() == null || currentRatio > experiment.getMaxRatio()) {
+                                experiment.setMaxRatio(currentRatio);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.compomics.pepshell.filters;
+package com.compomics.pepshell.controllers.filters;
 
 import com.compomics.pepshell.model.exceptions.InvalidOptionException;
 import java.util.List;

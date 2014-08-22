@@ -7,12 +7,15 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
-import com.compomics.pepshell.view.DrawModes.DrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
+import com.compomics.pepshell.view.DrawModes.Peptides.IntensityPeptideDrawMode;
+import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
 
@@ -25,11 +28,13 @@ public class ExperimentPanel extends javax.swing.JPanel {
     private int horizontalOffset = this.getX() + 15;
     private int verticalOffset = 25;
     private Protein protein;
-    private DrawModeInterface peptideDrawMode = new StandardPeptideProteinDrawMode();
-    private DrawModeInterface proteinDrawMode = new StandardPeptideProteinDrawMode();
+    private StandardPeptideProteinDrawMode peptideDrawMode = new IntensityPeptideDrawMode();
+    private StandardPeptideProteinDrawMode proteinDrawMode = new IntensityPeptideDrawMode();
+    private boolean recalculate = true;
     private Experiment experiment;
     private String experimentName;
     private boolean nameChanged = false;
+    private BufferedImage cachedImage;
 
     /**
      * Creates new form PeptidesProteinsOverlapGUI
@@ -42,6 +47,8 @@ public class ExperimentPanel extends javax.swing.JPanel {
     public ExperimentPanel(Experiment experiment) {
         this();
         this.experiment = experiment;
+        ((IntensityPeptideDrawMode) peptideDrawMode).setMaxIntensity(experiment.getMaxIntensity());
+        ((IntensityPeptideDrawMode) peptideDrawMode).setMinIntensity(experiment.getMinIntensity());
         experimentName = experiment.getExperimentName();
         projectNameLabel.setText(experiment.getExperimentName());
     }
@@ -72,6 +79,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         projectNameLabel = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
 
         jMenuItem1.setText("change name of selected experiment");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -99,21 +107,32 @@ public class ExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setMinimumSize(new java.awt.Dimension(50, 30));
         projectNameLabel.setPreferredSize(new java.awt.Dimension(50, 30));
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "intensity", "ratio" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 940, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 742, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -135,15 +154,40 @@ public class ExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setText(JOptionPane.showInputDialog("change experiment name to " + projectNameLabel.getText()));
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        if (jComboBox1.getSelectedIndex() == 0) {
+            if ((peptideDrawMode instanceof IntensityPeptideDrawMode) == false) {
+                peptideDrawMode = new IntensityPeptideDrawMode();
+                proteinDrawMode = new IntensityPeptideDrawMode();
+                ((IntensityPeptideDrawMode) peptideDrawMode).setMaxIntensity(experiment.getMaxIntensity());
+                ((IntensityPeptideDrawMode) peptideDrawMode).setMinIntensity(experiment.getMinIntensity());
+                recalculate = true;
+            }
+        } else if (jComboBox1.getSelectedIndex() == 1) {
+            if ((peptideDrawMode instanceof QuantedPeptideDrawMode) == false) {
+                peptideDrawMode = new QuantedPeptideDrawMode<>();
+                proteinDrawMode = new QuantedPeptideDrawMode<>();
+                ((QuantedPeptideDrawMode) peptideDrawMode).setMaxRatio(experiment.getMaxRatio());
+                recalculate = true;
+            }
+        }
+        if (recalculate) {
+            this.repaint();
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu experimentPopupMenu;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JLabel projectNameLabel;
     // End of variables declaration//GEN-END:variables
-        
+
     @Override
     public void paintComponent(Graphics g) {
+        //replace protein recalculation with a buffered image to display
         super.paintComponent(g);
         if (protein != null) {
             if (!nameChanged) {
@@ -155,24 +199,36 @@ public class ExperimentPanel extends javax.swing.JPanel {
                 } catch (Exception e) {
                 }
             }
-            try {
-                int horizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
-                proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5,horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
-            } catch (UndrawableException ex) {
-                FaultBarrier.getInstance().handleException(ex);
-            }
+            if (!protein.getProteinSequence().isEmpty()) {
+                if (recalculate) {
+                    int horizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
+                    BufferedImage tempImage = new BufferedImage(horizontalBarSize + 5, ProgramVariables.VERTICALSIZE + 10, BufferedImage.TYPE_INT_ARGB);
+                    try {
+                        //proteinDrawMode.drawProtein(protein, tempImage.getGraphics(), 0, 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                            proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                    } catch (UndrawableException ex) {
+                        FaultBarrier.getInstance().handleException(ex);
+                    }
+                    Iterator<PeptideGroup> peptideGroups = protein.getPeptideGroupsForProtein().iterator();
+                    while (peptideGroups.hasNext()) {
+                        PeptideGroup aPeptideGroup = peptideGroups.next();
+                        try {
+                        //    peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), tempImage.getGraphics(), 0, 5, ProgramVariables.VERTICALSIZE);
+                            peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
+                       } catch (Exception ex) {
+                        }
+                    }
+                    //cachedImage = tempImage;
+                    ((GradientDrawModeInterface) peptideDrawMode).drawColorLegend(horizontalOffset + horizontalBarSize + 15, 50, g);
+                    recalculate = true;
 
-            //peptideDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset, proteinBarSize, proteinBarHeight);
-            Iterator<PeptideGroup> peptideGroups = protein.getPeptideGroupsForProtein().iterator();
-            while (peptideGroups.hasNext()) {
-                PeptideGroup aPeptideGroup = peptideGroups.next();
-                try {
-                    peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
-                } catch (UndrawableException ex) {
                 }
+            } else {
+                projectNameLabel.setText(experimentName + ": protein not found");
             }
-        } else {
-            projectNameLabel.setText(experimentName + ": protein not found");
+        }
+        if (cachedImage != null) {
+            this.getGraphics().drawImage(cachedImage, horizontalOffset, verticalOffset + 10, null);
         }
     }
 
@@ -181,7 +237,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
     }
 
     void setYOffset(double height) {
-        verticalOffset = (int) ((int) verticalOffset + height);
+        verticalOffset = (int) (verticalOffset + height);
     }
 
     private class popupMenuListener extends MouseAdapter {

@@ -26,7 +26,7 @@
                     <source>1.7</source>
                     <target>1.7</target>
                     <showDeprecation>true</showDeprecation>
-                    <debug>false</debug>
+                    <debug>true</debug>
                 </configuration>
             </plugin>
             
@@ -72,6 +72,7 @@
                         <exclude>CPDT.exe</exclude>
                         <exclude>pepshelltestdbs.zip</exclude>
                         <exclude>todo.txt</exclude>
+                        <exclude>vcredist_x86</exclude>
                     </excludes>
                 </configuration>
             </plugin>            
@@ -181,12 +182,22 @@
                     <groupId>org.biojava.utils</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>      
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.14</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>15.0</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>beansbinding</artifactId>
+            <version>1.2.1</version>
         </dependency>
     </dependencies>
     <repositories>
