@@ -8,6 +8,7 @@ import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.Add
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.CPDTAnalysis;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.UpdateMessage;
 import com.google.common.collect.Lists;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -31,7 +32,7 @@ import javax.swing.SwingWorker;
  *
  * @author Davy
  */
-public abstract class ViewPreparation<T extends Experiment, V extends Protein> implements Observer {
+public abstract class ViewPreparation<T extends Experiment, V extends Protein> extends Observable implements Observer {
 
     LinkedList<DataRetrievalStep> linkedSteps = new LinkedList<DataRetrievalStep>() {
         {
@@ -171,7 +172,14 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> i
     public void update(Observable o, Object arg) {
         if (arg != null) {
             if (arg instanceof String) {
+                //untill all update strings are removed from the data retrieval steps, this check has to stay
                 progressMonitor.setNote((String) arg);
+            }
+            if (arg instanceof UpdateMessage) {
+                //comes from lower, throw higher in the chain, update notification to user
+                this.setChanged();
+                progressMonitor.setNote(((UpdateMessage) arg).getMessage());
+                this.notifyObservers(arg);
             }
         }
     }

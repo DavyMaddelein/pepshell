@@ -4,6 +4,7 @@ import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.model.CPDTPeptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.UpdateMessage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -40,7 +41,6 @@ public class CPDTAnalysis extends DataRetrievalStep {
         File CPDTLocation = null;
         if (CPDTLocationURL != null) {
             CPDTLocation = new File(CPDTLocationURL.getPath());
-            System.out.println(CPDTLocation.getAbsolutePath());
         }
         if (CPDTLocation == null || !CPDTLocation.exists()) {
             //if cannot be found on the classpath try the original folder
@@ -54,7 +54,7 @@ public class CPDTAnalysis extends DataRetrievalStep {
         CPDTFolder.deleteOnExit();
         for (Protein aProtein : proteinList) {
             this.setChanged();
-            this.notifyObservers("running CP-DT on " + aProtein.getProteinAccession());
+            this.notifyObservers(new UpdateMessage(false, "running CP-DT on " + aProtein.getProteinAccession()));
             String filename = System.currentTimeMillis() + aProtein.getProteinAccession();
             filename = filename.replaceAll("\\|", "");
             File outputFile = new File(CPDTFolder, filename);
@@ -62,17 +62,18 @@ public class CPDTAnalysis extends DataRetrievalStep {
             builder.redirectOutput(outputFile);
             Process CPDT = builder.start();
             CPDT.waitFor();
-            aProtein.setCPDTPeptideList(parseCPDTOutput(outputFile));
+            aProtein.setCPDTPeptideList(parseCPDTOutput(outputFile,aProtein));
             this.setChanged();
-            this.notifyObservers("done running CP-DT on " + aProtein.getProteinAccession());
+            this.notifyObservers(new UpdateMessage(true, "done running CP-DT on " + aProtein.getProteinAccession()));
         }
         return Collections.unmodifiableList(proteinList);
     }
 
-    private List<PeptideGroup> parseCPDTOutput(File CPDTFile) throws FileNotFoundException, IOException {
+    private List<PeptideGroup> parseCPDTOutput(File CPDTFile,Protein aProtein) throws FileNotFoundException, IOException {
         List<PeptideGroup> CPDTPeptideGroups = new ArrayList<>();
         LineNumberReader reader = new LineNumberReader(new FileReader(CPDTFile));
         String line;
+        int previousCut = 0;
         while ((line = reader.readLine()) != null) {
             if (line.equalsIgnoreCase("cut position information")) {
                 reader.readLine();
@@ -81,8 +82,9 @@ public class CPDTAnalysis extends DataRetrievalStep {
                     //could be replaced with a split on = and then [2] and [4] for better readability if needed
                     PeptideGroup CPDTPeptideGroup = new PeptideGroup();
                     String[] cutData = line.split(";");
-                    CPDTPeptide cutPeptide = new CPDTPeptide("", Double.parseDouble(cutData[1].split("=")[1].trim()));
+                    CPDTPeptide cutPeptide = new CPDTPeptide(aProtein.getProteinSequence().substring(previousCut, Integer.parseInt(cutData[0].split("=")[1].trim())), Double.parseDouble(cutData[1].split("=")[1].trim()));
                     cutPeptide.setBeginningProteinMatch(Integer.parseInt(cutData[0].split("=")[1].trim()));
+                    previousCut = cutPeptide.getBeginningProteinMatch();
                     CPDTPeptideGroup.addPeptide(cutPeptide);
                     CPDTPeptideGroup.setShortestPeptideIndex(0);
                     CPDTPeptideGroups.add(CPDTPeptideGroup);

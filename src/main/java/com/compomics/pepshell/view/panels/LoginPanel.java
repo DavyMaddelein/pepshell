@@ -20,7 +20,7 @@ public class LoginPanel extends javax.swing.JPanel {
         initComponents();
 
         init();
-        
+
         urlTextField.setFocusTraversalKeysEnabled(false);
         passwordField.setFocusTraversalKeysEnabled(false);
     }
@@ -47,9 +47,9 @@ public class LoginPanel extends javax.swing.JPanel {
 
     public JTextField getDatabaseNameTextField() {
         return databaseNameTextField;
-    }  
-    
-    private void init(){
+    }
+
+    private void init() {
         usernameTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -93,6 +93,10 @@ public class LoginPanel extends javax.swing.JPanel {
         });
     }
 
+    public void setLoginInfoLabelText(String textToDisplay) {
+        this.loginInfoLabel.setText(textToDisplay);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -125,7 +129,7 @@ public class LoginPanel extends javax.swing.JPanel {
 
         urlLabel.setText("database URL");
 
-        loginInfoLabel.setText("please enter your database login credentials");
+        loginInfoLabel.setText("please enter your experiment database login credentials");
 
         databaseNameLabel.setText("database name");
 

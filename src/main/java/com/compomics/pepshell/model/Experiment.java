@@ -13,6 +13,9 @@ public class Experiment {
     private final int experimentId;
     private final String experimentName;
     private List<Protein> proteinList = new ArrayList<>();
+    private double maxIntensity;
+    private double minIntensity;
+    private Double maxRatio = null;
 
     public Experiment(int experimentId, String experimentName) {
         this.experimentId = experimentId;
@@ -77,5 +80,29 @@ public class Experiment {
             return false;
         }
         return true;
+    }
+
+    public double getMaxIntensity() {
+        return maxIntensity;
+    }
+
+    public void setMaxIntensity(double maxIntensity) {
+        this.maxIntensity = maxIntensity;
+    }
+
+    public double getMinIntensity() {
+        return minIntensity;
+    }
+
+    public void setMinIntensity(double minIntensity) {
+        this.minIntensity = minIntensity;
+    }
+
+    public Double getMaxRatio() {
+        return maxRatio;
+    }
+
+    public void setMaxRatio(Double aRatio) {
+        maxRatio = aRatio;
     }
 }

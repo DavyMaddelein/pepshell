@@ -67,7 +67,7 @@ public class DbDAO extends Observable {
                 stat.setInt(1, protein.getProjectid());
                 stat.setString(2, protein.getProteinAccession());
                 try (ResultSet rs = stat.executeQuery()) {
-                    protein.setPeptideGroupsForProtein(PeptideGroupController.createPeptideGroups(rs));
+                    protein.setPeptideGroupsForProtein(PeptideGroupController.createPeptideGroups(rs,true));
                 }
             }
         }
@@ -92,7 +92,7 @@ public class DbDAO extends Observable {
             stat.setInt(1, projectid);
             stat.setString(2, proteinAccession);
             try (ResultSet rs = stat.executeQuery()) {
-                return PeptideGroupController.createPeptideGroups(rs);
+                return PeptideGroupController.createPeptideGroups(rs,true);
             }
         }
     }

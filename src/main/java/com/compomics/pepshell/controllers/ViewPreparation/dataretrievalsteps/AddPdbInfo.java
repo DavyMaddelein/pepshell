@@ -3,6 +3,7 @@ package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.UpdateMessage;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class AddPdbInfo extends DataRetrievalStep {
         for (Protein aProtein : proteinList) {
             aProtein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(aProtein, null));
             this.setChanged();
-            this.notifyObservers("added PDB info to" + aProtein.getProteinAccession());
+            this.notifyObservers(new UpdateMessage(false,"added PDB info to" + aProtein.getProteinAccession()));
         }
         return Collections.unmodifiableList(proteinList);
     }

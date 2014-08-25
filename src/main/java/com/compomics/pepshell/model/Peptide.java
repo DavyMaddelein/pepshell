@@ -11,6 +11,7 @@ public class Peptide {
     private int endProteinMatch = -1;
     private int timesFound = 0;
     private boolean isMiscleaved;
+    private double totalSpectrumIntensity = 0.0;
 
     /**
      * create a peptide object instance
@@ -19,6 +20,11 @@ public class Peptide {
      */
     public Peptide(String sequence) {
         this.sequence = sequence;
+    }
+
+    public Peptide(String sequence, double totalSpectrumIntensity) {
+        this.sequence = sequence;
+        this.totalSpectrumIntensity = totalSpectrumIntensity;
     }
 
     public String getSequence() {
@@ -61,6 +67,14 @@ public class Peptide {
         this.isMiscleaved = isMiscleaved;
     }
 
+    public double getTotalSpectrumIntensity() {
+        return totalSpectrumIntensity;
+    }
+
+    public void setTotalSpectrumIntensity(double totalSpectrumIntensity) {
+        this.totalSpectrumIntensity = totalSpectrumIntensity;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

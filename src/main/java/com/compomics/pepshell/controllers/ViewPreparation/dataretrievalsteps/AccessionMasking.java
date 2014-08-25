@@ -1,8 +1,8 @@
 package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
-import com.compomics.pepshell.model.ProgressMessage;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.UpdateMessage;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +39,7 @@ public class AccessionMasking extends DataRetrievalStep {
                 matchedProtein.setVisibleAccession(maskingProtein.getVisibleAccession());
                 counter++;
                 this.setChanged();
-                this.notifyObservers("masked accession of " + matchedProtein.getOriginalAccession() + " with " + matchedProtein.getProteinAccession());
+                this.notifyObservers(new UpdateMessage(true,"masked accession of " + matchedProtein.getOriginalAccession() + " with " + matchedProtein.getProteinAccession()));
             }
         }
         return Collections.unmodifiableList(proteinList);

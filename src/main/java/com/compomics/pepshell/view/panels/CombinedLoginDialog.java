@@ -339,7 +339,7 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
         dbSelectionRadioButton = new javax.swing.JRadioButton();
         fastaSelectionRadioButton = new javax.swing.JRadioButton();
         dbLoginPanel = new com.compomics.pepshell.view.panels.LoginPanel();
-        linkDbLoginPanel = new com.compomics.pepshell.view.panels.LoginPanel();
+        linkDbLoginPanel = new com.compomics.pepshell.view.panels.StructureDbLoginPanel();
         bottomPanel = new javax.swing.JPanel();
         proceedButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -507,7 +507,7 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
     private com.compomics.pepshell.view.panels.LoginPanel dbLoginPanel;
     private javax.swing.JRadioButton dbSelectionRadioButton;
     private javax.swing.JRadioButton fastaSelectionRadioButton;
-    private com.compomics.pepshell.view.panels.LoginPanel linkDbLoginPanel;
+    private com.compomics.pepshell.view.panels.StructureDbLoginPanel linkDbLoginPanel;
     private javax.swing.ButtonGroup modeSelectionButtonGroup;
     private javax.swing.JPanel modeSelectionPanel;
     private javax.swing.JPanel parentPanel;
