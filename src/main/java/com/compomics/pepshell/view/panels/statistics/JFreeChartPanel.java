@@ -1,7 +1,3 @@
-/*
- * Here comes the text of your license
- * Each line should be prefixed with  * 
- */
 package com.compomics.pepshell.view.panels.statistics;
 
 import com.compomics.pepshell.model.Protein;

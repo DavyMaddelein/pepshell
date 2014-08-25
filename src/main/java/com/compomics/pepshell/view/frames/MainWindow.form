@@ -160,8 +160,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Protein Comparison">
-                <Property name="tabTitle" type="java.lang.String" value="Protein Comparison"/>
+              <JTabbedPaneConstraints tabName="Experiment Comparison">
+                <Property name="tabTitle" type="java.lang.String" value="Experiment Comparison"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

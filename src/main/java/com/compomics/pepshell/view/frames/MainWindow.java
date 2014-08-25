@@ -249,7 +249,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap())
         );
 
-        tabsPane.addTab("Protein Comparison", mainViewPanel);
+        tabsPane.addTab("Experiment Comparison", mainViewPanel);
 
         pdbViewPanel.setBackground(new java.awt.Color(255, 255, 255));
 
