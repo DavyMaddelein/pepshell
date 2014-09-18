@@ -1,13 +1,14 @@
 package com.compomics.pepshell.view.panels;
 
+import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.Protein;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
 import javax.swing.JEditorPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -18,10 +19,10 @@ import javax.swing.UIManager;
  */
 public class SequenceCoveragePanel extends javax.swing.JPanel {
 
-    int[] coverage;
-    boolean isOriginalCcoverage = false;
-    String originalProteinSequence;
-    Iterator<PeptideGroup> originalPeptideGroupIterator;
+    private int[] coverage;
+    private boolean isOriginalCcoverage = false;
+    private Protein originalProtein;
+    private int[] domains;
 
     /**
      * Creates new form ProteinBarPanel
@@ -31,27 +32,26 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         this.setBackground(Color.white);
     }
 
-    public void showProteinCoverage(String proteinSequence, Iterator<PeptideGroup> peptideGroup) {
-        this.showProteinCoverage(proteinSequence, peptideGroup, false);
+    public void showProteinCoverage(String proteinSequence, Protein protein) {
+        this.showProteinCoverage(proteinSequence, protein, false);
     }
 
-    public void showProteinCoverage(String proteinSequence, Iterator<PeptideGroup> peptideGroups, boolean setAsDefaultCoverage) {
+    public void showProteinCoverage(String proteinSequence, Protein protein, boolean setAsDefaultCoverage) {
         isOriginalCcoverage = false;
         if (setAsDefaultCoverage) {
-            originalProteinSequence = proteinSequence;
-            originalPeptideGroupIterator = peptideGroups;
+            originalProtein = protein;
             isOriginalCcoverage = true;
         }
         List<Integer> peptideStarts = new ArrayList<Integer>();
         List<Integer> peptideEnds = new ArrayList<Integer>();
         coverage = new int[proteinSequence.length() + 1];
+        domains = new int[proteinSequence.length() + 1];
         Peptide peptide;
-        while (peptideGroups.hasNext()) {
-            PeptideGroup peptideGroup = peptideGroups.next();
+        for (PeptideGroup peptideGroup : protein.getPeptideGroupsForProtein()) {
             peptide = peptideGroup.getShortestPeptide();
             int tempPeptideStart = proteinSequence.indexOf(peptide.getSequence());
             int tempPeptideEnd = tempPeptideStart + peptide.getSequence().length();
-            tempPeptideStart = tempPeptideStart + 1;
+            tempPeptideStart += 1;
 
             for (int j = tempPeptideStart; j <= tempPeptideEnd; j++) {
                 coverage[j]++;
@@ -60,10 +60,15 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
             peptideStarts.add(tempPeptideStart);
             peptideEnds.add(tempPeptideEnd);
         }
-        formatProteinSequence(proteinCoveragePane, proteinSequence, peptideStarts, peptideEnds, coverage);
+        for (Domain proteinDomains : protein.getDomains()) {
+            for (int j = proteinDomains.getStartPosition(); j <= proteinDomains.getStopPosition(); j++) {
+                domains[j]++;
+            }
+        }
+        formatProteinSequence(proteinCoveragePane, proteinSequence, peptideStarts, peptideEnds, coverage, domains);
     }
 
-    public static double formatProteinSequence(JEditorPane editorPane, String cleanSequence, List<Integer> selectedPeptideStart, List<Integer> selectedPeptideEnd, int[] coverage) {
+    public static double formatProteinSequence(JEditorPane editorPane, String cleanSequence, List<Integer> selectedPeptideStart, List<Integer> selectedPeptideEnd, int[] coverage, int[] domains) {
 
         if (cleanSequence.length() != coverage.length - 1) {
             throw new IllegalArgumentException("The length of the coverage map has to be equal to the length of the sequence + 1!");
@@ -146,6 +151,16 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
 
                 previousAminoAcidWasSelected = true;
 
+            } else if (domains[i] > 0) {
+                    if (i % 10 == 1) {
+                    currentCellSequence += "<span style=\"background:#333333\">" + cleanSequence.charAt(i - 1);
+                } else {
+                    if (previousAminoAcidWasSelected) {
+                        currentCellSequence += cleanSequence.charAt(i - 1);
+                    } else {
+                        currentCellSequence += "</span><span style=\"background:#333333\">" + cleanSequence.charAt(i - 1);
+                    }
+                }
             } else {
 
                 previousAminoAcidWasSelected = false;
@@ -272,8 +287,8 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
     }
 
     void setOriginalCoverage() {
-        if (originalProteinSequence != null && originalPeptideGroupIterator != null && !isOriginalCcoverage) {
-            showProteinCoverage(originalProteinSequence, originalPeptideGroupIterator, true);
+        if (originalProtein != null && !isOriginalCcoverage) {
+            showProteinCoverage(originalProtein.getProteinSequence(), originalProtein, true);
         }
     }
 

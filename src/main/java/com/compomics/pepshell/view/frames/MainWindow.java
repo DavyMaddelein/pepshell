@@ -20,9 +20,6 @@ import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.view.panels.AccessionMaskDialog;
 import com.compomics.pepshell.view.panels.CombinedLoginDialog;
 import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
-import com.compomics.pepshell.view.panels.statistics.CleavingProbabilityPane;
-import com.compomics.pepshell.view.panels.statistics.JFreeChartPanel;
-import com.compomics.pepshell.view.panels.statistics.RatioStatisticsPane;
 import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -60,31 +57,13 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             //JOptionpane ask about wanting to connect to link db
             askLinkDbLoginQuestion();
         }
-        this.setEnabled(false);
         for (AnalysisGroup experiments : analysisList) {
             ViewPreparation prep = DataModeController.getDb().getDataMode().getViewPreparationForMode();
             prep.start(referenceExperiment, experiments.getExperiments().iterator(), false);
             prep.addObserver(this);
             proteinDetailPanel.setReferenceExperiment(referenceExperiment);
             proteinDetailPanel.setExperimentsToDisplay(experiments.getExperiments(), false);
-            //when changed to a tab pane for multiple statistical views, replace with method that fills tabbed pane
-            CleavingProbabilityPane cleavingProbabilityPane = new CleavingProbabilityPane(referenceExperiment);
-            statisticsTabbedPane.add(cleavingProbabilityPane);
-            //CPDTScrollPane.setViewportView(cleavingProbabilityPane);
-//            GridBagConstraints tempConstraints = new GridBagConstraints();
-//            tempConstraints.fill = GridBagConstraints.NONE;
-//            tempConstraints.gridx = 0;
-//            tempConstraints.gridy = 0;
-            RatioStatisticsPane ratioStatisticsPane = new RatioStatisticsPane(experiments.getExperiments());
-            statisticsTabbedPane.add(ratioStatisticsPane);
-            //use this when needing to add more than one pane with data
-            /**
-             * int counter = 0; for (Experiment anExperiment :
-             * experiments.getExperiments()) { tempConstraints.gridy = (int)
-             * Math.floor(counter / 2); tempConstraints.gridx = counter % 2;
-             * CPDTStatisticsPanel.add(new CPDTStatisticsPane(anExperiment),
-             * tempConstraints); counter++; }
-             */
+            statisticsTabbedPane.setAnalysisGroupToDisplay(referenceExperiment, experiments);
         }
 
 //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
@@ -96,7 +75,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         pdbProteinListScrollPane.setViewportView(pdbProteinList);
         proteinList1.setListData(proteinsToDisplay.toArray());
         proteinListScrollPane1.setViewportView(proteinList1);
-        this.setEnabled(true);
     }
 
 //    @TODO remove this method
@@ -144,8 +122,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         proteinListScrollPane1 = new javax.swing.JScrollPane();
         proteinList1 = new javax.swing.JList();
         filterTextField1 = new javax.swing.JTextField();
-        statisticsTabbedPane = new javax.swing.JTabbedPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        statisticsTabbedPane = new com.compomics.pepshell.view.panels.StatisticsTabPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newViewMenuItem = new javax.swing.JMenuItem();
@@ -163,7 +140,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         setTitle("Comparison window");
         setBackground(new java.awt.Color(255, 255, 255));
         setForeground(java.awt.Color.white);
-        setPreferredSize(new java.awt.Dimension(1200, 800));
 
         tabsPane.setBackground(new java.awt.Color(255, 255, 255));
         tabsPane.setMinimumSize(new java.awt.Dimension(220, 220));
@@ -364,7 +340,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap())
         );
 
-        statisticsTabbedPane.addTab("tab2", jScrollPane1);
+        statisticsTabbedPane.setGraphData(null);
 
         javax.swing.GroupLayout statisticsPanelLayout = new javax.swing.GroupLayout(statisticsPanel);
         statisticsPanel.setLayout(statisticsPanelLayout);
@@ -373,15 +349,16 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             .addGroup(statisticsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(proteinsOverviewPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1022, Short.MAX_VALUE)
                 .addContainerGap())
         );
         statisticsPanelLayout.setVerticalGroup(
             statisticsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(proteinsOverviewPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(statisticsPanelLayout.createSequentialGroup()
-                .addComponent(statisticsTabbedPane)
+                .addContainerGap()
+                .addComponent(statisticsTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -537,15 +514,23 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void uniProtRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uniProtRadioButtonMenuItemActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        for (final Protein aProtein : proteinsToDisplay) {
-            try {
-                aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
-            } catch (IOException | ConversionException ex) {
-                FaultBarrier.getInstance().handleException(ex);
+        new Runnable() {
+            @Override
+            public void run() {
+                for (final Protein aProtein : proteinsToDisplay) {
+                    try {
+                        aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
+                        proteinList.revalidate();
+                        proteinList.repaint();
+                    } catch (IOException | ConversionException ex) {
+                        FaultBarrier.getInstance().handleException(ex);
+                    }
+
+                };
+                proteinList.revalidate();
+                proteinList.repaint();
             }
-            proteinList.revalidate();
-            proteinList.repaint();
-        }
+        }.run();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         this.revalidate();
         this.repaint();
@@ -615,13 +600,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void proteinList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinList1MouseReleased
         // TODO add your handling code here:
-        for (int i = 0; i < statisticsTabbedPane.getComponentCount(); i++) {
-            if (statisticsTabbedPane.getComponentAt(i) instanceof JFreeChartPanel) {
-                ((JFreeChartPanel) statisticsTabbedPane.getComponentAt(i)).setGraphData((Protein) proteinList1.getSelectedValue());
-            }
-        }
-
-
+        
+        statisticsTabbedPane.setGraphData((Protein) proteinList1.getSelectedValue());
     }//GEN-LAST:event_proteinList1MouseReleased
 
     private void filterTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_filterTextField1FocusGained
@@ -640,7 +620,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JTextField filterTextField;
     private javax.swing.JTextField filterTextField1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private com.compomics.pepshell.view.panels.JmolPanel jmolPanel;
     private javax.swing.JPanel mainViewPanel;
     private javax.swing.JMenuItem newViewMenuItem;
@@ -661,7 +640,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenuItem saveToExcelMenuItem;
     private javax.swing.JMenuItem setAccessionMaskOption;
     private javax.swing.JPanel statisticsPanel;
-    private javax.swing.JTabbedPane statisticsTabbedPane;
+    private com.compomics.pepshell.view.panels.StatisticsTabPane statisticsTabbedPane;
     private javax.swing.JTabbedPane tabsPane;
     private javax.swing.JRadioButtonMenuItem uniProtRadioButtonMenuItem;
     // End of variables declaration//GEN-END:variables

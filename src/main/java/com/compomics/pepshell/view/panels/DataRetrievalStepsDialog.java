@@ -8,6 +8,8 @@ import com.compomics.pepshell.view.componentmodels.DataRetrievalStepsDialogListC
 import com.google.common.collect.Lists;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -20,7 +22,9 @@ import javax.swing.DefaultListModel;
 public class DataRetrievalStepsDialog extends javax.swing.JDialog {
 
     private static LinkedList<DataRetrievalStep> retrievalSteps = new LinkedList<>();
-    private DefaultListModel<DataRetrievalStep> listModel = new DefaultListModel<>();
+    private DefaultListModel<DataRetrievalStep> enabledListModel = new DefaultListModel<>();
+    private DefaultListModel<DataRetrievalStep> disabledListModel = new DefaultListModel<>();
+    private DataRetrievalStepComparator dataRetrievalStepComparator = new DataRetrievalStepComparator();
 
     /**
      * Creates new form DataRetrievalStepsDialog
@@ -50,9 +54,13 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        retrievalStepsList = new javax.swing.JList<DataRetrievalStep>();
-        disableStepsButton = new javax.swing.JButton();
+        disabledStepsList = new javax.swing.JList<DataRetrievalStep>();
         enableStepsButton = new javax.swing.JButton();
+        disableStepsButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        enabledStepsList = new javax.swing.JList<DataRetrievalStep>();
+        disabledLabel = new javax.swing.JLabel();
+        enabledLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("data retrieval order");
@@ -81,9 +89,9 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(acceptStepsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,34 +106,40 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("drag and drop order"));
         jPanel2.setOpaque(false);
 
-        retrievalStepsList.setModel(new javax.swing.AbstractListModel() {
+        disabledStepsList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        retrievalStepsList.setCellRenderer(new DataRetrievalStepsDialogListCellRenderer());
-        retrievalStepsList.setDragEnabled(true);
-        retrievalStepsList.setDropMode(javax.swing.DropMode.ON_OR_INSERT);
-        retrievalStepsList.addMouseListener(new java.awt.event.MouseAdapter() {
+        disabledStepsList.setCellRenderer(new DataRetrievalStepsDialogListCellRenderer());
+        disabledStepsList.setDragEnabled(true);
+        disabledStepsList.setDropMode(javax.swing.DropMode.ON_OR_INSERT);
+        disabledStepsList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                retrievalStepsListMouseClicked(evt);
+                disabledStepsListMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(retrievalStepsList);
+        jScrollPane1.setViewportView(disabledStepsList);
 
-        disableStepsButton.setText("disable selected step(s)");
+        enableStepsButton.setText("=>");
+        enableStepsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableStepsButtonActionPerformed(evt);
+            }
+        });
+
+        disableStepsButton.setText("<=");
         disableStepsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 disableStepsButtonActionPerformed(evt);
             }
         });
 
-        enableStepsButton.setText("enable selected step(s)");
-        enableStepsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableStepsButtonActionPerformed(evt);
-            }
-        });
+        jScrollPane2.setViewportView(enabledStepsList);
+
+        disabledLabel.setText("disabled");
+
+        enabledLabel.setText("enabled");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -133,26 +147,40 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(disableStepsButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(enableStepsButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(enableStepsButton)
+                            .addComponent(disableStepsButton)))
+                    .addComponent(disabledLabel))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(enabledLabel)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(66, 66, 66)
+                .addComponent(enableStepsButton)
+                .addGap(18, 18, 18)
+                .addComponent(disableStepsButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(54, 54, 54)
-                        .addComponent(disableStepsButton)
-                        .addGap(29, 29, 29)
-                        .addComponent(enableStepsButton))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(disabledLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(enabledLabel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -179,38 +207,49 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void disableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disableStepsButtonActionPerformed
-
-        for (int i = 0; i < listModel.getSize(); i++) {
-            if (retrievalStepsList.getSelectionModel().isSelectedIndex(i)) {
-                retrievalStepsList.getModel().getElementAt(i).setExecute(false);
-                retrievalSteps.remove((retrievalStepsList.getModel()).getElementAt(i));
-            }
-        }
-        retrievalStepsList.repaint();
-    }//GEN-LAST:event_disableStepsButtonActionPerformed
-
     private void enableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableStepsButtonActionPerformed
-        // TODO add your handling code here:
-        retrievalSteps.clear();
-        for (int i = 0; i < listModel.getSize(); i++) {
-            if (retrievalStepsList.getSelectionModel().isSelectedIndex(i) || retrievalStepsList.getModel().getElementAt(i).executeStep()) {
-                retrievalSteps.add(retrievalStepsList.getModel().getElementAt(i));
-                if (retrievalStepsList.getSelectionModel().isSelectedIndex(i)) {
-                    //visual representation of going to execute
-                    retrievalStepsList.getModel().getElementAt(i).setExecute(true);
-                }
+        enabledListModel.clear();
+        for (int i = 0; i < disabledListModel.getSize(); i++) {
+            if (disabledStepsList.getSelectionModel().isSelectedIndex(i)) {
+                disabledStepsList.getModel().getElementAt(i).setExecute(true);
+                retrievalSteps.add((disabledStepsList.getModel()).getElementAt(i));
+                disabledListModel.remove(i);
             }
         }
-        retrievalStepsList.repaint();
+        Collections.sort(retrievalSteps, dataRetrievalStepComparator);
+        for (DataRetrievalStep aStep : retrievalSteps) {
+            enabledListModel.addElement(aStep);
+        }
+        disabledStepsList.repaint();
+        enabledStepsList.repaint();
     }//GEN-LAST:event_enableStepsButtonActionPerformed
 
-    private void retrievalStepsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_retrievalStepsListMouseClicked
+    private void disableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disableStepsButtonActionPerformed
+        // TODO add your handling code here:
+        retrievalSteps.clear();
+        for (int i = 0; i < enabledListModel.getSize(); i++) {
+            if (!enabledStepsList.getSelectionModel().isSelectedIndex(i)) {
+                retrievalSteps.add(enabledStepsList.getModel().getElementAt(i));
+            } else {
+                disabledListModel.addElement(enabledStepsList.getModel().getElementAt(i));
+                enabledListModel.remove(i);
+            }
+            enabledListModel.clear();
+            Collections.sort(retrievalSteps, dataRetrievalStepComparator);
+            for (DataRetrievalStep aStep : retrievalSteps) {
+                enabledListModel.addElement(aStep);
+            }
+        }
+        enabledStepsList.repaint();
+        disabledStepsList.repaint();
+    }//GEN-LAST:event_disableStepsButtonActionPerformed
+
+    private void disabledStepsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_disabledStepsListMouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
             //retrievalStepsList.gets
         }
-    }//GEN-LAST:event_retrievalStepsListMouseClicked
+    }//GEN-LAST:event_disabledStepsListMouseClicked
 
     private void acceptStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptStepsButtonActionPerformed
         // TODO add your handling code here:
@@ -228,20 +267,29 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
     private javax.swing.JButton acceptStepsButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton disableStepsButton;
+    private javax.swing.JLabel disabledLabel;
+    private javax.swing.JList<DataRetrievalStep> disabledStepsList;
     private javax.swing.JButton enableStepsButton;
+    private javax.swing.JLabel enabledLabel;
+    private javax.swing.JList<DataRetrievalStep> enabledStepsList;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList<DataRetrievalStep> retrievalStepsList;
+    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 
     private void fillRetrievalStepsList() {
-        List<String> failedToLoadList = new ArrayList<>();
-
+        List<DataRetrievalStep> loadedEnabledList = new ArrayList<>();
+        List<DataRetrievalStep> loadedDisabledList = new ArrayList<>();
         for (Entry aClassReference : ProgramProperties.getInstance().getProperties().entrySet()) {
             try {
                 if (aClassReference.getValue() instanceof String) {
-                    listModel.addElement((DataRetrievalStep) ClassLoader.getSystemClassLoader().loadClass((String) aClassReference.getValue()).newInstance());
+                    DataRetrievalStep step = (DataRetrievalStep) ClassLoader.getSystemClassLoader().loadClass((String) aClassReference.getValue()).newInstance();
+                    if (DataModeController.getDb().getDataMode().getViewPreparationForMode().getDataRetrievalSteps().contains(step)) {
+                        loadedEnabledList.add(step);
+                    } else {
+                        loadedDisabledList.add(step);
+                    }
                 } else {
                     throw new ClassCastException("can only load string references to classes and retrieval steps");
                 }
@@ -249,15 +297,28 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
                 FaultBarrier.getInstance().handleException(ex);
             }
         }
-        retrievalStepsList.setModel(listModel);
-        if (!retrievalSteps.isEmpty()) {
-            for (DataRetrievalStep aStep : retrievalSteps) {
-
-            }
+        Collections.sort(loadedEnabledList, dataRetrievalStepComparator);
+        for (DataRetrievalStep aStep : loadedEnabledList) {
+            enabledListModel.addElement(aStep);
         }
+
+        Collections.sort(loadedDisabledList, dataRetrievalStepComparator);
+        for (DataRetrievalStep aStep : loadedDisabledList) {
+            disabledListModel.addElement(aStep);
+        }
+        enabledStepsList.setModel(enabledListModel);
+        disabledStepsList.setModel(disabledListModel);
     }
 
     public LinkedList<DataRetrievalStep> getRetrievalSteps() {
         return Lists.newLinkedList(retrievalSteps);
+    }
+
+    private class DataRetrievalStepComparator implements Comparator<DataRetrievalStep> {
+
+        @Override
+        public int compare(DataRetrievalStep o1, DataRetrievalStep o2) {
+            return o1.getRetrievalStepDescription().compareTo(o2.getRetrievalStepDescription());
+        }
     }
 }

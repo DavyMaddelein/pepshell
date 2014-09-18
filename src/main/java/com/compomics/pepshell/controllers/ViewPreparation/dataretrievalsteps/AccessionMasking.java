@@ -51,7 +51,7 @@ public class AccessionMasking extends DataRetrievalStep {
     }
 
     @Override
-    public String toString() {
+    public String getRetrievalStepDescription() {
         return "Accession Masking";
     }
 }

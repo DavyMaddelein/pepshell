@@ -56,7 +56,7 @@ public class AccessionConverting extends DataRetrievalStep {
     }
 
     @Override
-    public String toString() {
+    public String getRetrievalStepDescription() {
         return "Convert Accessions";
     }
 }

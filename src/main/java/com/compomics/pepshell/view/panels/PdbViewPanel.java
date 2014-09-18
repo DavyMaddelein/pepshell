@@ -17,7 +17,7 @@ import org.jmol.api.JmolViewer;
  */
 public class PdbViewPanel extends javax.swing.JPanel {
 
-    private JmolSimpleViewer viewer;
+    private final JmolSimpleViewer viewer;
     private JmolAdapter jMolAdapter = new SmarterJmolAdapter();
     private PDBFileReader pdbr = new PDBFileReader();
 
@@ -39,6 +39,8 @@ public class PdbViewPanel extends javax.swing.JPanel {
         //viewer.openFile(PDBProperties.getInstance().getProperty(PDBPropertyEnum.FILELOCATION.getKey())+"/"+((String)PDBFileComboBox.getSelectedItem()));
         //} else{
         viewer.openStringInline(PDBDAO.getPdbFileInMem(pdbName));
+        viewer.evalString(pdbName);
+        viewer.evalString("wireframe off; spacefill off; cartoon on");
         //}
         this.repaint();
     }
@@ -50,6 +52,14 @@ public class PdbViewPanel extends javax.swing.JPanel {
             viewer.renderScreenImage(grphcs, this.getWidth(), this.getHeight());
         }
         //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public JmolSimpleViewer getViewer(){
+        return viewer;
+    }
+    
+    public void executeScript(String jmolScript){
+        viewer.evalString(jmolScript);
     }
 
     /**

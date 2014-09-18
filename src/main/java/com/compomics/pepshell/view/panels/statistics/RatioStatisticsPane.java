@@ -14,7 +14,6 @@ import com.compomics.pepshell.model.exceptions.CalculationException;
 import static com.compomics.pepshell.view.panels.statistics.JFreeChartPanel.prettifyChart;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,7 @@ public class RatioStatisticsPane extends JFreeChartPanel {
             if (aProtein != currentProtein) {
                 //TODO: run this outside of the gui thread
                 CategoryDataset dataset = createRatioDataset(aProtein);
-                JFreeChart CPDTchart = ChartFactory.createBarChart("log ratios of peptides on a protein", aProtein.getProteinAccession(), "log ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
+                JFreeChart CPDTchart = ChartFactory.createBarChart("log 2 ratios of peptides on a protein", aProtein.getProteinAccession(), "log 2 ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
                 prettifyChart(CPDTchart);
                 chart.setChart(CPDTchart);
 

@@ -35,6 +35,9 @@ public class ExperimentPanel extends javax.swing.JPanel {
     private String experimentName;
     private boolean nameChanged = false;
     private BufferedImage cachedImage;
+    private int startingZoomCoordinate;
+    private int endingZoomCoordinate;
+    private double scale;
 
     /**
      * Creates new form PeptidesProteinsOverlapGUI
@@ -97,7 +100,18 @@ public class ExperimentPanel extends javax.swing.JPanel {
         setMaximumSize(new java.awt.Dimension(1000, 65));
         setMinimumSize(new java.awt.Dimension(1000, 65));
         setPreferredSize(new java.awt.Dimension(1000, 65));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                formMouseDragged(evt);
+            }
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);
             }
@@ -143,7 +157,11 @@ public class ExperimentPanel extends javax.swing.JPanel {
             while (peptideGroupIter.hasNext()) {
                 PeptideGroup peptideGroup = peptideGroupIter.next();
                 if (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * ProgramVariables.SCALE)) {
-                    ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), peptideGroup);
+                    //dirty
+                    Protein aProtein = new Protein(protein.getProteinSequence());
+                    aProtein.addDomains(protein.getDomains());
+                    aProtein.addPeptideGroup(peptideGroup);
+                    ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), aProtein);
                 }
             }
         }
@@ -177,6 +195,32 @@ public class ExperimentPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        // TODO add your handling code here:
+        endingZoomCoordinate = evt.getX() + 15;
+        //checks
+        //if( )
+        Double tempScale = (double) (endingZoomCoordinate / startingZoomCoordinate);
+        if (tempScale < 1) {
+            //dragged to the left
+            scale = tempScale;
+        } else {
+            scale = 1 / tempScale;
+        }
+
+
+    }//GEN-LAST:event_formMouseDragged
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formMouseClicked
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        // TODO add your handling code here:
+        startingZoomCoordinate = evt.getX() + 15;
+
+    }//GEN-LAST:event_formMousePressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu experimentPopupMenu;
     private javax.swing.JComboBox jComboBox1;
@@ -205,7 +249,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
                     BufferedImage tempImage = new BufferedImage(horizontalBarSize + 5, ProgramVariables.VERTICALSIZE + 10, BufferedImage.TYPE_INT_ARGB);
                     try {
                         //proteinDrawMode.drawProtein(protein, tempImage.getGraphics(), 0, 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
-                            proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                        proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
                     } catch (UndrawableException ex) {
                         FaultBarrier.getInstance().handleException(ex);
                     }
@@ -213,9 +257,9 @@ public class ExperimentPanel extends javax.swing.JPanel {
                     while (peptideGroups.hasNext()) {
                         PeptideGroup aPeptideGroup = peptideGroups.next();
                         try {
-                        //    peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), tempImage.getGraphics(), 0, 5, ProgramVariables.VERTICALSIZE);
+                            //    peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), tempImage.getGraphics(), 0, 5, ProgramVariables.VERTICALSIZE);
                             peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
-                       } catch (Exception ex) {
+                        } catch (Exception ex) {
                         }
                     }
                     //cachedImage = tempImage;

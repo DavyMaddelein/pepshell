@@ -72,6 +72,7 @@ public class LinkDb implements StructureDataSource {
     }
 
     //todo, add domain data for protein to link db
+    @Override
     public List<Domain> getDomainData(Protein aProtein) throws DataRetrievalException {
         List<Domain> foundDomains = new ArrayList<>();
         //try and get from link db, 
@@ -88,8 +89,9 @@ public class LinkDb implements StructureDataSource {
         return foundDomains;
     }
 
+    @Override
     public List<InteractionPartner> getInteractionPartnersForRange(Protein aProtein, int start, int stop) {
-        List<InteractionPartner> interactionPartnerList = new ArrayList<InteractionPartner>();
+        List<InteractionPartner> interactionPartnerList = new ArrayList<>();
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getInteractionPartnersForRange());
@@ -108,8 +110,9 @@ public class LinkDb implements StructureDataSource {
         return interactionPartnerList;
     }
 
+    @Override
     public List<InteractionPartner> getInteractionPartners(Protein aProtein) {
-        List<InteractionPartner> interactionPartnerList = new ArrayList<InteractionPartner>();
+        List<InteractionPartner> interactionPartnerList = new ArrayList<>();
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getInteractionPartnersForResidue());
@@ -126,16 +129,19 @@ public class LinkDb implements StructureDataSource {
         return interactionPartnerList;
     }
 
+    @Override
     public boolean isAbleToGetFreeEnergy() {
         return true;
     }
 
+    @Override
     public boolean isAbleToGetSolventAccessibility() {
         return true;
     }
 
+    @Override
     public Map<Integer, Double> getFreeEnergyForStructure(Protein protein, String pdbAccession) {
-        Map<Integer, Double> freeEnergyValues = new HashMap<Integer, Double>();
+        Map<Integer, Double> freeEnergyValues = new HashMap<>();
 
         PreparedStatement stat = null;
         try {
@@ -190,8 +196,9 @@ public class LinkDb implements StructureDataSource {
         return relSasValues;
     }
 
+    @Override
     public Map<Integer, String> getSecondaryStructureForStructure(Protein protein, String pdbAccession) {
-        Map<Integer, String> secondaryStructureValues = new HashMap<Integer, String>();
+        Map<Integer, String> secondaryStructureValues = new HashMap<>();
 
         PreparedStatement stat = null;
         try {
@@ -221,15 +228,15 @@ public class LinkDb implements StructureDataSource {
             try {
                 UniprotSecondaryStructurePrediction structurePredictor = new UniprotSecondaryStructurePrediction();
                 structurePredictor.getPrediction(AccessionConverter.toUniprot(protein.getVisibleAccession()));
-            } catch (IOException ex) {
-            } catch (ConversionException ex) {
+            } catch (IOException | ConversionException ex) {
             }
         }
         return secondaryStructureValues;
     }
 
+    @Override
     public List<InteractionPartner> getInteractionPartnersForPDBName(String pdbName) {
-        List<InteractionPartner> interactionPartnerList = new ArrayList<InteractionPartner>();
+        List<InteractionPartner> interactionPartnerList = new ArrayList<>();
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getInteractionPartnersForPDB());
@@ -246,12 +253,13 @@ public class LinkDb implements StructureDataSource {
         return interactionPartnerList;
     }
 
+    @Override
     public StructureDataSource getInstance() {
         return new LinkDb();
     }
 
     public Set<PdbInfo> getPDBInfoForProtein(Protein protein) {
-        Set<PdbInfo> infoSet = new HashSet<PdbInfo>();
+        Set<PdbInfo> infoSet = new HashSet<>();
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbInfoForProtein());
@@ -286,6 +294,7 @@ public class LinkDb implements StructureDataSource {
         return infoSet;
     }
 
+    @Override
     public Set<PdbInfo> getPdbInforForProtein(Protein protein, Comparator<PdbInfo> sortingComparator) {
         Set<PdbInfo> info = getPDBInfoForProtein(protein);
         if (sortingComparator != null) {
@@ -296,6 +305,7 @@ public class LinkDb implements StructureDataSource {
         return info;
     }
 
+    @Override
     public boolean isAbleTogetSecondaryStructure() {
         return true;
     }

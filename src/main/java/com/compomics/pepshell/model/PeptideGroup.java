@@ -13,7 +13,7 @@ public class PeptideGroup {
     private int startingAlignmentPosition;
     private int endAlignmentPostition;
     private int shortestPeptideIndex = -1;
-    private List<Peptide> listOfPeptides = new ArrayList<>();
+    private final List<Peptide> listOfPeptides = new ArrayList<>();
 
     public PeptideGroup() {
         super();
@@ -47,13 +47,13 @@ public class PeptideGroup {
         return Collections.unmodifiableList(listOfPeptides);
     }
 
-    public void addPeptide(Peptide aPeptide) {
+    public PeptideGroup addPeptide(Peptide aPeptide) {
         if (!listOfPeptides.contains(aPeptide)) {
             listOfPeptides.add(aPeptide);
         } else {
             listOfPeptides.get(listOfPeptides.indexOf(aPeptide)).incrementTimesFound();
         }
-
+        return this;
     }
 
     public void setAlignmentPositions(int startingAlignmentPosition, int lastAlignmentPosition) {
@@ -66,7 +66,7 @@ public class PeptideGroup {
         return this.getShortestPeptide().getSequence();
     }
 
-    public void addPeptides(List<Peptide> peptideList) {
+    public PeptideGroup addPeptides(List<Peptide> peptideList) {
         for (Peptide aPeptide : peptideList) {
             if (!listOfPeptides.contains(aPeptide)) {
                 listOfPeptides.add(aPeptide);
@@ -74,7 +74,7 @@ public class PeptideGroup {
                 listOfPeptides.get(listOfPeptides.indexOf(aPeptide)).incrementTimesFound();
             }
         }
-
+        return this;
     }
 
     @Override

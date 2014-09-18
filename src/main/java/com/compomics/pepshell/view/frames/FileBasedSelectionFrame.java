@@ -11,14 +11,14 @@ import javax.swing.JOptionPane;
  *
  * @author Davy
  */
-public class OfflineFileSelectionFrame extends javax.swing.JFrame {
+public class FileBasedSelectionFrame extends javax.swing.JFrame {
 
     private File fastaFile;
 
     /**
      * Creates new form OfflineFileSelectionFrame
      */
-    public OfflineFileSelectionFrame() {
+    public FileBasedSelectionFrame() {
         initComponents();
         this.validate();
         this.repaint();
@@ -99,7 +99,7 @@ public class OfflineFileSelectionFrame extends javax.swing.JFrame {
         peptideFileTreePanelLayout.setHorizontalGroup(
             peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
-                .addGap(javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE)
+                .addContainerGap()
                 .addGroup(peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
                     .addComponent(jButton2))

@@ -23,14 +23,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Davy
- * @param <T>
- * @param <V>
+ * @param <T> the type of experiment
+ * @param <V> the type of protein
  */
 public class DataRetrievalForFasta<T extends Experiment, V extends Protein> extends ViewPreparation<T, V> implements Observer {
 
@@ -47,7 +45,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
                 referenceExperiment.addProteins(DbDAO.fetchProteins(referenceExperiment));
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 setIntensityValuesForExperiment(referenceExperiment);
-            } else {
+            } else if (DataModeController.getDataSource() == DataModeController.DataSource.FILE) {
                 if (linkedSteps.indexOf(new CPDTAnalysis()) < 0) {
                     linkedSteps.add(new CPDTAnalysis());
                 }
@@ -76,7 +74,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
                 checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
             }
         } catch (FastaCouldNotBeReadException ex) {
-            FaultBarrier.getInstance().handleException(ex);
+            FaultBarrier.getInstance().handleException(ex, false);
         } catch (FileNotFoundException ex) {
             FaultBarrier.getInstance().handleException(ex);
         } catch (IOException | SQLException ex) {
@@ -119,7 +117,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
         try {
             new WaitForFutures(experiment, this).execute();
         } catch (Exception ex) {
-            Logger.getLogger(DataRetrievalForFasta.class.getName()).log(Level.SEVERE, null, ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
     }
 
@@ -129,6 +127,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
             for (PeptideGroup aPeptideGroup : aProtein.getPeptideGroupsForProtein()) {
                 for (Peptide aPeptide : aPeptideGroup.getPeptideList()) {
                     double currentIntensity = aPeptide.getTotalSpectrumIntensity();
+                    //intensities
                     if (currentIntensity < experiment.getMinIntensity() || experiment.getMinIntensity() == 0.0) {
                         experiment.setMinIntensity(currentIntensity);
                     }
@@ -136,6 +135,7 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
                     if (currentIntensity > experiment.getMaxIntensity() || experiment.getMaxIntensity() == 0.0) {
                         experiment.setMaxIntensity(currentIntensity);
                     }
+                    //ratios
                     if (aPeptide instanceof QuantedPeptide) {
                         Double currentRatio = ((QuantedPeptide) aPeptide).getRatio();
                         //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass

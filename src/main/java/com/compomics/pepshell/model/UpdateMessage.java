@@ -19,11 +19,11 @@ public class UpdateMessage {
 
     /**
      * creates an update message object to notify various levels in the program
-     * @param repaint boolean to flag repainting gui
+     * @param dataVisiblyChanged boolean to flag repainting gui
      * @param aMessage update message, ignores nulls
      */
-    public UpdateMessage(boolean repaint, String aMessage) {
-        this.repaint = repaint;
+    public UpdateMessage(boolean dataVisiblyChanged, String aMessage) {
+        this.repaint = dataVisiblyChanged;
         if (aMessage != null) {
             this.message = aMessage;
         }

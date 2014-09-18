@@ -40,6 +40,11 @@ public class ReferenceProteinDrawPanel extends JPanel {
      * The peptide draw mode
      */
     private DrawModeInterface peptideDrawMode;
+
+    /**
+     * the domain draw mode
+     */
+    private DrawModeInterface domainBackgroundDrawMode;
     /**
      * The secondary draw mode
      */
@@ -54,7 +59,7 @@ public class ReferenceProteinDrawPanel extends JPanel {
     private DrawModeInterface domainDrawMode;
 
     /**
-     *the CPDT cleavage algorithm draw mode
+     * the CPDT cleavage algorithm draw mode
      */
     private DrawModeInterface cpdtDrawMode;
 
@@ -67,6 +72,7 @@ public class ReferenceProteinDrawPanel extends JPanel {
         secondaryDrawMode = new HydrophobicityProteinDrawMode();
         domainDrawMode = new DomainProteinDrawMode();
         cpdtDrawMode = new CPDTCleavedProteinDrawMode();
+        domainBackgroundDrawMode = new DomainProteinDrawMode();
 
         setOpaque(false);
     }
@@ -141,7 +147,13 @@ public class ReferenceProteinDrawPanel extends JPanel {
 
         if (protein != null) {
             try {
+                //draw domains
+
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
+
+                if (!protein.getDomains().isEmpty()) {
+                    domainBackgroundDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 50, scaledHorizontalBarSize, this.getHeight(),0.08f);
+                }
 
                 proteinDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 25, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
                 for (PeptideGroup aGroup : protein.getPeptideGroupsForProtein()) {
@@ -167,8 +179,8 @@ public class ReferenceProteinDrawPanel extends JPanel {
                 try {
                     g.drawString("CPDT", HORIZONTAL_OFFSET + scaledHorizontalBarSize + 15, VERTICAL_OFFSET + 87);
                     cpdtDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 75, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
-                    for (PeptideGroup aCPDTGroup: protein.getCPDTPeptideGroups()){
-                        cpdtDrawMode.drawPeptide(aCPDTGroup.getShortestPeptide(), g,  HORIZONTAL_OFFSET, VERTICAL_OFFSET + 75, ProgramVariables.VERTICALSIZE);
+                    for (PeptideGroup aCPDTGroup : protein.getCPDTPeptideGroups()) {
+                        cpdtDrawMode.drawPeptide(aCPDTGroup.getShortestPeptide(), g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 75, ProgramVariables.VERTICALSIZE);
                     }
                 } catch (UndrawableException ex) {
 
@@ -178,5 +190,4 @@ public class ReferenceProteinDrawPanel extends JPanel {
             }
         }
     }
-
 }

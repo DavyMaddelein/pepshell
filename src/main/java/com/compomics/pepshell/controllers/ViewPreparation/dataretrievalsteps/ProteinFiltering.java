@@ -4,6 +4,7 @@ import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.filters.FilterParent;
 import com.compomics.pepshell.controllers.filters.NaiveFilter;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.UpdateMessage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +45,9 @@ public class ProteinFiltering extends DataRetrievalStep {
         List<Protein> returnList = proteinList;
         if (!filterList.isEmpty()) {
             this.setChanged();
-            this.notifyObservers("filtering protein list");
+            this.notifyObservers(new UpdateMessage(false, "filtering protein list"));
             returnList = filter.filter(proteinList, filterList);
-            this.notifyObservers("done filtering");
+            this.notifyObservers(new UpdateMessage(true, "done filtering"));
 
         }
         return returnList;
@@ -54,7 +55,7 @@ public class ProteinFiltering extends DataRetrievalStep {
     }
 
     @Override
-    public String toString() {
+    public String getRetrievalStepDescription() {
         return "Protein Filtering";
     }
 }

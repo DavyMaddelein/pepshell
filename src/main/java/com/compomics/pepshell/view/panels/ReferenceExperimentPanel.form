@@ -113,7 +113,6 @@
         <Component class="javax.swing.JCheckBox" name="quantCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="show quantitfied range"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="quantCheckBoxActionPerformed"/>
@@ -174,7 +173,6 @@
           <Border info="null"/>
         </Property>
         <Property name="verticalScrollBarPolicy" type="int" value="21"/>
-        <Property name="opaque" type="boolean" value="false"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
@@ -185,6 +183,11 @@
               <Dimension value="[0, 135]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="referenceProteinDrawPanelMouseClicked"/>
+            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="referenceProteinDrawPanelMousePressed"/>
+            <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="referenceProteinDrawPanelMouseDragged"/>
+          </Events>
 
           <Layout>
             <DimensionLayout dim="0">

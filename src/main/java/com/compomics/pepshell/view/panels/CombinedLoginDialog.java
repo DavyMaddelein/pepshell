@@ -7,6 +7,7 @@ import com.compomics.pepshell.controllers.properties.DatabaseProperties;
 import com.compomics.pepshell.model.Property;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.view.frames.ExperimentSelectionFrame;
+import com.compomics.pepshell.view.frames.FileBasedSelectionFrame;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -44,8 +45,7 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
     private void init() {
         //select dbSelectionRadioButton
         dbSelectionRadioButton.setSelected(true);
-        //@TODO enable this again as soon as it works
-        fastaSelectionRadioButton.setEnabled(false);
+        fastaSelectionRadioButton.setEnabled(true);
 
         //set card names
         modeSelectionPanel.setName(MODE_SELECTION_CARD);
@@ -64,7 +64,8 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
                             //go to the next card
                             getCardLayout().next(topPanel);
                         } else if (fastaSelectionRadioButton.isSelected()) {
-                            //do nothing for the moment
+                            dispose();
+                            new FileBasedSelectionFrame();
                         }
                         break;
                     case DB_LOGIN_CARD:
@@ -476,7 +477,6 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void proceedButtonKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_proceedButtonKeyTyped
-        // TODO add your handling code here:
         if (evt.getKeyChar() == KeyEvent.VK_ENTER) {
             proceedButton.doClick();
         }

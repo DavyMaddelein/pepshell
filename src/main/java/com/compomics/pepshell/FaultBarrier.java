@@ -1,5 +1,6 @@
 package com.compomics.pepshell;
 
+import java.io.IOException;
 import java.util.Observable;
 import org.apache.log4j.Logger;
 
@@ -20,6 +21,13 @@ public class FaultBarrier extends Observable {
         notifyObservers(e.getMessage());
     }
 
+    public final void handleException(Exception e,boolean isRecoverable) {
+        logger.error(e);
+        e.printStackTrace();
+        setChanged();
+        notifyObservers(e.getMessage());
+    }
+    
     public final void handleExceptionAndSendMail(Exception e) {
         logger.error(e);
         //Mailer.sendMail(,);
@@ -27,5 +35,9 @@ public class FaultBarrier extends Observable {
 
     public static FaultBarrier getInstance() {
         return instance;
+    }
+
+    public void handlePartialFailure(IOException ioException) {
+        logger.warn(ioException);
     }
 }

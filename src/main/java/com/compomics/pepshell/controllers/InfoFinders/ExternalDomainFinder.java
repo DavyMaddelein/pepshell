@@ -26,14 +26,13 @@ public class ExternalDomainFinder {
         for (Protein protein : proteinList) {
             try {
                 protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
-            } catch (    IOException | XMLStreamException ex) {
+            } catch (IOException | XMLStreamException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
         }
     }
 
     //TODO move this to internetstructuredatasource
-    
     public enum DomainWebSites {
         //todo, add website specific strings to enum to iterate over them and add them
 
@@ -73,8 +72,16 @@ public class ExternalDomainFinder {
 
     public static List<Domain> getDomainsFromAllSitesForUniprotAccession(String aUniProtAccession) throws IOException, XMLStreamException {
         List<Domain> foundDomains = new ArrayList<>();
+        int failedSources = 0;
         for (DomainWebSites aDomainWebSite : DomainWebSites.values()) {
-            foundDomains.addAll(getDomainsForUniprotAccessionFromSingleSource(aUniProtAccession, aDomainWebSite));
+            try {
+                foundDomains.addAll(getDomainsForUniprotAccessionFromSingleSource(aUniProtAccession, aDomainWebSite));
+            } catch (IOException ioe) {
+                failedSources++;
+            }
+        }
+        if (failedSources > 0 ){
+            FaultBarrier.getInstance().handlePartialFailure(new IOException("could not retrieve domain data from all possible sources"));
         }
         return foundDomains;
     }

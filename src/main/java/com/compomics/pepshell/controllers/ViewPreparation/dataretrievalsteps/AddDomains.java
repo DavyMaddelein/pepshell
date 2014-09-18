@@ -42,7 +42,7 @@ public class AddDomains extends DataRetrievalStep {
     }
 
     @Override
-    public String toString() {
+    public String getRetrievalStepDescription() {
         return "Add Domains";
     }
 }

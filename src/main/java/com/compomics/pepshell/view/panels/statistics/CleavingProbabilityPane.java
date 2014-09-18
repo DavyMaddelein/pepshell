@@ -4,6 +4,8 @@ import com.compomics.pepshell.model.CPDTPeptide;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -28,7 +30,7 @@ public class CleavingProbabilityPane extends JFreeChartPanel {
     public <T extends Experiment> CleavingProbabilityPane(T anExperiment) {
         super();
         this.experiment = anExperiment;
-        chart.setBorder(BorderFactory.createTitledBorder(experiment.getExperimentName()));
+        //chart.setBorder(BorderFactory.createTitledBorder(experiment.getExperimentName()));
     }
 
     @Override
@@ -39,8 +41,10 @@ public class CleavingProbabilityPane extends JFreeChartPanel {
                 //TODO: run this outside of the gui thread
                 currentProtein = experiment.getProteins().get(experiment.getProteins().indexOf(aProtein));
                 XYSeriesCollection xYSeriesCollection = new XYSeriesCollection();
-                xYSeriesCollection.addSeries(fillSeries(currentProtein));
-                JFreeChart CPDTchart = ChartFactory.createScatterPlot("probability of cleaving", currentProtein.getProteinAccession(), "probability", xYSeriesCollection, PlotOrientation.VERTICAL, false, true, false);
+                for (XYSeries aSerie : fillSeries(currentProtein)) {
+                    xYSeriesCollection.addSeries(aSerie);
+                }
+                JFreeChart CPDTchart = ChartFactory.createXYLineChart("probability of cleaving","aminoacids of " + currentProtein.getProteinAccession(), "probability", xYSeriesCollection, PlotOrientation.VERTICAL, false, true, false);            
                 prettifyChart(CPDTchart);
                 chart.setChart(CPDTchart);
             }
@@ -58,16 +62,18 @@ public class CleavingProbabilityPane extends JFreeChartPanel {
 
     }
 
-    private XYSeries fillSeries(Protein currentProtein) {
-        XYSeries set = new XYSeries("");
+    private List<XYSeries> fillSeries(Protein currentProtein) {
+        List<XYSeries> setList = new ArrayList<XYSeries>();
         for (PeptideGroup aPeptideGroup : currentProtein.getCPDTPeptideGroups()) {
             if (aPeptideGroup.getShortestPeptide() instanceof CPDTPeptide) {
                 if (((CPDTPeptide) aPeptideGroup.getShortestPeptide()).getProbability() > cutoff && aPeptideGroup.getShortestPeptide().getSequence().length() > 4) {
+                    XYSeries set = new XYSeries(aPeptideGroup.getShortestPeptide().getSequence());
                     set.add(aPeptideGroup.getShortestPeptide().getBeginningProteinMatch(), ((CPDTPeptide) aPeptideGroup.getShortestPeptide()).getProbability());
+                    set.add(aPeptideGroup.getShortestPeptide().getBeginningProteinMatch() + aPeptideGroup.getShortestPeptide().getSequence().length(), ((CPDTPeptide) aPeptideGroup.getShortestPeptide()).getProbability());
+                    setList.add(set);
                 }
             }
         }
-        return set;
+        return setList;
     }
-
 }

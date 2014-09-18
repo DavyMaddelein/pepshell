@@ -17,6 +17,11 @@ public class Experiment {
     private double minIntensity;
     private Double maxRatio = null;
 
+    public Experiment(String experimentName) {
+        this.experimentId = -1;
+        this.experimentName = experimentName;
+    }
+
     public Experiment(int experimentId, String experimentName) {
         this.experimentId = experimentId;
         this.experimentName = experimentName;

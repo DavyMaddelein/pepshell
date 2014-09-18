@@ -4,7 +4,7 @@
 
     <groupId>com.compomics</groupId>
     <artifactId>pepshell</artifactId>
-    <version>0.5</version>
+    <version>0.7</version>
     <packaging>jar</packaging>
 
     <name>pepshell</name>

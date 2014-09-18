@@ -112,7 +112,7 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
             this.dispose();
             ExperimentSelectionFrame frame = new ExperimentSelectionFrame(this.getLocation());            
         } else if (fastaSelectionRadioButton.isSelected()) {
-            new OfflineFileSelectionFrame().setVisible(true);
+            new FileBasedSelectionFrame().setVisible(true);
             this.dispose();
         }
 

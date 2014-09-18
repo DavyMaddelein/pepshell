@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,10 +33,12 @@ import javax.swing.SwingWorker;
 /**
  *
  * @author Davy
+ * @param <T>
+ * @param <V>
  */
 public abstract class ViewPreparation<T extends Experiment, V extends Protein> extends Observable implements Observer {
 
-    LinkedList<DataRetrievalStep> linkedSteps = new LinkedList<DataRetrievalStep>() {
+    protected LinkedList<DataRetrievalStep> linkedSteps = new LinkedList<DataRetrievalStep>() {
         {
             //default list
             this.add(new AccessionConverting());
@@ -98,10 +102,14 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
         this.linkedSteps.clear();
         this.linkedSteps.addAll(linkedSteps);
     }
+    
+    public Collection<DataRetrievalStep> getDataRetrievalSteps(){
+        return Collections.unmodifiableCollection(linkedSteps);
+    }
 
     //can be moved to separate class
     protected class WaitForFutures extends SwingWorker<Boolean, Void> {
-
+ 
         private Observer observer;
         private Experiment experiment;
 
@@ -171,10 +179,6 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
     @Override
     public void update(Observable o, Object arg) {
         if (arg != null) {
-            if (arg instanceof String) {
-                //untill all update strings are removed from the data retrieval steps, this check has to stay
-                progressMonitor.setNote((String) arg);
-            }
             if (arg instanceof UpdateMessage) {
                 //comes from lower, throw higher in the chain, update notification to user
                 this.setChanged();

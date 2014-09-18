@@ -31,4 +31,6 @@ public abstract class DataRetrievalStep extends Observable implements Callable<L
     public void setExecute(boolean toExecute) {
         this.execute = toExecute;
     }
+
+    public abstract String getRetrievalStepDescription();
 }

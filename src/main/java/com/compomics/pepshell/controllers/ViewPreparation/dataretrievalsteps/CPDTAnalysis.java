@@ -95,7 +95,7 @@ public class CPDTAnalysis extends DataRetrievalStep {
     }
 
     @Override
-    public String toString() {
+    public String getRetrievalStepDescription() {
         return "CPDT cleavage analysis";
     }
 }

@@ -16,9 +16,9 @@ public class Protein {
     private String accession;
     private int projectId;
     private String sequence = "";
-    private List<Domain> domainsFoundInProtein = new ArrayList<>();
-    private List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
-    private Set<PdbInfo> allPDBFileInfoForProtein = new HashSet<>();
+    private final List<Domain> domainsFoundInProtein = new ArrayList<>();
+    private final List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
+    private final Set<PdbInfo> allPDBFileInfoForProtein = new HashSet<>();
     private String proteinName;
     private String originalAccession;
     private String visibleAccession;
@@ -52,7 +52,7 @@ public class Protein {
     }
 
     public List<Domain> getDomains() {
-        return domainsFoundInProtein;
+        return Collections.unmodifiableList(domainsFoundInProtein);
     }
 
     public void addDomains(List<Domain> domainsToAdd) {
@@ -67,8 +67,9 @@ public class Protein {
         peptideGroupsForProtein.addAll(listOfPeptides);
     }
 
-    public void addPeptideGroup(PeptideGroup aPeptideGroup) {
+    public Protein addPeptideGroup(PeptideGroup aPeptideGroup) {
         peptideGroupsForProtein.add(aPeptideGroup);
+        return this;
     }
 
     public void setProjectId(int projectId) {
@@ -142,7 +143,7 @@ public class Protein {
         return this.originalAccession;
     }
 
-    public void addPeptideGroups(List<PeptideGroup> aListOfPeptideGroups) {
+    public Protein addPeptideGroups(List<PeptideGroup> aListOfPeptideGroups) {
         for (PeptideGroup aGroup : aListOfPeptideGroups) {
             if (!peptideGroupsForProtein.contains(aGroup)) {
                 peptideGroupsForProtein.add(aGroup);
@@ -150,6 +151,7 @@ public class Protein {
                 peptideGroupsForProtein.get(peptideGroupsForProtein.indexOf(aGroup)).addPeptides(aGroup.getPeptideList());
             }
         }
+        return this;
     }
 
     public String getVisibleAccession() {

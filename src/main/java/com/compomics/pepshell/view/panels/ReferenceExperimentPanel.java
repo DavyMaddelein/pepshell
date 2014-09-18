@@ -29,6 +29,10 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
     private Experiment referenceExperiment;
 
+    private Integer startingZoomCoordinate = 0;
+    private Integer endingZoomCoordinate = 0;
+    private double scale = 1.0;
+
     /**
      * Creates new form ReferenceExperimentPanel
      */
@@ -108,7 +112,6 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         optionsPanel.setOpaque(false);
 
         quantCheckBox.setText("show quantitfied range");
-        quantCheckBox.setOpaque(false);
         quantCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 quantCheckBoxActionPerformed(evt);
@@ -166,9 +169,21 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
         referenceProteinScrollPane.setBorder(null);
         referenceProteinScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        referenceProteinScrollPane.setOpaque(false);
 
         referenceProteinDrawPanel.setPreferredSize(new java.awt.Dimension(0, 135));
+        referenceProteinDrawPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                referenceProteinDrawPanelMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                referenceProteinDrawPanelMousePressed(evt);
+            }
+        });
+        referenceProteinDrawPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                referenceProteinDrawPanelMouseDragged(evt);
+            }
+        });
 
         javax.swing.GroupLayout referenceProteinDrawPanelLayout = new javax.swing.GroupLayout(referenceProteinDrawPanel);
         referenceProteinDrawPanel.setLayout(referenceProteinDrawPanelLayout);
@@ -267,6 +282,25 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
             referenceProteinDrawPanel.updatePdbAccession(pdbAccession);
         }
     }//GEN-LAST:event_pdbSelectionComboBoxActionPerformed
+
+    private void referenceProteinDrawPanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_referenceProteinDrawPanelMouseDragged
+        // TODO add your handling code here:
+        endingZoomCoordinate = evt.getX();
+
+    }//GEN-LAST:event_referenceProteinDrawPanelMouseDragged
+
+    private void referenceProteinDrawPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_referenceProteinDrawPanelMousePressed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_referenceProteinDrawPanelMousePressed
+
+    private void referenceProteinDrawPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_referenceProteinDrawPanelMouseClicked
+        // TODO add your handling code here:
+        if (evt.isShiftDown()) {
+            scale = 1;
+            this.repaint();
+        }
+    }//GEN-LAST:event_referenceProteinDrawPanelMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem changeNameOption;

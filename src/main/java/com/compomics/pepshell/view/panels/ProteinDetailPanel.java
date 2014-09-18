@@ -101,7 +101,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
-        sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest.getPeptideGroupsForProtein().iterator(), true);
+        sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest, true);
         referenceProtein = proteinOfInterest;
         this.revalidate();
         this.repaint();
@@ -163,11 +163,9 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         }
     }
 
-    protected void setSequenceCoverage(String proteinSequence, PeptideGroup aPeptideGroup) {
+    protected void setSequenceCoverage(String proteinSequence, Protein protein) {
         // this is a very quick fix to get updating sequence coverage but has to be refined
-        List<PeptideGroup> tempList = new ArrayList<PeptideGroup>();
-        tempList.add(aPeptideGroup);
-        sequenceCoveragePanel.showProteinCoverage(proteinSequence, tempList.iterator(), false);
+        sequenceCoveragePanel.showProteinCoverage(proteinSequence,protein, false);
     }
 
     protected void setSequenceCoverageToOriginal() {

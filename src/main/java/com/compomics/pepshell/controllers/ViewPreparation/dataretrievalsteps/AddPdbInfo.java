@@ -37,7 +37,7 @@ public class AddPdbInfo extends DataRetrievalStep {
     }
 
     @Override
-    public String toString() {
+    public String getRetrievalStepDescription() {
         return "Add PDB info";
     }
 }
