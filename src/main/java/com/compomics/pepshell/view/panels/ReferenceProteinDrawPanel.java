@@ -13,8 +13,10 @@ import com.compomics.pepshell.view.DrawModes.Proteins.CPDTCleavedProteinDrawMode
 import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.Proteins.HydrophobicityProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 
@@ -44,7 +46,7 @@ public class ReferenceProteinDrawPanel extends JPanel {
     /**
      * the domain draw mode
      */
-    private DrawModeInterface domainBackgroundDrawMode;
+    private DomainProteinDrawMode domainBackgroundDrawMode;
     /**
      * The secondary draw mode
      */
@@ -152,7 +154,8 @@ public class ReferenceProteinDrawPanel extends JPanel {
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
 
                 if (!protein.getDomains().isEmpty()) {
-                    domainBackgroundDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 50, scaledHorizontalBarSize, this.getHeight(),0.08f);
+                    domainBackgroundDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 50, scaledHorizontalBarSize, this.getHeight(),0.08f,false);
+                    ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1));
                 }
 
                 proteinDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 25, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);

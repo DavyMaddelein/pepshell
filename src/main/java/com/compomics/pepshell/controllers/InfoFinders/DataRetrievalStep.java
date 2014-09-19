@@ -33,4 +33,9 @@ public abstract class DataRetrievalStep extends Observable implements Callable<L
     }
 
     public abstract String getRetrievalStepDescription();
+
+    @Override
+    public String toString() {
+        return getRetrievalStepDescription();
+    }
 }

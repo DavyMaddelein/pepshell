@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -209,14 +210,13 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
 
     private void enableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableStepsButtonActionPerformed
         enabledListModel.clear();
-        for (int i = 0; i < disabledListModel.getSize(); i++) {
-            if (disabledStepsList.getSelectionModel().isSelectedIndex(i)) {
-                disabledStepsList.getModel().getElementAt(i).setExecute(true);
-                retrievalSteps.add((disabledStepsList.getModel()).getElementAt(i));
-                disabledListModel.remove(i);
-            }
+        for (DataRetrievalStep aStep : disabledStepsList.getSelectedValuesList()) {
+            aStep.setExecute(true);
+            retrievalSteps.add(aStep);
+            disabledListModel.removeElement(aStep);
         }
         Collections.sort(retrievalSteps, dataRetrievalStepComparator);
+
         for (DataRetrievalStep aStep : retrievalSteps) {
             enabledListModel.addElement(aStep);
         }
@@ -227,19 +227,17 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
     private void disableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disableStepsButtonActionPerformed
         // TODO add your handling code here:
         retrievalSteps.clear();
-        for (int i = 0; i < enabledListModel.getSize(); i++) {
-            if (!enabledStepsList.getSelectionModel().isSelectedIndex(i)) {
-                retrievalSteps.add(enabledStepsList.getModel().getElementAt(i));
-            } else {
-                disabledListModel.addElement(enabledStepsList.getModel().getElementAt(i));
-                enabledListModel.remove(i);
-            }
-            enabledListModel.clear();
-            Collections.sort(retrievalSteps, dataRetrievalStepComparator);
-            for (DataRetrievalStep aStep : retrievalSteps) {
-                enabledListModel.addElement(aStep);
-            }
+        for (DataRetrievalStep disabledStep : enabledStepsList.getSelectedValuesList()) {
+            disabledStep.setExecute(false);
+            disabledListModel.addElement(disabledStep);
+            enabledListModel.removeElement(disabledStep);
         }
+
+        Enumeration<DataRetrievalStep> enabledSteps = enabledListModel.elements();
+        while (enabledSteps.hasMoreElements()) {
+            retrievalSteps.add(enabledSteps.nextElement());
+        }
+
         enabledStepsList.repaint();
         disabledStepsList.repaint();
     }//GEN-LAST:event_disableStepsButtonActionPerformed

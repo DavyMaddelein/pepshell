@@ -59,7 +59,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
 
     public void setProtein(Protein protein) {
         try {
-            if (!this.protein.equals(protein)) {
+            if (this.protein == null || !this.protein.equals(protein)) {
                 this.protein = experiment.getProteins().get(experiment.getProteins().indexOf(protein));
                 proteinChanged = true;
             }
