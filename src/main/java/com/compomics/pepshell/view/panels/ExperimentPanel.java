@@ -201,6 +201,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         // TODO add your handling code here:
+        //when extracting this code to it's own mouse adapter flip the scale calculations so the doubles are always bigger than 1 instead of smaller
         endingZoomCoordinate = evt.getX() + 15;
         Double tempScale = (double) (endingZoomCoordinate / startingZoomCoordinate);
         if (tempScale * protein.getProteinSequence().length() < 1) {
@@ -215,7 +216,6 @@ public class ExperimentPanel extends javax.swing.JPanel {
                 endingZoomCoordinate = startingZoomCoordinate;
                 startingZoomCoordinate = evt.getX() + 15;
                 if ((1 / tempScale) * protein.getProteinSequence().length() < 1) {
-
                 } else {
                     scale = 1 / tempScale;
                 }
@@ -248,7 +248,6 @@ public class ExperimentPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         //replace protein recalculation with a buffered image to display
-        super.paintComponent(g);
         if (protein != null && proteinChanged) {
             if (!nameChanged) {
                 projectNameLabel.setText(experimentName);
@@ -292,13 +291,17 @@ public class ExperimentPanel extends javax.swing.JPanel {
             }
         }
         if (cachedImage != null) {
-            if (scale != 1) {
-                ((Graphics2D) cachedImage.getGraphics()).translate(startingZoomCoordinate, this.getY() / 2);
-                ((Graphics2D) cachedImage.getGraphics()).scale(1/scale, 1/scale);
-
-            }
             this.getGraphics().drawImage(cachedImage, horizontalOffset, verticalOffset, null);
         }
+        if (scale != 1) {
+            ((Graphics2D) g).translate(this.getWidth() / 2, this.getHeight() / 2);
+            ((Graphics2D) g).scale(1 / scale, 1 / scale);
+            this.setPreferredSize(new Dimension((int) Math.round(this.getWidth() * (1 / scale)), (int) Math.round(this.getHeight() * (1 / scale))));
+
+        }
+
+        //if the cached image works, the zooming logic can be extracted to it's own mouse adapter class and this can turn into a static method in a zoom controller
+        super.paintComponent(g);
     }
 
     void setExperiment(Experiment experiment) {
@@ -307,6 +310,10 @@ public class ExperimentPanel extends javax.swing.JPanel {
 
     void setYOffset(double height) {
         verticalOffset = (int) (verticalOffset + height);
+    }
+
+    public void scaleToDimension(Dimension dimension) {
+        //if one panel zooms in, all zoom in so we zoom to the passed dimension
     }
 
     private class popupMenuListener extends MouseAdapter {
