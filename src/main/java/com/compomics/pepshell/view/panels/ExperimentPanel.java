@@ -202,24 +202,38 @@ public class ExperimentPanel extends javax.swing.JPanel {
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         // TODO add your handling code here:
         endingZoomCoordinate = evt.getX() + 15;
-        //checks
-        //if( )
         Double tempScale = (double) (endingZoomCoordinate / startingZoomCoordinate);
-        if (tempScale < 1) {
-            //dragged to the left
-            scale = tempScale;
+        if (tempScale * protein.getProteinSequence().length() < 1) {
+            // zoomed in to a value greater than one amino acid
+            tempScale = (double) 10 / protein.getProteinSequence().length();
         } else {
-            scale = 1 / tempScale;
+            if (tempScale < 1) {
+                //dragged to the left
+                scale = tempScale;
+            } else {
+                //dragged to the right, flip the start and end
+                endingZoomCoordinate = startingZoomCoordinate;
+                startingZoomCoordinate = evt.getX() + 15;
+                if ((1 / tempScale) * protein.getProteinSequence().length() < 1) {
+
+                } else {
+                    scale = 1 / tempScale;
+                }
+            }
         }
     }//GEN-LAST:event_formMouseDragged
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
+
     }//GEN-LAST:event_formMouseClicked
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         // TODO add your handling code here:
+        //add scrolling support if(evt.getMouseButton is scrollup) increase zoom with 10% centered on the mouse location
+        // same as above but reduce by 10%
         startingZoomCoordinate = evt.getX() + 15;
+
 
     }//GEN-LAST:event_formMousePressed
 
@@ -243,12 +257,13 @@ public class ExperimentPanel extends javax.swing.JPanel {
                 try {
                     protein.setSequence(WebDAO.fetchSequence(protein.getProteinAccession()));
                 } catch (Exception e) {
+                    FaultBarrier.getInstance().handleException(e);
                 }
             }
             if (!protein.getProteinSequence().isEmpty()) {
                 if (recalculate) {
                     int horizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
-                    BufferedImage tempImage = new BufferedImage(horizontalBarSize + 5, ProgramVariables.VERTICALSIZE + 10, BufferedImage.TYPE_INT_ARGB);
+                    BufferedImage tempImage = new BufferedImage(horizontalBarSize + 65, ProgramVariables.VERTICALSIZE + 10, BufferedImage.TYPE_INT_ARGB);
                     try {
                         proteinDrawMode.drawProtein(protein, tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
                         //proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
@@ -262,6 +277,7 @@ public class ExperimentPanel extends javax.swing.JPanel {
                             peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
                             //peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
                         } catch (Exception ex) {
+                            FaultBarrier.getInstance().handleException(ex);
                         }
                     }
                     cachedImage = tempImage;
@@ -276,6 +292,11 @@ public class ExperimentPanel extends javax.swing.JPanel {
             }
         }
         if (cachedImage != null) {
+            if (scale != 1) {
+                ((Graphics2D) cachedImage.getGraphics()).translate(startingZoomCoordinate, this.getY() / 2);
+                ((Graphics2D) cachedImage.getGraphics()).scale(1/scale, 1/scale);
+
+            }
             this.getGraphics().drawImage(cachedImage, horizontalOffset, verticalOffset, null);
         }
     }
