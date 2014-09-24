@@ -532,8 +532,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             }
         }.run();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        this.revalidate();
-        this.repaint();
     }//GEN-LAST:event_uniProtRadioButtonMenuItemActionPerformed
 
     private void originalAccessionRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalAccessionRadioButtonMenuItemActionPerformed

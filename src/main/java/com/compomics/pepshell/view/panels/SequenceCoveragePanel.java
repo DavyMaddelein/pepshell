@@ -42,8 +42,8 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
             originalProtein = protein;
             isOriginalCcoverage = true;
         }
-        List<Integer> peptideStarts = new ArrayList<Integer>();
-        List<Integer> peptideEnds = new ArrayList<Integer>();
+        List<Integer> peptideStarts = new ArrayList<>();
+        List<Integer> peptideEnds = new ArrayList<>();
         coverage = new int[proteinSequence.length() + 1];
         domains = new int[proteinSequence.length() + 1];
         Peptide peptide;
@@ -153,12 +153,12 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
 
             } else if (domains[i] > 0) {
                     if (i % 10 == 1) {
-                    currentCellSequence += "<span style=\"background:#333333\">" + cleanSequence.charAt(i - 1);
+                    currentCellSequence += "<span style=\"background:#FF530D\">" + cleanSequence.charAt(i - 1);
                 } else {
                     if (previousAminoAcidWasSelected) {
                         currentCellSequence += cleanSequence.charAt(i - 1);
                     } else {
-                        currentCellSequence += "</span><span style=\"background:#333333\">" + cleanSequence.charAt(i - 1);
+                        currentCellSequence += "</span><span style=\"background:#FF530D\">" + cleanSequence.charAt(i - 1);
                     }
                 }
             } else {

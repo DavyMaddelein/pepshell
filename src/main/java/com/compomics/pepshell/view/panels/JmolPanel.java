@@ -146,7 +146,7 @@ public class JmolPanel extends javax.swing.JPanel {
                         presentedProtein);
                 sequenceCoveragePanel.setInteractionCoverage(ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForPDBName(PDBFileComboBox.getSelectedItem().toString()));
                 for (PeptideGroup aGroup : presentedProtein.getPeptideGroupsForProtein()) {
-                    pdbViewPanel1.executeScript("select residue " + aGroup.getShortestPeptide().getBeginningProteinMatch() + " " + aGroup.getShortestPeptide().getEndProteinMatch() + "; colour green");
+                    pdbViewPanel1.executeScript("select " + aGroup.getShortestPeptide().getBeginningProteinMatch() + "-" + aGroup.getShortestPeptide().getEndProteinMatch() + "; colour green");
                 }
             } catch (IOException ioe) {
                 if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
@@ -162,9 +162,9 @@ public class JmolPanel extends javax.swing.JPanel {
         if (presentedProtein != null) {
             int start = ((SequenceCoveragePanel) evt.getComponent()).getTextSelectionStart();
             int stop = ((SequenceCoveragePanel) evt.getComponent()).getTextSelectionEnd();
-            pdbViewPanel1.executeScript("select residue " + start + " " + stop + "; colour green");
+            pdbViewPanel1.executeScript("select " + start + "-" + stop + "; colour green");
             for (InteractionPartner aPartner : ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForRange(presentedProtein, start, stop)) {
-                pdbViewPanel1.executeScript("select residue " + aPartner.getInteractorLocation() + "; colour red");
+                pdbViewPanel1.executeScript("select " + aPartner.getInteractorLocation() + "; colour red");
             }
         }
     }//GEN-LAST:event_sequenceCoveragePanelMouseDragged

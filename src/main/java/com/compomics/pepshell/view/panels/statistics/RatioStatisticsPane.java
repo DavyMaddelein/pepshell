@@ -1,7 +1,3 @@
-/*
- * Here comes the text of your license
- * Each line should be prefixed with  * 
- */
 package com.compomics.pepshell.view.panels.statistics;
 
 import com.compomics.pepshell.FaultBarrier;
@@ -20,6 +16,8 @@ import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYErrorRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -45,10 +43,10 @@ public class RatioStatisticsPane extends JFreeChartPanel {
             if (aProtein != currentProtein) {
                 //TODO: run this outside of the gui thread
                 CategoryDataset dataset = createRatioDataset(aProtein);
-                JFreeChart CPDTchart = ChartFactory.createBarChart("log 2 ratios of peptides on a protein", aProtein.getProteinAccession(), "log 2 ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
-                prettifyChart(CPDTchart);
-                chart.setChart(CPDTchart);
-
+                JFreeChart ratioChart = ChartFactory.createBarChart("log 2 ratios of peptides on a protein", aProtein.getVisibleAccession(), "log 2 ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
+                prettifyChart(ratioChart);
+                chart.setChart(ratioChart);
+                ((XYPlot)ratioChart.getPlot()).setRenderer(new XYErrorRenderer());
             }
         } else {
             chart.setChart(null);
@@ -94,5 +92,4 @@ public class RatioStatisticsPane extends JFreeChartPanel {
             return input.getShortestPeptide().getBeginningProteinMatch();
         }
     };
-
 }

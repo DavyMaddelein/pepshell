@@ -34,7 +34,6 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
      */
     public CombinedLoginDialog() {
         initComponents();
-
         init();
     }
 
@@ -64,8 +63,7 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
                             //go to the next card
                             getCardLayout().next(topPanel);
                         } else if (fastaSelectionRadioButton.isSelected()) {
-                            dispose();
-                            new FileBasedSelectionFrame();
+                            loadFileBasedExperiments();
                         }
                         break;
                     case DB_LOGIN_CARD:
@@ -498,6 +496,11 @@ public class CombinedLoginDialog extends javax.swing.JDialog {
         }
 
         return currentCardName;
+    }
+
+    private void loadFileBasedExperiments() {
+        new FileBasedSelectionFrame().setVisible(true);
+        this.dispose();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

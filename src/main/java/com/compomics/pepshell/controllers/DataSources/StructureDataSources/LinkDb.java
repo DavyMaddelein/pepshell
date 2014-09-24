@@ -82,7 +82,7 @@ public class LinkDb implements StructureDataSource {
                 if (foundDomains.isEmpty()) {
                     foundDomains = ExternalDomainFinder.getDomainsFromAllSitesForUniprotAccession(AccessionConverter.toUniprot(aProtein.getVisibleAccession()));
                 }
-            } catch (    IOException | ConversionException | XMLStreamException ex) {
+            } catch (IOException | ConversionException | XMLStreamException ex) {
                 throw new DataRetrievalException(ex.getMessage(), ex);
             }
         }
@@ -287,7 +287,7 @@ public class LinkDb implements StructureDataSource {
         if (ProgramVariables.USEINTERNETSOURCES && infoSet.isEmpty()) {
             try {
                 infoSet.addAll(PDBDAO.getInstance().getPDBInfoForProtein(protein));
-            } catch (    IOException | ConversionException ex) {
+            } catch (IOException | ConversionException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
         }

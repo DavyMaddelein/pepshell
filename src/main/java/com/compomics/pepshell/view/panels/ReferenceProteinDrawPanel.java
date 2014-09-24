@@ -154,7 +154,7 @@ public class ReferenceProteinDrawPanel extends JPanel {
                 int scaledHorizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
 
                 if (!protein.getDomains().isEmpty()) {
-                    domainBackgroundDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET + 50, scaledHorizontalBarSize, this.getHeight(),0.08f,false);
+                    domainBackgroundDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET, scaledHorizontalBarSize, this.getHeight(),0.18f,false);
                     ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1));
                 }
 
@@ -177,7 +177,7 @@ public class ReferenceProteinDrawPanel extends JPanel {
                     }
                     domainDrawMode.drawProtein(protein, g, HORIZONTAL_OFFSET, VERTICAL_OFFSET, scaledHorizontalBarSize, ProgramVariables.VERTICALSIZE);
                 } catch (DataRetrievalException e) {
-                    LOGGER.error(e.getMessage(), e);
+                    FaultBarrier.getInstance().handleException(e);
                 }
                 try {
                     g.drawString("CPDT", HORIZONTAL_OFFSET + scaledHorizontalBarSize + 15, VERTICAL_OFFSET + 87);

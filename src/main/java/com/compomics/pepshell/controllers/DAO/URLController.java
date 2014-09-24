@@ -32,7 +32,7 @@ public class URLController {
     public static BufferedReader openReader(String aUrl) throws IOException {
         URL myURL = new URL(aUrl);
         HttpURLConnection c = (HttpURLConnection) myURL.openConnection();
-        c.setConnectTimeout(1000);
+        c.setConnectTimeout(500);
         BufferedReader r = new BufferedReader(new InputStreamReader(new BufferedInputStream(c.getInputStream()), "UTF-8"));   
         return r;
     }

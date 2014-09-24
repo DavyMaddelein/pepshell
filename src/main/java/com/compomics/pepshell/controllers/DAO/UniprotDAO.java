@@ -31,6 +31,7 @@ public class UniprotDAO {
         StringBuilder sequence = new StringBuilder();
         URL uniprotURL = new URL("http://www.uniprot.org/uniprot/" + accession + ".fasta");
         URLConnection uniprotConnection = uniprotURL.openConnection();
+        uniprotConnection.setConnectTimeout(500);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(uniprotConnection.getInputStream(), "UTF-8"))) {
             while ((inputLine = br.readLine()) != null) {
                 if (inputLine.contains(">")) {

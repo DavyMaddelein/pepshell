@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.pepshell.controllers.DAO;
+package com.compomics.pepshell.controllers.DAO.parsers;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;

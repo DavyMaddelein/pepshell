@@ -6,17 +6,22 @@ import com.compomics.pepshell.controllers.DAO.WebDAO;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.Peptides.IntensityPeptideDrawMode;
 import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
+import com.compomics.pepshell.view.DrawModes.Proteins.DomainProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -37,8 +42,9 @@ public class ExperimentPanel extends javax.swing.JPanel {
     private BufferedImage cachedImage;
     private int startingZoomCoordinate;
     private int endingZoomCoordinate;
-    private double scale;
-    private boolean proteinChanged;
+    private double scale = 1.0;
+    private boolean proteinChanged = true;
+    private DomainProteinDrawMode domainBackgroundDrawMode;
 
     /**
      * Creates new form PeptidesProteinsOverlapGUI
@@ -248,14 +254,15 @@ public class ExperimentPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         //replace protein recalculation with a buffered image to display
-        if (protein != null && proteinChanged) {
+        super.paintComponent(g);
+        if (protein != null) {
             if (!nameChanged) {
                 projectNameLabel.setText(experimentName);
             }
             if (protein.getProteinSequence().isEmpty()) {
                 try {
                     protein.setSequence(WebDAO.fetchSequence(protein.getProteinAccession()));
-                } catch (Exception e) {
+                } catch (IOException | ConversionException e) {
                     FaultBarrier.getInstance().handleException(e);
                 }
             }
@@ -264,8 +271,8 @@ public class ExperimentPanel extends javax.swing.JPanel {
                     int horizontalBarSize = (int) Math.ceil(protein.getProteinSequence().length() * ProgramVariables.SCALE);
                     BufferedImage tempImage = new BufferedImage(horizontalBarSize + 65, ProgramVariables.VERTICALSIZE + 10, BufferedImage.TYPE_INT_ARGB);
                     try {
-                        proteinDrawMode.drawProtein(protein, tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
-                        //proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                        //proteinDrawMode.drawProtein(protein, tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                        proteinDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
                     } catch (UndrawableException ex) {
                         FaultBarrier.getInstance().handleException(ex);
                     }
@@ -273,11 +280,19 @@ public class ExperimentPanel extends javax.swing.JPanel {
                     while (peptideGroups.hasNext()) {
                         PeptideGroup aPeptideGroup = peptideGroups.next();
                         try {
-                            peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
-                            //peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
+                            //peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
+                            peptideDrawMode.drawPeptide(aPeptideGroup.getShortestPeptide(), g, horizontalOffset, verticalOffset + 5, ProgramVariables.VERTICALSIZE);
                         } catch (Exception ex) {
                             FaultBarrier.getInstance().handleException(ex);
                         }
+                    }
+                    if (!protein.getDomains().isEmpty()) {
+                        try {
+                            domainBackgroundDrawMode.drawProtein(protein, g, horizontalOffset, verticalOffset + 5, horizontalBarSize, this.getHeight(), 0.18f, false);
+                        } catch (UndrawableException ex) {
+                            FaultBarrier.getInstance().handleException(ex);
+                        }
+                        ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
                     }
                     cachedImage = tempImage;
                     //((GradientDrawModeInterface) peptideDrawMode).drawColorLegend(horizontalOffset + horizontalBarSize + 15, 50, g);
@@ -291,7 +306,8 @@ public class ExperimentPanel extends javax.swing.JPanel {
             }
         }
         if (cachedImage != null) {
-            this.getGraphics().drawImage(cachedImage, horizontalOffset, verticalOffset, null);
+            //this.getGraphics().drawImage(cachedImage, horizontalOffset, verticalOffset, null);
+            proteinChanged = false;
         }
         if (scale != 1) {
             ((Graphics2D) g).translate(this.getWidth() / 2, this.getHeight() / 2);
@@ -301,7 +317,6 @@ public class ExperimentPanel extends javax.swing.JPanel {
         }
 
         //if the cached image works, the zooming logic can be extracted to it's own mouse adapter class and this can turn into a static method in a zoom controller
-        super.paintComponent(g);
     }
 
     void setExperiment(Experiment experiment) {
