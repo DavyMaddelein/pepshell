@@ -39,7 +39,7 @@ public class AccessionMasking extends DataRetrievalStep {
                 matchedProtein.setVisibleAccession(maskingProtein.getVisibleAccession());
                 counter++;
                 this.setChanged();
-                this.notifyObservers(new UpdateMessage(true,"masked accession of " + matchedProtein.getOriginalAccession() + " with " + matchedProtein.getProteinAccession()));
+                this.notifyObservers(new UpdateMessage(true,"masked accession of " + matchedProtein.getOriginalAccession() + " with " + matchedProtein.getProteinAccession(),false));
             }
         }
         return Collections.unmodifiableList(proteinList);

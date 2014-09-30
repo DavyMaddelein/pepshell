@@ -31,7 +31,7 @@ public class AddPdbInfo extends DataRetrievalStep {
         for (Protein aProtein : proteinList) {
             aProtein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(aProtein, null));
             this.setChanged();
-            this.notifyObservers(new UpdateMessage(false,"added PDB info to" + aProtein.getProteinAccession()));
+            this.notifyObservers(new UpdateMessage(false,"added PDB info to" + aProtein.getProteinAccession(),false));
         }
         return Collections.unmodifiableList(proteinList);
     }

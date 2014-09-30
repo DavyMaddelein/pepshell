@@ -1,12 +1,14 @@
 package com.compomics.pepshell.view.panels.statistics;
 
 import com.compomics.pepshell.model.CPDTPeptide;
+import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
+import java.awt.BasicStroke;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -44,8 +46,21 @@ public class CleavingProbabilityPane extends JFreeChartPanel {
                 for (XYSeries aSerie : fillSeries(currentProtein)) {
                     xYSeriesCollection.addSeries(aSerie);
                 }
-                JFreeChart CPDTchart = ChartFactory.createXYLineChart("probability of cleaving","aminoacids of " + currentProtein.getProteinAccession(), "probability", xYSeriesCollection, PlotOrientation.VERTICAL, false, true, false);            
+                JFreeChart CPDTchart = ChartFactory.createXYLineChart("probability of cleaving", "aminoacids of " + currentProtein.getProteinAccession(), "probability", xYSeriesCollection, PlotOrientation.VERTICAL, false, true, false);
                 prettifyChart(CPDTchart);
+                CPDTchart.getXYPlot().getRangeAxis().setLowerBound(cutoff - 0.05);
+                for (int i = 0; i < CPDTchart.getXYPlot().getSeriesCount(); i++){
+                 CPDTchart.getXYPlot().getRenderer().setSeriesStroke(i, new BasicStroke(5));
+                }
+                if (!aProtein.getDomains().isEmpty()) {
+                    CPDTchart.setBackgroundImageAlpha(0.18f);
+                    CPDTchart.getXYPlot().getDomainAxis().setRange(0, aProtein.getProteinSequence().length());
+                    BufferedImage anImage = new BufferedImage(this.getHeight(), this.getWidth(), BufferedImage.TYPE_INT_ARGB);
+                    for (Domain aDomain : aProtein.getDomains()) {
+                        anImage.getGraphics().drawRect(aDomain.getStartPosition(), 0, aDomain.getStopPosition(), this.getHeight());
+                    }
+                    CPDTchart.setBackgroundImage(anImage);
+                }
                 chart.setChart(CPDTchart);
             }
         } else {

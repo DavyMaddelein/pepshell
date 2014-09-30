@@ -59,8 +59,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         }
         for (AnalysisGroup experiments : analysisList) {
             ViewPreparation prep = DataModeController.getDb().getDataMode().getViewPreparationForMode();
-            prep.start(referenceExperiment, experiments.getExperiments().iterator(), false);
             prep.addObserver(this);
+            prep.start(referenceExperiment, experiments.getExperiments().iterator(), false);
             proteinDetailPanel.setReferenceExperiment(referenceExperiment);
             proteinDetailPanel.setExperimentsToDisplay(experiments.getExperiments(), false);
             statisticsTabbedPane.setAnalysisGroupToDisplay(referenceExperiment, experiments);
@@ -91,11 +91,14 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             //TODO show in error pane
             ((Exception) o1).printStackTrace();
         } else if (o1 != null && o1 instanceof UpdateMessage) {
-            proteinsToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins();
-            proteinList.setListData(proteinsToDisplay.toArray());
-            pdbProteinList.setListData(proteinsToDisplay.toArray());
-            proteinList1.setListData(proteinsToDisplay.toArray());
+            if (((UpdateMessage) o1).informUser()) {
+                JOptionPane.showMessageDialog(this, ((UpdateMessage) o1).getMessage());
+            }
             if (((UpdateMessage) o1).repaint()) {
+                proteinsToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins();
+                proteinList.setListData(proteinsToDisplay.toArray());
+                pdbProteinList.setListData(proteinsToDisplay.toArray());
+                proteinList1.setListData(proteinsToDisplay.toArray());
                 this.repaint();
             }
         }
@@ -459,9 +462,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void pdbProteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pdbProteinListMouseClicked
 
-        new Runnable() {
+        new SwingWorker<Boolean, Void>() {
             @Override
-            public void run() {
+            public Boolean doInBackground() {
                 try {
                     jmolPanel.setPDBProtein((Protein) pdbProteinList.getSelectedValue());
                 } catch (MalformedURLException ex) {
@@ -469,8 +472,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 } catch (ConversionException | SQLException ex) {
                     faultBarrier.handleException(ex);
                 }
+                return true;
             }
-        }.run();
+        }.execute();
 
     }//GEN-LAST:event_pdbProteinListMouseClicked
 
@@ -514,9 +518,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void uniProtRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uniProtRadioButtonMenuItemActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        new Runnable() {
+        new SwingWorker<Boolean, Void>() {
             @Override
-            public void run() {
+            public Boolean doInBackground() throws Exception {
                 for (final Protein aProtein : proteinsToDisplay) {
                     try {
                         aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
@@ -529,9 +533,10 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 };
                 proteinList.revalidate();
                 proteinList.repaint();
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                return true;
             }
-        }.run();
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }.execute();
     }//GEN-LAST:event_uniProtRadioButtonMenuItemActionPerformed
 
     private void originalAccessionRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalAccessionRadioButtonMenuItemActionPerformed
@@ -598,7 +603,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void proteinList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinList1MouseReleased
         // TODO add your handling code here:
-        
+
         statisticsTabbedPane.setGraphData((Protein) proteinList1.getSelectedValue());
     }//GEN-LAST:event_proteinList1MouseReleased
 

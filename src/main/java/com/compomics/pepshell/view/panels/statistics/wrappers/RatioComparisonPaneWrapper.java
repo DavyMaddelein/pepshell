@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.pepshell.view.panels;
+package com.compomics.pepshell.view.panels.statistics.wrappers;
 
+import com.compomics.pepshell.view.panels.statistics.wrappers.StatisticsWrapperInterface;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.view.panels.statistics.RatioComparisonPane;

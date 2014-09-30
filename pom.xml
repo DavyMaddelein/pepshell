@@ -94,6 +94,33 @@
                 <version>2.3</version>
                 <executions>
                     <execution>
+                        <id>copy-runtime-resources</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/classes/resources
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>CPDT.exe</include>
+                                        <include>vcredist_x86.exe</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>
+                                            pepshelltestdbs.zip
+                                        </exclude>
+                                        <exclude>vcredist_x86.exe</exclude>
+                                    
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-package-resources</id>
                         <phase>package</phase>
                         <goals>

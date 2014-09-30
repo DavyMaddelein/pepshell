@@ -4,10 +4,12 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.enums.ExportPropertyEnum;
 import com.compomics.pepshell.model.enums.ProgramPropertyEnum;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -157,7 +159,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
 
     private void loadAccessionMaskingFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadAccessionMaskingFileActionPerformed
         // TODO, add custom renderer/model to show the string properly, if this takes more than 15 minutes, just overwrite the string in tostring
-        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
         accessionMaskingChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         accessionMaskingChooser.showOpenDialog(this);
         File selectedFile = accessionMaskingChooser.getSelectedFile();
@@ -178,7 +180,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
     private void saveAccessionMaskingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAccessionMaskingButtonActionPerformed
         FileWriter saveWriter = null;
         try {
-            JFileChooser accessionMaskSaver = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+            JFileChooser accessionMaskSaver = new JFileChooser(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
             accessionMaskSaver.setDialogType(JFileChooser.SAVE_DIALOG);
             accessionMaskSaver.setMultiSelectionEnabled(false);
             accessionMaskSaver.showOpenDialog(this);
@@ -204,7 +206,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
 
     private void addMaskingAccessionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMaskingAccessionButtonActionPerformed
         //TODO add model that displays the original -> masked decently
-        if (!accessionToMaskTextField.getText().isEmpty() || !maskingAccessionTextField.getText().isEmpty()) {
+        if (!accessionToMaskTextField.getText().isEmpty() && !maskingAccessionTextField.getText().isEmpty()) {
             Protein maskedProtein = new Protein(accessionToMaskTextField.getText());
             maskedProtein.setVisibleAccession(maskingAccessionTextField.getText());
             accessionMasks.add(maskedProtein);
@@ -228,7 +230,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_removeMaskingsFromListButtonActionPerformed
 
     public Set<Protein> getProteinsToMaskWith() {
-        return accessionMasks;
+        return Collections.unmodifiableSet(accessionMasks);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

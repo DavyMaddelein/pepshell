@@ -8,7 +8,6 @@ import java.util.EnumSet;
  */
 public enum ProgramPropertyEnum implements PropertyEnum {
 
-    LASTACCESSIONMASKEXPORTFOLDER("pepshell.accessionmaskfolder", System.getProperty("user.home")),
     ACCESSION_MASKING("pepshell.dataretrievalstep.accession_masking", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionMasking"),
     ADD_DOMAINS("pepshell.dataretrievalstep.add_domains", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddDomains"),
     ADD_PDB_INFO("pepshell.dataretrievalstep.add_pdb_info", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddPdbInfo"),

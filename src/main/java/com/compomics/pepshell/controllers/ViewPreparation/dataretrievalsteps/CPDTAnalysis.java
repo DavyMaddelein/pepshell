@@ -54,7 +54,7 @@ public class CPDTAnalysis extends DataRetrievalStep {
         CPDTFolder.deleteOnExit();
         for (Protein aProtein : proteinList) {
             this.setChanged();
-            this.notifyObservers(new UpdateMessage(false, "running CP-DT on " + aProtein.getProteinAccession()));
+            this.notifyObservers(new UpdateMessage(false, "running CP-DT on " + aProtein.getProteinAccession(),false));
             String filename = System.currentTimeMillis() + aProtein.getProteinAccession();
             filename = filename.replaceAll("\\|", "");
             File outputFile = new File(CPDTFolder, filename);
@@ -64,7 +64,7 @@ public class CPDTAnalysis extends DataRetrievalStep {
             CPDT.waitFor();
             aProtein.setCPDTPeptideList(parseCPDTOutput(outputFile,aProtein));
             this.setChanged();
-            this.notifyObservers(new UpdateMessage(true, "done running CP-DT on " + aProtein.getProteinAccession()));
+            this.notifyObservers(new UpdateMessage(true, "done running CP-DT on " + aProtein.getProteinAccession(),false));
         }
         return Collections.unmodifiableList(proteinList);
     }

@@ -152,7 +152,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
                 previousAminoAcidWasSelected = true;
 
             } else if (domains[i] > 0) {
-                    if (i % 10 == 1) {
+                if (i % 10 == 1) {
                     currentCellSequence += "<span style=\"background:#FF530D\">" + cleanSequence.charAt(i - 1);
                 } else {
                     if (previousAminoAcidWasSelected) {
@@ -161,8 +161,8 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
                         currentCellSequence += "</span><span style=\"background:#FF530D\">" + cleanSequence.charAt(i - 1);
                     }
                 }
+                previousAminoAcidWasSelected = true;
             } else {
-
                 previousAminoAcidWasSelected = false;
 
                 if (coveredPeptide) {
@@ -205,7 +205,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         // add remaining tags and complete the formatted sequence
         sequenceTable += "<td><tt>" + currentCellSequence + "</tt></td></table>";
         String formattedSequence = "<html><body><table cellspacing='2'>" + sequenceTable + "</html></body>";
-
+        System.out.println(formattedSequence);
         // display the formatted sequence
         editorPane.setText(formattedSequence);
 

@@ -45,9 +45,9 @@ public class ProteinFiltering extends DataRetrievalStep {
         List<Protein> returnList = proteinList;
         if (!filterList.isEmpty()) {
             this.setChanged();
-            this.notifyObservers(new UpdateMessage(false, "filtering protein list"));
+            this.notifyObservers(new UpdateMessage(false, "filtering protein list",false));
             returnList = filter.filter(proteinList, filterList);
-            this.notifyObservers(new UpdateMessage(true, "done filtering"));
+            this.notifyObservers(new UpdateMessage(true, "done filtering",false));
 
         }
         return returnList;

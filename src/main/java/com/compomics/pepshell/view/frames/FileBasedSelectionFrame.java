@@ -2,10 +2,14 @@ package com.compomics.pepshell.view.frames;
 
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.view.panels.AdditionalFileParsingInfoPanel;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -14,6 +18,7 @@ import javax.swing.JOptionPane;
 public class FileBasedSelectionFrame extends javax.swing.JFrame {
 
     private File fastaFile;
+    private File referenceFile;
 
     /**
      * Creates new form OfflineFileSelectionFrame
@@ -33,97 +38,46 @@ public class FileBasedSelectionFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        digestPanel = new javax.swing.JPanel();
-        simpleDigestRadioButton = new javax.swing.JRadioButton();
-        CPDTRadioButton = new javax.swing.JRadioButton();
-        proteaseBox = new javax.swing.JComboBox();
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        peptideFileTreePanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        launchMainWindowButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<File>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        launchMainWindowButton = new javax.swing.JButton();
-        jFileChooser1 = new javax.swing.JFileChooser();
-        jButton3 = new javax.swing.JButton();
-
-        simpleDigestRadioButton.setText("simple digest");
-        simpleDigestRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simpleDigestRadioButtonActionPerformed(evt);
-            }
-        });
-
-        CPDTRadioButton.setText("use CP-DT");
-        CPDTRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CPDTRadioButtonActionPerformed(evt);
-            }
-        });
-
-        proteaseBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        javax.swing.GroupLayout digestPanelLayout = new javax.swing.GroupLayout(digestPanel);
-        digestPanel.setLayout(digestPanelLayout);
-        digestPanelLayout.setHorizontalGroup(
-            digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(digestPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(digestPanelLayout.createSequentialGroup()
-                        .addComponent(simpleDigestRadioButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(proteaseBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(CPDTRadioButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        digestPanelLayout.setVerticalGroup(
-            digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(digestPanelLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(digestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(simpleDigestRadioButton)
-                    .addComponent(proteaseBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(CPDTRadioButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jButton1.setText("add analysis group");
-
-        jButton2.setText("add peptide file");
-
-        javax.swing.GroupLayout peptideFileTreePanelLayout = new javax.swing.GroupLayout(peptideFileTreePanel);
-        peptideFileTreePanel.setLayout(peptideFileTreePanelLayout);
-        peptideFileTreePanelLayout.setHorizontalGroup(
-            peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        peptideFileTreePanelLayout.setVerticalGroup(
-            peptideFileTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(peptideFileTreePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addContainerGap(46, Short.MAX_VALUE))
-        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("select files");
         setBackground(new java.awt.Color(255, 255, 255));
+        setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        setForeground(java.awt.Color.white);
+        setMaximumSize(new java.awt.Dimension(1200, 1200));
+        setMinimumSize(new java.awt.Dimension(640, 206));
 
-        launchMainWindowButton.setText("parse selected files");
-        launchMainWindowButton.addActionListener(new java.awt.event.ActionListener() {
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jButton4.setText("select reference experiment");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                launchMainWindowButtonActionPerformed(evt);
+                jButton4ActionPerformed(evt);
             }
         });
 
-        jFileChooser1.setBackground(new java.awt.Color(255, 255, 255));
+        jButton5.setText("select comparison experiment(s)");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
 
         jButton3.setText("add additional info");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -132,32 +86,87 @@ public class FileBasedSelectionFrame extends javax.swing.JFrame {
             }
         });
 
+        launchMainWindowButton.setText("parse selected files");
+        launchMainWindowButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                launchMainWindowButtonActionPerformed(evt);
+            }
+        });
+
+        jList1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jList1KeyTyped(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jList1);
+
+        jButton1.setText("remove reference experiment");
+
+        jButton2.setText("remove selected comparison experiment(s)");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(launchMainWindowButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
+                        .addComponent(jButton3))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton5)
+                            .addComponent(jButton2)
+                            .addComponent(jButton4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4))
+                .addGap(9, 9, 9)
+                .addComponent(jButton1)
+                .addGap(47, 47, 47)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2)
+                        .addGap(0, 40, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(launchMainWindowButton))
+                .addGap(16, 16, 16))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(launchMainWindowButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(launchMainWindowButton)
-                    .addComponent(jButton3))
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -165,46 +174,78 @@ public class FileBasedSelectionFrame extends javax.swing.JFrame {
 
     private void launchMainWindowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_launchMainWindowButtonActionPerformed
         boolean goAhead = false;
-        if (jFileChooser1.getSelectedFiles().length == 0) {
-            JOptionPane.showMessageDialog(this, "please select one or multiple files to parse");
-        } else {
-
+        if (referenceFile != null) {
         }
-
     }//GEN-LAST:event_launchMainWindowButtonActionPerformed
-
-    private void simpleDigestRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpleDigestRadioButtonActionPerformed
-        // TODO add your handling code here:
-        if (simpleDigestRadioButton.isSelected()) {
-            proteaseBox.setEnabled(true);
-        }
-
-    }//GEN-LAST:event_simpleDigestRadioButtonActionPerformed
-
-    private void CPDTRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CPDTRadioButtonActionPerformed
-        // TODO add your handling code here:
-        if (CPDTRadioButton.isSelected()) {
-            proteaseBox.setEnabled(false);
-        }
-    }//GEN-LAST:event_CPDTRadioButtonActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        new AdditionalFileParsingInfoPanel(jFileChooser1.getSelectedFiles());
+        List<File> files = new ArrayList<>();
+        Enumeration<File> fileWalker = ((DefaultListModel) jList1.getModel()).elements();
+        while (fileWalker.hasMoreElements());
+        {
+            files.add(fileWalker.nextElement());
+        }
+        files.add(referenceFile);
+        new AdditionalFileParsingInfoPanel(files.toArray(new File[0]));
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setVisible(true);
+        if (chooser.getSelectedFiles().length > 0) {
+            DefaultListModel<File> experimentListModel = new DefaultListModel<>();
+            for (File aFile : chooser.getSelectedFiles()) {
+                experimentListModel.addElement(aFile);
+            }
+            jList1.setModel(experimentListModel);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jList1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jList1KeyTyped
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
+            for (File aSelectedFile : jList1.getSelectedValuesList()) {
+                jList1.remove(((DefaultListModel) jList1.getModel()).indexOf(aSelectedFile));
+            }
+        }
+    }//GEN-LAST:event_jList1KeyTyped
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        for (File aSelectedFile : jList1.getSelectedValuesList()) {
+            jList1.remove(((DefaultListModel) jList1.getModel()).indexOf(aSelectedFile));
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        // TODO add your handling code here:
+                if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
+            for (File aSelectedFile : jList1.getSelectedValuesList()) {
+                jList1.remove(((DefaultListModel) jList1.getModel()).indexOf(aSelectedFile));
+            }
+        }
+        
+    }//GEN-LAST:event_jTextField1KeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JRadioButton CPDTRadioButton;
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JPanel digestPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JList<File> jList1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton launchMainWindowButton;
-    private javax.swing.JPanel peptideFileTreePanel;
-    private javax.swing.JComboBox proteaseBox;
-    private javax.swing.JRadioButton simpleDigestRadioButton;
     // End of variables declaration//GEN-END:variables
 
     public Experiment getReferenceProject() {

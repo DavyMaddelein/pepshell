@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -116,8 +117,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         uniprotTranslateRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         swissprotTranslationRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         genbankTranslationRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
-        fetchDomainDataCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
-        fetchPdbDataCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         editRetrievalStepsMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -457,14 +456,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
 
         jMenu2.add(jMenu3);
 
-        fetchDomainDataCheckBoxMenuItem.setSelected(true);
-        fetchDomainDataCheckBoxMenuItem.setText("fetch domain-related data");
-        jMenu2.add(fetchDomainDataCheckBoxMenuItem);
-
-        fetchPdbDataCheckBoxMenuItem.setSelected(true);
-        fetchPdbDataCheckBoxMenuItem.setText("fetch pdb data for proteins");
-        jMenu2.add(fetchPdbDataCheckBoxMenuItem);
-
         editRetrievalStepsMenuItem.setText("edit retrieval steps");
         editRetrievalStepsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -537,10 +528,13 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         if (filterSubsetCheckBox.isSelected()) {
             if (!preloadProteinFilterPanel1.getProteinsToFilterWith().isEmpty()) {
                 int index = dialog.getRetrievalSteps().indexOf(new ProteinFiltering());
-                if (index > -1) {
-                    ((ProteinFiltering) dialog.getRetrievalSteps().get(index)).setFilterList(preloadProteinFilterPanel1.getProteinsToFilterWith());
+                if (index == -1) {
+                    ProteinFiltering addedStep = new ProteinFiltering();
+                    addedStep.setFilterList(preloadProteinFilterPanel1.getProteinsToFilterWith());
+                    dialog.getRetrievalSteps().addFirst(addedStep);
+                    JOptionPane.showMessageDialog(this, "filtering step was not selected, added as step");
                 } else {
-                    JOptionPane.showMessageDialog(this, "filtering step was not selected, entries ignored");
+                    ((ProteinFiltering) dialog.getRetrievalSteps().get(index)).setFilterList(preloadProteinFilterPanel1.getProteinsToFilterWith());
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "empty filter set, was ignored");
@@ -549,12 +543,14 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         if (maskProteinsCheckBox.isSelected()) {
             if (!preloadProteinMaskPanel1.getProteinsToMaskWith().isEmpty()) {
                 int index = dialog.getRetrievalSteps().indexOf(new AccessionMasking());
-                if (index > -1) {
-                    ((AccessionMasking) dialog.getRetrievalSteps().get(index)).setMaskingSet(preloadProteinMaskPanel1.getProteinsToMaskWith());
+                if (index == -1) {
+                    AccessionMasking addedStep = new AccessionMasking();
+                    addedStep.setMaskingSet(preloadProteinMaskPanel1.getProteinsToMaskWith());
+                    dialog.getRetrievalSteps().addFirst(addedStep);
+                    JOptionPane.showMessageDialog(this, "masking step was not selected, added as very first step");
                 } else {
-                    JOptionPane.showMessageDialog(this, "masking step was not selected, entries ignored");
+                    ((AccessionMasking) dialog.getRetrievalSteps().get(index)).setMaskingSet(preloadProteinMaskPanel1.getProteinsToMaskWith());
                 }
-
             } else {
                 JOptionPane.showMessageDialog(this, "empty masking set, was ignored");
             }
@@ -576,7 +572,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_analyseButtonActionPerformed
 
     private void addReferenceProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addReferenceProjectButtonActionPerformed
-
         if (projectList.getSelectedValue() != null) {
             referenceProject = (Experiment) projectList.getSelectedValue();
             referenceProjectTextBox.setText(referenceProject.getExperimentName());
@@ -600,18 +595,22 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_addAnalysisGroupButtonActionPerformed
 
     private void toProjectTreeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toProjectTreeButtonActionPerformed
-        if (!selectedProjectsList.contains((Experiment) projectList.getSelectedValue())) {
-            DefaultMutableTreeNode projectNode = projectTree.addObject(projectList.getSelectedValue());
-            projectNode.setAllowsChildren(false);
-            selectedProjectsList.add((Experiment) projectList.getSelectedValue());
+        for (Object selectedValues : projectList.getSelectedValuesList()) {
+            if (!selectedProjectsList.contains((Experiment) selectedValues)) {
+                DefaultMutableTreeNode projectNode = projectTree.addObject(selectedValues);
+                projectNode.setAllowsChildren(false);
+                selectedProjectsList.add((Experiment) selectedValues);
+            }
         }
     }//GEN-LAST:event_toProjectTreeButtonActionPerformed
 
     private void removeProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeProjectButtonActionPerformed
         if (projectTree.getSelectionPath() != null) {
-            if (projectTree.getSelectionPath().getLastPathComponent() instanceof Experiment) {
-                selectedProjectsList.remove((Experiment) projectTree.getSelectionPath().getLastPathComponent());
-                projectTree.removeCurrentNode();
+            for (TreePath aPath : projectTree.getSelectionPaths()) {
+                if (((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject() instanceof Experiment) {
+                    selectedProjectsList.remove((Experiment) ((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject());
+                    projectTree.removeCurrentNode();
+                }
             }
         }
     }//GEN-LAST:event_removeProjectButtonActionPerformed
@@ -654,12 +653,8 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     private void maskProteinsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maskProteinsCheckBoxActionPerformed
         if (maskProteinsCheckBox.isSelected()) {
             preloadProteinMaskPanel1.setVisible(true);
-            this.pack();
-            this.repaint();
         } else {
             preloadProteinMaskPanel1.setVisible(false);
-            this.pack();
-            this.repaint();
         }
     }//GEN-LAST:event_maskProteinsCheckBoxActionPerformed
 
@@ -702,8 +697,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem editRetrievalStepsMenuItem;
     private javax.swing.JPanel experimentSelectionPanel;
     private javax.swing.JTextField fastaLocationTextField;
-    private javax.swing.JCheckBoxMenuItem fetchDomainDataCheckBoxMenuItem;
-    private javax.swing.JCheckBoxMenuItem fetchPdbDataCheckBoxMenuItem;
     private javax.swing.JCheckBox filterSubsetCheckBox;
     private javax.swing.JRadioButtonMenuItem genbankTranslationRadioButtonMenuItem;
     private javax.swing.JMenu jMenu1;

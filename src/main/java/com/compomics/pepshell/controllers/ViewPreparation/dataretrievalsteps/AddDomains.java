@@ -33,7 +33,7 @@ public class AddDomains extends DataRetrievalStep {
             try {
                 protein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein));
                 this.setChanged();
-                this.notifyObservers(new UpdateMessage(true, "added domain info to " + protein.getProteinAccession()));
+                this.notifyObservers(new UpdateMessage(true, "added domain info to " + protein.getProteinAccession(),false));
             } catch (DataRetrievalException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }

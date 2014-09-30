@@ -77,7 +77,7 @@ public class PeptideGroupController {
 
         while (rs.next()) {
             peptideSequence = rs.getString("sequence");
-            QuantedPeptide peptide = new QuantedPeptide(peptideSequence, rs.getDouble("total_spectrum_intensity"));
+            QuantedPeptide peptide = new QuantedPeptide(peptideSequence, rs.getDouble("total_spectrum_intensity"),rs.getDouble("standard_error"));
             if (peptideGroupHolder.containsKey(peptideSequence)) {
                 peptideGroupHolder.get(peptideSequence).getShortestPeptide().incrementTimesFound();
             } else {

@@ -3,13 +3,11 @@ package com.compomics.pepshell.view.panels;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 
@@ -59,6 +57,11 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         experimentsScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("experiments"));
 
         experimentsPanel.setPreferredSize(new java.awt.Dimension(200, 100));
+        experimentsPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                experimentsPanelMouseExited(evt);
+            }
+        });
 
         javax.swing.GroupLayout experimentsPanelLayout = new javax.swing.GroupLayout(experimentsPanel);
         experimentsPanel.setLayout(experimentsPanelLayout);
@@ -79,12 +82,12 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
-                    .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(experimentsScrollPane, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sequenceCoveragePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                    .addComponent(referenceExperimentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(experimentsScrollPane))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -100,6 +103,12 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void experimentsPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_experimentsPanelMouseExited
+        // TODO add your handling code here:
+        sequenceCoveragePanel.repaint();
+        
+    }//GEN-LAST:event_experimentsPanelMouseExited
+
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
         sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest, true);
         referenceProtein = proteinOfInterest;
@@ -109,7 +118,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         referenceExperimentPanel.revalidate();
         referenceExperimentPanel.repaint();
         experimentsPanel.setReferenceProtein(referenceProtein);
-        updatePeptideGraphics(proteinOfInterest);
+        this.updatePeptideGraphics(proteinOfInterest);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.compomics.pepshell.view.panels.ExperimentsPanel experimentsPanel;

@@ -1,6 +1,5 @@
 package com.compomics.pepshell.model;
 
-import com.compomics.pepshell.controllers.BasicStats;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +14,8 @@ public class QuantedPeptide extends Peptide {
     List<Double> heavy = new ArrayList<>();
     List<Double> light = new ArrayList<>();
     private Double ratio;
-
+    private Double standardError = 0.0;
+    
     public QuantedPeptide(String sequence, Double spectrumIntensity) {
         super(sequence,spectrumIntensity);
     }
@@ -23,6 +23,13 @@ public class QuantedPeptide extends Peptide {
     public QuantedPeptide(String sequence, Double spectrumIntensity, Double aRatio){
         super(sequence,spectrumIntensity);
         this.ratio = aRatio;
+    }
+    
+    
+    public QuantedPeptide(String sequence, Double spectrumIntensity, Double aRatio,Double aStandardError){
+        super(sequence,spectrumIntensity);
+        this.ratio = aRatio;
+        this.standardError = aStandardError;
     }
     
     public Double getRatio() throws CalculationException {

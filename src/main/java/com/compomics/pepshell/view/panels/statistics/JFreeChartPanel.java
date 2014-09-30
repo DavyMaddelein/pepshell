@@ -6,14 +6,43 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.annotations.XYShapeAnnotation;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
+import org.jfree.chart.renderer.xy.StandardXYBarPainter;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 /**
  *
  * @author Davy
  */
 public abstract class JFreeChartPanel extends javax.swing.JPanel {
+
+    private static void setupPlot(CategoryPlot categoryPlot) {
+    categoryPlot.setBackgroundPaint(Color.white);
+        categoryPlot.setRangeGridlinePaint(Color.black);
+        // hide the border of the sorrounding box
+        categoryPlot.setOutlinePaint(Color.white);
+        // get domanin and range axes
+        CategoryAxis domainAxis = categoryPlot.getDomainAxis();
+        ValueAxis rangeAxis = categoryPlot.getRangeAxis();
+        // set label paint for axes to black
+        domainAxis.setLabelPaint(Color.black);
+        rangeAxis.setLabelPaint(Color.black);
+        // set font for labels, both on domain and range axes
+        domainAxis.setLabelFont(new Font("Tahoma", Font.BOLD, 12));
+        rangeAxis.setLabelFont(new Font("Tahoma", Font.BOLD, 12));
+        
+        
+    }
 
     protected ChartPanel chart;
 
@@ -63,6 +92,42 @@ public abstract class JFreeChartPanel extends javax.swing.JPanel {
         if (chart.getPlot() instanceof XYPlot) {
             XYPlot xYPlot = chart.getXYPlot();
             setupPlot(xYPlot);
+        } else if (chart.getPlot() instanceof CategoryPlot){
+            CategoryPlot categoryPlot = chart.getCategoryPlot();
+            setupPlot(categoryPlot);
+        }
+        setShadowVisible(chart, false);
+    }
+    
+    /**
+     * Enable shadow of renderer? JFreeChart 1.0.11 changed the <b>default</b>
+     * look by painting shadows for bars. To revert back to the old look, you
+     * can disable the shadows with this method.
+     *
+     * @param chart JFreeChart.
+     * @param state False, to disable shadow-
+     * @since 4.1.0
+     */
+    public static void setShadowVisible(final JFreeChart chart, final boolean state) {
+        if (chart != null) {
+            final Plot p = chart.getPlot();
+            if (p instanceof XYPlot) {
+                final XYPlot xyplot = (XYPlot) p;
+                final XYItemRenderer xyItemRenderer = xyplot.getRenderer();
+                if (xyItemRenderer instanceof XYBarRenderer) {
+                    final XYBarRenderer br = (XYBarRenderer) xyItemRenderer;
+                    br.setBarPainter(new StandardXYBarPainter());
+                    br.setShadowVisible(state);
+                }
+            } else if (p instanceof CategoryPlot) {
+                final CategoryPlot categoryPlot = (CategoryPlot) p;
+                final CategoryItemRenderer categoryItemRenderer = categoryPlot.getRenderer();
+                if (categoryItemRenderer instanceof BarRenderer) {
+                    final BarRenderer br = (BarRenderer) categoryItemRenderer;
+                    br.setBarPainter(new StandardBarPainter());
+                    br.setShadowVisible(state);
+                }
+            } 
         }
     }
 

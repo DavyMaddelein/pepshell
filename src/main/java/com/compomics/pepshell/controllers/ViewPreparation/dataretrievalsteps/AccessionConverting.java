@@ -31,7 +31,7 @@ public class AccessionConverting extends DataRetrievalStep {
                 if (coTo == ConversionTo.TO_UNIPROT) {
                     aProtein.setAccession(AccessionConverter.toUniprot(aProtein.getOriginalAccession()));
                     this.setChanged();
-                    this.notifyObservers(new UpdateMessage(true, "changed accession of " + aProtein.getOriginalAccession() + " to " + aProtein.getProteinAccession()));
+                    this.notifyObservers(new UpdateMessage(true, "changed accession of " + aProtein.getOriginalAccession() + " to " + aProtein.getProteinAccession(),false));
                 }
             } catch (ConversionException ex) {
                 FaultBarrier.getInstance().handleException(ex);

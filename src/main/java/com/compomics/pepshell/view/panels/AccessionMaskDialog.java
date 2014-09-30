@@ -3,6 +3,7 @@ package com.compomics.pepshell.view.panels;
 import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.enums.ExportPropertyEnum;
 import com.compomics.pepshell.model.enums.ProgramPropertyEnum;
 import java.awt.Color;
 import java.io.File;
@@ -277,7 +278,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
         FileWriter saveWriter = null;
         try {
             // TODO add your handling code here:
-            JFileChooser accessionMaskSaver = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+            JFileChooser accessionMaskSaver = new JFileChooser(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
             accessionMaskSaver.setDialogType(JFileChooser.SAVE_DIALOG);
             accessionMaskSaver.setMultiSelectionEnabled(false);
             accessionMaskSaver.showOpenDialog(this);
@@ -302,7 +303,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_loadFileMenuItemActionPerformed
 
     private void exportFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileMenuItemActionPerformed
-        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ProgramPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
         accessionMaskingChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         accessionMaskingChooser.showOpenDialog(this);
         File selectedFile = accessionMaskingChooser.getSelectedFile();

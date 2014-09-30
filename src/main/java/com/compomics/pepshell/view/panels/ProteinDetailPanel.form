@@ -26,14 +26,14 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="sequenceCoveragePanel" pref="552" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="sequenceCoveragePanel" alignment="1" pref="552" max="32767" attributes="0"/>
                   <Component id="referenceExperimentPanel" alignment="1" pref="0" max="32767" attributes="0"/>
                   <Component id="experimentsScrollPane" alignment="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -84,6 +84,9 @@
               <Dimension value="[200, 100]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="experimentsPanelMouseExited"/>
+          </Events>
 
           <Layout>
             <DimensionLayout dim="0">

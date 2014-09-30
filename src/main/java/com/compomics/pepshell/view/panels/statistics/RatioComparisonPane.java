@@ -56,7 +56,7 @@ public class RatioComparisonPane extends JFreeChartPanel {
             try {
                 if (aPeptide instanceof QuantedPeptide && ((QuantedPeptide) aPeptide).getRatio() != null) {
                     Double value = Math.log(((QuantedPeptide) aPeptide).getRatio()) / Math.log(2);
-                    returnset.addValue(value, (Integer) aPeptide.getBeginningProteinMatch(), (Integer) 1);
+                    returnset.addValue(value,(Integer) 1, (Integer) aPeptide.getBeginningProteinMatch());
                     //returnset.addValue(((QuantedPeptide) aPeptide).getRatio(), String.valueOf(aPeptide.getBeginningProteinMatch()), String.valueOf(groupcounter));
                 }
             } catch (CalculationException ex) {

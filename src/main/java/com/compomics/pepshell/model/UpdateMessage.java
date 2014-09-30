@@ -8,6 +8,7 @@ public class UpdateMessage {
 
     private boolean repaint = false;
     private String message = "";
+    private boolean informUser = false;
 
     /**
      * creates an empty update message which does not flag to repaint and has an
@@ -19,14 +20,16 @@ public class UpdateMessage {
 
     /**
      * creates an update message object to notify various levels in the program
+     *
      * @param dataVisiblyChanged boolean to flag repainting gui
      * @param aMessage update message, ignores nulls
      */
-    public UpdateMessage(boolean dataVisiblyChanged, String aMessage) {
+    public UpdateMessage(boolean dataVisiblyChanged, String aMessage, boolean informUserOfChange) {
         this.repaint = dataVisiblyChanged;
         if (aMessage != null) {
             this.message = aMessage;
         }
+        this.informUser = informUserOfChange;
     }
 
     public boolean repaint() {
@@ -35,5 +38,9 @@ public class UpdateMessage {
 
     public String getMessage() {
         return message;
+    }
+
+    public boolean informUser() {
+        return informUser;
     }
 }
