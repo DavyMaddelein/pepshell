@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.annotations.XYShapeAnnotation;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
@@ -19,6 +20,7 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYSeries;
 
 /**
  *
@@ -98,7 +100,7 @@ public abstract class JFreeChartPanel extends javax.swing.JPanel {
         }
         setShadowVisible(chart, false);
     }
-    
+       
     /**
      * Enable shadow of renderer? JFreeChart 1.0.11 changed the <b>default</b>
      * look by painting shadows for bars. To revert back to the old look, you

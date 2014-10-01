@@ -171,7 +171,6 @@ public abstract class ViewPreparation<T extends Experiment, V extends Protein> e
             progressMonitor.setNote("cleaning up");
             executor.shutdown();
             progressMonitor.setProgress(progressMonitor.getMaximum());
-
             return true;
         }
     }

@@ -58,6 +58,7 @@ public class PeptideGroupController {
                     peptideToAdd.setEndProteinMatch(rs.getInt("end"));
                     if (addQuant) {
                         ((QuantedPeptide) peptideToAdd).setRatio(setRatioForPeptide(rs.getInt("identificationid")));
+                        ((QuantedPeptide) peptideToAdd).setStandardError(setErrorForPeptide(rs.getInt("identificationid")));
                     }
                     addedGroup.setShortestPeptideIndex(0);
                     //checkForShortestPeptideSequence(peptideToAdd, peptideGroupHolder);
@@ -77,7 +78,7 @@ public class PeptideGroupController {
 
         while (rs.next()) {
             peptideSequence = rs.getString("sequence");
-            QuantedPeptide peptide = new QuantedPeptide(peptideSequence, rs.getDouble("total_spectrum_intensity"),rs.getDouble("standard_error"));
+            QuantedPeptide peptide = new QuantedPeptide(peptideSequence, rs.getDouble("total_spectrum_intensity"),rs.getDouble("ratio"),rs.getDouble("standard_error"));
             if (peptideGroupHolder.containsKey(peptideSequence)) {
                 peptideGroupHolder.get(peptideSequence).getShortestPeptide().incrementTimesFound();
             } else {
@@ -223,6 +224,17 @@ public class PeptideGroupController {
         ResultSet rs = stat.executeQuery();
         while (rs.next()) {
             ratio = rs.getDouble("ratio");
+        }
+        return ratio;
+    }
+
+    private static Double setErrorForPeptide(int anIdentificationId) throws SQLException {
+        Double ratio = null;
+        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.getErrorForQuantedPeptide());
+        stat.setInt(1, anIdentificationId);
+        ResultSet rs = stat.executeQuery();
+        while (rs.next()) {
+            ratio = rs.getDouble("standard_error");
         }
         return ratio;
     }

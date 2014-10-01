@@ -28,6 +28,7 @@ public class SQLStatements {
     private static String GET_PDB_INFO_FOR_PROTEIN;
     private static String GET_SECONDARY_STRUCTURE_FOR_PDB;
     private static String GET_QUANT_FOR_PEPTIDE;
+    private static String GET_ERROR_FOR_QUANTED_PEPTIDE;
     
     public static void instantiateColimsStatements() {
         SQLStatements.SELECT_PROTEINS = SELECT_COLIMS_PROTEINS;
@@ -50,6 +51,7 @@ public class SQLStatements {
         SQLStatements.GET_QUANT_FOR_EXPERIMENT = SELECT_QUANT_DATA_FOR_MS_LIMS_PROJECT;
         SQLStatements.GET_PEPTIDES_WITH_QUANT = SELECT_PEPTIDES_WITH_QUANT_FOR_MS_LIMS_PROJECT;
         SQLStatements.GET_QUANT_FOR_PEPTIDE = SELECT_QUANT_FOR_MS_LIMS_IDENTIFICATION;
+        SQLStatements.GET_ERROR_FOR_QUANTED_PEPTIDE = SELECT_QUANT_ERROR_FOR_MS_LIMS_IDENTIFICATION;
     }
 
     public static void instantiateLinkDbStatements() {
@@ -94,7 +96,8 @@ public class SQLStatements {
     private static final String GET_PDBFILE_WITH_HIGHEST_RESOLUTION_FOR_PROTEIN_FROM_LINKDB = "select PDB from structure order by resolution desc limit 1";
     private static final String GET_SECONDARY_STRUCTURE_FOR_PDB_FROM_LINKDB ="select residue.numbering_fasta, residue.secondary_structure from residue, ( select chain.idchain as chain_id from protein, protein_chain, chain, structure where protein.uniprot_id = ? and protein_chain.protein_id = protein.idprotein and protein_chain.chain_id = chain.idchain and structure.PDB = ? and chain.structure_id = structure.idstructure order by chain_label asc limit 1) as chain_id_sub where residue.chain_id = chain_id_sub.chain_id;"; 
     private static final String SELECT_QUANT_FOR_MS_LIMS_IDENTIFICATION = "select quantitation.ratio from quantitation, identification_to_quantitation where quantitation.l_quantitation_groupid = identification_to_quantitation.l_quantitation_groupid and l_identificationid = ?";
-
+    private static final String SELECT_QUANT_ERROR_FOR_MS_LIMS_IDENTIFICATION = "select quantitation.standard_error from quantitation, identification_to_quantitation where quantitation.l_quantitation_groupid = identification_to_quantitation.l_quantitation_groupid and l_identificationid = ?";
+    
     
     public static String selectAllProteins() {
         return SELECT_PROTEINS;
@@ -174,6 +177,10 @@ public class SQLStatements {
 
     public static String getQuantForPeptideIdentifier() {
         return GET_QUANT_FOR_PEPTIDE;
+    }
+
+    public static String getErrorForQuantedPeptide() {
+        return GET_ERROR_FOR_QUANTED_PEPTIDE;
     }
     
 }

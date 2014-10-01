@@ -97,10 +97,10 @@ public class DbDAO extends Observable {
         }
     }
 
-    public static boolean projectHasQuant(Experiment project) throws SQLException {
+    public static boolean projectHasQuant(Experiment anExperiment) throws SQLException {
         boolean projectHasQuant = true;
         try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.quantedCheck())) {
-            stat.setInt(1, project.getExperimentId());
+            stat.setInt(1, anExperiment.getExperimentId());
             try (ResultSet rs = stat.executeQuery()) {
                 if (!rs.next()) {
                     projectHasQuant = false;

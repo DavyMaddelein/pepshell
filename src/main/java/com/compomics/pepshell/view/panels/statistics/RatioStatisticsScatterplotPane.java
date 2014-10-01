@@ -12,12 +12,15 @@ import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYDataItem;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -37,6 +40,7 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
 
     @Override
     public void setGraphData(Protein aProtein) {
+        List<XYLineAnnotation> annotations = new ArrayList<>();
         XYSeriesCollection allExperiments = new XYSeriesCollection();
         for (Experiment anExperiment : experiments) {
             int proteinIndex = anExperiment.getProteins().indexOf(aProtein);
@@ -45,16 +49,24 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
                 Protein experimentProtein = anExperiment.getProteins().get(proteinIndex);
                 for (PeptideGroup aGroup : experimentProtein.getPeptideGroupsForProtein()) {
                     Peptide shortestPeptide = aGroup.getShortestPeptide();
+
                     try {
                         if (shortestPeptide instanceof QuantedPeptide && ((QuantedPeptide) shortestPeptide).getRatio() != null) {
                             Double value = Math.log(((QuantedPeptide) shortestPeptide).getRatio()) / Math.log(2);
                             if (value == Double.NEGATIVE_INFINITY) {
                                 value = 0.0;
                             }
+                            double barWithErrors = (shortestPeptide.getEndProteinMatch() + shortestPeptide.getBeginningProteinMatch()) / 2;
+                            double error = Math.log(((QuantedPeptide) shortestPeptide).getStandardError()) / Math.log(2);
+                            XYLineAnnotation vertical = new XYLineAnnotation(barWithErrors, value - error, barWithErrors, value + error, new BasicStroke(), Color.black);
+                            annotations.add(vertical);
+
                             for (int i = shortestPeptide.getBeginningProteinMatch(); i < shortestPeptide.getEndProteinMatch(); i++) {
                                 anExperimentSeries.add(i, value);
+                                
                             }
                         }
+
                     } catch (CalculationException ex) {
                         FaultBarrier.getInstance().handleException(ex);
                     }
@@ -65,6 +77,9 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
         }
         JFreeChart ratioChart = ChartFactory.createHistogram("ratio for " + aProtein.getVisibleAccession() + " over all experiments", "peptide start", "log^2 ratio", allExperiments, PlotOrientation.VERTICAL, true, true, false);
         chart.setChart(ratioChart);
+        for (XYLineAnnotation anAnnotation : annotations) {
+            ((XYPlot) ratioChart.getPlot()).addAnnotation(anAnnotation);
+        }
         prettifyChart(ratioChart);
     }
 }

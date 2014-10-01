@@ -55,4 +55,12 @@ public class QuantedPeptide extends Peptide {
     public void setRatio(Double aRatio) {
         this.ratio = aRatio;
     }
+    
+    public Double getStandardError(){
+        return standardError;
+    }
+    
+    public void setStandardError(Double aStandardError){
+        this.standardError = aStandardError;
+    }
 }

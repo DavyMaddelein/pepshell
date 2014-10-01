@@ -75,7 +75,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         }
 
         String sequenceTable = "", currentCellSequence = "";
-        boolean selectedPeptide = false, coveredPeptide;
+        boolean selectedPeptide = false, coveredPeptide, domainCovered = false;
         double sequenceCoverage = 0;
 
         // see how many amino acids we have room for
@@ -98,7 +98,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         int numberOfAminoAcidsPerRow = (int) (temp / 10);
         numberOfAminoAcidsPerRow *= 10;
 
-        List<Integer> referenceMarkers = new ArrayList<Integer>();
+        List<Integer> referenceMarkers = new ArrayList<>();
 
         boolean previousAminoAcidWasCovered = false;
         boolean previousAminoAcidWasSelected = false;
@@ -162,6 +162,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
                     }
                 }
                 previousAminoAcidWasSelected = true;
+                domainCovered = true;
             } else {
                 previousAminoAcidWasSelected = false;
 
@@ -175,7 +176,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
                             currentCellSequence += "<b></span>" + cleanSequence.charAt(i - 1);
                         }
                     }
-                } else {
+                } else if (domainCovered) {
                     if (i % 10 == 1) {
                         currentCellSequence += "<span style=\"color:#9C9C9C\">" + cleanSequence.charAt(i - 1);
                     } else {
