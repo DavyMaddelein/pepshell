@@ -9,15 +9,15 @@ import java.util.EnumSet;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public final class DatabaseProperties extends PropertiesController {
+public final class DatabaseProperties extends AbstractProperties {
 
     private static DatabaseProperties databaseProperties;
     private static final File propertyFile = new File(System.getProperty("user.home"), ".compomics/pepshell/dbpreferences");
 
     private DatabaseProperties(File aPropertyFile, EnumSet DataBasePropertyEnumSet) throws FileNotFoundException, IOException {
-        super(aPropertyFile, DataBasePropertyEnumSet);
+        super(DatabaseProperties.propertyFile, DataBasePropertyEnumSet);
     }
     
     private DatabaseProperties(EnumSet DataBasePropertyEnumSet){

@@ -6,9 +6,9 @@ import java.io.File;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public abstract class ImageExport {
+abstract class ImageExport {
 
     private File exportFolder;
 
@@ -20,11 +20,11 @@ public abstract class ImageExport {
         this.exportComponent(aComponent, Long.toString(System.currentTimeMillis() / 1000));
     }
 
-    public abstract void exportComponent(Component aComponent, String fileName);
+    protected abstract void exportComponent(Component aComponent, String fileName);
 
     public void exportImage(BufferedImage imageToExport) {
         this.exportImage(imageToExport, Long.toString(System.currentTimeMillis() / 1000));
     }
 
-    public abstract void exportImage(BufferedImage imageToExport, String filename);
+    protected abstract void exportImage(BufferedImage imageToExport, String filename);
 }

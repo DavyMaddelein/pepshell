@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class AggregateFastaReadingException extends IOException {
 
@@ -19,7 +19,7 @@ public class AggregateFastaReadingException extends IOException {
         super(message);
     }
     
-    private List<FastaCouldNotBeReadException> exceptionList = new ArrayList<>();
+    private final List<FastaCouldNotBeReadException> exceptionList = new ArrayList<>();
     
     public void addFastaReadingException(FastaCouldNotBeReadException ex) {
         exceptionList.add(ex);

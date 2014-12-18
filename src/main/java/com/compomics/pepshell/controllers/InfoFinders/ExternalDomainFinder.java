@@ -2,7 +2,7 @@ package com.compomics.pepshell.controllers.InfoFinders;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DasParser;
-import com.compomics.pepshell.controllers.DAO.URLController;
+import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
 import com.compomics.pepshell.model.DAS.DasFeature;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.Protein;
@@ -47,15 +47,15 @@ public class ExternalDomainFinder {
         List<Domain> foundDomains = new ArrayList<>();
         List<DasFeature> features = new ArrayList<>();
         if (aDomainWebSite == DomainWebSites.PFAM) {
-            features = DasParser.getAllDasFeatures(URLController.readUrl("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession));
+            features = DasParser.getAllDasFeatures(WebUtils.getHTMLPage("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession));
         } else if (aDomainWebSite == DomainWebSites.SMART) {
-            features = DasParser.getAllDasFeatures(URLController.readUrl("http://smart.embl.de/smart/das/smart/features?segment=" + aUniProtAccession));
+            features = DasParser.getAllDasFeatures(WebUtils.getHTMLPage("http://smart.embl.de/smart/das/smart/features?segment=" + aUniProtAccession));
 //        } else if (aDomainWebSite == DomainWebSites.PROSITE) {
-//            features = DasParser.getAllDasFeatures(URLController.readUrl("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
+//            features = DasParser.getAllDasFeatures(URLController.getHTMLPage("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
 //        } 
         } else if (aDomainWebSite == DomainWebSites.UNIPROT) {
 
-            features = Lists.newArrayList(Collections2.filter(DasParser.getAllDasFeatures(URLController.readUrl("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + aUniProtAccession)), new Predicate<DasFeature>() {
+            features = Lists.newArrayList(Collections2.filter(DasParser.getAllDasFeatures(WebUtils.getHTMLPage("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + aUniProtAccession)), new Predicate<DasFeature>() {
 
                 @Override
                 public boolean apply(DasFeature input) {

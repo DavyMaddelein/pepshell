@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class PNGExport extends ImageExport {
 

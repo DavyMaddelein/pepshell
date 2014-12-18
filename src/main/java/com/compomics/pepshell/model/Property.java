@@ -4,7 +4,7 @@ import com.compomics.pepshell.model.enums.PropertyEnum;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public final class Property {
     

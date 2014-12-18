@@ -7,9 +7,9 @@ import javax.swing.ListCellRenderer;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class ProteinMaskingListCellRenderer implements ListCellRenderer{
+class ProteinMaskingListCellRenderer implements ListCellRenderer{
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

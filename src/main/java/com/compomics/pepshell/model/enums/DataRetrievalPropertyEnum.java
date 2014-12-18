@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public enum DataRetrievalPropertyEnum implements PropertyEnum {
 
@@ -12,8 +12,8 @@ public enum DataRetrievalPropertyEnum implements PropertyEnum {
     GITOUNIPROT("protein.ncbitouniprot", "http://www.uniprot.org/mapping/?from=P_GI&to=ACC&format=tab&query="),
     GETPDBFORUNIPROT("protein.pdbforuniprot", "http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=");
 
-    private String defaultValue;
-    private String key;
+    private final String defaultValue;
+    private final String key;
 
     private DataRetrievalPropertyEnum(String key, String value) {
         this.key = key;
@@ -30,5 +30,4 @@ public enum DataRetrievalPropertyEnum implements PropertyEnum {
         return defaultValue;
     }
 
-    public static EnumSet allEnumValues = EnumSet.allOf(ViewPropertyEnum.class);
 }

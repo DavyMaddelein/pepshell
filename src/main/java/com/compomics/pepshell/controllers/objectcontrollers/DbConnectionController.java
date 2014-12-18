@@ -6,26 +6,29 @@ import java.sql.SQLException;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class DbConnectionController {
 
 //change to connectionpool
-    private static volatile Connection connection;
-    private static volatile Connection linkdbConnection;
+    private static volatile Connection experimentDbConnection;
+    private static volatile Connection structDbConnection;
 
-    public static Connection createConnection(String username, String password, String url, String database) throws SQLException {
-        if (connection == null) {
-            connection = connect(username, password, url, database);
-        }
-        return DbConnectionController.getConnection();
+    private DbConnectionController() {
     }
 
-    public static Connection createLinkDbConnection(String username, String password, String url, String database) throws SQLException {
-        if (linkdbConnection == null) {
-            linkdbConnection = connect(username, password, url, database);
+    public static Connection createExperimentDbConnection(String username, String password, String url, String database) throws SQLException {
+        if (experimentDbConnection == null) {
+            experimentDbConnection = connect(username, password, url, database);
         }
-        return DbConnectionController.getLinkDBConnection();
+        return DbConnectionController.getExperimentDbConnection();
+    }
+
+    public static Connection createStructDbConnection(String username, String password, String url, String database) throws SQLException {
+        if (structDbConnection == null) {
+            structDbConnection = connect(username, password, url, database);
+        }
+        return DbConnectionController.getStructDBConnection();
     }
 
     private static Connection connect(String username, String password, String url, String database) throws SQLException {
@@ -43,25 +46,32 @@ public class DbConnectionController {
         return dbSource.getConnection();
     }
 
-    public static Connection getConnection() throws SQLException {
-        if (connection == null) {
-            throw new SQLException("connection has not been made");
+    public static Connection getExperimentDbConnection() throws SQLException {
+        if (experimentDbConnection == null) {
+            throw new SQLException("connection to the experiment database not made");
         }
-        return connection;
+        return experimentDbConnection;
     }
 
-    public static Connection getLinkDBConnection() throws SQLException {
-        if (linkdbConnection == null) {
-            throw new SQLException("connection to linkdb not made");
+    public static Connection getStructDBConnection() throws SQLException {
+        if (structDbConnection == null) {
+            throw new SQLException("connection to the structural database not made");
         }
-        return linkdbConnection;
+        return structDbConnection;
     }
 
-    public static boolean isDbConnected() {
-        return connection != null;
+    private static boolean isExperimentDbConnected() {
+        return experimentDbConnection != null;
     }
 
-    public static boolean isLinkDbConnected() {
-        return linkdbConnection != null;
+    public static boolean isStructDbConnected() {
+        return structDbConnection != null;
+    }
+
+    @Override
+    public String toString() {
+        return "manages connection to the experimental and structural databases \n"
+                + "connected to experimental db :" + String.valueOf(isExperimentDbConnected()) + "\n"
+                + "connected to strcutural db :" + String.valueOf(isStructDbConnected());
     }
 }

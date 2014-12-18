@@ -2,9 +2,9 @@ package com.compomics.pepshell.view.frames;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class ModeSelectionFrame extends javax.swing.JFrame {
+class ModeSelectionFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form ModeSelectionFrame
@@ -112,7 +112,7 @@ public class ModeSelectionFrame extends javax.swing.JFrame {
             this.dispose();
             ExperimentSelectionFrame frame = new ExperimentSelectionFrame(this.getLocation());            
         } else if (fastaSelectionRadioButton.isSelected()) {
-            new FileBasedSelectionFrame().setVisible(true);
+            new FileSelectionFrame().setVisible(true);
             this.dispose();
         }
 

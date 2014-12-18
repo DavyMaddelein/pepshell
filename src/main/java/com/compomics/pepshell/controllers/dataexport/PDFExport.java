@@ -10,20 +10,17 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class PDFExport extends ImageExport {
 
-    boolean append = false;
+    private boolean append = false;
 
     @Override
     public void exportImage(BufferedImage imageToExport, String filename) {
@@ -41,8 +38,6 @@ public class PDFExport extends ImageExport {
                 document.newPage();
                 document.add(pdfImage);
                 document.close();
-            } catch (FileNotFoundException ex) {
-                FaultBarrier.getInstance().handleException(ex);
             } catch (    DocumentException | IOException ex) {
              FaultBarrier.getInstance().handleException(ex);}
         }

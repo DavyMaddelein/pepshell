@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class Protease extends Protein {
 

@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public enum ProgramPropertyEnum implements PropertyEnum {
 
@@ -31,7 +31,5 @@ public enum ProgramPropertyEnum implements PropertyEnum {
     public String getDefaultValue() {
         return this.defaultValue;
     }
-    //TODO: make interface method reference implementing class?
-    public static EnumSet allEnumValues = EnumSet.allOf(ProgramPropertyEnum.class);
 
 }

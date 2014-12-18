@@ -4,22 +4,23 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.enums.DataRetrievalPropertyEnum;
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumSet;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class DataRetrievalProperties extends PropertiesController {
+public class DataRetrievalProperties extends AbstractProperties {
 
     private static DataRetrievalProperties dataRetrievalProperties;
     private static final File dataRetrievalPropertiesFile = new File(System.getProperty("user.home") + "/.compomics/pepshell/dataRetrievalPreferences");
 
-    public DataRetrievalProperties() {
-        super(DataRetrievalPropertyEnum.allEnumValues);
+    private DataRetrievalProperties() {
+        super(EnumSet.allOf(DataRetrievalPropertyEnum.class));
     }
 
-    public DataRetrievalProperties(File aPropertyFile) throws IOException {
-        super(dataRetrievalPropertiesFile, DataRetrievalPropertyEnum.allEnumValues);
+    private DataRetrievalProperties(File aPropertyFile) throws IOException {
+        super(dataRetrievalPropertiesFile, EnumSet.allOf(DataRetrievalPropertyEnum.class));
     }
 
             public static DataRetrievalProperties getInstance() {

@@ -6,25 +6,27 @@ import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.model.gradientMaps.SecondaryStructureMaps;
-import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
-import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
+import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
+import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
+import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  * @param <T>
- * @param <W>
+ * @param <U>
  */
-public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Peptide> extends StandardPeptideProteinDrawMode<T, W> implements PdbGradientDrawModeInterface<T, W> {
+public class SecondaryStructureProteinDrawMode<T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
     private String pdbAccession;
 
     @Override
-    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarSize) throws UndrawableException {
+    public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
 
         if (ProgramVariables.STRUCTUREDATASOURCE.isAbleTogetSecondaryStructure() && pdbAccession != null) {
             Map<Integer, String> secondaryStructurePrediction = ProgramVariables.STRUCTUREDATASOURCE.getSecondaryStructureForStructure(protein, pdbAccession);
@@ -34,11 +36,11 @@ public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Pept
                 } else {
                     g.setColor(Color.black);
                 }
-                g.fillRect(horizontalOffset + (location.getKey() * ProgramVariables.SCALE), verticalOffset, ProgramVariables.SCALE, verticalBarSize);
+                g.fillRect(startPoint.x + (DrawModeUtilities.getInstance().scale(location.getKey())), startPoint.y, DrawModeUtilities.getInstance().scale(1), height);
             }
         } else {
             g.setColor(Color.black);
-            g.drawString("could not draw the secondary structure", horizontalOffset, verticalOffset + 5);
+            g.drawString("could not draw the secondary structure", startPoint.x, startPoint.y + 5);
             throw new UndrawableException("could not calculate gradient");
         }
     }
@@ -54,12 +56,12 @@ public class SecondaryStructureProteinDrawMode<T extends Protein, W extends Pept
     }
 
     @Override
-    public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
+    public void drawColorLegend(Point legendStartPoint, Graphics g) {
         int colorCounter = 0;
         for (Entry<String, Color> entry : SecondaryStructureMaps.getColorMap().entrySet()) {
             g.setColor(entry.getValue());
-            g.fillRect(xOffset + colorCounter, yOffset, 5, ProgramVariables.VERTICALSIZE);
-            g.drawString(entry.getKey(), xOffset + 10 + colorCounter, yOffset + 7);
+            g.fillRect(legendStartPoint.x + colorCounter, legendStartPoint.y, 5, ProgramVariables.VERTICALSIZE);
+            g.drawString(entry.getKey(), legendStartPoint.x + 10 + colorCounter, legendStartPoint.y + 7);
             colorCounter += ProgramVariables.VERTICALSIZE;
             colorCounter += 15;
         }

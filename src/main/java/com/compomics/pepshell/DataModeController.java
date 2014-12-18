@@ -1,90 +1,60 @@
 package com.compomics.pepshell;
 
-import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
-import com.compomics.pepshell.controllers.DataModes.CoLimsDataMode;
-import com.compomics.pepshell.controllers.DataModes.FastaDataMode;
-import com.compomics.pepshell.controllers.DataModes.MsLimsDataMode;
-import com.compomics.pepshell.controllers.DataSources.AbstractDataSource;
-import com.compomics.pepshell.controllers.DataSources.DataBaseDataSource;
-import com.compomics.pepshell.controllers.DataSources.FileDataSource;
+import com.compomics.pepshell.controllers.dataimport.databasehandlers.ImportFromDatabaseHandler;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
+import com.compomics.pepshell.model.enums.DataModeEnum;
+import com.compomics.pepshell.model.enums.DataSourceEnum;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class DataModeController {
 
-    private static Db iScheme;
-    private static DataSource iDataSource;
+    private static DataModeEnum iScheme;
+    private boolean found = false;
+    private static DataSourceEnum iDataSource;
+    ImportFromDatabaseHandler<Connection> databaseHandler = new ImportFromDatabaseHandler<>();
+    private static final DataModeController instance = new DataModeController();
 
-    //TODO extract these two enums to the enum package
-    public enum Db {
+    private DataModeController() {
+    }
 
-        MSLIMS(new MsLimsDataMode()), COLIMS(new CoLimsDataMode()), FASTA(new FastaDataMode());
-        private final AbstractDataMode dataMode;
+    public static DataModeController getInstance() {
+        return instance;
+    }
 
-        Db(AbstractDataMode aDataMode) {
-            this.dataMode = aDataMode;
-        }
-
-        public AbstractDataMode getDataMode() {
-            return dataMode;
+    public void selectDataHandler() throws SQLException {
+        if (DbConnectionController.getExperimentDbConnection() != null) {
+            databaseHandler.canHandle(DbConnectionController.getExperimentDbConnection());
+            SQLStatements.instantiateLinkDbStatements();
+        } else {
+            iScheme = DataModeEnum.FILE;
         }
     }
 
-    public enum DataSource {
-
-        FILE(new FileDataSource()), DATABASE(new DataBaseDataSource());
-        AbstractDataSource dataSource;
-
-        DataSource(AbstractDataSource aDataSource) {
-            this.dataSource = aDataSource;
-        }
-
-        public AbstractDataSource getDataSource() {
-            return dataSource;
-        }
-    }
-
-    public static void checkDbScheme() throws SQLException {
-        try (PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS); 
-                ResultSet rs = stat.executeQuery()) {
-            if (rs.next()) {
-                SQLStatements.instantiateColimsStatements();
-                iScheme = Db.COLIMS;
-            } else {
-                SQLStatements.instantiateMslimsStatements();
-                iScheme = Db.MSLIMS;
-                SQLStatements.instantiateLinkDbStatements();
-            }
-        }
-    }
-
-    public static Db getDb() {
+    public DataModeEnum getDb() {
         return iScheme;
     }
 
-    public static Db getDb(boolean checkConnection) throws SQLException {
+    public DataModeEnum getDb(boolean checkConnection) throws SQLException {
         if (checkConnection) {
-            checkDbScheme();
+            selectDataHandler();
         }
         return iScheme;
     }
 
-    public static DataSource getDataSource() {
+    public DataSourceEnum getDataSource() {
         return iDataSource;
     }
 
-    public static void setDataSource(DataSource aDataSource) {
+    public void setDataSource(DataSourceEnum aDataSource) {
         DataModeController.iDataSource = aDataSource;
     }
 
-    public static void setDb(Db aDb) {
-        DataModeController.iScheme = aDb;
+    public void setDataMode(DataModeEnum aDataMode) {
+        iScheme = aDataMode;
     }
 }

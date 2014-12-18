@@ -1,6 +1,6 @@
 package com.compomics.pepshell.controllers;
 
-import com.compomics.pepshell.controllers.DAO.URLController;
+import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.Locale;
 public class AccessionConverter {
 
     public static List<String> spToUniProt(String aSpAccession) throws IOException {
-        String xmlPage = URLController.readUrl("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=SWISSPROT");
+        String xmlPage = WebUtils.getHTMLPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=SWISSPROT");
         List<String> accessions = new ArrayList<>();
         int startIndex = 0;
         while (xmlPage.indexOf("<ns2:databaseDescription>UniProtKB/Swiss-Prot</ns2:databaseDescription>", startIndex) != -1) {
@@ -31,7 +31,7 @@ public class AccessionConverter {
     public static List<String> refSeqToSp(String aNcbiAccession) throws IOException {
         int startIndex = 0;
         List<String> accessions = new ArrayList<>();
-        String xmlPage = URLController.readUrl("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aNcbiAccession + "&database=swissprot");
+        String xmlPage = WebUtils.getHTMLPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aNcbiAccession + "&database=swissprot");
         while (xmlPage.indexOf("<ns2:databaseDescription>SWISSPROT</ns2:databaseDescription>", startIndex) != -1) {
             startIndex = xmlPage.indexOf("<ns2:databaseDescription>SWISSPROT</ns2:databaseDescription>", startIndex) + 1;
             String feature = xmlPage.substring(xmlPage.indexOf("<ns2:logicalCrossReferences>", startIndex - 200), xmlPage.indexOf("</ns2:logicalCrossReferences>", xmlPage.indexOf("<ns2:logicalCrossReferences>", startIndex - 200)));
@@ -45,7 +45,7 @@ public class AccessionConverter {
     public static List<String> spToRefSeq(String aSpAccession) throws IOException {
         int startIndex = 0;
         List<String> ncbiAccessions = new ArrayList<>();
-        String xmlPage = URLController.readUrl("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=REFSEQ");
+        String xmlPage = WebUtils.getHTMLPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=REFSEQ");
         while (xmlPage.indexOf("<ns2:databaseDescription>RefSeq release + updates</ns2:databaseDescription>", startIndex) != -1) {
             startIndex = xmlPage.indexOf("<ns2:databaseDescription>RefSeq release + updates</ns2:databaseDescription>", startIndex) + 1;
             String feature = xmlPage.substring(xmlPage.indexOf("<ns2:identicalCrossReferences>", startIndex - 200), xmlPage.indexOf("</ns2:identicalCrossReferences>", xmlPage.indexOf("<ns2:identicalCrossReferences>", startIndex - 200)));
@@ -72,7 +72,7 @@ public class AccessionConverter {
 
     public static String GIToUniprot(String GINumber) throws IOException, ConversionException {
         String splitaccession = GINumber.substring(GINumber.indexOf("|") + 1);
-        String conversion = URLController.readUrl("http://www.uniprot.org/mapping/?from=P_GI&to=ACC&format=tab&query=" + splitaccession);
+        String conversion = WebUtils.getHTMLPage("http://www.uniprot.org/mapping/?from=P_GI&to=ACC&format=tab&query=" + splitaccession);
         conversion = conversion.substring(conversion.lastIndexOf("\t") + 1, conversion.lastIndexOf("\n"));
         if (!conversion.matches("To")) {
             return conversion;
@@ -82,6 +82,13 @@ public class AccessionConverter {
     }
     //TODO finish this, needs to take any accession and try to convert to uniprot
 
+    /**
+     * tries to convert a given accession to uniprot accession, if the conversion is not supported, it will return the accession given to the method unaltered
+     * @param accession the protein accession to convert to uniprot accession
+     * @return the converted accession if possible, otherwise the original accession
+     * @throws IOException 
+     * @throws ConversionException 
+     */
     public static String toUniprot(String accession) throws IOException, ConversionException {
         String tempaccession = accession;
         if (isGIAccession(accession)) {

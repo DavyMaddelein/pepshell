@@ -5,22 +5,23 @@ import com.compomics.pepshell.model.enums.PDBPropertyEnum;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.EnumSet;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class PDBProperties extends PropertiesController {
+public class PDBProperties extends AbstractProperties {
 
     private static final File PDBPropertiesFile = new File(System.getProperty("user.home")+"/.compomics/pepshell/PDBpreferences");
     private static PDBProperties aPDBPropertiesInstance;
 
     private PDBProperties(File aPropertyFile) throws FileNotFoundException, IOException {
-        super(aPropertyFile, PDBPropertyEnum.allEnumValues);
+        super(aPropertyFile, EnumSet.allOf(PDBPropertyEnum.class));
     }
 
     private PDBProperties() {
-        super(PDBPropertyEnum.allEnumValues);
+        super(EnumSet.allOf(PDBPropertyEnum.class));
     }
 
     public static PDBProperties getInstance() {

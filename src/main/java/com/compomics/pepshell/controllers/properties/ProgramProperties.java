@@ -8,14 +8,14 @@ import java.util.EnumSet;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class ProgramProperties extends PropertiesController {
+public class ProgramProperties extends AbstractProperties {
 
     private static ProgramProperties programProperties;
     private static final File propertyFile = new File(System.getProperty("user.home"), ".compomics/pepshell/programpreferences");
 
-    public ProgramProperties(File aPropertyFile, EnumSet aPropertyEnum) throws IOException {
+    private ProgramProperties(File aPropertyFile, EnumSet aPropertyEnum) throws IOException {
         super(aPropertyFile, aPropertyEnum);
     }
 
@@ -26,10 +26,10 @@ public class ProgramProperties extends PropertiesController {
     public static ProgramProperties getInstance() {
         if (programProperties == null) {
             try {
-                programProperties = new ProgramProperties(propertyFile, ProgramPropertyEnum.allEnumValues);
+                programProperties = new ProgramProperties(propertyFile, EnumSet.allOf(ProgramPropertyEnum.class));
             } catch (IOException ex) {
                 FaultBarrier.getInstance().handleException(ex);
-                programProperties = new ProgramProperties(ProgramPropertyEnum.allEnumValues);
+                programProperties = new ProgramProperties(EnumSet.allOf(ProgramPropertyEnum.class));
             }
         }
         return programProperties;

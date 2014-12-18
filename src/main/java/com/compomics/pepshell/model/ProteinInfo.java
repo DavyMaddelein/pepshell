@@ -2,7 +2,7 @@ package com.compomics.pepshell.model;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 //TODO this needs a better name, this stores temporary data about the project comparisons
 public class ProteinInfo {

@@ -5,12 +5,12 @@ import com.compomics.pepshell.controllers.ViewPreparation.PreparationForDbData;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class CoLimsDataMode extends AbstractDataMode {
     
     public CoLimsDataMode(){
-        super(new PreparationForDbData(),new ExternalStructureDataSource());
+        super(new PreparationForDbData(),new ExternalStructureDataSource(),null);
     }
     
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class PDBSecondaryStructurePredictor extends SecondaryStructurePrediction {
 

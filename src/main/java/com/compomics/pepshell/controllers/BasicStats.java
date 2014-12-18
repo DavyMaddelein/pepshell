@@ -8,9 +8,18 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class BasicStats {
+class BasicStats {
+
+    private static final BasicStats basicStatsInstance = new BasicStats();
+
+    private BasicStats(){}
+
+    public static void getInstance(){
+
+
+    }
 
     /**
      * returns the median of a list of numbers, if not sorted it only sorts
@@ -23,7 +32,7 @@ public class BasicStats {
      * @return returns the median in the list or if even, the average between
      * the middle two values
      */
-    public static <T extends Number> double medianOfList(List<T> data, int startingValue, boolean sorted) throws IndexOutOfBoundsException, UnsupportedOperationException {
+    private static <T extends Number> double medianOfList(List<T> data, int startingValue, boolean sorted) throws IndexOutOfBoundsException, UnsupportedOperationException {
         if (!sorted) {
             Collections.sort(data, new NumbersComparator());
         }
@@ -48,7 +57,7 @@ public class BasicStats {
      * @param sorted if list is sorted or not
      * @return returns the median in the precision given in the list
      */
-    public static <T extends Number> double medianOfList(List<T> data, boolean sorted) {
+    private static <T extends Number> double medianOfList(List<T> data, boolean sorted) {
         return medianOfList(data, 0, sorted);
     }
 
@@ -59,7 +68,7 @@ public class BasicStats {
      * @param data List of Numbers to calculate the mean of
      * @return calculated mean
      */
-    public static <T extends Number> double meanOfList(List<T> data) throws IndexOutOfBoundsException {
+    private static <T extends Number> double meanOfList(List<T> data) throws IndexOutOfBoundsException {
         double sum = Double.NaN;
         for (Number dataPoint : data) {
             sum = +dataPoint.doubleValue();
@@ -80,7 +89,7 @@ public class BasicStats {
      * values in the list
      */
     public static <T extends Number> List<T> quantilesOfList(List<T> data, int quantiles, boolean sorted) throws UnsupportedOperationException {
-        List<T> quantilesToReturn = new ArrayList<T>(quantiles);
+        List<T> quantilesToReturn = new ArrayList<>(quantiles);
 
         if (data.size() < quantiles) {
             throw new UnsupportedOperationException("quantiles cannot be larger than the length of the List");
@@ -105,7 +114,7 @@ public class BasicStats {
      * @param data the List of data to calculate the variance of
      * @return Double variance value
      */
-    public static <T extends Number> double variance(List<T> data) throws UnsupportedOperationException, IndexOutOfBoundsException {
+    private static <T extends Number> double variance(List<T> data) throws UnsupportedOperationException, IndexOutOfBoundsException {
         if (data.size() < 2) {
             throw new UnsupportedOperationException("cannot compute variance from 1 datapoint");
         }
@@ -117,7 +126,7 @@ public class BasicStats {
         return sum / (data.size() - 1);
     }
 
-    public static <T extends Number> double variance(List<T> data, double mean) throws UnsupportedOperationException, IndexOutOfBoundsException {
+    private static <T extends Number> double variance(List<T> data, double mean) throws UnsupportedOperationException, IndexOutOfBoundsException {
         if (data.size() < 2) {
             throw new UnsupportedOperationException("cannot compute variance from 1 datapoint");
         }
@@ -134,16 +143,16 @@ public class BasicStats {
      * @param data List of Numbers to get the standard deviation from
      * @return Double standard deviation value
      */
-    public static <T extends Number> double standardDeviation(List<T> data) {
+    private static <T extends Number> double standardDeviation(List<T> data) {
         return Math.sqrt(variance(data));
     }
 
-    public static <T extends Number> double standardDeviation(List<T> data, double mean) {
+    private static <T extends Number> double standardDeviation(List<T> data, double mean) {
         return Math.sqrt(variance(data, mean));
     }
     
     public static <T extends Number> List<Double> zScore(List<T> data) {
-        List<Double> listOfZScores= new ArrayList<Double>(data.size());
+        List<Double> listOfZScores= new ArrayList<>(data.size());
         double mean = meanOfList(data);
         double standardDeviation = standardDeviation(data);
         for (T dataPoint : data){
@@ -152,11 +161,11 @@ public class BasicStats {
         return listOfZScores;
     }
 
-    public static <T extends Number> double medianAbsoluteDeviationOfList(List<T> data, boolean sorted) {
+    private static <T extends Number> double medianAbsoluteDeviationOfList(List<T> data, boolean sorted) {
         double median = medianOfList(data, sorted);
 
         // First, calculate all the absolute deviations between the datapoints and the median.
-        List<Double> absoluteDeviations = new ArrayList<Double>(data.size());
+        List<Double> absoluteDeviations = new ArrayList<>(data.size());
         for (Number dataPoint : data) {
             absoluteDeviations.add(Math.abs(dataPoint.doubleValue() - median));
         }
@@ -168,7 +177,7 @@ public class BasicStats {
         double mean = meanOfList(data);
 
         // First, calculate all the absolute deviations between the datapoints and the median.
-        List<Double> absoluteDeviations = new ArrayList<Double>(data.size());
+        List<Double> absoluteDeviations = new ArrayList<>(data.size());
         for (T dataPoint : data) {
             absoluteDeviations.add(Math.abs(dataPoint.doubleValue() - mean));
         }
@@ -180,7 +189,7 @@ public class BasicStats {
         if (precision <= 0) {
             throw new UnsupportedOperationException("Precision must be positive and larger than 0!");
         }
-        List<T> copiedDataList = new ArrayList<T>(data);
+        List<T> copiedDataList = new ArrayList<>(data);
 
         double mean = medianOfList(copiedDataList, sorted);
         double stdev = medianAbsoluteDeviationOfList(copiedDataList, true);
@@ -204,7 +213,7 @@ public class BasicStats {
             throw new UnsupportedOperationException("Precision must be positive and larger than 0!");
         }
         // Clone the original data.
-        List<T> copiedDataList = new ArrayList<T>(data);
+        List<T> copiedDataList = new ArrayList<>(data);
 
         // First get the median and stdev for the data as estimates for mean and stdev.
         double mean = medianOfList(copiedDataList, sorted);
@@ -229,7 +238,7 @@ public class BasicStats {
             throw new IllegalArgumentException("Precision must be positive and larger than 0!");
         }
         // Clone the original data.
-        List<T> copiedDataList = new ArrayList<T>(data);
+        List<T> copiedDataList = new ArrayList<>(data);
 
         // First get the median and stdev for the data as estimates for mean and stdev.
         double mean = medianOfList(data, sorted);
@@ -251,13 +260,13 @@ public class BasicStats {
         return new HuberEstimator(mean, stdev, iteration);
     }
 
-    public static <T extends Number> List<T> winsorize(List<T> data, double aMuHat, double aSigmaHat) {
+    private static <T extends Number> List<T> winsorize(List<T> data, double aMuHat, double aSigmaHat) {
         // Calculate offsets.
         Double low = aMuHat - (1.5 * aSigmaHat);
         Double high = aMuHat + (1.5 * aSigmaHat);
 
         NumbersComparator temp = new NumbersComparator();
-        List<T> result = new ArrayList<T>(data.size());
+        List<T> result = new ArrayList<>(data.size());
 
         // Winsorize!
         for (T dataPoint : data) {

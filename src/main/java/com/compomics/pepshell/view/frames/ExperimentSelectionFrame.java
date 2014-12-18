@@ -4,20 +4,19 @@ import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
-import com.compomics.pepshell.controllers.DataModes.FastaDataMode;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.InternetStructureDataSource;
+import com.compomics.pepshell.controllers.ViewPreparation.DataRetrievalForFasta;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionMasking;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.ProteinFiltering;
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
-import com.compomics.pepshell.model.AnalysisGroup;
-import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Property;
+import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
+import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
-import com.compomics.pepshell.view.panels.DataRetrievalStepsDialog;
-import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
-import com.compomics.pepshell.view.panels.DbLoginDialog;
+import com.compomics.pepshell.view.panels.dataloading.DataRetrievalStepsDialog;
+import com.compomics.pepshell.view.panels.dataloading.LinkDbLoginDialog;
+import com.compomics.pepshell.view.panels.dataloading.DbLoginDialog;
 import java.awt.Point;
 import java.io.File;
 import java.sql.SQLException;
@@ -33,7 +32,7 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class ExperimentSelectionFrame extends javax.swing.JFrame {
 
@@ -73,6 +72,22 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         }
     }
 
+    public ExperimentSelectionFrame(AnnotatedFile referenceExperiment, List<AnnotatedFile> comparisonExperiments) {
+        FileBasedExperiment experiment = new FileBasedExperiment(referenceExperiment.getName());
+        experiment.setFile(referenceExperiment);
+        referenceProject = experiment;
+        referenceProjectTextBox.setText(referenceProject.getExperimentName());
+        FileBasedExperiment[] experimentArray = new FileBasedExperiment[comparisonExperiments.size()];
+        for (int i = 0; i < comparisonExperiments.size(); i++) {
+            FileBasedExperiment experiment1 = new FileBasedExperiment(comparisonExperiments.get(i).getName());
+            experiment1.setFile(comparisonExperiments.get(i));
+            experimentArray[i] = experiment1;
+        }
+        projectList.setListData(experimentArray);
+
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -105,8 +120,8 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         projectTree = new com.compomics.pepshell.view.components.DragAndDropTree();
         projectListScrollPane = new javax.swing.JScrollPane();
         projectList = new javax.swing.JList();
-        preloadProteinFilterPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinFilterPanel();
-        preloadProteinMaskPanel1 = new com.compomics.pepshell.view.panels.PreloadProteinMaskPanel();
+        preloadProteinFilterPanel1 = new com.compomics.pepshell.view.panels.dataloading.PreloadProteinFilterPanel();
+        preloadProteinMaskPanel1 = new com.compomics.pepshell.view.panels.dataloading.PreloadProteinMaskPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         useLinkDbCheckBox = new javax.swing.JCheckBoxMenuItem();
@@ -499,7 +514,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     private void analyseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analyseButtonActionPerformed
         boolean goAhead = false;
         //can we actually continue?
-        List<AnalysisGroup> analysisList = new ArrayList<AnalysisGroup>();
+        List<AnalysisGroup> analysisList = new ArrayList<>();
         if (!selectedProjectsList.isEmpty() && referenceProject != null) {
             AnalysisGroup rogueProjects = new AnalysisGroup("Analysis");
             Enumeration tree = ((TreeNode) projectTree.getModel().getRoot()).children();
@@ -510,18 +525,16 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
                 } else if (((DefaultMutableTreeNode) anObject).getUserObject() instanceof AnalysisGroup) {
                     analysisList.add((AnalysisGroup) ((DefaultMutableTreeNode) anObject).getUserObject());
                 }
-                DataModeController.setDataSource(DataModeController.DataSource.DATABASE);
+                DataModeController.getInstance().setDataSource(DataSourceEnum.DATABASE);
             }
 
             if (!rogueProjects.getExperiments().isEmpty()) {
                 analysisList.add(rogueProjects);
             }
-            goAhead = true;
             if (ownFastaCheckBox.isSelected() && fastaFile != null && goAhead) {
-                //this sure as hell can be better
-                DataModeController.setDb(DataModeController.Db.FASTA);
-                ((FastaDataMode) DataModeController.getDb().getDataMode()).setFastaFile(fastaFile);
-            } else if (ownFastaCheckBox.isSelected() && fastaFile == null) {
+                //set the view preparation to get proteins from the fasta database and set the passed along file
+                ((DataRetrievalForFasta) DataModeController.getInstance().getDb().getDataMode().setViewPreparation(new DataRetrievalForFasta())).setFastaFile(fastaFile);
+            } else if (ownFastaCheckBox.isSelected()) {
                 goAhead = false;
             }
         }
@@ -557,7 +570,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         }
 
         if (dialog != null && !dialog.getRetrievalSteps().isEmpty()) {
-            DataModeController.getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(dialog.getRetrievalSteps());
+            DataModeController.getInstance().getDb().getDataMode().getViewPreparationForMode().setDataRetievalSteps(dialog.getRetrievalSteps());
         }
 
         if (goAhead) {
@@ -587,16 +600,14 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
 
     private void addAnalysisGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAnalysisGroupButtonActionPerformed
         String temp = JOptionPane.showInputDialog(this);
-        if (temp != null) {
-            if (!temp.isEmpty()) {
-                projectTree.addObject(new AnalysisGroup(temp));
-            }
+        if (temp != null && !temp.isEmpty()) {
+            projectTree.addObject(new AnalysisGroup(temp));
         }
     }//GEN-LAST:event_addAnalysisGroupButtonActionPerformed
 
     private void toProjectTreeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toProjectTreeButtonActionPerformed
         for (Object selectedValues : projectList.getSelectedValuesList()) {
-            if (!selectedProjectsList.contains((Experiment) selectedValues)) {
+            if (!selectedProjectsList.contains(selectedValues)) {
                 DefaultMutableTreeNode projectNode = projectTree.addObject(selectedValues);
                 projectNode.setAllowsChildren(false);
                 selectedProjectsList.add((Experiment) selectedValues);
@@ -608,7 +619,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
         if (projectTree.getSelectionPath() != null) {
             for (TreePath aPath : projectTree.getSelectionPaths()) {
                 if (((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject() instanceof Experiment) {
-                    selectedProjectsList.remove((Experiment) ((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject());
+                    selectedProjectsList.remove(((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject());
                     projectTree.removeCurrentNode();
                 }
             }
@@ -667,10 +678,10 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_removeProjectGroupButtonActionPerformed
 
     private void dbConnectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-        DbLoginDialog dialog = new DbLoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
+        DbLoginDialog dbLogindialog = new DbLoginDialog(this, true, DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBUSERNAME.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBURL.getKey()),
                 DatabaseProperties.getInstance().getProperties().getProperty(DataBasePropertyEnum.DBNAME.getKey()));
-        dialog.setLocationRelativeTo(this);
+        dbLogindialog.setLocationRelativeTo(this);
         try {
             fillProjectList();
             projectTree.removeAll();
@@ -708,8 +719,8 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JCheckBox maskProteinsCheckBox;
     private javax.swing.JCheckBox ownFastaCheckBox;
-    private com.compomics.pepshell.view.panels.PreloadProteinFilterPanel preloadProteinFilterPanel1;
-    private com.compomics.pepshell.view.panels.PreloadProteinMaskPanel preloadProteinMaskPanel1;
+    private com.compomics.pepshell.view.panels.dataloading.PreloadProteinFilterPanel preloadProteinFilterPanel1;
+    private com.compomics.pepshell.view.panels.dataloading.PreloadProteinMaskPanel preloadProteinMaskPanel1;
     private javax.swing.JList projectList;
     private javax.swing.JScrollPane projectListScrollPane;
     private com.compomics.pepshell.view.components.DragAndDropTree projectTree;

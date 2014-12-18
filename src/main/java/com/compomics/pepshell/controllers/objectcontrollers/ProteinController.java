@@ -4,11 +4,10 @@ import com.compomics.pepshell.model.AminoAcidBiMap;
 import com.compomics.pepshell.model.MapperInfo;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.PeptideGroup;
-import java.util.Iterator;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class ProteinController {
 
@@ -20,9 +19,7 @@ public class ProteinController {
      */
     public static void alignPeptidesOfsProtein(Protein protein) {
         MapperInfo info;
-        Iterator<PeptideGroup> proteinPeptideGroups = protein.getPeptideGroupsForProtein().iterator();
-        while (proteinPeptideGroups.hasNext()) {
-            PeptideGroup aPeptideGroup = proteinPeptideGroups.next();
+        for (PeptideGroup aPeptideGroup : protein.getPeptideGroupsForProtein()) {
             info = PeptideGroupController.mapPeptideGroupToProtein(protein, aPeptideGroup);
             aPeptideGroup.setAlignmentPositions(info.getStartingAlignmentPosition(), info.getLastAlignmentPosition());
         }

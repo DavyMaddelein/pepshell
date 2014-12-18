@@ -6,11 +6,11 @@ import java.util.Map;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class SecondaryStructureMaps {
 
-        protected static final Map<String, Color> secStructMap = new HashMap<String, Color>() {
+        private static final Map<String, Color> secStructMap = new HashMap<String, Color>() {
         {
             put("G", new Color(184, 78, 255));
             put("E", new Color(78, 255, 255));

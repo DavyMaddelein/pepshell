@@ -12,9 +12,9 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class PDBDAS extends DasParser {
+class PDBDAS extends DasParser {
 
     //TODO redo this with an xml parser
     public static List<DasAlignment> getAllAlignments(XMLEventReader dasXMLFile) throws XMLStreamException {

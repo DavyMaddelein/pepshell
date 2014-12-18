@@ -2,7 +2,7 @@ package com.compomics.pepshell.model.DAS.PDBDAS;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Davy
+ * User: Davy Maddelein
  * Date: 3/5/13
  * Time: 10:20 AM
  * To change this template use File | Settings | File Templates.

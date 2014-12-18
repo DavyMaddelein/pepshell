@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class Experiment {
 
@@ -78,13 +78,7 @@ public class Experiment {
             return false;
         }
         final Experiment other = (Experiment) obj;
-        if (this.experimentId != other.getExperimentId()) {
-            return false;
-        }
-        if ((this.experimentName == null) ? (other.getExperimentName() != null) : !this.experimentName.equals(other.getExperimentName())) {
-            return false;
-        }
-        return true;
+        return this.experimentId == other.getExperimentId() && !((this.experimentName == null) ? (other.getExperimentName() != null) : !this.experimentName.equals(other.getExperimentName()));
     }
 
     public double getMaxIntensity() {

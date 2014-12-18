@@ -16,13 +16,12 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class FastaDAO {
 
@@ -31,23 +30,21 @@ public class FastaDAO {
      * fasta file
      *
      * @param fastaFile fasta file to read {@code Protein}s from
-     * @param projectToAddProteinsTo the project to add the {@code Protein}s to
+     * @param experimentToAddProteinsTo the project to add the {@code Protein}s to
      * @throws FastaCouldNotBeReadException is thrown when there is an error
      * reading and parsing from the fasta file
      * @throws FileNotFoundException if the fasta file could not be found
      * @throws IOException if there was a problem with the file reader
      */
-    public static void setProjectProteinsToFastaFileProteins(File fastaFile, Experiment projectToAddProteinsTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
-        projectToAddProteinsTo.setProteins(getListOfProteinsFromFastaFile(fastaFile));
+    public static void setExperimentProteinsToFastaFileProteins(File fastaFile, Experiment experimentToAddProteinsTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
+        experimentToAddProteinsTo.setProteins(getListOfProteinsFromFastaFile(fastaFile));
     }
 
-    public static <T extends Protein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<T> experimentToAddSequencesTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
+    public static <T extends Protein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<? extends T> experimentToAddSequencesTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
 
         //todo this can be better
         for (Protein aParsedProtein : getListOfProteinsFromFastaFile(fastaFile)) {
-            Iterator<T> proteinIterator = experimentToAddSequencesTo.iterator();
-            while (proteinIterator.hasNext()) {
-                T experimentProtein = proteinIterator.next();
+            for (T experimentProtein : experimentToAddSequencesTo) {
                 if (experimentProtein.equals(aParsedProtein)) {
                     experimentProtein.setSequence(aParsedProtein.getProteinSequence());
                     experimentProtein.setProteinName(aParsedProtein.getProteinName());
@@ -57,18 +54,18 @@ public class FastaDAO {
     }
 
     /**
-     * sets the {@code Protein}s in a project to the projects contained in the
-     * {@code List} of fasta files
+     * sets the Proteins in a project to the projects contained in the
+     * List of fasta files
      *
-     * @param fastaFiles the fasta files to read the {@code Protein}s from
-     * @param projectToAddProteinsTo the project to add the {@code Protein}s to
+     * @param fastaFiles the fasta files to read the Proteins from
+     * @param experimentToAddProteinsTo the experiment to add the Proteins to
      * @throws IOException if there was a problem with the file reader
      * @throws FileNotFoundException if the fasta file could not be found
      * @throws AggregateFastaReadingException if one or more
      * {@code FastaCouldNotBeReadException}s occurred
      */
     //TODO perhaps make multithreaded?
-    public static void setProjectProteinsToMultipleFastaFileProteins(List<File> fastaFiles, Experiment projectToAddProteinsTo) throws IOException, FileNotFoundException, AggregateFastaReadingException {
+    public static void setExperimentProteinsToMultipleFastaFileProteins(List<? extends File> fastaFiles, Experiment experimentToAddProteinsTo) throws IOException, FileNotFoundException, AggregateFastaReadingException {
         Set<Protein> uniqueProteinsToAdd = new HashSet<>();
         AggregateFastaReadingException arex = new AggregateFastaReadingException("one or more fasta files could not be read");
         for (File aFastaFile : fastaFiles) {
@@ -81,7 +78,7 @@ public class FastaDAO {
         if (!arex.getExceptionList().isEmpty()) {
             throw arex;
         }
-        projectToAddProteinsTo.getProteins().addAll(uniqueProteinsToAdd);
+        experimentToAddProteinsTo.getProteins().addAll(uniqueProteinsToAdd);
     }
 
     /**
@@ -99,6 +96,15 @@ public class FastaDAO {
         return getListOfProteinsFromFastaFile(fastaFile, false);
     }
 
+    /**
+     * 
+     * @param fastaFile
+     * @param digest
+     * @return
+     * @throws FastaCouldNotBeReadException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     private static List<Protein> getListOfProteinsFromFastaFile(File fastaFile, boolean digest) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
         LineNumberReader lineReader = null;
         List<Protein> parsedProteins = new ArrayList<>();

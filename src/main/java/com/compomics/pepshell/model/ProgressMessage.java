@@ -2,9 +2,9 @@ package com.compomics.pepshell.model;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class ProgressMessage {
+class ProgressMessage {
 
     private int progressPercentage;
     private final String taskName;

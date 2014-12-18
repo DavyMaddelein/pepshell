@@ -5,7 +5,6 @@
  */
 package com.compomics.pepshell.view.panels.statistics.wrappers;
 
-import com.compomics.pepshell.view.panels.statistics.wrappers.StatisticsWrapperInterface;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.view.panels.statistics.RatioComparisonPane;
@@ -13,14 +12,16 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class RatioComparisonPaneWrapper extends javax.swing.JPanel implements StatisticsWrapperInterface {
 
-    RatioComparisonPane ratioComparisonPane;
+    private RatioComparisonPane ratioComparisonPane;
 
     /**
      * Creates new form RatioComparisonPaneWrapper
+     * @param referenceExperiment
+     * @param experiments
      */
     public RatioComparisonPaneWrapper(Experiment referenceExperiment, List<Experiment> experiments) {
         ratioComparisonPane = new RatioComparisonPane(referenceExperiment);
@@ -41,7 +42,7 @@ public class RatioComparisonPaneWrapper extends javax.swing.JPanel implements St
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox<Experiment>();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(255, 255, 255));
 

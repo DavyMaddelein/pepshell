@@ -38,11 +38,11 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class DragAndDropTree extends JTree implements DragSourceListener, DropTargetListener, DragGestureListener {
 
-    static DataFlavor localObjectFlavor;
+    private static DataFlavor localObjectFlavor;
 
     static {
         try {
@@ -52,12 +52,12 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
             Logger.getLogger(DragAndDropTree.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    static DataFlavor[] supportedFlavors = {localObjectFlavor};
-    DragSource dragSource;
-    DropTarget dropTarget;
-    TreeNode dropTargetNode = null;
-    TreeNode draggedNode = null;
-    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Experiments");
+    private static DataFlavor[] supportedFlavors = {localObjectFlavor};
+    private DragSource dragSource;
+    private DropTarget dropTarget;
+    private TreeNode dropTargetNode = null;
+    private TreeNode draggedNode = null;
+    private DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Experiments");
 
     public DragAndDropTree() {
         super();
@@ -94,7 +94,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
         return addObject(parent, child, false);
     }
 
-    public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
+    DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
         DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
         if (parent == null) {
             parent = rootNode;
@@ -109,7 +109,7 @@ public class DragAndDropTree extends JTree implements DragSourceListener, DropTa
                 alreadyAdded = true;
             }
         }
-        if (alreadyAdded == false) {
+        if (alreadyAdded) {
             ((DefaultTreeModel) getModel()).insertNodeInto(childNode, parent, parent.getChildCount());
         }
         //Make sure the user can see the lovely new node.

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class ProteinFiltering extends DataRetrievalStep {
 
@@ -24,7 +24,7 @@ public class ProteinFiltering extends DataRetrievalStep {
     public ProteinFiltering() {
     }
 
-    public void setFilter(FilterParent<Protein> filter) {
+    void setFilter(FilterParent<Protein> filter) {
         this.filter = filter;
     }
 

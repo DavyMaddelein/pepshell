@@ -2,7 +2,7 @@ package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class InternetStructureDataSource extends ExternalStructureDataSource {
     

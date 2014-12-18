@@ -1,7 +1,8 @@
 package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
+import com.compomics.pepshell.controllers.DAO.DAUtils.FileUtils;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
-import com.compomics.pepshell.model.CPDTPeptide;
+import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.UpdateMessage;
@@ -17,7 +18,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class CPDTAnalysis extends DataRetrievalStep {
 
@@ -47,29 +48,35 @@ public class CPDTAnalysis extends DataRetrievalStep {
             CPDTLocation = new File(CPDTAnalysis.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             CPDTLocation = new File(CPDTLocation.getParentFile().getAbsolutePath() + "/resources/CPDT.exe");
         }
-        File CPDTFolder = new File(System.getProperty("java.io.tmpdir"), "CPDToutput");
+        final File CPDTFolder = new File(System.getProperty("java.io.tmpdir"), "CPDToutput");
         if (!CPDTFolder.exists()) {
             CPDTFolder.mkdir();
         }
-        CPDTFolder.deleteOnExit();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                FileUtils.recursivelyDeleteFilesFromDir(CPDTFolder);
+            }
+        });
+
         for (Protein aProtein : proteinList) {
             this.setChanged();
-            this.notifyObservers(new UpdateMessage(false, "running CP-DT on " + aProtein.getProteinAccession(),false));
+            this.notifyObservers(new UpdateMessage(false, "running CP-DT on " + aProtein.getProteinAccession(), false));
             String filename = System.currentTimeMillis() + aProtein.getProteinAccession();
             filename = filename.replaceAll("\\|", "");
             File outputFile = new File(CPDTFolder, filename);
             ProcessBuilder builder = new ProcessBuilder(CPDTLocation.getAbsolutePath(), "--all", "--sequence", aProtein.getProteinSequence());
             builder.redirectOutput(outputFile);
-            Process CPDT = builder.start();
-            CPDT.waitFor();
-            aProtein.setCPDTPeptideList(parseCPDTOutput(outputFile,aProtein));
+            builder.start().waitFor();
+            aProtein.setCPDTPeptideList(parseCPDTOutput(outputFile, aProtein));
             this.setChanged();
-            this.notifyObservers(new UpdateMessage(true, "done running CP-DT on " + aProtein.getProteinAccession(),false));
+            this.notifyObservers(new UpdateMessage(true, "done running CP-DT on " + aProtein.getProteinAccession(), false));
         }
         return Collections.unmodifiableList(proteinList);
     }
 
-    private List<PeptideGroup> parseCPDTOutput(File CPDTFile,Protein aProtein) throws FileNotFoundException, IOException {
+    private List<PeptideGroup> parseCPDTOutput(File CPDTFile, Protein aProtein) throws FileNotFoundException, IOException {
         List<PeptideGroup> CPDTPeptideGroups = new ArrayList<>();
         LineNumberReader reader = new LineNumberReader(new FileReader(CPDTFile));
         String line;
@@ -82,8 +89,9 @@ public class CPDTAnalysis extends DataRetrievalStep {
                     //could be replaced with a split on = and then [2] and [4] for better readability if needed
                     PeptideGroup CPDTPeptideGroup = new PeptideGroup();
                     String[] cutData = line.split(";");
-                    CPDTPeptide cutPeptide = new CPDTPeptide(aProtein.getProteinSequence().substring(previousCut, Integer.parseInt(cutData[0].split("=")[1].trim())), Double.parseDouble(cutData[1].split("=")[1].trim()));
+                    Peptide cutPeptide = new Peptide(aProtein.getProteinSequence().substring(previousCut, Integer.parseInt(cutData[0].split("=")[1].trim())), Double.parseDouble(cutData[1].split("=")[1].trim()));
                     cutPeptide.setBeginningProteinMatch(Integer.parseInt(cutData[0].split("=")[1].trim()));
+                    cutPeptide.setProbability(Double.parseDouble(cutData[1].split("=")[1].trim()));
                     previousCut = cutPeptide.getBeginningProteinMatch();
                     CPDTPeptideGroup.addPeptide(cutPeptide);
                     CPDTPeptideGroup.setShortestPeptideIndex(0);

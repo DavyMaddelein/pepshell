@@ -2,8 +2,8 @@ package com.compomics.pepshell.controllers.DAO;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class StructureDAO {
+class StructureDAO {
     
 }

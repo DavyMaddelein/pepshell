@@ -1,5 +1,7 @@
 package com.compomics.pepshell.controllers.DAO;
 
+import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,13 +10,13 @@ import java.net.URLConnection;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class UniprotDAO {
+class UniprotDAO {
 
     public static String fetchSequenceFromUniprot(String accession) throws IOException {
         StringBuilder sequence = new StringBuilder();
-        String uniprotFasta = URLController.readUrl("http://www.uniprot.org/uniprot/" + accession + ".fasta");
+        String uniprotFasta = WebUtils.getHTMLPage("http://www.uniprot.org/uniprot/" + accession + ".fasta");
         for (String fastaLine : uniprotFasta.split("\n")) {
             if (fastaLine.contains(">")) {
                 //header for protein info object?

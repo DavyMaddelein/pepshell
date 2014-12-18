@@ -2,7 +2,7 @@ package com.compomics.pepshell.model;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class ProjectInfo {
     private int maxRatio = 1;

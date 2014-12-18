@@ -2,21 +2,18 @@ package com.compomics.pepshell.controllers.ViewPreparation;
 
 import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.controllers.DAO.FastaDAO;
-import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
-import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.CPDTAnalysis;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,11 +23,10 @@ import java.util.Observer;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  * @param <T> the type of experiment
- * @param <V> the type of protein
  */
-public class DataRetrievalForFasta<T extends Experiment, V extends Protein> extends ViewPreparation<T, V> implements Observer {
+public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRetrieval<T> implements Observer {
 
     private File fastaFile;
 
@@ -39,44 +35,42 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
     }
 
     @Override
-    public T retrieveData(T referenceExperiment, Iterator<T> experimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
+    public T retrievePrimaryData(T referenceExperiment) {
         try {
-            if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
+            if (DataModeController.getInstance().getDataSource() == DataSourceEnum.DATABASE) {
                 referenceExperiment.addProteins(DbDAO.fetchProteins(referenceExperiment));
                 DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
                 setIntensityValuesForExperiment(referenceExperiment);
-            } else if (DataModeController.getDataSource() == DataModeController.DataSource.FILE) {
-                if (linkedSteps.indexOf(new CPDTAnalysis()) < 0) {
-                    linkedSteps.add(new CPDTAnalysis());
+            } else if (DataModeController.getInstance().getDataSource() == DataSourceEnum.FILE) {
+                if (referenceExperiment.getProteins().isEmpty()){
+                    //seriously bad, should have already inserted, we will try again, if another fail, break here and alert user
                 }
-                FastaDAO.setProjectProteinsToFastaFileProteins(fastaFile, referenceExperiment);
+                FastaDAO.setExperimentProteinsToFastaFileProteins(fastaFile, referenceExperiment);
             }
             FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
             retrieveSecondaryData(referenceExperiment);
             checkAndAddQuantToProteinsInExperiment(referenceExperiment);
 
-            while (experimentsToCompareWith.hasNext()) {
-                T anExperimentToCompareWith = experimentsToCompareWith.next();
-                if (DataModeController.getDataSource() == DataModeController.DataSource.DATABASE) {
-                    anExperimentToCompareWith.addProteins(DbDAO.fetchProteins(anExperimentToCompareWith));
-                    FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith.getProteins());
-                    DbDAO.addPeptideGroupsToProteins(anExperimentToCompareWith.getProteins());
-                    setIntensityValuesForExperiment(anExperimentToCompareWith);
-                } else {
-                    //something something peptide protein file
-                }
-                try {
-                    retrieveSecondaryData(anExperimentToCompareWith);
-                    // error handling has to be better
-                } catch (Exception e) {
-                    FaultBarrier.getInstance().handleException(e);
-                }
-                checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
-            }
+//            while (experimentsToCompareWith.hasNext()) {
+//                T anExperimentToCompareWith = experimentsToCompareWith.next();
+//                if (DataModeController.getInstance().getDataSource() == DataSourceEnum.DATABASE) {
+//                    anExperimentToCompareWith.addProteins(DbDAO.fetchProteins(anExperimentToCompareWith));
+//                    FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith.getProteins());
+//                    DbDAO.addPeptideGroupsToProteins(anExperimentToCompareWith.getProteins());
+//                    setIntensityValuesForExperiment(anExperimentToCompareWith);
+//                } else {
+//                    //something something peptide protein file
+//                }
+//                try {
+//                    retrieveSecondaryData(anExperimentToCompareWith);
+//                    // error handling has to be better
+//                } catch (Exception e) {
+//                    FaultBarrier.getInstance().handleException(e);
+//                }
+//                checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
+//            }
         } catch (FastaCouldNotBeReadException ex) {
             FaultBarrier.getInstance().handleException(ex, false);
-        } catch (FileNotFoundException ex) {
-            FaultBarrier.getInstance().handleException(ex);
         } catch (IOException | SQLException ex) {
             FaultBarrier.getInstance().handleException(ex);
         } catch (CalculationException ex) {
@@ -90,7 +84,13 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
         PreparedStatement stat = null;
         for (Protein aProtein : anExperiment.getProteins()) {
             try {
-                stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.selectAllQuantedPeptideGroups());
+                stat = DbConnectionController.getExperimentDbConnection().prepareStatement(
+                        DataModeController.getInstance()
+                                .getDb()
+                                .getDataMode()
+                                .getExperimentDatabase()
+                                .selectAllQuantedPeptideGroups());
+
                 stat.setInt(1, anExperiment.getExperimentId());
                 stat.setString(2, aProtein.getOriginalAccession());
                 try (ResultSet rs = stat.executeQuery()) {
@@ -108,14 +108,9 @@ public class DataRetrievalForFasta<T extends Experiment, V extends Protein> exte
     }
 
     @Override
-    public void addProteinsToExperiment(AbstractDataMode dataMode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     protected void retrieveSecondaryData(T experiment) {
         try {
-            new WaitForFutures(experiment, this).execute();
+            new runRetrievalSteps(experiment, getDataRetrievalSteps(), this).execute();
         } catch (Exception ex) {
             FaultBarrier.getInstance().handleException(ex);
         }

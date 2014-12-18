@@ -2,7 +2,7 @@ package com.compomics.pepshell.model.exceptions;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class DataRetrievalException extends Exception {
 

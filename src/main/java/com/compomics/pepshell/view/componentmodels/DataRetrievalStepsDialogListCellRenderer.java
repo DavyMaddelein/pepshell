@@ -8,7 +8,7 @@ import javax.swing.JList;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class DataRetrievalStepsDialogListCellRenderer extends DefaultListCellRenderer {
 

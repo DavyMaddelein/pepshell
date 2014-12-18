@@ -2,7 +2,7 @@ package com.compomics.pepshell.model.enums;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public interface PropertyEnum {
 

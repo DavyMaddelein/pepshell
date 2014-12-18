@@ -2,7 +2,7 @@ package com.compomics.pepshell.controllers;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -13,7 +13,7 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class UniprotConverter {
+class UniprotConverter {
 
     private static final String UNIPROT_SERVER = "http://www.uniprot.org/";
     private static final Logger LOG = Logger.getAnonymousLogger();

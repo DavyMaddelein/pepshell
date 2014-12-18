@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public enum DataBasePropertyEnum implements PropertyEnum {
 

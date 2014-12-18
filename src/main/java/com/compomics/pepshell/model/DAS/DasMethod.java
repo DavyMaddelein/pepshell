@@ -6,7 +6,7 @@ package com.compomics.pepshell.model.DAS;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class DasMethod {
     

@@ -7,24 +7,20 @@ import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
-import static com.compomics.pepshell.view.panels.statistics.JFreeChartPanel.prettifyChart;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.StatisticalBarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class RatioStatisticsPane extends JFreeChartPanel {
 
@@ -92,7 +88,7 @@ public class RatioStatisticsPane extends JFreeChartPanel {
         return returnset;
     }
 
-    Function<PeptideGroup, Integer> getProteinLocation = new Function<PeptideGroup, Integer>() {
+    private Function<PeptideGroup, Integer> getProteinLocation = new Function<PeptideGroup, Integer>() {
         @Override
         public Integer apply(PeptideGroup input) {
             return input.getShortestPeptide().getBeginningProteinMatch();

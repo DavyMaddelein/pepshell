@@ -21,15 +21,15 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class HDXechangeParser {
+class HDXechangeParser {
 // we will return each replicate as a separate experiment. the condensing if needed is done elsewhere
 
     private static int columncounter = 0;
 
     public static List<Experiment> parseHDXechangeTabbedFile(File tabbedFile) throws IOException {
-        List<Experiment> parsedExperiments = new ArrayList<Experiment>();
+        List<Experiment> parsedExperiments = new ArrayList<>();
         LineNumberReader reader = new LineNumberReader(new FileReader(tabbedFile));
         String line;
         //first line contains the number of experiments we have to create
@@ -65,7 +65,7 @@ public class HDXechangeParser {
     }
 
     private static List<Experiment> parseHeader(String filename, String line) {
-        List<Experiment> experimentList = new ArrayList<Experiment>();
+        List<Experiment> experimentList = new ArrayList<>();
         String[] experiments = line.split("\t");
         String previousExperiment = "";
         int replicates = 1;

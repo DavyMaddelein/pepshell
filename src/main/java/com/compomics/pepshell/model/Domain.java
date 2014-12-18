@@ -2,7 +2,7 @@ package com.compomics.pepshell.model;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Davy
+ * User: Davy Maddelein
  * Date: 3/7/13
  * Time: 8:19 AM
  * To change this template use File | Settings | File Templates.

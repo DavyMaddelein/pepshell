@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class DasParser {
 
-    public static List<DasFeature> getAllDasFeatures(String webPage) throws XMLStreamException {
+    public static List<DasFeature> getAllDasFeatures(String webPage){
         List<DasFeature> allFeatures = new ArrayList<>();
         String[] allSplitfeatures = webPage.split("<FEATURE");
         for (int i = 1; i < allSplitfeatures.length; i++) {

@@ -10,9 +10,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class ExcelExport {
+class ExcelExport {
 
     private static void addHeadersToProteinsSheet(Sheet sheet, boolean quant) {
         Row headerRow = sheet.createRow(0);

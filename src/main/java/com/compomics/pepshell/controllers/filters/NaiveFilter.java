@@ -7,10 +7,10 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  * @param <T>
  */
-public class NaiveFilter<T extends Object> extends FilterParent<T> {
+public class NaiveFilter<T> extends FilterParent<T> {
 
     //as the title says, pretty naive
     @Override

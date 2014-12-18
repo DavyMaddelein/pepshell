@@ -2,11 +2,11 @@ package com.compomics.pepshell.model;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class QuantedPeptideGroup extends PeptideGroup {
 
-    Integer ratio;
+    private Integer ratio;
     private int timesHeavyFound = 0;
     private int timesLightFound = 0;
     private ProjectInfo projectInfo;

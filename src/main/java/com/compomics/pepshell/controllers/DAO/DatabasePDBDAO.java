@@ -5,6 +5,7 @@ import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -13,15 +14,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class DatabasePDBDAO extends PDBDAO {
 
+    private DatabasePDBDAO(){}
+    
     private static volatile DatabasePDBDAO instance;
 
     public static DatabasePDBDAO getInstance() {
@@ -35,7 +36,7 @@ public class DatabasePDBDAO extends PDBDAO {
         Set<PdbInfo> infoSet = new HashSet<>();
         try {
             PreparedStatement stat;
-            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbFilesFromDb());
+            stat = DbConnectionController.getStructDBConnection().prepareStatement(SQLStatements.getPdbFilesFromDb());
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {
                 PdbInfo pdbInfo = new PdbInfo();
@@ -49,11 +50,11 @@ public class DatabasePDBDAO extends PDBDAO {
     }
 
     @Override
-    public Set<PdbInfo> getPDBInfoForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
+    public Set<PdbInfo> getPDBInfoForProtein(ProteinInterface protein) throws MalformedURLException, IOException, ConversionException {
         Set<PdbInfo> infoSet = new HashSet<>();
         PreparedStatement stat = null;
         try {
-            stat = DbConnectionController.getLinkDBConnection().prepareStatement(SQLStatements.getPdbInfoForProtein());
+            stat = DbConnectionController.getStructDBConnection().prepareStatement(SQLStatements.getPdbInfoForProtein());
             //stat.setString(1,protein.getVisibleAccession);
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {

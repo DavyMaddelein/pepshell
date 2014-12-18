@@ -5,9 +5,9 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public abstract class FilterParent<T extends Object> {
+public abstract class FilterParent<T> {
 
     public enum FilterMode {
 
@@ -28,7 +28,7 @@ public abstract class FilterParent<T extends Object> {
     }
 
     boolean inclusive = true;
-    boolean stringent = false;
+    private boolean stringent = false;
 
     public void setMode(FilterMode aFilterMode) throws InvalidOptionException {
         if (aFilterMode == FilterMode.INCLUSIVE || aFilterMode == FilterMode.EXCLUSIVE) {

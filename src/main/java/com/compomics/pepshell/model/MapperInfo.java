@@ -6,7 +6,7 @@ package com.compomics.pepshell.model;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class MapperInfo {
     private int startingAlignmentPosition;

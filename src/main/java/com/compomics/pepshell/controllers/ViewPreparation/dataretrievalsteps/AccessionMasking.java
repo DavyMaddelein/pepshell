@@ -10,11 +10,11 @@ import java.util.Set;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class AccessionMasking extends DataRetrievalStep {
 
-    private Set<Protein> maskingSet = new HashSet<>();
+    private final Set<Protein> maskingSet = new HashSet<>();
 
     private AccessionMasking(List<Protein> aProteinList) {
         this.proteinList = aProteinList;

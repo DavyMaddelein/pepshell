@@ -6,7 +6,7 @@ import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Davy
+ * User: Davy Maddelein
  * Date: 3/5/13
  * Time: 9:54 AM
  * To change this template use File | Settings | File Templates.

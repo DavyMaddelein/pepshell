@@ -7,8 +7,8 @@ package com.compomics.pepshell.view.componentmodels;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class DataRetrievalTableDataModel {
+class DataRetrievalTableDataModel {
     
 }

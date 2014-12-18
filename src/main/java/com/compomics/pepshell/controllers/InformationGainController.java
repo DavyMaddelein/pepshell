@@ -4,9 +4,9 @@ import com.compomics.pepshell.model.Protein;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class InformationGainController {
+class InformationGainController {
 
     public double calculateInformationGain(Protein referenceProtein,Protein experimentProtein){
     double informationGain = -1.0;

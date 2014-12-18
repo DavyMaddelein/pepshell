@@ -6,10 +6,12 @@ import java.util.Map;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class HydrophobicityMaps {
-
+    
+    //make this an enum
+    
     public static final Map<Character, Color> hydrophobicityMapPh7 = new HashMap<Character, Color>() {
         {           
             put('L', new Color((int)Math.ceil(0.01935*255),125,255));
@@ -35,4 +37,13 @@ public class HydrophobicityMaps {
 
         }
     };
+    private static Map<Character, Color> currentHydrophobicityMap = hydrophobicityMapPh7;
+    
+        public static Map<Character, Color> getCurrentHydrophobicityMap(){
+        return currentHydrophobicityMap;
+    }
+    
+        public static void setCurrentHydrophobicityMap(Map<Character, Color> aHydrophobicityMap){
+            currentHydrophobicityMap = aHydrophobicityMap;
+        }
 }

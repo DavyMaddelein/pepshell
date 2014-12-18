@@ -26,11 +26,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
- * @author svend
+ * @author Davy Maddelein
  */
 public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
 
-    List<Experiment> experiments = new ArrayList<>();
+    private List<Experiment> experiments = new ArrayList<>();
 
     public <T extends Experiment> RatioStatisticsScatterplotPane(List<T> anExperimentList) {
         super();
@@ -53,17 +53,24 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
                     try {
                         if (shortestPeptide instanceof QuantedPeptide && ((QuantedPeptide) shortestPeptide).getRatio() != null) {
                             Double value = Math.log(((QuantedPeptide) shortestPeptide).getRatio()) / Math.log(2);
+                            //Double value = ((QuantedPeptide) shortestPeptide).getRatio();                          
                             if (value == Double.NEGATIVE_INFINITY) {
                                 value = 0.0;
                             }
                             double barWithErrors = (shortestPeptide.getEndProteinMatch() + shortestPeptide.getBeginningProteinMatch()) / 2;
                             double error = Math.log(((QuantedPeptide) shortestPeptide).getStandardError()) / Math.log(2);
+                            //double error =((QuantedPeptide) shortestPeptide).getStandardError();
                             XYLineAnnotation vertical = new XYLineAnnotation(barWithErrors, value - error, barWithErrors, value + error, new BasicStroke(), Color.black);
+                            XYLineAnnotation horizontalUpper = new XYLineAnnotation(value+error-0.25, value + error, value+error+0.25, value + error, new BasicStroke(), Color.black);
+                            XYLineAnnotation horizontalLower = new XYLineAnnotation(value-error-0.25, value - error, value-error+0.25, value - error, new BasicStroke(), Color.black);
+                            
                             annotations.add(vertical);
+                            annotations.add(horizontalUpper);
+                            annotations.add(horizontalLower);
+
 
                             for (int i = shortestPeptide.getBeginningProteinMatch(); i < shortestPeptide.getEndProteinMatch(); i++) {
                                 anExperimentSeries.add(i, value);
-                                
                             }
                         }
 
@@ -79,7 +86,7 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
         chart.setChart(ratioChart);
         for (XYLineAnnotation anAnnotation : annotations) {
             ((XYPlot) ratioChart.getPlot()).addAnnotation(anAnnotation);
-        }
+         }
         prettifyChart(ratioChart);
     }
 }

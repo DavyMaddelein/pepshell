@@ -5,9 +5,9 @@ import com.compomics.pepshell.model.Property;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class PreferenceFrame extends javax.swing.JFrame {
+class PreferenceFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form PreferenceFrame

@@ -6,9 +6,9 @@ package com.compomics.pepshell.model.DAS;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class DasType {
+class DasType {
     private String id;
     private String typeMessage;
     

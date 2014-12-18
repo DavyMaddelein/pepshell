@@ -1,7 +1,6 @@
 package com.compomics.pepshell.controllers.objectcontrollers;
 
 import com.compomics.pepshell.DataModeController;
-import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.model.MapperInfo;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
@@ -20,7 +19,7 @@ import java.util.Map;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class PeptideGroupController {
 
@@ -42,7 +41,7 @@ public class PeptideGroupController {
             if (peptideGroupHolder.containsKey(peptideSequence)) {
                 peptideGroupHolder.get(peptideSequence).getShortestPeptide().incrementTimesFound();
             } else {
-                //do not know if this is wanted behaviour
+                //do not know if this is wanted behaviour, could be replaced with an option
                 if (!isPartiallyPresent(rs, peptideGroupHolder)) {
                     PeptideGroup addedGroup = new PeptideGroup();
                     Peptide peptideToAdd;
@@ -180,14 +179,12 @@ public class PeptideGroupController {
 
     //this method does too much and must be split out. it also doesn't do what it says it does,
     //it will also get slower the more groups of peptides there are, so prime target is speeding up if needed
-    public static boolean isPartiallyPresent(ResultSet rs, Map<String, PeptideGroup> peptideGroupHolder) throws SQLException {
+    private static boolean isPartiallyPresent(ResultSet rs, Map<String, PeptideGroup> peptideGroupHolder) throws SQLException {
         boolean partiallyPresent = false;
-        Iterator<PeptideGroup> peptideGroups = peptideGroupHolder.values().iterator();
-        while (peptideGroups.hasNext()) {
-            PeptideGroup currentGroup = peptideGroups.next();
+        for (PeptideGroup currentGroup : peptideGroupHolder.values()) {
             if (rs.getInt("start") >= currentGroup.getStartingAlignmentPosition() && rs.getInt("end") <= currentGroup.getEndAlignmentPosition()) {
                 if (rs.getInt("start") > currentGroup.getStartingAlignmentPosition() || rs.getInt("end") < currentGroup.getEndAlignmentPosition()) {
-                    Peptide peptideToAdd = new Peptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));
+                    Peptide peptideToAdd = new QuantedPeptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));
                     peptideToAdd.setBeginningProteinMatch(rs.getInt("start"));
                     peptideToAdd.setEndProteinMatch(rs.getInt("end"));
                     checkIfMiscleaved(peptideToAdd);
@@ -197,7 +194,7 @@ public class PeptideGroupController {
                     peptideGroupHolder.get(rs.getString("sequence")).setShortestPeptideIndex(peptideGroupHolder.get(rs.getString("sequence")).getPeptideList().size() - 1);
                     peptideGroupHolder.get(rs.getString("sequence")).setAlignmentPositions(rs.getInt("start"), rs.getInt("end"));
                 } else if (rs.getInt("start") == currentGroup.getStartingAlignmentPosition() && rs.getInt("end") == currentGroup.getEndAlignmentPosition()) {
-                    Peptide peptideToAdd = new Peptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));
+                    Peptide peptideToAdd = new QuantedPeptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));
                     peptideToAdd.setBeginningProteinMatch(rs.getInt("start"));
                     peptideToAdd.setEndProteinMatch(rs.getInt("end"));
                     checkIfMiscleaved(peptideToAdd);
@@ -207,7 +204,7 @@ public class PeptideGroupController {
                 break;
             }
             if (rs.getInt("start") < currentGroup.getStartingAlignmentPosition() && rs.getInt("end") > currentGroup.getEndAlignmentPosition()) {
-                Peptide peptideToAdd = new Peptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));
+                Peptide peptideToAdd = new QuantedPeptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));
                 peptideToAdd.setBeginningProteinMatch(rs.getInt("start"));
                 peptideToAdd.setEndProteinMatch(rs.getInt("end"));
                 checkIfMiscleaved(peptideToAdd);
@@ -219,7 +216,7 @@ public class PeptideGroupController {
 
     private static Double setRatioForPeptide(int anIdentificationId) throws SQLException {
         Double ratio = null;
-        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.getQuantForPeptideIdentifier());
+        PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().getQuantForPeptide());
         stat.setInt(1, anIdentificationId);
         ResultSet rs = stat.executeQuery();
         while (rs.next()) {
@@ -230,7 +227,7 @@ public class PeptideGroupController {
 
     private static Double setErrorForPeptide(int anIdentificationId) throws SQLException {
         Double ratio = null;
-        PreparedStatement stat = DbConnectionController.getConnection().prepareStatement(SQLStatements.getErrorForQuantedPeptide());
+        PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().getErrorForQuantedPeptide());
         stat.setInt(1, anIdentificationId);
         ResultSet rs = stat.executeQuery();
         while (rs.next()) {

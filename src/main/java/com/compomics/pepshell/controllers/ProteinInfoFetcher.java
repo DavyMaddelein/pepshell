@@ -4,9 +4,9 @@ import com.compomics.pepshell.model.ProteinInfo;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class ProteinInfoFetcher {
+class ProteinInfoFetcher {
 
 
     public static ProteinInfo fetchProteinInfoFromUniprot(String accession){

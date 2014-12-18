@@ -6,7 +6,7 @@ import java.io.IOException;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class WebDAO {
 

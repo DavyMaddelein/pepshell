@@ -1,14 +1,12 @@
 package com.compomics.pepshell.view.panels.statistics;
 
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.view.panels.statistics.wrappers.StatisticsWrapperInterface;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.annotations.XYAnnotation;
-import org.jfree.chart.annotations.XYLineAnnotation;
-import org.jfree.chart.annotations.XYShapeAnnotation;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
@@ -20,13 +18,12 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.XYSeries;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public abstract class JFreeChartPanel extends javax.swing.JPanel {
+public abstract class JFreeChartPanel extends javax.swing.JPanel implements StatisticsWrapperInterface {
 
     private static void setupPlot(CategoryPlot categoryPlot) {
     categoryPlot.setBackgroundPaint(Color.white);
@@ -46,14 +43,14 @@ public abstract class JFreeChartPanel extends javax.swing.JPanel {
         
     }
 
-    protected ChartPanel chart;
+    ChartPanel chart;
 
     /**
      * Creates new form JFreeChartPanel
      *
      * @param anExperiment the experiment to show the statistics of
      */
-    public JFreeChartPanel() {
+    JFreeChartPanel() {
         initComponents();
         chart = new ChartPanel(null, true);
         chart.setOpaque(false);
@@ -63,7 +60,7 @@ public abstract class JFreeChartPanel extends javax.swing.JPanel {
 
     public abstract void setGraphData(Protein aProtein);
 
-    public static GridBagConstraints getDefaultGridBagConstraints() {
+    private static GridBagConstraints getDefaultGridBagConstraints() {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -88,7 +85,7 @@ public abstract class JFreeChartPanel extends javax.swing.JPanel {
         rangeAxis.setLabelFont(new Font("Tahoma", Font.BOLD, 12));
     }
 
-    public static void prettifyChart(JFreeChart chart) {
+    static void prettifyChart(JFreeChart chart) {
         // set title font
         chart.getTitle().setFont(new Font("Tahoma", Font.BOLD, 12));
         if (chart.getPlot() instanceof XYPlot) {
@@ -110,7 +107,7 @@ public abstract class JFreeChartPanel extends javax.swing.JPanel {
      * @param state False, to disable shadow-
      * @since 4.1.0
      */
-    public static void setShadowVisible(final JFreeChart chart, final boolean state) {
+    private static void setShadowVisible(final JFreeChart chart, final boolean state) {
         if (chart != null) {
             final Plot p = chart.getPlot();
             if (p instanceof XYPlot) {

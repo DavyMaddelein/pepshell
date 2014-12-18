@@ -7,11 +7,11 @@ import java.util.Map;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class Proteases {
 
-    private static final Map<String, Protease> proteaseMap = new HashMap<String, Protease>();
+    private static final Map<String, Protease> proteaseMap = new HashMap<>();
 
     public Proteases() {
 

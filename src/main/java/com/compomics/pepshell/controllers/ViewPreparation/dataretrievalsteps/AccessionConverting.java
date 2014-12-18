@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class AccessionConverting extends DataRetrievalStep {
 
@@ -20,7 +20,7 @@ public class AccessionConverting extends DataRetrievalStep {
     public AccessionConverting() {
     }
 
-    public AccessionConverting(List<Protein> aProteinList) {
+    private AccessionConverting(List<Protein> aProteinList) {
         this.proteinList = aProteinList;
     }
 

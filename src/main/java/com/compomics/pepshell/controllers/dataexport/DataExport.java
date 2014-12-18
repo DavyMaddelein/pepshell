@@ -14,9 +14,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class DataExport {
+class DataExport {
 
     public void exportToTSV(JList listOfProteins, File saveLocation) throws IOException {
         Protein protein;

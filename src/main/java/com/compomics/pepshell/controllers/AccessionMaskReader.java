@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class AccessionMaskReader {
 

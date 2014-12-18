@@ -7,11 +7,11 @@ import java.util.Map;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public abstract class SecondaryStructurePrediction {
+abstract class SecondaryStructurePrediction {
 
-    protected static final Map<String, String> secStructMap = new HashMap<String, String>() {
+    static final Map<String, String> secStructMap = new HashMap<String, String>() {
         {
             put("alpha_helix", "G");
             put("beta_strand", "E");

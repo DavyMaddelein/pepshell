@@ -6,7 +6,7 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.WebDAO;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.InternetStructureDataSource;
-import com.compomics.pepshell.controllers.ViewPreparation.ViewPreparation;
+import com.compomics.pepshell.controllers.ViewPreparation.AbstractDataRetrieval;
 import com.compomics.pepshell.controllers.filters.RegexFilter;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.controllers.properties.DatabaseProperties;
@@ -14,12 +14,14 @@ import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
-import com.compomics.pepshell.view.panels.AccessionMaskDialog;
-import com.compomics.pepshell.view.panels.CombinedLoginDialog;
-import com.compomics.pepshell.view.panels.LinkDbLoginDialog;
+import com.compomics.pepshell.model.gradientMaps.HydrophobicityMaps;
+import com.compomics.pepshell.view.panels.dataloading.AccessionMaskDialog;
+import com.compomics.pepshell.view.panels.dataloading.CombinedLoginDialog;
+import com.compomics.pepshell.view.panels.dataloading.LinkDbLoginDialog;
 import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,13 +37,14 @@ import javax.swing.text.JTextComponent;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class MainWindow extends javax.swing.JFrame implements Observer {
+class MainWindow extends javax.swing.JFrame implements Observer {
 
     private static FaultBarrier faultBarrier;
     private List<Protein> proteinsToDisplay = new ArrayList<>();
     private final RegexFilter filter = new RegexFilter();
+    private ComboBoxModel experimentComboBoxModel;
 
     public MainWindow() {
         faultBarrier = FaultBarrier.getInstance();
@@ -53,28 +56,33 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     public void collectData(Experiment referenceExperiment, List<AnalysisGroup> analysisList) {
         if (DatabaseProperties.getInstance().getProperty(DataBasePropertyEnum.ASKLINKDB.getKey()).equals("yes")
-                && DbConnectionController.isLinkDbConnected() == false) {
+                && DbConnectionController.isStructDbConnected()) {
             //JOptionpane ask about wanting to connect to link db
             askLinkDbLoginQuestion();
         }
         for (AnalysisGroup experiments : analysisList) {
-            ViewPreparation prep = DataModeController.getDb().getDataMode().getViewPreparationForMode();
+            AbstractDataRetrieval prep = DataModeController.getInstance().getDb().getDataMode().getViewPreparationForMode();
             prep.addObserver(this);
-            prep.start(referenceExperiment, experiments.getExperiments().iterator(), false);
+            prep.retrieveData(referenceExperiment);
+            for (Experiment anExperiment : experiments.getExperiments()){
+                prep.retrieveData(anExperiment);
+            }
             proteinDetailPanel.setReferenceExperiment(referenceExperiment);
             proteinDetailPanel.setExperimentsToDisplay(experiments.getExperiments(), false);
             statisticsTabbedPane.setAnalysisGroupToDisplay(referenceExperiment, experiments);
+            List<Experiment> var = experiments.getExperiments();
+            experimentComboBoxModel = new DefaultComboBoxModel(var.toArray(new Experiment[var.size()]));
         }
 
 //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
         proteinsToDisplay = referenceExperiment.getProteins();
-        //this totally does not have to happen with anonymous stuff
-        proteinList.setListData(proteinsToDisplay.toArray());
+        proteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
         proteinListScrollPane.setViewportView(proteinList);
         pdbProteinList.setListData(proteinsToDisplay.toArray());
         pdbProteinListScrollPane.setViewportView(pdbProteinList);
         proteinList1.setListData(proteinsToDisplay.toArray());
         proteinListScrollPane1.setViewportView(proteinList1);
+        experimentComboBox.setModel(experimentComboBoxModel);
     }
 
 //    @TODO remove this method
@@ -96,7 +104,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             }
             if (((UpdateMessage) o1).repaint()) {
                 proteinsToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins();
-                proteinList.setListData(proteinsToDisplay.toArray());
+                proteinList.setListData(proteinsToDisplay.toArray(new ProteinInterface[proteinsToDisplay.size()]));
                 pdbProteinList.setListData(proteinsToDisplay.toArray());
                 proteinList1.setListData(proteinsToDisplay.toArray());
                 this.repaint();
@@ -108,24 +116,26 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        hydroPhobicityButtonGroup = new javax.swing.ButtonGroup();
         tabsPane = new javax.swing.JTabbedPane();
         mainViewPanel = new javax.swing.JPanel();
         proteinsOverviewPanel = new javax.swing.JPanel();
         proteinListScrollPane = new javax.swing.JScrollPane();
-        proteinList = new javax.swing.JList();
+        proteinList = new javax.swing.JList<>();
         filterTextField = new javax.swing.JTextField();
-        proteinDetailPanel = new com.compomics.pepshell.view.panels.ProteinDetailPanel();
+        proteinDetailPanel = new com.compomics.pepshell.view.panels.dataviewing.ProteinDetailPanel();
         pdbViewPanel = new javax.swing.JPanel();
         pdbProteinsOverviewPanel = new javax.swing.JPanel();
         pdbProteinListScrollPane = new javax.swing.JScrollPane();
         pdbProteinList = new javax.swing.JList();
-        jmolPanel = new com.compomics.pepshell.view.panels.JmolPanel();
+        jmolPanel = new com.compomics.pepshell.view.panels.dataviewing.JmolPanel();
+        experimentComboBox = new javax.swing.JComboBox();
         statisticsPanel = new javax.swing.JPanel();
         proteinsOverviewPanel1 = new javax.swing.JPanel();
         proteinListScrollPane1 = new javax.swing.JScrollPane();
         proteinList1 = new javax.swing.JList();
         filterTextField1 = new javax.swing.JTextField();
-        statisticsTabbedPane = new com.compomics.pepshell.view.panels.StatisticsTabPane();
+        statisticsTabbedPane = new com.compomics.pepshell.view.panels.dataviewing.StatisticsTabPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newViewMenuItem = new javax.swing.JMenuItem();
@@ -138,6 +148,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         originalAccessionRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         setAccessionMaskOption = new javax.swing.JMenuItem();
         preferencesMenu = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
+        ph5CheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
+        pH7CheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Comparison window");
@@ -232,7 +245,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         pdbViewPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        pdbProteinsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("reference proteins"));
+        pdbProteinsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("proteins"));
         pdbProteinsOverviewPanel.setOpaque(false);
 
         pdbProteinList.setModel(new javax.swing.AbstractListModel() {
@@ -260,11 +273,13 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             pdbProteinsOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pdbProteinsOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pdbProteinListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
+                .addComponent(pdbProteinListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jmolPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("protein PDB detail"));
+
+        experimentComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout pdbViewPanelLayout = new javax.swing.GroupLayout(pdbViewPanel);
         pdbViewPanel.setLayout(pdbViewPanelLayout);
@@ -274,7 +289,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap()
                 .addComponent(pdbProteinsOverviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jmolPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
+                .addGroup(pdbViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jmolPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
+                    .addGroup(pdbViewPanelLayout.createSequentialGroup()
+                        .addComponent(experimentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pdbViewPanelLayout.setVerticalGroup(
@@ -283,7 +302,11 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 .addContainerGap()
                 .addGroup(pdbViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pdbProteinsOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jmolPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 735, Short.MAX_VALUE))
+                    .addGroup(pdbViewPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(experimentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jmolPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 699, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -435,6 +458,33 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 preferencesMenuActionPerformed(evt);
             }
         });
+
+        jMenu1.setBackground(new java.awt.Color(255, 255, 255));
+        jMenu1.setText("pH for hydrofobicity");
+
+        ph5CheckBoxMenuItem.setBackground(new java.awt.Color(255, 255, 255));
+        hydroPhobicityButtonGroup.add(ph5CheckBoxMenuItem);
+        ph5CheckBoxMenuItem.setText("pH 5");
+        ph5CheckBoxMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ph5CheckBoxMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ph5CheckBoxMenuItem);
+
+        pH7CheckBoxMenuItem2.setBackground(new java.awt.Color(255, 255, 255));
+        hydroPhobicityButtonGroup.add(pH7CheckBoxMenuItem2);
+        pH7CheckBoxMenuItem2.setSelected(true);
+        pH7CheckBoxMenuItem2.setText("pH 7");
+        pH7CheckBoxMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pH7CheckBoxMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(pH7CheckBoxMenuItem2);
+
+        preferencesMenu.add(jMenu1);
+
         jMenuBar1.add(preferencesMenu);
 
         setJMenuBar(jMenuBar1);
@@ -481,7 +531,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private void proteinListMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseReleased
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            Protein proteinOfInterest = (Protein) proteinList.getSelectedValue();
+            ProteinInterface proteinOfInterest = proteinList.getSelectedValue();
             if (ProgramVariables.USEINTERNETSOURCES && proteinOfInterest.getProteinSequence().isEmpty()) {
                 try {
                     proteinOfInterest.setSequence(WebDAO.fetchSequence(proteinOfInterest.getProteinAccession()));
@@ -503,7 +553,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         if (evt.getClickCount() == 2) {
             try {
                 JOptionPane.showMessageDialog(this, "opening uniprot accession");
-                Desktop.getDesktop().browse(new URI(ViewProperties.getInstance().getProperty("protein.externaldatalocation") + AccessionConverter.toUniprot(((Protein) proteinList.getSelectedValue()).getVisibleAccession())));
+                Desktop.getDesktop().browse(new URI(ViewProperties.getInstance().getProperty("protein.externaldatalocation") + AccessionConverter.toUniprot(proteinList.getSelectedValue().getVisibleAccession())));
             } catch (URISyntaxException | IOException | ConversionException ex) {
                 faultBarrier.handleException(ex);
             }
@@ -530,7 +580,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                         FaultBarrier.getInstance().handleException(ex);
                     }
 
-                };
+                }
                 proteinList.revalidate();
                 proteinList.repaint();
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -560,9 +610,10 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             }
             List<String> searchRegex = new ArrayList<>(1);
             searchRegex.add(searchTerm);
-            proteinList.setListData(filter.filterProtein(proteinsToDisplay, searchRegex).toArray(new Protein[0]));
+            List<Protein> var = filter.filterProtein(proteinsToDisplay, searchRegex);
+            proteinList.setListData(var.toArray(new Protein[var.size()]));
         } else {
-            proteinList.setListData(proteinsToDisplay.toArray());
+            proteinList.setListData(proteinsToDisplay.toArray(new ProteinInterface[proteinsToDisplay.size()]));
         }
     }//GEN-LAST:event_filterTextFieldKeyTyped
 
@@ -577,9 +628,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             CombinedLoginDialog combinedLoginDialog = new CombinedLoginDialog();
             combinedLoginDialog.pack();
             combinedLoginDialog.setLocationRelativeTo(null);
-            combinedLoginDialog.setVisible(true);
-
             this.dispose();
+            combinedLoginDialog.setVisible(true);
         }
     }//GEN-LAST:event_newViewMenuItemActionPerformed
 
@@ -615,25 +665,46 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         // TODO add your handling code here:
     }//GEN-LAST:event_filterTextField1KeyTyped
 
+    private void ph5CheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ph5CheckBoxMenuItemActionPerformed
+        // TODO add your handling code here:
+        if (ph5CheckBoxMenuItem.isSelected()) {
+
+        }
+    }//GEN-LAST:event_ph5CheckBoxMenuItemActionPerformed
+
+    private void pH7CheckBoxMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pH7CheckBoxMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        if (pH7CheckBoxMenuItem2.isSelected()) {
+            HydrophobicityMaps.setCurrentHydrophobicityMap(HydrophobicityMaps.hydrophobicityMapPh7);
+            proteinDetailPanel.repaint();
+        }
+
+    }//GEN-LAST:event_pH7CheckBoxMenuItem2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu ViewOptionsMenu;
     private javax.swing.JMenu accessionMenuItem;
+    private javax.swing.JComboBox experimentComboBox;
     private javax.swing.JMenuItem exportOptionsMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JTextField filterTextField;
     private javax.swing.JTextField filterTextField1;
+    private javax.swing.ButtonGroup hydroPhobicityButtonGroup;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private com.compomics.pepshell.view.panels.JmolPanel jmolPanel;
+    private com.compomics.pepshell.view.panels.dataviewing.JmolPanel jmolPanel;
     private javax.swing.JPanel mainViewPanel;
     private javax.swing.JMenuItem newViewMenuItem;
     private javax.swing.JRadioButtonMenuItem originalAccessionRadioButtonMenuItem;
+    private javax.swing.JCheckBoxMenuItem pH7CheckBoxMenuItem2;
     private javax.swing.JList pdbProteinList;
     private javax.swing.JScrollPane pdbProteinListScrollPane;
     private javax.swing.JPanel pdbProteinsOverviewPanel;
     private javax.swing.JPanel pdbViewPanel;
+    private javax.swing.JCheckBoxMenuItem ph5CheckBoxMenuItem;
     private javax.swing.JMenu preferencesMenu;
-    private com.compomics.pepshell.view.panels.ProteinDetailPanel proteinDetailPanel;
-    private javax.swing.JList proteinList;
+    private com.compomics.pepshell.view.panels.dataviewing.ProteinDetailPanel proteinDetailPanel;
+    private javax.swing.JList<ProteinInterface> proteinList;
     private javax.swing.JList proteinList1;
     private javax.swing.JScrollPane proteinListScrollPane;
     private javax.swing.JScrollPane proteinListScrollPane1;
@@ -643,7 +714,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenuItem saveToExcelMenuItem;
     private javax.swing.JMenuItem setAccessionMaskOption;
     private javax.swing.JPanel statisticsPanel;
-    private com.compomics.pepshell.view.panels.StatisticsTabPane statisticsTabbedPane;
+    private com.compomics.pepshell.view.panels.dataviewing.StatisticsTabPane statisticsTabbedPane;
     private javax.swing.JTabbedPane tabsPane;
     private javax.swing.JRadioButtonMenuItem uniProtRadioButtonMenuItem;
     // End of variables declaration//GEN-END:variables

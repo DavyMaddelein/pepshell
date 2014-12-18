@@ -1,15 +1,14 @@
 package com.compomics.pepshell.model.exceptions;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class FastaCouldNotBeReadException extends IOException {
 
-    String fastaFileName;
+    private String fastaFileName;
 /**
  * constructs a {@code FastaCouldNotBeReadException} with null as it's error detail message
  * @param fastaFileName the file name of the fasta

@@ -1,28 +1,30 @@
 package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.PeptideInterface;
+import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
-import com.compomics.pepshell.view.DrawModes.PdbGradientDrawModeInterface;
-import com.compomics.pepshell.view.DrawModes.StandardPeptideProteinDrawMode;
+import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
+import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
+import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.Map;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  * @param <T>
  * @param <U>
  */
-public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Peptide> extends StandardPeptideProteinDrawMode<T, U> implements PdbGradientDrawModeInterface<T, U> {
+public class SolventAccessibleProteinDrawMode<T extends ProteinInterface, U extends PeptideInterface> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
     private String pdbAccession;
 
     @Override
-    public void drawProtein(T protein, Graphics g, int horizontalOffset, int verticalOffset, int horizontalBarSize, int verticalBarWidth) throws UndrawableException {
+    public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
 
         if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetSolventAccessibility() && pdbAccession != null) {
             Map<Integer, Double> relSasValues = ProgramVariables.STRUCTUREDATASOURCE.getRelativeSolventAccessibilityForStructure(protein, pdbAccession);
@@ -36,11 +38,11 @@ public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Pepti
                 } else {
                     g.setColor(Color.WHITE);
                 }
-                g.fillRect(horizontalOffset + (location * ProgramVariables.SCALE), verticalOffset, ProgramVariables.SCALE, verticalBarWidth);
+                g.fillRect(startPoint.x + DrawModeUtilities.getInstance().scale(location), startPoint.y, DrawModeUtilities.getInstance().scale(1), height);
             }
         } else {
             g.setColor(Color.black);
-            g.drawString("could not draw the solvent accessibility", horizontalOffset, verticalOffset + 5);
+            g.drawString("could not draw the solvent accessibility", startPoint.x, startPoint.y + 5);
             throw new UndrawableException("could not calculate gradient");
         }
 
@@ -57,19 +59,18 @@ public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Pepti
     }
 
     @Override
-    public void drawColorLegend(int xOffset, int yOffset, Graphics g) {
+    public void drawColorLegend(Point legendStartPoint, Graphics g) {
         int colorCounter = 0;
         while (colorCounter < 64) {
             g.setColor(new Color(colorCounter * 4, 255, 125));
-            g.fillRect(xOffset + colorCounter, yOffset, 5, ProgramVariables.VERTICALSIZE);
+            g.fillRect(legendStartPoint.x + colorCounter, legendStartPoint.y, 5, ProgramVariables.VERTICALSIZE);
             colorCounter += 1;
         }
         g.setColor(Color.black);
-        g.drawString("low", xOffset, yOffset + 25);
-        g.drawString("high", xOffset + colorCounter - 5, yOffset + 25);
+        g.drawString("low", legendStartPoint.x, legendStartPoint.y + 25);
+        g.drawString("high", legendStartPoint.x + colorCounter - 5, legendStartPoint.y + 25);
     }
 
-    @Override
     public void setPdbAccession(String pdbAccession) {
         this.pdbAccession = pdbAccession;
     }

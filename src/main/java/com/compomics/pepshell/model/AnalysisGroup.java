@@ -2,17 +2,16 @@ package com.compomics.pepshell.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class AnalysisGroup {
 
-    private String analysisName;
-    private List<Experiment> groupedExperiments = new ArrayList<>();
+    private final String analysisName;
+    private final List<Experiment> groupedExperiments = new ArrayList<>();
 
     public AnalysisGroup(String analysisName) {
         super();
@@ -39,9 +38,7 @@ public class AnalysisGroup {
     public Experiment getAnalysisGroupProteins() {
         Experiment allAnalysisGroupProteins = new Experiment(-1, "combined experiments of analysisgroup " + this.analysisName);
         for (Experiment experiment : groupedExperiments) {
-            Iterator<Protein> proteinIterator = experiment.getProteins().iterator();
-            while (proteinIterator.hasNext()) {
-                Protein protein = proteinIterator.next();
+            for (Protein protein : experiment.getProteins()) {
                 allAnalysisGroupProteins.addProtein(protein);
 
             }

@@ -4,11 +4,11 @@
 
     <groupId>com.compomics</groupId>
     <artifactId>pepshell</artifactId>
-    <version>0.7</version>
+    <version>0.9</version>
     <packaging>jar</packaging>
 
     <name>pepshell</name>
-    <url>http://maven.apache.org</url>
+    <url>http://google.code.com/p/pepshell</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,9 +59,10 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.compomics.pepshell.EntryPoint</mainClass>
+                            <mainClass>com.compomics.pepshell.StartUp</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
+                            <classpathPrefix>resources/plugins</classpathPrefix>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>resources/CPDT.exe</Class-Path>
@@ -106,14 +107,15 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <includes>
-                                        <include>CPDT.exe</include>
-                                        <include>vcredist_x86.exe</include>
+                                        <include>processing.gif</include>
                                     </includes>
                                     <excludes>
                                         <exclude>
                                             pepshelltestdbs.zip
                                         </exclude>
                                         <exclude>vcredist_x86.exe</exclude>
+                                        <exclude>CPDT.exe</exclude>
+                                        
                                     
                                     </excludes>
                                 </resource>
@@ -135,6 +137,7 @@
                                     <includes>
                                         <include>CPDT.exe</include>
                                         <include>vcredist_x86.exe</include>
+                                        <include>processing.gif</include>
                                     </includes>
                                     <excludes>
                                         <exclude>
@@ -215,6 +218,11 @@
             <artifactId>jfreechart</artifactId>
             <version>1.0.14</version>
         </dependency>
+        <!--<dependency>
+            <groupId>org.clapper</groupId>
+            <artifactId>javautil</artifactId>
+            <version>3.1.2</version>
+        </dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -238,6 +246,17 @@
             <id>genesis-maven2-repository</id>
             <name>Genesis maven2 repository</name>
             <url>http://genesis.UGent.be/maven2</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <id>clapper-org-maven-repo</id>
+            <name>org.clapper Maven Repo</name>
+            <url>http://maven.clapper.org/</url>
             <layout>default</layout>
         </repository>
     </repositories>

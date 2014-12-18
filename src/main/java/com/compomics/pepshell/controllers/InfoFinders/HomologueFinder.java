@@ -1,20 +1,20 @@
 package com.compomics.pepshell.controllers.InfoFinders;
 
-import com.compomics.pepshell.controllers.DAO.URLController;
+import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class HomologueFinder {
+class HomologueFinder {
 
-    public static HashSet<String> findHomologueForNcbiAccession(String aNcbiAccession) throws IOException {
-        String htmlPage = URLController.readUrl("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=homologene&term=" + aNcbiAccession);
+    private static HashSet<String> findHomologueForNcbiAccession(String aNcbiAccession) throws IOException {
+        String htmlPage = WebUtils.getHTMLPage("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=homologene&term=" + aNcbiAccession);
         String count = htmlPage.substring(htmlPage.indexOf("<Count>") + 7, htmlPage.indexOf("</Count>"));
         if(count.equalsIgnoreCase("1") ){
             String urlMake = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=homologene&id=" + htmlPage.substring(htmlPage.indexOf("<Id>") + 4, htmlPage.indexOf("</Id>"));
-            htmlPage = URLController.readUrl(urlMake);
+            htmlPage = WebUtils.getHTMLPage(urlMake);
         }
         return findHomologuesFromHtml(htmlPage);
     }
@@ -27,7 +27,7 @@ public class HomologueFinder {
         return accessionsToHomologues;
     }
 
-    public static HashSet<String> findHomologuesFromHtml(String aHtml){
+    private static HashSet<String> findHomologuesFromHtml(String aHtml){
         int startPos = 0;
         HashSet<String> accessions = new HashSet<>();
         while(aHtml.indexOf("prot-acc", startPos) > 0){

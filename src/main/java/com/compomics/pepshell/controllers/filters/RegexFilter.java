@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class RegexFilter extends FilterParent<String> {
 
@@ -25,7 +25,7 @@ public class RegexFilter extends FilterParent<String> {
      */
     @Override
     public List<String> filter(List<String> listToFilter, List<String> regexesToFilterAgainst) {
-        List<String> matchedItems = new ArrayList<String>();
+        List<String> matchedItems = new ArrayList<>();
         for (String aRegex : regexesToFilterAgainst) {
             if (inclusive) {
                 matchedItems.addAll(Collections2.filter(listToFilter, Predicates.contains(Pattern.compile(aRegex))));

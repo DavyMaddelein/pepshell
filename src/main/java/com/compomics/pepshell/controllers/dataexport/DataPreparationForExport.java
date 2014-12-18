@@ -4,9 +4,9 @@ import java.util.Collection;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class DataPreparationForExport {
+class DataPreparationForExport {
 
     /**
      * this takes a list of objects and returns the toString representation of

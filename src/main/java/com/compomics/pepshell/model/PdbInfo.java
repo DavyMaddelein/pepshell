@@ -2,7 +2,7 @@ package com.compomics.pepshell.model;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class PdbInfo {
 
@@ -91,11 +91,8 @@ public class PdbInfo {
             return false;
         }
         final PdbInfo other = (PdbInfo) obj;
-        if ((this.pdbAccession == null) ? (other.getPdbAccession() != null) : !this.pdbAccession.equals(other.getPdbAccession())) {
-            return false;
-        }
-        return true;
-    }    
+        return !((this.pdbAccession == null) ? (other.getPdbAccession() != null) : !this.pdbAccession.equals(other.getPdbAccession()));
+    }
     
     @Override
     public String toString() {

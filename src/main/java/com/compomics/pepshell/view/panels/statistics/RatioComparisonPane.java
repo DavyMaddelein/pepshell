@@ -7,7 +7,6 @@ import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
-import static com.compomics.pepshell.view.panels.statistics.JFreeChartPanel.prettifyChart;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
@@ -19,7 +18,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class RatioComparisonPane extends JFreeChartPanel {
 
@@ -82,7 +81,7 @@ public class RatioComparisonPane extends JFreeChartPanel {
         return returnset;
     }
 
-    Function<PeptideGroup, Integer> getProteinLocation = new Function<PeptideGroup, Integer>() {
+    private Function<PeptideGroup, Integer> getProteinLocation = new Function<PeptideGroup, Integer>() {
         @Override
         public Integer apply(PeptideGroup input) {
             return input.getShortestPeptide().getBeginningProteinMatch();

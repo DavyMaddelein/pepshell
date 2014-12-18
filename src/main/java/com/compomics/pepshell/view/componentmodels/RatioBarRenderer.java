@@ -4,9 +4,9 @@ import org.jfree.chart.renderer.category.StatisticalBarRenderer;
 
 /**
  *
- * @author svend
+ * @author Davy Maddelein
  */
-public class RatioBarRenderer extends StatisticalBarRenderer {
+class RatioBarRenderer extends StatisticalBarRenderer {
   
     
 }

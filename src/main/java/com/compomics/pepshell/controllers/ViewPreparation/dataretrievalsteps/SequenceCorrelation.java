@@ -7,12 +7,12 @@ package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class SequenceCorrelation {
+class SequenceCorrelation {
 
     public SequenceCorrelation() {
-        String string = new String("");
+        String string = "";
 
     }
 }

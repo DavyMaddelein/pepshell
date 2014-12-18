@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
 public class PeptideGroup {
 
@@ -95,13 +95,7 @@ public class PeptideGroup {
             return false;
         }
         final PeptideGroup other = (PeptideGroup) obj;
-        if (this.startingAlignmentPosition != other.getStartingAlignmentPosition()) {
-            return false;
-        }
-        if (this.endAlignmentPostition != other.getEndAlignmentPosition()) {
-            return false;
-        }
-        return other.getPeptideList() == null || other.getPeptideList().equals(this.getPeptideList());
+        return this.startingAlignmentPosition == other.getStartingAlignmentPosition() && this.endAlignmentPostition == other.getEndAlignmentPosition() && (other.getPeptideList() == null || other.getPeptideList().equals(this.getPeptideList()));
     }
 
 }

@@ -2,7 +2,6 @@ package com.compomics.pepshell.controllers.ViewPreparation;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
-import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedExperiment;
@@ -12,21 +11,21 @@ import java.util.Iterator;
 
 /**
  *
- * @author Davy
+ * @author Davy Maddelein
  */
-public class PreparationForDbData<T extends Experiment, V extends Protein> extends ViewPreparation<T, V> {
+public class PreparationForDbData<T extends Experiment> extends AbstractDataRetrieval<T> {
 
     @Override
-    public T retrieveData(T referenceExperiment, Iterator<T> ExperimentsToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
+    protected T retrievePrimaryData(T referenceExperiment) {
         try {
             DbDAO.fetchPeptidesAndProteins(referenceExperiment);
             checkAndAddQuantToProteinsInExperiment(referenceExperiment);
-            while (ExperimentsToCompareWith.hasNext()) {
-                T anExperimentToCompareWith = ExperimentsToCompareWith.next();
-                DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
-                checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
-                removeProteinsNotInReferenceExperiment(referenceExperiment, anExperimentToCompareWith, removeNonOverlappingPeptidesFromReferenceProject);
-            }
+//            while (ExperimentsToCompareWith.hasNext()) {
+//                T anExperimentToCompareWith = ExperimentsToCompareWith.next();
+//                DbDAO.fetchPeptidesAndProteins(anExperimentToCompareWith);
+//                checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
+//                removeProteinsNotInReferenceExperiment(referenceExperiment);
+//            }
         } catch (SQLException ex) {
             FaultBarrier.getInstance().handleException(ex);
         } catch (IOException ex) {
@@ -51,11 +50,6 @@ public class PreparationForDbData<T extends Experiment, V extends Protein> exten
             FaultBarrier.getInstance().handleException(ex);
         }
         return dataAdded;
-    }
-
-    @Override
-    public void addProteinsToExperiment(AbstractDataMode dataMode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
