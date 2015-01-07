@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ Copyright 2014 Davy Maddelein.
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~      http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.compomics</groupId>
+        <artifactId>pepshell</artifactId>
+        <version>0.9</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>pepshell-wrapper</artifactId>
+    <version>1.0.0</version>
+    
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.5.1</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                        <showDeprecation>true</showDeprecation>
+                        <debug>true</debug>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>1.4</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <shadedArtifactAttached>true</shadedArtifactAttached> <!-- Make the shaded artifact not the main one -->
+                        <shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
+                    <artifactId>launch4j-plugin</artifactId>
+                    <version>1.5.0.0</version>
+                    <executions>
+
+                        <!-- GUI exe -->
+                        <execution>
+                            <id>l4j-gui</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>launch4j</goal>
+                            </goals>
+                            <configuration>
+                                <headerType>gui</headerType>
+                                <outfile>target/app-gui.exe</outfile>
+                                <jar>target/${artifactId}-${version}-shaded.jar</jar> <!-- 'shaded' is the value set on shadedClassifierName above -->
+                                <errTitle>App Err</errTitle>
+                                <classPath>
+                                    <mainClass>package.AppGUI</mainClass>
+                                </classPath>
+                                <icon>src/main/resources/icons/exeIcon.ico</icon>
+                                <jre>
+                                    <minVersion>1.5.0</minVersion>
+                                    <maxVersion>1.6.0</maxVersion>
+                                    <initialHeapSize>128</initialHeapSize>
+                                    <maxHeapSize>1024</maxHeapSize>
+                                </jre>
+                                <versionInfo>
+                                    <fileVersion>1.0.0.0</fileVersion>
+                                    <txtFileVersion>1.0.0.0</txtFileVersion>
+                                    <fileDescription>Desc</fileDescription>
+                                    <copyright>C</copyright>
+                                    <productVersion>1.0.0.0</productVersion>
+                                    <txtProductVersion>1.0.0.0</txtProductVersion>
+                                    <productName>Product</productName>
+                                    <internalName>Product</internalName>
+                                    <originalFilename>App.exe</originalFilename>
+                                </versionInfo>
+                            </configuration>
+                        </execution>
+
+                        <!-- Command-line exe -->
+                        <execution>
+                            <id>l4j-cli</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>launch4j</goal>
+                            </goals>
+                            <configuration>
+                                <headerType>console</headerType>
+                                <outfile>target/app-cli.exe</outfile>
+                                <jar>target/${artifactId}-${version}-shaded.jar</jar> <!-- 'shaded' is the value set on shadedClassifierName above -->
+                                <errTitle>App Err</errTitle>
+                                <classPath>
+                                    <mainClass>package.AppCLI</mainClass>
+                                </classPath>
+                                <icon>src/main/resources/icons/exeIcon.ico</icon>
+                                <jre>
+                                    <minVersion>1.5.0</minVersion>
+                                    <maxVersion>1.6.0</maxVersion>
+                                    <initialHeapSize>128</initialHeapSize>
+                                    <maxHeapSize>1024</maxHeapSize>
+                                </jre>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>net.jimmc</groupId>
+            <artifactId>jshortcut</artifactId>
+            <version>0.4-oberzalek</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.7</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+</project>

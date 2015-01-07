@@ -1,2 +1,4 @@
 /target/
 /src/test/java/
+/pepshell-program/target/
+/pepshell-wrapper/target/
