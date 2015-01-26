@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.compomics.pepshell.model;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Set;
  * @author Davy Maddelein
  */
 public interface ProteinInterface {
+    //TODO move the pepshell specific things to the protein object (like pdb info, domains, CPDT, ...)
 
     void addDomains(List<Domain> domainsToAdd);
 

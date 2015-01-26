@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 Davy Maddelein.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.compomics.pepshell.controllers.objectcontrollers;
 
 import com.compomics.pepshell.DataModeController;
@@ -181,35 +196,69 @@ public class PeptideGroupController {
      * peptide falls outside of the protein range
      */
     public static void mapPeptideGroupsToProtein(Protein protein) throws StringIndexOutOfBoundsException {
-        for (PeptideGroup aPeptideGroup : protein.getPeptideGroups()) {
+        protein.getPeptideGroups().stream().forEach((aPeptideGroup) -> {
             try {
-                aPeptideGroup.setAlignmentPositions(protein.getProteinSequence().indexOf(aPeptideGroup.getShortestPeptide().getSequence()), aPeptideGroup.getShortestPeptide().getSequence().length());
-                for (Peptide aPeptide : aPeptideGroup.getPeptideList()) {
+                setLocationsOfPeptideGroupOnProtein(aPeptideGroup, protein.getProteinSequence().indexOf(aPeptideGroup.getShortestPeptide().getSequence()));
+                aPeptideGroup.getPeptideList().stream().forEach((aPeptide) -> {
                     //exhaustive check if all the peptides lign up in the group, if not, they should be split out into different groups
                     int index = protein.getProteinSequence().indexOf(aPeptide.getSequence());
                     if (index != aPeptideGroup.getStartingAlignmentPosition()) {
                         aPeptideGroup.getPeptideList().remove(aPeptide);
-                        PeptideGroup group = new PeptideGroup(aPeptide);
-                        group.setStartingAlignmentPostion(index);
-                        group.setEndAlignmentPosition(index + aPeptide.getSequence().length());
-                        protein.addPeptideGroup(group);
+                        protein.addPeptideGroup(setLocationsOfPeptideGroupOnProtein(
+                                new PeptideGroup(setLocationsOfPeptideOnProtein(aPeptide, index)), index));
+                    } else {
+                        setLocationsOfPeptideOnProtein(aPeptide, index);
                     }
-                }
-                if (protein.getProteinSequence().indexOf(aPeptideGroup.getShortestPeptide().getSequence(), aPeptideGroup.getEndAlignmentPosition()) > -1) {
-                    //if we get here, it means we have multiple locations of the peptide in the protein. 
-                    PeptideGroup group = new PeptideGroup(new Peptide(aPeptideGroup.getShortestPeptide().getSequence()));    
-                    protein.addPeptideGroup(group);
+                });
+                boolean morePeptideGroupLocations = protein.getProteinSequence().indexOf(aPeptideGroup.getShortestPeptide().getSequence(), aPeptideGroup.getEndAlignmentPosition()) > -1;
+                while (morePeptideGroupLocations) {
+                    //if we get here, it means we have multiple locations of the peptide in the protein.
+                    int newPeptideStartLocation = protein.getProteinSequence().indexOf(aPeptideGroup.getShortestPeptide().getSequence(), aPeptideGroup.getEndAlignmentPosition());
+                    PeptideGroup newGroup = new PeptideGroup(setLocationsOfPeptideOnProtein(
+                            new Peptide(aPeptideGroup.getShortestPeptide().getSequence()), newPeptideStartLocation));
+                    protein.addPeptideGroup(setLocationsOfPeptideGroupOnProtein(newGroup, newPeptideStartLocation));
+                    morePeptideGroupLocations = protein.getProteinSequence().indexOf(newGroup.getShortestPeptide().getSequence(), newGroup.getEndAlignmentPosition()) > -1;
                 }
             } catch (StringIndexOutOfBoundsException e) {
+            //if this happens we have been given the wrong peptides for the protein and we should let the user know
             }
+        });
+    }
+
+    /**
+     * sets the start of a peptidegroup and end location as the size of it's
+     * shortest peptide
+     *
+     * @param aGroup the group to set the locations of
+     * @param startLocation the starting location on the protein
+     * @return the passed peptidegroup
+     */
+    private static PeptideGroup setLocationsOfPeptideGroupOnProtein(PeptideGroup aGroup, int startLocation) {
+        if (aGroup.getShortestPeptide() != null) {
+            aGroup.setStartingAlignmentPostion(startLocation);
+            aGroup.setEndAlignmentPosition(startLocation + aGroup.getShortestPeptide().getSequence().length());
         }
+        return aGroup;
+    }
+
+    /**
+     * sets the start of a peptide and end location as the size of the sequence
+     * @param aPeptide the peptide to set the location of
+     * @param startLocation where the peptide starts on the protein
+     * @return the passed peptide
+     */
+    private static Peptide setLocationsOfPeptideOnProtein(Peptide aPeptide, int startLocation) {
+        aPeptide.setBeginningProteinMatch(startLocation);
+        aPeptide.setEndProteinMatch(startLocation + aPeptide.getSequence().length());
+        return aPeptide;
     }
 
     //this method does too much and must be split out. it also doesn't do what it says it does,
     //it will also get slower the more groups of peptides there are, so prime target is speeding up if needed
     private static boolean isPartiallyPresent(ResultSet rs, Map<String, PeptideGroup> peptideGroupHolder) throws SQLException {
         boolean partiallyPresent = false;
-        for (PeptideGroup currentGroup : peptideGroupHolder.values()) {
+        for (Iterator<PeptideGroup> it = peptideGroupHolder.values().iterator(); it.hasNext();) {
+            PeptideGroup currentGroup = it.next();
             if (rs.getInt("start") >= currentGroup.getStartingAlignmentPosition() && rs.getInt("end") <= currentGroup.getEndAlignmentPosition()) {
                 if (rs.getInt("start") > currentGroup.getStartingAlignmentPosition() || rs.getInt("end") < currentGroup.getEndAlignmentPosition()) {
                     Peptide peptideToAdd = new QuantedPeptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));

@@ -1,8 +1,25 @@
+/*
+ * Copyright 2014 Davy Maddelein.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
@@ -24,7 +41,7 @@ import java.awt.Point;
  * @param <T> the protein type to draw
  * @param <U> the CPDT analysed peptide to draw
  */
-public class CPDTCleavedProteinDrawMode <T extends ProteinInterface, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class CPDTCleavedProteinDrawMode <T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
     @Override
     public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
@@ -70,7 +87,7 @@ public class CPDTCleavedProteinDrawMode <T extends ProteinInterface, U extends P
      */
     
     @Override
-    public void drawPeptide(U peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawPeptide(Peptide peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         try {
             g.setColor(calculatePeptideGradient(peptide));
         } catch (CalculationException ex) {
@@ -108,7 +125,7 @@ public class CPDTCleavedProteinDrawMode <T extends ProteinInterface, U extends P
      * @throws CalculationException
      */
     @Override
-    public Color calculatePeptideGradient(U peptide) throws CalculationException {
+    public Color calculatePeptideGradient(Peptide peptide) throws CalculationException {
         return new Color((int) Math.ceil(255-(255*peptide.getProbability())),(int) Math.ceil(255 * peptide.getProbability()), 0);
     }
 }

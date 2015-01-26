@@ -45,6 +45,12 @@ public class FileParserFactory {
         return instance;
     }
 
+    /**
+     * guesses the correct parser for an experiment file and tries to convert it into an experiment object
+     * @param aFile the file to parse
+     * @return the object representation of the passed experiment file
+     * @throws CouldNotParseException if there was a problem with parsing the file
+     */
     public Experiment parseExperimentFile(FileBasedExperiment aFile) throws CouldNotParseException {
         //we can only assume what file it is based on the file type
         Experiment parsedExperiment;
@@ -56,15 +62,19 @@ public class FileParserFactory {
         return parsedExperiment;
     }
 
+    /**
+     * parses a file with the given annotations to the layout of the experiment contained in the file
+     * @param anAnnotatedFile the file to parse
+     * @return the object representation of the experiments
+     * @throws CouldNotParseException if there was a problem with parsing the file
+     */
     public Experiment parseExperimentFile(AnnotatedFile anAnnotatedFile) throws CouldNotParseException {
         Experiment parsedExperiment = new Experiment(anAnnotatedFile.getName());
         if(anAnnotatedFile.isValidated()){
             if(anAnnotatedFile.getAnnotations() instanceof SeparatedvalueExperimentMetaData){
                 parsedExperiment = genericFileParser.parseExperimentFile(anAnnotatedFile);
             }
-
         }
         return parsedExperiment;
-
     }
 }

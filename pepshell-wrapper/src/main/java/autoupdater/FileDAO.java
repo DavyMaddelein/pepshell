@@ -1,20 +1,32 @@
+/*
+ * Copyright 2014 Davy Maddelein.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package autoupdater;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import net.jimmc.jshortcut.JShellLink;
 import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
 
@@ -59,8 +71,10 @@ public abstract class FileDAO {
      * @throws RuntimeException
      */
     public boolean addShortcutAtDeskTop(MavenJarFile mavenJarFile, String iconName) throws NullPointerException, RuntimeException {
+        String os = System.getProperty("os.name").toLowerCase(new Locale("en"));
+        if (os.contains("win")) {
 
-        JShellLink link = new JShellLink();
+            JShellLink link = new JShellLink();
         link.setFolder(JShellLink.getDirectory("desktop"));
         link.setName(new StringBuilder().append(mavenJarFile.getArtifactId()).append("-").append(mavenJarFile.getVersionNumber()).toString());
         if (iconName != null) {
@@ -68,6 +82,25 @@ public abstract class FileDAO {
         }
         link.setPath(mavenJarFile.getAbsoluteFilePath());
         link.save();
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")){
+            /**
+             * To manually create a desktop shortcut for a particular program or command, you can create a .desktop file using any text editor, and place it in either /usr/share/applications or ~/.local/share/applications. A typical .desktop file looks like the following.
+
+             [Desktop Entry]
+             Encoding=UTF-8
+             Version=1.0                                     # version of an app.
+             Name[en_US]=yEd                                 # name of an app.
+             GenericName=GUI Port Scanner                    # longer name of an app.
+             Exec=java -jar /opt/yed-3.11.1/yed.jar          # command used to launch an app.
+             Terminal=false                                  # whether an app requires to be run in a terminal.
+             Icon[en_US]=/opt/yed-3.11.1/icons/yicon32.png   # location of icon file.
+             Type=Application                                # type.
+             Categories=Application;Network;Security;        # categories in which this app should be listed.
+             Comment[en_US]=yEd Graph Editor                 # comment which appears as a tooltip.
+
+             */
+        }
+
         return true;
     }
 
@@ -81,6 +114,47 @@ public abstract class FileDAO {
      * @throws IOException
      */
     public abstract File getLocationToDownloadOnDisk(String targetDownloadFolder) throws IOException;
+
+
+    public File inflateArchive(File source, File destination) throws IOException, ArchiveException {
+        ArchiveInputStream stream = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(new FileInputStream(source)));
+        ZipFile zipfile = new ZipFile(source);
+        ArchiveEntry entry = null;
+        FileOutputStream dest = null;
+        InputStream inStream = null;
+        if ((entry = stream.getNextEntry()) != null) {
+            do {
+                File destFile = new File(destination, entry.getName());
+                if (!destFile.getParentFile().exists()) {
+                    if (!destFile.getParentFile().mkdirs()) {
+                        throw new IOException("could not create the folders to unzip in");
+                    }
+                }
+                if (!entry.isDirectory()) {
+                    try {
+                        dest = new FileOutputStream(destFile);
+                        inStream = stream;
+                        IOUtils.copyLarge(inStream, dest);
+                    } finally {
+                        if (dest != null) {
+                            dest.close();
+                        }
+                        if (inStream != null) {
+                            inStream.close();
+                        }
+                    }
+                } else {
+                    if (!destFile.exists()) {
+                        if (!destFile.mkdirs()) {
+                            throw new IOException("could not create folders to unzip file");
+                        }
+                    }
+                }
+            } while ((entry = stream.getNextEntry()) != null);
+        }
+        return destination;
+    }
+
 
     // @TODO: rewrite both downloadAndUnzipFiles to use apache commons compress library?
     /**
@@ -97,7 +171,7 @@ public abstract class FileDAO {
         Enumeration<? extends ZipEntry> zipFileEnum = zip.entries();
         while (zipFileEnum.hasMoreElements()) {
             ZipEntry entry = zipFileEnum.nextElement();
-            File destFile = new File(String.format("%s/%s", fileLocationOnDiskToDownloadTo, entry.getName()));
+            File destFile = new File(fileLocationOnDiskToDownloadTo, entry.getName());
             if (!destFile.getParentFile().exists()) {
                 if (!destFile.getParentFile().mkdirs()) {
                     throw new IOException("could not create the folders to unzip in");

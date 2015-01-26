@@ -17,6 +17,8 @@
 package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.model.Peptide;
+import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.gradientMaps.HydrophobicityMaps;
 import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.ProteinInterface;
@@ -39,7 +41,7 @@ import java.util.SortedSet;
  * @param <T>
  * @param <U>
  */
-public class HydrophobicityProteinDrawMode<T extends ProteinInterface, U extends PeptideInterface> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class HydrophobicityProteinDrawMode<T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
     private SortedSet<Color> colorLegend;
 

@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/partial-tryp.iml" filepath="$PROJECT_DIR$/partial-tryp.iml" />
       <module fileurl="file://$PROJECT_DIR$/pepshell.iml" filepath="$PROJECT_DIR$/pepshell.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pepshell-program/pepshell (1).iml" filepath="$PROJECT_DIR$/pepshell-program/pepshell (1).iml" />
+      <module fileurl="file://$PROJECT_DIR$/pepshell-program/pepshell-program.iml" filepath="$PROJECT_DIR$/pepshell-program/pepshell-program.iml" />
       <module fileurl="file://$PROJECT_DIR$/pepshell-wrapper/pepshell-wrapper.iml" filepath="$PROJECT_DIR$/pepshell-wrapper/pepshell-wrapper.iml" />
     </modules>
   </component>

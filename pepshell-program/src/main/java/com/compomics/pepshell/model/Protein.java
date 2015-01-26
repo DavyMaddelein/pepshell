@@ -1,13 +1,26 @@
+/*
+ * Copyright 2014 Davy Maddelein.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.compomics.pepshell.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
+
+import java.util.*;
 
 /**
- *
  * @author Davy Maddelein
  */
 public class Protein implements ProteinInterface {
@@ -18,7 +31,7 @@ public class Protein implements ProteinInterface {
     private String sequence = "";
     private final List<Domain> domainsFoundInProtein = new ArrayList<>();
     private final List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
-    private final Set<PdbInfo> allPDBFileInfoForProtein = new HashSet<>();
+    private final Set<PdbInfo> allPDBFileInfoForProtein = new TreeSet<>( new ComparePdbInfoByResolution());
     private String proteinName;
     private String originalAccession;
     private String visibleAccession;
@@ -71,8 +84,7 @@ public class Protein implements ProteinInterface {
         return Collections.unmodifiableList(peptideGroupsForProtein);
     }
 
-    
-    
+
     @Override
     public <T extends PeptideGroup> void setPeptideGroupsForProtein(List<T> listOfPeptides) {
         peptideGroupsForProtein.addAll(listOfPeptides);
@@ -144,10 +156,11 @@ public class Protein implements ProteinInterface {
                         || (this.originalAccession == null) ? (other.getProteinAccession() != null) : this.originalAccession.equals(other.getProteinAccession())) {
                     returnValue = true;
                 }
-                if (this.sequence == null && other.getProteinSequence() != null) {
-                    if (!other.getProteinSequence().isEmpty() && (this.sequence != null && this.sequence.equals(other.getProteinSequence()))) {
+                if (this.sequence == null && other.getProteinSequence() != null && !other.getProteinSequence().isEmpty() && !this.sequence.isEmpty()) {
+                    if (this.sequence.equals(other.getProteinSequence())) {
                         returnValue = true;
                     }
+
                 }
             }
         }
@@ -206,7 +219,7 @@ public class Protein implements ProteinInterface {
 
     public void setPreferedPdbFile(PdbInfo preferedPdbFile) {
         this.preferedPdbFile = preferedPdbFile;
-    }    
+    }
 
     @Override
     public List<PeptideGroup> getCPDTPeptideList() {

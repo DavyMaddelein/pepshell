@@ -1,22 +1,44 @@
+/*
+ * Copyright 2014 Davy Maddelein.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package autoupdater;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipFile;
+
+import org.apache.commons.compress.archivers.zip.ZipFile;
+
 import javax.swing.JOptionPane;
 import javax.xml.stream.XMLStreamException;
+
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -24,7 +46,7 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Davy Maddelein
  */
-public class DownloadLatestZipFromRepo /**implements Runnable*/ {
+public class DownloadLatestZipFromRepo implements Runnable {
 
     /**
      * The downloaded version of the tool.
@@ -42,13 +64,13 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
      * jar if there was an update.
      *
      * @param jarPath the path to the jarfile
-     * @throws IOException should there be problems with reading or writing
-     * files during the updating
+     * @throws IOException        should there be problems with reading or writing
+     *                            files during the updating
      * @throws XMLStreamException if there was a problem reading the meta data
-     * from the remote maven repository
+     *                            from the remote maven repository
      * @throws URISyntaxException
      */
-    public static void downloadLatestZipFromRepo(URL jarPath) throws IOException, XMLStreamException, URISyntaxException {
+    public static void downloadLatestZipFromRepo(Path jarPath) throws IOException, XMLStreamException, URISyntaxException {
         downloadURL = new URL("http", "genesis.ugent.be", "/maven2/");
         downloadLatestZipFromRepo(jarPath, new String[0], downloadURL);
     }
@@ -57,19 +79,19 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
      * Retrieves the latest version of a maven jar file from a maven repository,
      * also checks if the environment is headless or not.
      *
-     * @param jarPath the URL of the location of the jar that needs to be
-     * updated on the file system. cannot be {@code null}
-     * @param args the args that will be passed to the newly downloaded program
-     * when started, cannot be {@code null}
+     * @param jarPath           the URL of the location of the jar that needs to be
+     *                          updated on the file system. cannot be {@code null}
+     * @param args              the args that will be passed to the newly downloaded program
+     *                          when started, cannot be {@code null}
      * @param jarRepositoryRoot the maven repository to go look in, cannot be
-     * {@code null}
-     * @throws IOException should there be problems with reading or writing
-     * files during the updating
+     *                          {@code null}
+     * @throws IOException        should there be problems with reading or writing
+     *                            files during the updating
      * @throws XMLStreamException if there was a problem reading the meta data
-     * from the remote maven repository
+     *                            from the remote maven repository
      * @throws URISyntaxException
      */
-    public static void downloadLatestZipFromRepo(final URL jarPath, String[] args, URL jarRepositoryRoot) throws IOException, XMLStreamException, URISyntaxException {
+    public static void downloadLatestZipFromRepo(final Path jarPath, String[] args, URL jarRepositoryRoot) throws IOException, XMLStreamException, URISyntaxException {
         downloadURL = jarRepositoryRoot;
         if (GraphicsEnvironment.isHeadless()) {
             fileDAO = new HeadlessFileDAO();
@@ -101,27 +123,27 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
     /**
      * Retrieves the latest version of a maven jar file from a maven repository.
      *
-     * @param downloadFolder the folder to download to
-     * @param groupId the group id
-     * @param artifactId the artifact id
-     * @param iconName name of the shortcut image should one be created
-     * @param args the args that will be passed to the newly downloaded program
-     * when started, cannot be {@code null}
-     * @param jarRepository the maven repository to go look in, cannot be
-     * {@code null}
+     * @param downloadFolder         the folder to download to
+     * @param groupId                the group id
+     * @param artifactId             the artifact id
+     * @param iconName               name of the shortcut image should one be created
+     * @param args                   the args that will be passed to the newly downloaded program
+     *                               when started, cannot be {@code null}
+     * @param jarRepository          the maven repository to go look in, cannot be
+     *                               {@code null}
      * @param startDownloadedVersion if the newly downloaded version should be
-     * started automatically or not
-     * @param addDesktopIcon if true, a desktop icon will be created
-     * @param fileDAO what implementation of FileDAO should be used in the
-     * updating
-     * @throws IOException should there be problems with reading or writing
-     * files during the updating
+     *                               started automatically or not
+     * @param addDesktopIcon         if true, a desktop icon will be created
+     * @param fileDAO                what implementation of FileDAO should be used in the
+     *                               updating
+     * @throws IOException        should there be problems with reading or writing
+     *                            files during the updating
      * @throws XMLStreamException if there was a problem reading the meta data
-     * from the remote maven repository
+     *                            from the remote maven repository
      * @throws URISyntaxException
      */
     public static void downloadLatestZipFromRepo(final File downloadFolder, String groupId, String artifactId, String iconName, String[] args, URL jarRepository, boolean startDownloadedVersion,
-            boolean addDesktopIcon, FileDAO fileDAO) throws IOException, XMLStreamException, URISyntaxException {
+                                                 boolean addDesktopIcon, FileDAO fileDAO) throws IOException, XMLStreamException, URISyntaxException {
 
         //TL;DR of the next three lines: make the url for the latest version location of a maven jar file
         String artifactInRepoLocation = new StringBuilder(jarRepository.toExternalForm()).append(groupId.replaceAll("\\.", "/")).append("/").append(artifactId).toString();
@@ -136,14 +158,9 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
 
         // add desktop icon
         if (addDesktopIcon) {
-            if (System.getProperty("os.name").toLowerCase(new Locale("en")).contains("win")) {
-                //try{
-                fileDAO.createDesktopShortcut(downloadedJarFile, artifactId, iconName, false);
-                //}catch(IOException ioe){ if (!ignoreShortcutCreationErrors){throw ioe}}
-            } else {
-                // @TODO: update symlinks?
-            }
+            fileDAO.createDesktopShortcut(downloadedJarFile, artifactId, iconName, false);
         }
+
 
         if (startDownloadedVersion) {
             launchJar(downloadedJarFile, args);
@@ -151,10 +168,26 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
     }
 
     /**
+     * When an object implementing interface <code>Runnable</code> is used
+     * to create a thread, starting the thread causes the object's
+     * <code>run</code> method to be called in that separately executing
+     * thread.
+     * <p/>
+     * The general contract of the method <code>run</code> is that it may
+     * take any action whatsoever.
+     *
+     * @see Thread#run()
+     */
+    @Override
+    public void run() {
+
+    }
+
+    /**
      * Simple jar launch through a {@code ProcessBuilder}.
      *
-     * @param downloadedJarFile the downloaded jar file to start
-     * @param args the args to give to the jar file
+     * @param downloadedFile the downloaded jar file to start
+     * @param args           the args to give to the jar file
      * @return true if the launch succeeded
      * @throws IOException if the process could not start
      */
@@ -182,10 +215,6 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
      * Aggregation method for downloading and unzipping.
      *
      * @param mavenJarFile the maven jar file to download update for
-     * @param toolName the name of the tool being updated, e.g., PeptideShaker
-     * @param jarRepository the url of the version specific location
-     * @param fileDAO which fileDAO implementation that should be used
-     * @param isWindows if true, the OS will assumed to be windows
      * @return the downloaded {@code MavenJarFile}
      * @throws MalformedURLException
      * @throws IOException
@@ -265,28 +294,18 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
     }
 
     /**
-     * Aggregation method for downloading and unzipping.
-     *
-     * @param mavenJarFile the maven jar file to download update for
-     * @param toolName the name of the tool being updated, e.g., PeptideShaker
-     * @param jarRepository the url of the version specific location
-     * @param fileDAO which fileDAO implementation that should be used
-     * @param isWindows if true, the OS will assumed to be windows
-     * @param update if true, the waiting handler shows update, false shows
-     * download
-     * @return the downloaded {@code MavenJarFile}
-     * @throws MalformedURLException
-     * @throws IOException
-     * @throws XMLStreamException
+     * @param artifactURL the url of the artifact, if the url is the actual file archive(zip,tar.gz or jar) to download it will just download,
+     * otherwise it will try to first retrieve artifactid-versionnumber.zip/tar.gz
+     * and lastly try to retrieve artifactid-versionnumber.jar
+     * @return the downloaded file
+     * @throws java.io.FileNotFoundException if there is not file to download at the url location
      */
-    private static MavenJarFile downloadAndUnzipJar(final File aDownloadFolder, final String artifactId, URL jarRepository,
-            FileDAO fileDAO, boolean cleanupZipFile, boolean isWindows) throws MalformedURLException, IOException, XMLStreamException {
+    public static File downloadJarFile(URL artifactURL,File destination) throws IOException {
 
         URL archiveURL;
-        String folderName;
 
         // get the archive url
-        if (isWindows) {
+        if (artifactURL.getPath().contains(".zip")) {
             archiveURL = WebDAO.getUrlOfZippedVersion(jarRepository, ".zip", false);
             folderName = archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/"), archiveURL.getFile().lastIndexOf(".zip"));
         } else {
@@ -296,36 +315,48 @@ public class DownloadLatestZipFromRepo /**implements Runnable*/ {
             } else {
                 archiveURL = WebDAO.getUrlOfZippedVersion(jarRepository, ".zip", false);
                 folderName = archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/"), archiveURL.getFile().lastIndexOf(".zip"));
-                isWindows = true; // zip file, handling is same as for windows
             }
         }
 
-        // special fix for tools with separate versions for windows and unix
+        // special fix for tools with separate versions for windows and unix, you don't do special fixes in a generic library
+/*
         if (folderName.endsWith("-windows")) {
             folderName = folderName.substring(0, folderName.indexOf("-windows"));
         } else if (folderName.endsWith("-mac_and_linux")) {
             folderName = folderName.substring(0, folderName.indexOf("-mac_and_linux"));
         }
+*/
 
-        File downloadFolder;
-        // set up the folder to save the new download in
-        if (isWindows) {
-            downloadFolder = new File(aDownloadFolder, folderName);
-        } else {
-            downloadFolder = aDownloadFolder;
-        }
-        if (!downloadFolder.exists()) {
-            if (!downloadFolder.mkdirs()) {
+        if (!destination.exists()) {
+            if (!destination.mkdirs()) {
                 throw new IOException("could not make the directories needed to download the file in");
             }
         }
 
         // create an empty dummy file so that progress can be monitored
-        downloadedFile = new File(downloadFolder, archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/")));
+        downloadedFile = new File(destination, archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/")));
 
         // download and unzip the file
+        downloadedFile = fileDAO.writeStreamToDisk(archiveURL.openStream(), archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/")), downloadFolder);
+        return downloadedFile;
+    }
+
+    /**
+     * Aggregation method for downloading and unzipping.
+     *
+     * @param jarRepository the url of the version specific location
+     * @param fileDAO       which fileDAO implementation that should be used
+     * @param isWindows     if true, the OS will assumed to be windows
+     *                      download
+     * @return the downloaded {@code MavenJarFile}
+     * @throws MalformedURLException
+     * @throws IOException
+     * @throws XMLStreamException
+     */
+    private static MavenJarFile downloadAndUnzipJar(final File aDownloadFolder, final String artifactId, URL jarRepository,
+                                                    FileDAO fileDAO, boolean cleanupZipFile, boolean isWindows) throws MalformedURLException, IOException, XMLStreamException {
+
         if (isWindows) {
-            downloadedFile = fileDAO.writeStreamToDisk(archiveURL.openStream(), archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/")), downloadFolder);
             fileDAO.unzipFile(new ZipFile(downloadedFile), downloadFolder.getParentFile());
         } else {
             fileDAO.unGzipAndUntarFile(new GZIPInputStream(archiveURL.openStream()), downloadedFile);

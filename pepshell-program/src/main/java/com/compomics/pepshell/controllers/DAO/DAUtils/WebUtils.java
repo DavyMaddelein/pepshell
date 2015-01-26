@@ -55,7 +55,7 @@ public class WebUtils {
 
     /**
      * convenience method for opening a buffered reader to an url, standard timeout is set to 500 milliseconds
-     * @param aUrl the url to open a reater to
+     * @param aUrl the url to open a reader to
      * @return the buffered reader for reading the url
      * @throws IOException if the url could not be read
      */

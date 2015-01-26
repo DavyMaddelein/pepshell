@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Davy Maddelein.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 
 import com.compomics.pepshell.FaultBarrier;
@@ -8,33 +24,21 @@ import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.InfoFinders.ExternalDomainFinder;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.controllers.secondarystructureprediction.UniprotSecondaryStructurePrediction;
-import com.compomics.pepshell.model.Domain;
-import com.compomics.pepshell.model.InteractionPartner;
-import com.compomics.pepshell.model.PdbInfo;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Ordering;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.xml.stream.XMLStreamException;
 
 /**
  *
  * @author Davy Maddelein
- * @param <T>
  */
-public class LinkDb implements StructureDataSource {
+public class LinkDb<T extends Protein> implements StructureDataSource<T> {
 //TODO subtype this to uniprot protein since we need to be sure we have uniprot accessions
 
     private static final Double NO_RESOLUTION_RETRIEVED_VALUE = 20D;
@@ -60,7 +64,8 @@ public class LinkDb implements StructureDataSource {
                     }
                 }
             } catch (SQLException sqle) {
-                FaultBarrier.getInstance().handleException(sqle);
+                FaultBarrier.getInstance().handleException(sqle,new UpdateMessage());
+                ProgramVariables.STRUCTUREDATASOURCE = new InternetStructureDataSource();
             }
         } catch (SQLException sqle) {
             FaultBarrier.getInstance().handleException(sqle);
@@ -72,7 +77,7 @@ public class LinkDb implements StructureDataSource {
 
     //todo, add domain data for protein to link db
     @Override
-    public List<Domain> getDomainData(ProteinInterface aProtein) throws DataRetrievalException {
+    public List<Domain> getDomainData(T aProtein) throws DataRetrievalException {
         List<Domain> foundDomains = new ArrayList<>();
         //try and get from link db, 
         if (foundDomains.isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
@@ -89,7 +94,7 @@ public class LinkDb implements StructureDataSource {
     }
 
     @Override
-    public List<InteractionPartner> getInteractionPartnersForRange(ProteinInterface aProtein, int start, int stop) {
+    public List<InteractionPartner> getInteractionPartnersForRange(T aProtein, int start, int stop) {
         List<InteractionPartner> interactionPartnerList = new ArrayList<>();
         PreparedStatement stat = null;
         try {
@@ -110,7 +115,7 @@ public class LinkDb implements StructureDataSource {
     }
 
     @Override
-    public List<InteractionPartner> getInteractionPartners(ProteinInterface aProtein) {
+    public List<InteractionPartner> getInteractionPartners(T aProtein) {
         List<InteractionPartner> interactionPartnerList = new ArrayList<>();
         PreparedStatement stat = null;
         try {
@@ -139,7 +144,7 @@ public class LinkDb implements StructureDataSource {
     }
 
     @Override
-    public Map<Integer, Double> getFreeEnergyForStructure(ProteinInterface protein, PdbInfo pdbAccession) {
+    public Map<Integer, Double> getFreeEnergyForStructure(T protein, PdbInfo pdbAccession) {
         Map<Integer, Double> freeEnergyValues = new HashMap<>();
 
         PreparedStatement stat = null;
@@ -168,7 +173,7 @@ public class LinkDb implements StructureDataSource {
     }
 
     @Override
-    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(ProteinInterface protein, String pdbAccession) {
+    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(T protein, String pdbAccession) {
         Map<Integer, Double> relSasValues = new HashMap<>();
 
         PreparedStatement stat = null;
@@ -197,7 +202,7 @@ public class LinkDb implements StructureDataSource {
     }
 
     @Override
-    public Map<Integer, String> getSecondaryStructureForStructure(ProteinInterface protein, String pdbAccession) {
+    public Map<Integer, String> getSecondaryStructureForStructure(T protein, String pdbAccession) {
         Map<Integer, String> secondaryStructureValues = new HashMap<>();
 
         PreparedStatement stat = null;
@@ -258,7 +263,8 @@ public class LinkDb implements StructureDataSource {
         return new LinkDb();
     }
 
-    Set<PdbInfo> getPDBInfoForProtein(ProteinInterface protein) {
+    @Override
+    public Set<PdbInfo> getPdbInforForProtein(T protein) {
         Set<PdbInfo> infoSet = new HashSet<>();
         PreparedStatement stat = null;
         try {
@@ -295,18 +301,8 @@ public class LinkDb implements StructureDataSource {
     }
 
     @Override
-    public Set<PdbInfo> getPdbInforForProtein(ProteinInterface protein, Comparator<PdbInfo> sortingComparator) {
-        Set<PdbInfo> info = getPDBInfoForProtein(protein);
-        if (sortingComparator != null) {
-            Ordering<PdbInfo> resolutionOrdering = Ordering.from(sortingComparator);
-            info = ImmutableSortedSet.orderedBy(resolutionOrdering).addAll(info).build();
-
-        }
-        return info;
-    }
-
-    @Override
     public boolean isAbleTogetSecondaryStructure() {
         return true;
     }
+
 }

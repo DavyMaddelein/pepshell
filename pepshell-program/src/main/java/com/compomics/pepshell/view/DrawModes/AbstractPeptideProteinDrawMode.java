@@ -1,10 +1,23 @@
+/*
+ * Copyright 2014 Davy Maddelein.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.compomics.pepshell.view.DrawModes;
 
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -15,17 +28,17 @@ import java.awt.Point;
 
 /**
  *
- * this class is a skeletal implementation of the {@code DrawModeInterface} to
- * draw a simple protein representation with its peptides it will draw a
+ * this class is a skeletal implementation of the {@link DrawModeInterface} to
+ * draw a simple protein representation with its peptides. It will draw a
  * uniformly coloured bar for the proteins and will try and fit the protein and
- * its peptides on the given horizontal size the colour of the protein and
- * peptides are taken from the program properties as is the scale
+ * its peptides on the given horizontal size. The colour of the protein and
+ * peptides are taken from the program properties as is the scale.
  *
  * @author Davy Maddelein
  * @param <T> the pepshell protein type to draw
  * @param <U> the pepshell peptide type to draw
  */
-public class AbstractPeptideProteinDrawMode<T extends ProteinInterface, U extends PeptideInterface> implements DrawProteinPeptidesInterface<T, U> {
+public class AbstractPeptideProteinDrawMode<T extends Protein, U extends Peptide> implements DrawProteinPeptidesInterface<T, U> {
 
     /**
      * the alpha value to draw the protein at
@@ -40,7 +53,7 @@ public class AbstractPeptideProteinDrawMode<T extends ProteinInterface, U extend
     /**
      * method to draw a protein on the given graphics with the given parameters
      * the drawn protein and peptides will be scaled horizontally to the set
-     * scale in the {@code DrawModeUtilities} class {@literal .} The colour of
+     * scale in the {@link DrawModeUtilities} class {@literal .}. The colour of
      * the protein and the peptides will be the ones defined in the program
      * variables. The alpha will be the ones set by the alpha setters, standard
      * this is 1 {@literal .} if there were no exceptions raised, the composite
@@ -81,7 +94,7 @@ public class AbstractPeptideProteinDrawMode<T extends ProteinInterface, U extend
                 //we scale the starting point of the peptide to the context of the peptide
                 peptideStartPoint.x = DrawModeUtilities.getInstance().scale(peptideToDraw.getBeginningProteinMatch()) + startPoint.x;
                 //look up how to fix this generics brainfart
-                drawPeptide((U) peptideToDraw, g, peptideStartPoint, scaledLength, height);
+                drawPeptide(peptideToDraw, g, peptideStartPoint, scaledLength, height);
             }
         }
         ((Graphics2D) g).setComposite(defensiveComposite);
@@ -93,7 +106,7 @@ public class AbstractPeptideProteinDrawMode<T extends ProteinInterface, U extend
      * @throws UndrawableException
      */
     @Override
-    public void drawPeptide(U peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawPeptide(Peptide peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         g.setColor(ProgramVariables.PEPTIDECOLOR);
         ((Graphics2D) g).setStroke(new BasicStroke(2F));
         g.drawRect(startPoint.x, startPoint.y, length, height);
