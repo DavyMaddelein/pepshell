@@ -24,6 +24,7 @@ package com.compomics.pepshell.view.dataloading;
 import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.model.AnnotatedFile;
 import com.compomics.pepshell.model.enums.DataModeEnum;
+import com.compomics.pepshell.view.components.JFileChooserWithMemory;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -43,6 +44,7 @@ public class ExperimentFileSelectionPanel extends javax.swing.JPanel {
 
     private DefaultListModel<AnnotatedFile> listModel = new DefaultListModel<>();
     private AnnotatedFile referenceFile;
+    private File previousLocation;
 
     /**
      * Creates new form ExperimentFileBasedExperimentSelectionPanel
@@ -54,18 +56,19 @@ public class ExperimentFileSelectionPanel extends javax.swing.JPanel {
 
     public void setFiles(List<AnnotatedFile> aList) {
         listModel.removeAllElements();
-        for (AnnotatedFile aFile : aList) {
+        aList.stream().forEach((aFile) -> {
             listModel.addElement(aFile);
-        }
+        });
     }
 
     public void setFiles(AnnotatedFile aReferenceFile, List<AnnotatedFile> aList) {
         listModel.removeAllElements();
         referenceFile = aReferenceFile;
+        previousLocation = referenceFile.getParentFile();
         listModel.addElement(referenceFile);
-        for (AnnotatedFile aFile : aList) {
+        aList.stream().forEach((aFile) -> {
             listModel.addElement(aFile);
-        }
+        });
     }
 
     /**
@@ -139,10 +142,10 @@ public class ExperimentFileSelectionPanel extends javax.swing.JPanel {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        JFileChooser chooser = new JFileChooser();
+        JFileChooserWithMemory chooser = JFileChooserWithMemory.getInstance();
         chooser.setMultiSelectionEnabled(true);
-        chooser.showOpenDialog(this);
-        if (chooser.getSelectedFiles().length > 0) {
+        int result = chooser.showOpenDialog(this);
+        if (chooser.getSelectedFiles().length > 0 && result == JFileChooser.APPROVE_OPTION) {
             for (File aFile : chooser.getSelectedFiles()) {
                 listModel.addElement(new AnnotatedFile(aFile.getAbsolutePath()));
             }
@@ -151,9 +154,9 @@ public class ExperimentFileSelectionPanel extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        for (File aSelectedFile : jList1.getSelectedValuesList()) {
+        jList1.getSelectedValuesList().stream().forEach((aSelectedFile) -> {
             listModel.remove(listModel.indexOf(aSelectedFile));
-        }
+        });
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jList1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jList1KeyTyped
@@ -195,5 +198,9 @@ public class ExperimentFileSelectionPanel extends javax.swing.JPanel {
                 break;
 
         }
+    }
+
+    public void setSelectionPanelLocation(File location) {
+        previousLocation = location;
     }
 }

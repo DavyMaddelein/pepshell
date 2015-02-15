@@ -31,7 +31,7 @@ import java.util.Locale;
 public class AccessionConverter {
 
     public static List<String> spToUniProt(String aSpAccession) throws IOException {
-        String xmlPage = WebUtils.getHTMLPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=SWISSPROT");
+        String xmlPage = WebUtils.getPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=SWISSPROT");
         List<String> accessions = new ArrayList<>();
         int startIndex = 0;
         while (xmlPage.indexOf("<ns2:databaseDescription>UniProtKB/Swiss-Prot</ns2:databaseDescription>", startIndex) != -1) {
@@ -47,7 +47,7 @@ public class AccessionConverter {
     public static List<String> refSeqToSp(String aNcbiAccession) throws IOException {
         int startIndex = 0;
         List<String> accessions = new ArrayList<>();
-        String xmlPage = WebUtils.getHTMLPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aNcbiAccession + "&database=swissprot");
+        String xmlPage = WebUtils.getPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aNcbiAccession + "&database=swissprot");
         while (xmlPage.indexOf("<ns2:databaseDescription>SWISSPROT</ns2:databaseDescription>", startIndex) != -1) {
             startIndex = xmlPage.indexOf("<ns2:databaseDescription>SWISSPROT</ns2:databaseDescription>", startIndex) + 1;
             String feature = xmlPage.substring(xmlPage.indexOf("<ns2:logicalCrossReferences>", startIndex - 200), xmlPage.indexOf("</ns2:logicalCrossReferences>", xmlPage.indexOf("<ns2:logicalCrossReferences>", startIndex - 200)));
@@ -61,7 +61,7 @@ public class AccessionConverter {
     public static List<String> spToRefSeq(String aSpAccession) throws IOException {
         int startIndex = 0;
         List<String> ncbiAccessions = new ArrayList<>();
-        String xmlPage = WebUtils.getHTMLPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=REFSEQ");
+        String xmlPage = WebUtils.getPage("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=" + aSpAccession + "&database=REFSEQ");
         while (xmlPage.indexOf("<ns2:databaseDescription>RefSeq release + updates</ns2:databaseDescription>", startIndex) != -1) {
             startIndex = xmlPage.indexOf("<ns2:databaseDescription>RefSeq release + updates</ns2:databaseDescription>", startIndex) + 1;
             String feature = xmlPage.substring(xmlPage.indexOf("<ns2:identicalCrossReferences>", startIndex - 200), xmlPage.indexOf("</ns2:identicalCrossReferences>", xmlPage.indexOf("<ns2:identicalCrossReferences>", startIndex - 200)));
@@ -88,7 +88,7 @@ public class AccessionConverter {
 
     public static String GIToUniprot(String GINumber) throws IOException, ConversionException {
         String splitaccession = GINumber.substring(GINumber.indexOf("|") + 1);
-        String conversion = WebUtils.getHTMLPage("http://www.uniprot.org/mapping/?from=P_GI&to=ACC&format=tab&query=" + splitaccession);
+        String conversion = WebUtils.getPage("http://www.uniprot.org/mapping/?from=P_GI&to=ACC&format=tab&query=" + splitaccession);
         conversion = conversion.substring(conversion.lastIndexOf("\t") + 1, conversion.lastIndexOf("\n"));
         if (!conversion.matches("To")) {
             return conversion;

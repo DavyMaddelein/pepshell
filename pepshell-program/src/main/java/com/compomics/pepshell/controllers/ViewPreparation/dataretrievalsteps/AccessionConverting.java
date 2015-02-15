@@ -63,7 +63,7 @@ public class AccessionConverting extends DataRetrievalStep {
 
     public enum ConversionTo {
 
-        TO_UNIPROT;
+        TO_UNIPROT
 
     }
 

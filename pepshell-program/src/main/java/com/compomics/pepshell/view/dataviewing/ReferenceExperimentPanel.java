@@ -22,6 +22,7 @@ import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkD
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.enums.DataModeEnum;
 import com.compomics.pepshell.view.DrawModes.DrawProteinPeptidesInterface;
 import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
@@ -240,6 +241,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void drawModeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawModeChooserActionPerformed
+        //todo change the selection combobox to holding these drawing classes
         if (referenceProteinDrawPanel.getProtein() != null) {
             DrawProteinPeptidesInterface secondaryDrawMode;
             PdbInfo pdbAccession = null;
@@ -281,7 +283,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private void quantCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantCheckBoxActionPerformed
         DrawProteinPeptidesInterface proteinDrawMode;
         if (quantCheckBox.isSelected()) {
-            proteinDrawMode = new QuantedPeptideDrawMode<>();
+            proteinDrawMode = new QuantedPeptideDrawMode();
         } else {
             proteinDrawMode = new AbstractPeptideProteinDrawMode();
         }

@@ -15,6 +15,8 @@
  */
 package com.compomics.pepshell.model;
 
+import java.util.List;
+
 /**
  *
  * @author Davy Maddelein
@@ -29,7 +31,7 @@ public interface PeptideInterface {
 
     int getTimesFound();
 
-    double getTotalSpectrumIntensity();
+    List<Double> getTotalSpectrumIntensities();
 
     void incrementTimesFound();
 
@@ -43,6 +45,8 @@ public interface PeptideInterface {
 
     void setTimesFound(int timesFound);
 
-    void setTotalSpectrumIntensity(double totalSpectrumIntensity);
+    void addTotalSpectrumIntensity(Double totalSpectrumIntensity);
+
+    public double getProbability();
     
 }

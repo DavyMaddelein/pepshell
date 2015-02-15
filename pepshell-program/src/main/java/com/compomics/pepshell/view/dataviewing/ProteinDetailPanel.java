@@ -129,7 +129,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
 
     public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
         try{
-        sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest, true);
+            sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest, true);
         } catch (ArrayIndexOutOfBoundsException aix){
             FaultBarrier.getInstance().handleException(aix);
         }
@@ -188,6 +188,7 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
         setExperimentsToDisplay(experiments, true);
     }
 
+
     private void updatePeptideGraphics(ProteinInterface aProtein) {
         for (int i = 0; i < experimentAggregatorPanel.getComponents().length; i++) {
             ((ExperimentPanel) experimentAggregatorPanel.getComponent(i)).setProtein(aProtein);
@@ -209,13 +210,16 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (referenceProtein != null) {
+            try {
             double tempscale = (double) (referenceExperimentPanel.getWidth() - 100) / referenceProtein.getProteinSequence().length();
             if (tempscale < 1) {
                 DrawModeUtilities.getInstance().getCurrentScalingStrategy().getCurrentStrategy().setScale(1.0);
             } else {
                 DrawModeUtilities.getInstance().getCurrentScalingStrategy().getCurrentStrategy().setScale(tempscale);
             }
-
+            } catch (NumberFormatException ex) {
+                FaultBarrier.getInstance().handleException(ex);
+            }
         }
     }
 }

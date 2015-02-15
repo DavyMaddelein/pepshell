@@ -13,35 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.model.enums;
 
 /**
- *
  * @author Davy Maddelein
  */
-public enum DataRetrievalPropertyEnum implements PropertyEnum {
+public enum DomainWebsitesEnum implements PropertyEnum {
 
-    UNIPROTTOGI("protein.uniprottoncbi", ""),
-    GITOUNIPROT("protein.ncbitouniprot", "http://www.uniprot.org/mapping/?from=P_GI&to=ACC&format=tab&query="),
-    GETPDBFORUNIPROT("protein.pdbforuniprot", "http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=");
+    PFAM("http://das.sanger.ac.uk/das/pfam/features?segment="),
+    SMART("http://smart.embl.de/smart/das/smart/features?segment="),
+    //PROSITE("http://proserver.vital-it.ch/das/prositefeature/features?segment="),
+    UNIPROT("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=");
+    //UNIPROT("http://www.uniprot.org/uniprot/P15056.xml");
 
-    private final String defaultValue;
-    private final String key;
+    public String getDomainURLString(String aUniProtAccession) {
+        return rootURL + aUniProtAccession;
+    }
 
-    private DataRetrievalPropertyEnum(String key, String value) {
-        this.key = key;
-        this.defaultValue = value;
+    String rootURL;
+
+    DomainWebsitesEnum(String aRootURL) {
+        this.rootURL = aRootURL;
     }
 
     @Override
     public String getKey() {
-        return key;
+        return this.name();
     }
 
     @Override
     public String getDefaultValue() {
-        return defaultValue;
+        return rootURL;
     }
 
 }

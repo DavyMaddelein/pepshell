@@ -16,6 +16,7 @@
 
 package com.compomics.pepshell.controllers.dataimport.filehandlers;
 
+import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.AnnotatedFile;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.FileBasedExperiment;
@@ -29,11 +30,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Created by svend on 02/12/2014.
+ * Created by Davy Maddelein on 02/12/2014.
  */
 public class AbstractFileParser implements FileParserInterface {
 
@@ -61,6 +60,7 @@ public class AbstractFileParser implements FileParserInterface {
             line = lineReader.readLine();
             String[] columns;
             while (line != null) {
+                try {
                 columns = line.split(aFile.getExperimentFile().getAnnotations().getValueSeparator());
                 Protein lineProtein = new Protein(columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1]);
                 Peptide linePeptide;
@@ -73,22 +73,31 @@ public class AbstractFileParser implements FileParserInterface {
                 } else {
                     linePeptide = new Peptide(columns[aFile.getExperimentFile().getAnnotations().getPeptideSequence() - 1]);
                 }
-                if (aFile.getExperimentFile().getAnnotations().experimentHasIntensityValues()) {
-                    linePeptide.setTotalSpectrumIntensity(aFile.getExperimentFile().getAnnotations().getIntensityColumn() - 1);
-                    if (linePeptide.getTotalSpectrumIntensity() > aFile.getMaxIntensity()) {
-                        aFile.setMaxIntensity(linePeptide.getTotalSpectrumIntensity());
+                    if (aFile.getExperimentFile().getAnnotations().experimentHasPeptideLocationValues()) {
+                        linePeptide.setBeginningProteinMatch(Integer.parseInt(columns[aFile.getExperimentFile().getAnnotations().getPeptideStartColumn() - 1]));
+                        linePeptide.setEndProteinMatch(Integer.parseInt(columns[aFile.getExperimentFile().getAnnotations().getPeptideEndColumn() - 1]));
                     }
-                    if (linePeptide.getTotalSpectrumIntensity() < aFile.getMinIntensity()) {
-                        aFile.setMinIntensity(linePeptide.getTotalSpectrumIntensity());
+                if (aFile.getExperimentFile().getAnnotations().experimentHasIntensityValues()) {
+                    Double intensityValue = Double.parseDouble(columns[aFile.getExperimentFile().getAnnotations().getIntensityColumn() - 1]);
+                    linePeptide.addTotalSpectrumIntensity(intensityValue);
+                    if (intensityValue > aFile.getMaxIntensity()) {
+                        aFile.setMaxIntensity(intensityValue);
+                    }
+                    if (intensityValue < aFile.getMinIntensity()) {
+                        aFile.setMinIntensity(intensityValue);
                     }
                 }
                 lineProtein.addPeptideGroup(new PeptideGroup(linePeptide));
                 aFile.addProtein(lineProtein);
                 line = lineReader.readLine();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    FaultBarrier.getInstance().handleException(ex);
+                }
             }
 
-        } catch (IOException | CalculationException ex) {
-            Logger.getLogger(AbstractFileParser.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+
         }
 
         return aFile;

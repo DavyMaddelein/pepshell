@@ -26,7 +26,7 @@ import java.io.File;
  */
 public class FileValidatorFactory {
 
-    private static FileValidatorFactory instance = new FileValidatorFactory();
+    private static final FileValidatorFactory instance = new FileValidatorFactory();
 
     HDXFileValidator hdxFileValidator = new HDXFileValidator();
 

@@ -20,6 +20,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.AnnotatedFile;
 import com.compomics.pepshell.model.SeparatedvalueExperimentMetaData;
 import com.compomics.pepshell.view.PossibleMetaDataAnnotationsEnum;
+import com.compomics.pepshell.view.components.JFileChooserWithMemory;
 import java.awt.event.KeyEvent;
 
 import java.io.File;
@@ -30,8 +31,10 @@ import java.io.LineNumberReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.awt.Cursor;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  * @author Davy Maddelein
@@ -101,6 +104,7 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("provide meta data for experiment parsing");
+        setPreferredSize(new java.awt.Dimension(920, 565));
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 formKeyTyped(evt);
@@ -110,7 +114,7 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setAutoscrolls(true);
         jPanel1.setMinimumSize(new java.awt.Dimension(645, 455));
-        jPanel1.setPreferredSize(new java.awt.Dimension(645, 455));
+        jPanel1.setPreferredSize(new java.awt.Dimension(950, 460));
 
         jScrollPane2.setViewportView(filesToAnnotateList);
 
@@ -121,14 +125,14 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
             }
         });
 
-        addInfoToFilesButton.setText("accept info");
+        addInfoToFilesButton.setText("accept metadata");
         addInfoToFilesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addInfoToFilesButton1ActionPerformed(evt);
             }
         });
 
-        commitDataButton1.setText("accept and finalize info gathering");
+        commitDataButton1.setText("accept and finalize metadata gathering");
         commitDataButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 commitDataButton1ActionPerformed(evt);
@@ -140,9 +144,9 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
         jScrollPane1.setMinimumSize(new java.awt.Dimension(525, 80));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(525, 80));
 
-        extraMetaDataAnnotatorPanel1.setMaximumSize(new java.awt.Dimension(300, 80));
-        extraMetaDataAnnotatorPanel1.setMinimumSize(new java.awt.Dimension(300, 80));
-        extraMetaDataAnnotatorPanel1.setPreferredSize(new java.awt.Dimension(300, 80));
+        extraMetaDataAnnotatorPanel1.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        extraMetaDataAnnotatorPanel1.setMinimumSize(new java.awt.Dimension(200, 80));
+        extraMetaDataAnnotatorPanel1.setPreferredSize(new java.awt.Dimension(200, 80));
         extraMetaDataAnnotatorPanel1.addContainerListener(new java.awt.event.ContainerAdapter() {
             public void componentAdded(java.awt.event.ContainerEvent evt) {
                 extraMetaDataAnnotatorPanel1ComponentAdded(evt);
@@ -160,7 +164,7 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
             }
         });
 
-        jButton2.setText("clear info");
+        jButton2.setText("clear metadata");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -180,22 +184,31 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(multipleExperimentsCheckbox)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 692, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(commitDataButton1))
+                            .addGap(36, 36, 36)
+                            .addComponent(multipleExperimentsCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGap(1285, 1285, 1285))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(addInfoToFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addGap(35, 35, 35)
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                                            .addComponent(jButton1)
+                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                            .addComponent(commitDataButton1))
+                                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addGap(18, 18, 18)
+                                                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addGap(50, 50, 50)
+                                                            .addComponent(addInfoToFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,24 +216,25 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
+                            .addGap(20, 20, 20)
                         .addComponent(multipleExperimentsCheckbox)
-                        .addGap(13, 13, 13)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGap(22, 22, 22)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(addInfoToFilesButton)
                             .addComponent(jButton2)
                             .addComponent(jButton3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                            .addGap(14, 14, 14)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(commitDataButton1)
-                            .addComponent(jButton1)))
+                                .addComponent(jButton1)
+                                .addComponent(commitDataButton1))
+                            .addGap(0, 11, Short.MAX_VALUE))
                     .addComponent(jScrollPane2))
                 .addContainerGap())
         );
 
-        jMenu1.setText("Options");
+        jMenu1.setText("Annotation Files");
 
         jMenuItem1.setText("save annotations");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -246,7 +260,7 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 864, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 795, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,10 +278,14 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
 
     private void addInfoToFilesButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addInfoToFilesButton1ActionPerformed
         // TODO add your handling code here:
-        for (AnnotatedFile aFile : filesToAnnotateList.getSelectedValuesList()) {
+        filesToAnnotateList.getSelectedValuesList().stream().forEach((aFile) -> {
             aFile.addAnnotationsToFile(extraMetaDataAnnotatorPanel1.getAllAnnotations());
-        }
-
+        });
+        StringBuilder builder = new StringBuilder("annotations added to files:\n");
+        filesToAnnotateList.getSelectedValuesList().stream().forEach(aFile -> {
+            builder.append(aFile.getName()).append("\n");
+        });
+        JOptionPane.showMessageDialog(this, builder.toString());
     }//GEN-LAST:event_addInfoToFilesButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -301,7 +319,7 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
         SeparatedvalueExperimentMetaData data = extraMetaDataAnnotatorPanel1.getAllAnnotations();
-        JFileChooser chooser = new JFileChooser();
+        JFileChooserWithMemory chooser = JFileChooserWithMemory.getInstance();
         chooser.setMultiSelectionEnabled(false);
         int state = chooser.showSaveDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
@@ -320,22 +338,23 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-        JFileChooser chooser = new JFileChooser();
+        JFileChooserWithMemory chooser = JFileChooserWithMemory.getInstance();
         chooser.setMultiSelectionEnabled(false);
         int state = chooser.showOpenDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
+            this.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.WAIT_CURSOR));
             try {
                 LineNumberReader reader = new LineNumberReader(new FileReader(chooser.getSelectedFile()));
                 String aString = reader.readLine();
                 while (aString != null) {
                     String[] annotation = aString.split(" = ");
-
                     extraMetaDataAnnotatorPanel1.setAnnotation(annotation[0], annotation[1]);
                     aString = reader.readLine();
                 }
             } catch (IOException ioe) {
                 FaultBarrier.getInstance().handleException(ioe);
             }
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 

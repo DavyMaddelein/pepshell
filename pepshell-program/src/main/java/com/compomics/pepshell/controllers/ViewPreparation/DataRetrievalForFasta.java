@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.controllers.ViewPreparation;
 
 import com.compomics.pepshell.DataModeController;
@@ -25,8 +24,6 @@ import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionControll
 import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.FileBasedExperiment;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
@@ -38,9 +35,8 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -58,60 +54,46 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
     }
 
     /**
-     * if the experiment should only contain the proteins from the experiments or every protein in the fasta
-     * @param addOnlyExperimentProteins boolean indicating if we only want proteins of interest
+     * if the experiment should only contain the proteins from the experiments
+     * or every protein in the fasta
+     *
+     * @param addOnlyExperimentProteins boolean indicating if we only want
+     * proteins of interest
      */
-    public void addOnlyExperimentProteinsFromFasta(boolean addOnlyExperimentProteins){
+    public void addOnlyExperimentProteinsFromFasta(boolean addOnlyExperimentProteins) {
         addFastaAfterParsing = addOnlyExperimentProteins;
     }
 
     /**
-     * @InheritDoc 
+     * @param experiment the experiment we need to retrieve data for
+     * @return the passed experiment
+     * @InheritDoc
      */
     @Override
-    public T retrievePrimaryData(T referenceExperiment) {
+    public T retrievePrimaryData(T experiment) {
         try {
             if (DataModeController.getInstance().getDataSource() == DataSourceEnum.DATABASE) {
-                referenceExperiment.addProteins(DbDAO.fetchProteins(referenceExperiment));
-                DbDAO.addPeptideGroupsToProteins(referenceExperiment.getProteins());
-                setIntensityValuesForExperiment(referenceExperiment);
-                checkAndAddQuantToProteinsInExperiment(referenceExperiment);
+                experiment.addProteins(DbDAO.fetchProteins(experiment));
+                DbDAO.addPeptideGroupsToProteins(experiment.getProteins());
+                setIntensityValuesForExperiment(experiment);
+                checkAndAddQuantToProteinsInExperiment(experiment);
+                
+                
             } else if (DataModeController.getInstance().getDataSource() == DataSourceEnum.FILE) {
                 if (!addFastaAfterParsing) {
-                    FastaDAO.setExperimentProteinsToFastaFileProteins(fastaFile, referenceExperiment);
+                    FastaDAO.setExperimentProteinsToFastaFileProteins(fastaFile, experiment);
                 }
-                FileParserFactory.getInstance().parseExperimentFile((FileBasedExperiment) referenceExperiment);
+                FileParserFactory.getInstance().parseExperimentFile((FileBasedExperiment) experiment);
             }
-            FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, referenceExperiment.getProteins());
-            ProteinController.alignPeptidesOfProteinsInExperiment(referenceExperiment);
-            retrieveSecondaryData(referenceExperiment);
-
-//            while (experimentsToCompareWith.hasNext()) {
-//                T anExperimentToCompareWith = experimentsToCompareWith.next();
-//                if (DataModeController.getInstance().getDataSource() == DataSourceEnum.DATABASE) {
-//                    anExperimentToCompareWith.addProteins(DbDAO.fetchProteins(anExperimentToCompareWith));
-//                    FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, anExperimentToCompareWith.getProteins());
-//                    DbDAO.addPeptideGroupsToProteins(anExperimentToCompareWith.getProteins());
-//                    setIntensityValuesForExperiment(anExperimentToCompareWith);
-//                } else {
-//                    //something something peptide protein file
-//                }
-//                try {
-//                    retrieveSecondaryData(anExperimentToCompareWith);
-//                    // error handling has to be better
-//                } catch (Exception e) {
-//                    FaultBarrier.getInstance().handleException(e);
-//                }
-//                checkAndAddQuantToProteinsInExperiment(anExperimentToCompareWith);
-//            }
+            FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, experiment.getProteins());
+            ProteinController.alignPeptidesOfProteinsInExperiment(experiment);
+            retrieveSecondaryData(experiment);
         } catch (FastaCouldNotBeReadException ex) {
             FaultBarrier.getInstance().handleException(ex, false);
-        } catch (IOException | SQLException | CalculationException ex) {
+        } catch (Exception ex) {
             FaultBarrier.getInstance().handleException(ex);
-        } catch (CouldNotParseException ex) {
-            Logger.getLogger(DataRetrievalForFasta.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return referenceExperiment;
+        return experiment;
     }
 
     @Override
@@ -152,31 +134,38 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
     }
 
     //clear sign that the db dao needs to be redone
-    private void setIntensityValuesForExperiment(T experiment) throws CalculationException {
-        for (Protein aProtein : experiment.getProteins()) {
-            for (PeptideGroup aPeptideGroup : aProtein.getPeptideGroups()) {
-                for (Peptide aPeptide : aPeptideGroup.getPeptideList()) {
-                    double currentIntensity = aPeptide.getTotalSpectrumIntensity();
+    private void setIntensityValuesForExperiment(T experiment) {
+        experiment.getProteins().stream().forEach((aProtein) -> {
+            aProtein.getPeptideGroups().stream().forEach((aPeptideGroup) -> {
+                aPeptideGroup.getPeptideList().stream().forEach(aPeptide -> {
+                    List<Double> currentIntensities = aPeptide.getTotalSpectrumIntensities();
                     //intensities
-                    if (currentIntensity < experiment.getMinIntensity() || experiment.getMinIntensity() == 0.0) {
-                        experiment.setMinIntensity(currentIntensity);
-                    }
-                    //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
-                    if (currentIntensity > experiment.getMaxIntensity() || experiment.getMaxIntensity() == 0.0) {
-                        experiment.setMaxIntensity(currentIntensity);
-                    }
+                    currentIntensities.stream().forEach(currentIntensity -> {
+                        if (currentIntensity < experiment.getMinIntensity() || experiment.getMinIntensity() == 0.0) {
+                            experiment.setMinIntensity(currentIntensity);
+                        }
+                        //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
+                        if (currentIntensity > experiment.getMaxIntensity() || experiment.getMaxIntensity() == 0.0) {
+                            experiment.setMaxIntensity(currentIntensity);
+                        }
+                    });
+                
                     //ratios
                     if (aPeptide instanceof QuantedPeptide) {
-                        Double currentRatio = ((QuantedPeptide) aPeptide).getRatio();
-                        //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
-                        if (currentRatio != null) {
-                            if (experiment.getMaxRatio() == null || currentRatio > experiment.getMaxRatio()) {
-                                experiment.setMaxRatio(currentRatio);
+                        try {
+                            Double currentRatio = ((QuantedPeptide) aPeptide).getRatio();
+                            //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
+                            if (currentRatio != null) {
+                                if (experiment.getMaxRatio() == null || currentRatio > experiment.getMaxRatio()) {
+                                    experiment.setMaxRatio(currentRatio);
+                                }
                             }
+                        } catch (CalculationException ex) {
+                            FaultBarrier.getInstance().handleException(ex);
                         }
                     }
-                }
-            }
+                });
+            });
+        });
         }
     }
-}

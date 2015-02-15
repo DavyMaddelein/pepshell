@@ -31,7 +31,7 @@ public class DataModeController {
 
     private static DataModeEnum iScheme;
     private static DataSourceEnum iDataSource;
-    ImportFromDatabaseHandler<Connection> databaseHandler = new ImportFromDatabaseHandler<>();
+    private ImportFromDatabaseHandler<Connection> databaseHandler = new ImportFromDatabaseHandler<>();
     private static final DataModeController instance = new DataModeController();
 
     private DataModeController() {

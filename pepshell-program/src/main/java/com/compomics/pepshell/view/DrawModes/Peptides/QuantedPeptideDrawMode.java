@@ -18,6 +18,8 @@ package com.compomics.pepshell.view.DrawModes.Peptides;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.model.Peptide;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
@@ -33,14 +35,14 @@ import java.awt.Point;
  * @author Davy Maddelein
  * @param <U>
  */
-public class QuantedPeptideDrawMode<U extends QuantedPeptide> extends AbstractPeptideProteinDrawMode<Protein, U> implements GradientDrawModeInterface<Protein, U> {
+public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Protein, QuantedPeptide> implements GradientDrawModeInterface<Protein, QuantedPeptide> {
 
     private RatioType topnumber = RatioType.LIGHT;
     private RatioType divisor = RatioType.HEAVY;
     private Double maxRatio = 0.0;
 
     @Override
-    public void drawPeptide(U peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawPeptide(QuantedPeptide peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         try {
             g.setColor(calculatePeptideGradient(peptide));
         } catch (CalculationException ex) {
@@ -52,7 +54,7 @@ public class QuantedPeptideDrawMode<U extends QuantedPeptide> extends AbstractPe
     }
 
     @Override
-    public Color calculatePeptideGradient(U peptide) throws CalculationException {
+    public Color calculatePeptideGradient(QuantedPeptide peptide) throws CalculationException {
         Color gradientColor = null;
         if (peptide.getRatio() == null || maxRatio == 0.0) {
             if (peptide.getHeavy().isEmpty() && peptide.getLight().isEmpty()) {

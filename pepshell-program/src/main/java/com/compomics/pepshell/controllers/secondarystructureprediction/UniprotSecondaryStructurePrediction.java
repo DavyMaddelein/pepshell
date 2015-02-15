@@ -41,7 +41,7 @@ public class UniprotSecondaryStructurePrediction extends SecondaryStructurePredi
         List<String> predictionResult = new ArrayList<>();
         List<DasFeature> features = new ArrayList<>();
         try {
-            features = DasParser.getAllDasFeatures(WebUtils.getHTMLPage("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + AccessionConverter.toUniprot(anUniprotAccession)));
+            features = DasParser.getAllDasFeatures(WebUtils.getPage("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + AccessionConverter.toUniprot(anUniprotAccession)));
         } catch (ConversionException ex) {
             FaultBarrier.getInstance().handleException(ex);
         }

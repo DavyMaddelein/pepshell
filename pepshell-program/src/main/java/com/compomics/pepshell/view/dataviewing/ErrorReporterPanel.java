@@ -21,7 +21,6 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -29,7 +28,6 @@ import org.apache.log4j.Logger;
  */
 class ErrorReporterPanel extends javax.swing.JPanel implements Observer {
 
-    private static final Logger logger = Logger.getLogger(ErrorReporterPanel.class);
     private FaultBarrier faultBarrier;
     private int errorMessagesReported = 0;
 
@@ -97,7 +95,7 @@ class ErrorReporterPanel extends javax.swing.JPanel implements Observer {
                 errorMessagesReported++;
                 checkSizeAndTruncate();
             } catch (BadLocationException ex) {
-                logger.error(ex);
+                FaultBarrier.getInstance().handleException(ex);
                 JOptionPane.showMessageDialog(this, "there has been an error in the exception handling:\n" + ex.getMessage());
             }
         }

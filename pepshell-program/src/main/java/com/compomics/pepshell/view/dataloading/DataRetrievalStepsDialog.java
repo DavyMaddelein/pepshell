@@ -227,16 +227,20 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
 
     private void enableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableStepsButtonActionPerformed
         enabledListModel.clear();
-        for (DataRetrievalStep aStep : disabledStepsList.getSelectedValuesList()) {
+        disabledStepsList.getSelectedValuesList().stream().map((aStep) -> {
             aStep.setExecute(true);
+            return aStep;
+        }).map((aStep) -> {
             retrievalSteps.add(aStep);
+            return aStep;
+        }).forEach((aStep) -> {
             disabledListModel.removeElement(aStep);
-        }
+        });
         Collections.sort(retrievalSteps, dataRetrievalStepComparator);
 
-        for (DataRetrievalStep aStep : retrievalSteps) {
+        retrievalSteps.stream().forEach((aStep) -> {
             enabledListModel.addElement(aStep);
-        }
+        });
         disabledStepsList.repaint();
         enabledStepsList.repaint();
     }//GEN-LAST:event_enableStepsButtonActionPerformed
@@ -244,11 +248,15 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
     private void disableStepsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disableStepsButtonActionPerformed
         // TODO add your handling code here:
         retrievalSteps.clear();
-        for (DataRetrievalStep disabledStep : enabledStepsList.getSelectedValuesList()) {
+        enabledStepsList.getSelectedValuesList().stream().map((disabledStep) -> {
             disabledStep.setExecute(false);
+            return disabledStep;
+        }).map((disabledStep) -> {
             disabledListModel.addElement(disabledStep);
+            return disabledStep;
+        }).forEach((disabledStep) -> {
             enabledListModel.removeElement(disabledStep);
-        }
+        });
 
         Enumeration<DataRetrievalStep> enabledSteps = enabledListModel.elements();
         while (enabledSteps.hasMoreElements()) {
@@ -296,7 +304,7 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
     private void fillRetrievalStepsList() {
         List<DataRetrievalStep> loadedEnabledList = new ArrayList<>();
         List<DataRetrievalStep> loadedDisabledList = new ArrayList<>();
-        for (Entry aClassReference : ProgramProperties.getInstance().getProperties().entrySet()) {
+        ProgramProperties.getInstance().getProperties().entrySet().stream().forEach((aClassReference) -> {
             try {
                 if (aClassReference.getValue() instanceof String) {
                     DataRetrievalStep step = (DataRetrievalStep) ClassLoader.getSystemClassLoader().loadClass((String) aClassReference.getValue()).newInstance();
@@ -311,22 +319,22 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
             } catch (ClassCastException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
-        }
+        });
         Collections.sort(loadedEnabledList, dataRetrievalStepComparator);
-        for (DataRetrievalStep aStep : loadedEnabledList) {
+        loadedEnabledList.stream().forEach((aStep) -> {
             enabledListModel.addElement(aStep);
-        }
+        });
 
         Collections.sort(loadedDisabledList, dataRetrievalStepComparator);
-        for (DataRetrievalStep aStep : loadedDisabledList) {
+        loadedDisabledList.stream().forEach((aStep) -> {
             disabledListModel.addElement(aStep);
-        }
+        });
         enabledStepsList.setModel(enabledListModel);
         disabledStepsList.setModel(disabledListModel);
     }
 
     public LinkedList<DataRetrievalStep> getRetrievalSteps() {
-        return Lists.newLinkedList(retrievalSteps);
+        return new LinkedList<>(retrievalSteps);
     }
 
     private class DataRetrievalStepComparator implements Comparator<DataRetrievalStep> {

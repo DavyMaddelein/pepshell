@@ -16,17 +16,29 @@
 
 package com.compomics.pepshell.model;
 
-import com.compomics.pepshell.model.enums.DataSourceEnum;
-import com.compomics.pepshell.model.exceptions.ExperimentMetaData;
-
 /**
- * Created by Davy Maddelein on 03/12/2014.
+ * Created by Davy Maddelein on 12/02/2015.
  */
-public class HDXMetaDataAnnotations extends ExperimentMetaData{
+public class ProteinFeatureWithLocation extends ProteinFeature {
 
+    private int endPosition = -1;
+    private int startPostion = -1;
 
+    public ProteinFeatureWithLocation(String aDescription, int ProteinLocation) {
+        super(aDescription);
+    }
 
-    public HDXMetaDataAnnotations(DataSourceEnum aDataSource) {
-        super(aDataSource);
+    public ProteinFeatureWithLocation(String aDescription, int aStartPosition, int anEndPosition) {
+        super(aDescription);
+        startPostion = aStartPosition;
+        endPosition = anEndPosition;
+    }
+
+    public int getEndPosition() {
+        return endPosition;
+    }
+
+    public int getStartPostion() {
+        return startPostion;
     }
 }

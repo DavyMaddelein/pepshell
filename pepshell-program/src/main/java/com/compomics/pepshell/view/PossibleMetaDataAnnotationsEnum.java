@@ -32,7 +32,10 @@ public enum PossibleMetaDataAnnotationsEnum {
     PROTEINACCESSION("protein identifier column",new IntegerDocumentFilter()),
     PROTEINSEQUENCE("protein sequence column",new IntegerDocumentFilter()), 
     VALUESEPARATOR("separator between values in a text file",null),
-    HASHEADERS("file has headers",null);
+    HASHEADERS("file has headers", null),
+    PEPTIDEENDLOCATION("end location of the peptide", null),
+    PEPTIDELOCATIONSTART("start location of the peptide", null);
+    
 
     final String representation;
     final DocumentFilter filter;

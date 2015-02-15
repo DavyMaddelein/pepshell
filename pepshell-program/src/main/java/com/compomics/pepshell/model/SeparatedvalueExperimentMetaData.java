@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.model;
 
 import com.compomics.pepshell.model.enums.DataSourceEnum;
@@ -43,9 +42,12 @@ public class SeparatedvalueExperimentMetaData extends ExperimentMetaData {
     private boolean experimentHasIntensityValues;
     private boolean experimentHasRatio;
     private int proteinSequenceColumn;
-
+    private boolean hasPeptideLocationValues;
+    private int peptideStartColumn;
+    private int peptideEndColumn;
+    private String missingValue;
+    private boolean hasMissingValues = false;
     //todo change this to properties
-    
     public SeparatedvalueExperimentMetaData(DataSourceEnum aDataSource) {
         super(aDataSource);
     }
@@ -53,8 +55,8 @@ public class SeparatedvalueExperimentMetaData extends ExperimentMetaData {
     public boolean fileHasHeaders() {
         return hasHeaders;
     }
-    
-    public int getProteinSequenceColumn(){
+
+    public int getProteinSequenceColumn() {
         return proteinSequenceColumn;
     }
 
@@ -102,8 +104,8 @@ public class SeparatedvalueExperimentMetaData extends ExperimentMetaData {
         return lastExperimentColumn;
     }
 
-    public SeparatedvalueExperimentMetaData addMetaData(PossibleMetaDataAnnotationsEnum dataAnnotationsEnum, String aColumn){
-        switch(dataAnnotationsEnum){
+    public SeparatedvalueExperimentMetaData addMetaData(PossibleMetaDataAnnotationsEnum dataAnnotationsEnum, String aColumn) {
+        switch (dataAnnotationsEnum) {
             case INTENSITY:
                 setIntensityColumn(Integer.parseInt(aColumn));
                 break;
@@ -128,6 +130,11 @@ public class SeparatedvalueExperimentMetaData extends ExperimentMetaData {
             case HASHEADERS:
                 setHasHeaders((Boolean.parseBoolean(aColumn)));
                 break;
+            case PEPTIDEENDLOCATION:
+                setPeptideEndColumn(Integer.parseInt(aColumn));
+                break;
+            case PEPTIDELOCATIONSTART:
+                setPeptideStartColumn(Integer.parseInt(aColumn));
             default:
                 break;
         }
@@ -187,12 +194,10 @@ public class SeparatedvalueExperimentMetaData extends ExperimentMetaData {
         return this;
     }
 
-
     public SeparatedvalueExperimentMetaData setFirstExperimentColumn(int aColumn) {
         firstExperimentColumn = aColumn;
         return this;
     }
-
 
     public SeparatedvalueExperimentMetaData setLastExperimentColumn(int aColumn) {
         lastExperimentColumn = aColumn;
@@ -219,21 +224,63 @@ public class SeparatedvalueExperimentMetaData extends ExperimentMetaData {
     public boolean experimentHasRatio() {
         return this.experimentHasRatio;
     }
-    
-    public Map<PossibleMetaDataAnnotationsEnum,String> getMetaDataAsMap(){
-        Map<PossibleMetaDataAnnotationsEnum,String> metaDataMap = new HashMap<>();
-        metaDataMap.put(PossibleMetaDataAnnotationsEnum.VALUESEPARATOR,valueSeparator);
+
+    public Map<PossibleMetaDataAnnotationsEnum, String> getMetaDataAsMap() {
+        Map<PossibleMetaDataAnnotationsEnum, String> metaDataMap = new HashMap<>();
+        metaDataMap.put(PossibleMetaDataAnnotationsEnum.VALUESEPARATOR, valueSeparator);
         metaDataMap.put(PossibleMetaDataAnnotationsEnum.RATIO, Integer.toString(ratioColumn));
         metaDataMap.put(PossibleMetaDataAnnotationsEnum.HASHEADERS, Boolean.toString(hasHeaders));
         metaDataMap.put(PossibleMetaDataAnnotationsEnum.INTENSITY, Integer.toString(intensityColumn));
-        metaDataMap.put(PossibleMetaDataAnnotationsEnum.PEPTIDESEQUENCE,Integer.toString(peptideSequence));
-        metaDataMap.put(PossibleMetaDataAnnotationsEnum.PROTEINACCESSION,Integer.toString(proteinAccessionColumn));
+        metaDataMap.put(PossibleMetaDataAnnotationsEnum.PEPTIDESEQUENCE, Integer.toString(peptideSequence));
+        metaDataMap.put(PossibleMetaDataAnnotationsEnum.PROTEINACCESSION, Integer.toString(proteinAccessionColumn));
         metaDataMap.put(PossibleMetaDataAnnotationsEnum.SIZEOFEXPERIMENTCOLUMS, Integer.toString(columnsPerExperiment));
+        metaDataMap.put(PossibleMetaDataAnnotationsEnum.PEPTIDEENDLOCATION, Integer.toString(peptideEndColumn));
+        metaDataMap.put(PossibleMetaDataAnnotationsEnum.PEPTIDELOCATIONSTART, Integer.toString(peptideStartColumn));
         return metaDataMap;
     }
 
-       public SeparatedvalueExperimentMetaData setProteinSequenceColumn(int aColumn) {
+    public SeparatedvalueExperimentMetaData setProteinSequenceColumn(int aColumn) {
         proteinSequenceColumn = aColumn;
         return this;
     }
+
+    public int getPeptideStartColumn() {
+        return peptideStartColumn;
+    }
+
+    public void setPeptideStartColumn(int peptideStartColumn) {
+        setExperimentHasPeptideLocationValues(true);
+        this.peptideStartColumn = peptideStartColumn;
+    }
+
+    public int getPeptideEndColumn() {
+        return peptideEndColumn;
+    }
+
+    public void setPeptideEndColumn(int peptideEndColumn) {
+        setExperimentHasPeptideLocationValues(true);
+        this.peptideEndColumn = peptideEndColumn;
+    }
+
+    public boolean experimentHasPeptideLocationValues() {
+        return hasPeptideLocationValues;
+    }
+
+    public void setExperimentHasPeptideLocationValues(boolean hasLocationValues) {
+        this.hasPeptideLocationValues = hasLocationValues;
+    }
+
+    public String getMissingValue() {
+        return missingValue;
+    }
+
+    public void setMissingValue(String missingValue) {
+        this.missingValue = missingValue;
+    }
+
+    public boolean hasMissingValues() {
+        return hasMissingValues;
+    }
+    
+    
 }

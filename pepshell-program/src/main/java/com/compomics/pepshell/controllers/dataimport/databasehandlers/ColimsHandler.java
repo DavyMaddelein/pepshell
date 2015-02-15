@@ -30,7 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Created by svend on 04/12/2014.
+ * Created by Davy Maddelein on 04/12/2014.
  */
 public class ColimsHandler<T extends Connection> implements DataHandlerInterface<T> {
 

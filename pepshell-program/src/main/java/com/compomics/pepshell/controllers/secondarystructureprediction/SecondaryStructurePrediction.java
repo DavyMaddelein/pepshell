@@ -16,13 +16,19 @@
 
 package com.compomics.pepshell.controllers.secondarystructureprediction;
 
+import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.model.UpdateMessage;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
- *
  * @author Davy Maddelein
  */
 abstract class SecondaryStructurePrediction {
@@ -31,11 +37,26 @@ abstract class SecondaryStructurePrediction {
         {
             put("alpha_helix", "G");
             put("beta_strand", "E");
-            put("turn", "T");
             put("coil", "C");
-            put("helix", "H");
+            put("strand", "E");
+            put("helix", "G");
+            put("turn", "I");
         }
     };
+
+    public SecondaryStructurePrediction() {
+        Properties secStructProps = new Properties();
+        try {
+            secStructProps.load(new FileInputStream(new File(ClassLoader.getSystemClassLoader().getResource("secondary_structures.properties").getPath())));
+        } catch (NullPointerException | IOException e) {
+            FaultBarrier.getInstance().handleException(e, new UpdateMessage(false, "could not load definitions for secondary structures", true));
+        }
+        if (secStructProps.isEmpty()) {
+            for (Map.Entry<String, String> anEntry : secStructMap.entrySet()) {
+                secStructProps.setProperty(anEntry.getKey(), anEntry.getValue());
+            }
+        }
+    }
 
     public abstract List<String> getPrediction(String accession) throws IOException;
 

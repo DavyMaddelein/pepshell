@@ -37,7 +37,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import javax.swing.JPanel;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -45,7 +44,6 @@ import org.apache.log4j.Logger;
  */
 public class ReferenceProteinDrawPanel extends JPanel {
 
-    private static final Logger LOGGER = Logger.getLogger(ReferenceProteinDrawPanel.class);
     private static final int HORIZONTAL_OFFSET = 15;
     private static final int VERTICAL_OFFSET = 15;
 

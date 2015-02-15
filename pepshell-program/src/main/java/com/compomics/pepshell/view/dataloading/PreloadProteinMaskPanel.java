@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.view.dataloading;
 
 import com.compomics.pepshell.FaultBarrier;
@@ -21,17 +20,15 @@ import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.enums.ExportPropertyEnum;
+import com.compomics.pepshell.view.components.JFileChooserWithMemory;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
@@ -69,7 +66,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
         removeAccessionMaskingButton = new javax.swing.JButton();
         removeMaskingsFromListButton = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
-        accessionMaskingList = new javax.swing.JList();
+        accessionMaskingList = new javax.swing.JList<Protein>();
 
         loadAccessionMaskingFile.setText("load a masking file");
         loadAccessionMaskingFile.addActionListener(new java.awt.event.ActionListener() {
@@ -175,19 +172,18 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
 
     private void loadAccessionMaskingFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadAccessionMaskingFileActionPerformed
         // TODO, add custom renderer/model to show the string properly, if this takes more than 15 minutes, just overwrite the string in tostring
-        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+        JFileChooser accessionMaskingChooser = new JFileChooserWithMemory(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
         accessionMaskingChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         accessionMaskingChooser.showOpenDialog(this);
         File selectedFile = accessionMaskingChooser.getSelectedFile();
         try {
             Map<Protein, String> maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
-            Vector<Protein> listData = new Vector<>();
-            for (Entry<Protein, String> entry : maskMap.entrySet()) {
+            maskMap.entrySet().stream().forEach((entry) -> {
                 entry.getKey().setVisibleAccession(entry.getValue());
-                listData.add(entry.getKey());
                 accessionMasks.add(entry.getKey());
-            }
-            accessionMaskingList.setListData(listData);
+
+            });
+            accessionMaskingList.setListData(accessionMasks.toArray(new Protein[accessionMasks.size()]));
         } catch (IOException ex) {
             FaultBarrier.getInstance().handleException(ex);
         }
@@ -233,16 +229,14 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
 
     private void removeAccessionMaskingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAccessionMaskingButtonActionPerformed
         if (!accessionMaskingList.getSelectedValuesList().isEmpty()) {
-            for (Protein aValue : (List<Protein>) accessionMaskingList.getSelectedValuesList()) {
-                accessionMasks.remove(aValue);
-            }
+            accessionMasks.removeIf(e -> accessionMasks.contains(e));
             accessionMaskingList.setListData(accessionMasks.toArray(new Protein[accessionMasks.size()]));
         }
     }//GEN-LAST:event_removeAccessionMaskingButtonActionPerformed
 
     private void removeMaskingsFromListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMaskingsFromListButtonActionPerformed
         accessionMasks.clear();
-        accessionMaskingList.setListData(new Vector<Protein>());
+        accessionMaskingList.setListData(new Protein[10]);
     }//GEN-LAST:event_removeMaskingsFromListButtonActionPerformed
 
     public Set<Protein> getProteinsToMaskWith() {
@@ -250,7 +244,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList accessionMaskingList;
+    private javax.swing.JList<Protein> accessionMaskingList;
     private javax.swing.JTextField accessionToMaskTextField;
     private javax.swing.JButton addMaskingAccessionButton;
     private javax.swing.JLabel jLabel1;

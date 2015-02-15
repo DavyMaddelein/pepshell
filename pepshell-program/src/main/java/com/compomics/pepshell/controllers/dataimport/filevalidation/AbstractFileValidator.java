@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.controllers.dataimport.filevalidation;
 
 import com.compomics.pepshell.model.AnnotatedFile;
@@ -212,13 +211,25 @@ public class AbstractFileValidator implements FileValidatorInterface {
                     if (experimentColumns[metaData.getRatioColumn() - 1].length() == 0) {
                         validated = false;
                     } else {
-                        new Double(experimentColumns[metaData.getRatioColumn() - 1].length());
+                        new Double(experimentColumns[metaData.getRatioColumn() - 1]);
                     }
                 } catch (NumberFormatException nfe) {
                     throw new ValidationException("ratio value at column" + metaData.getRatioColumn() + " was not a number");
 
                 }
 
+            }
+        }
+        if (validated && metaData.experimentHasPeptideLocationValues()) {
+            if (experimentColumns[metaData.getPeptideStartColumn() - 1].length() == 0) {
+                validated = false;
+            } else {
+                new Integer(experimentColumns[metaData.getPeptideStartColumn() - 1]);
+            }
+            if (experimentColumns[metaData.getPeptideEndColumn() - 1].length() == 0) {
+                validated = false;
+            } else {
+                new Integer(experimentColumns[metaData.getPeptideEndColumn() - 1]);
             }
         }
         return validated;

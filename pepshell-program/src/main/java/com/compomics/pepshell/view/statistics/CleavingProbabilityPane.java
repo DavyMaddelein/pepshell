@@ -23,6 +23,7 @@ import com.compomics.pepshell.model.Protein;
 import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -107,7 +108,8 @@ public class CleavingProbabilityPane extends JFreeChartPanel {
 
     private List<XYSeries> fillSeries(Protein currentProtein) {
         List<XYSeries> setList = new ArrayList<>();
-        for (PeptideGroup aPeptideGroup : currentProtein.getCPDTPeptideGroups()) {
+        for (Iterator<PeptideGroup> it = currentProtein.getCPDTPeptideGroups().iterator(); it.hasNext(); ) {
+            PeptideGroup aPeptideGroup = it.next();
             if (aPeptideGroup.getShortestPeptide().getProbability() > cutoff && aPeptideGroup.getShortestPeptide().getSequence().length() > sequenceCutoffLength) {
                 XYSeries set = new XYSeries(aPeptideGroup.getShortestPeptide().getSequence());
                 set.add(aPeptideGroup.getShortestPeptide().getBeginningProteinMatch(), aPeptideGroup.getShortestPeptide().getProbability());

@@ -42,6 +42,8 @@ public class ValidationFrame extends javax.swing.JFrame {
 
     private AnnotatedFile referenceFile;
     private List<AnnotatedFile> filesToCompare;
+    private int fileDoneCounter = -1;
+    private int totalFilesToValidate;
 
     private final ImageIcon loading = new ImageIcon(ClassLoader.getSystemResource("processing.gif"));
     private final ImageIcon done = new ImageIcon(ClassLoader.getSystemResource("completed.png"));
@@ -49,18 +51,20 @@ public class ValidationFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form ValidationPanel
+     *
      * @param aReferenceFile
      * @param filesToCompare
      */
     public ValidationFrame(AnnotatedFile aReferenceFile, List<AnnotatedFile> filesToCompare) {
         referenceFile = aReferenceFile;
         this.filesToCompare = filesToCompare;
+        totalFilesToValidate = filesToCompare.size() + 1;
         initComponents();
         GridBagConstraints constraints = ((GridBagLayout) jPanel2.getLayout()).getConstraints(jPanel2);
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.LINE_START;
-//todo filestocompare still contains the reference file, for the flow it doesn't matter now but it breaks the check to pass on        
+//TODO filestocompare still contains the reference file, for the flow it doesn't matter now but it breaks the check to pass on        
 //jPanel2.add(new JLabel(referenceFile.getName()), constraints);
         //validateFile(aReferenceFile);
         for (int i = constraints.gridy; i < filesToCompare.size(); i++) {
@@ -72,6 +76,7 @@ public class ValidationFrame extends javax.swing.JFrame {
 
     public ValidationFrame(List<AnnotatedFile> filesToCompare) {
         initComponents();
+        totalFilesToValidate = filesToCompare.size();
         GridBagConstraints constraints = ((GridBagLayout) jPanel1.getLayout()).getConstraints(jPanel1);
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -94,11 +99,7 @@ public class ValidationFrame extends javax.swing.JFrame {
 
             @Override
             protected Boolean doInBackground() throws Exception {
-                if (file != null && file.exists()) {
-                    return FileValidatorFactory.getInstance().validate(file);
-                } else {
-                    return false;
-                }
+                return file != null && file.exists() && FileValidatorFactory.getInstance().validate(file);
             }
 
             @Override
@@ -108,10 +109,10 @@ public class ValidationFrame extends javax.swing.JFrame {
                 if (filesToCompare.contains(file)) {
                     //todo uncomment this when the list thing is fixed
 //                    if (referenceFile != null) {
-  //                      toEdit = ((JLabel) jPanel2.getComponents()[filesToCompare.indexOf(file) + 1]);
-  //                  } else {
-                        toEdit = ((JLabel) jPanel2.getComponents()[filesToCompare.indexOf(file)]);
-    //                }
+                    //                      toEdit = ((JLabel) jPanel2.getComponents()[filesToCompare.indexOf(file) + 1]);
+                    //                  } else {
+                    toEdit = ((JLabel) jPanel2.getComponents()[filesToCompare.indexOf(file)]);
+                    //                }
                 } else {
                     toEdit = (JLabel) jPanel2.getComponents()[0];
                 }
@@ -119,9 +120,11 @@ public class ValidationFrame extends javax.swing.JFrame {
                     if (this.get()) {
                         toEdit.setIcon(done);
                         toEdit.setForeground(new Color(10, 127, 42));
+                        fileDoneCounter++;
                     } else {
                         toEdit.setIcon(failed);
                         toEdit.setForeground(Color.red);
+                        fileDoneCounter++;
                         if (toEdit.getText().contains(" could not be validated, click to change annotations")) {
                             toEdit.setText(toEdit.getText().substring(0, toEdit.getText().indexOf(" could not be validated, click to change annotations")));
                         }
@@ -138,6 +141,7 @@ public class ValidationFrame extends javax.swing.JFrame {
                                 } else {
                                     referenceFile = file;
                                 }
+                                fileDoneCounter--;
                                 validateFile(file);
                             }
 
@@ -150,7 +154,11 @@ public class ValidationFrame extends javax.swing.JFrame {
                     if (toEdit.getText().contains(" could not be validated, click to change annotations")) {
                         toEdit.setText(toEdit.getText().substring(0, toEdit.getText().indexOf(" could not be validated, click to change annotations")));
                     }
-                    toEdit.setText(toEdit.getText() + " could not be validated, click to change annotations " + ex.getCause().getSuppressed()[0].getMessage());
+                    StringBuilder builder = new StringBuilder(toEdit.getText()).append(" could not be validated, click to change annotations ");
+                    if (ex.getCause().getSuppressed().length > 0) {
+                        builder.append(ex.getCause().getSuppressed()[0].getMessage());
+                    }
+                    toEdit.setText(builder.toString());
                     toEdit.addMouseListener(new MouseAdapter() {
 
                         @Override
@@ -168,8 +176,10 @@ public class ValidationFrame extends javax.swing.JFrame {
 
                     });
                 }
+                if (fileDoneCounter == totalFilesToValidate) {
+                    jButton2.setEnabled(true);
+                }
             }
-
         }.setFileForValidation(fileToValidate).execute();
     }
 
@@ -231,15 +241,15 @@ public class ValidationFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 510, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addComponent(jScrollPane2)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGap(0, 478, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -249,10 +259,10 @@ public class ValidationFrame extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -269,7 +279,7 @@ public class ValidationFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 418, Short.MAX_VALUE)
+                    .addGap(0, 390, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, 0)
@@ -282,9 +292,9 @@ public class ValidationFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        new CombinedLoginDialog().setVisible(true);
         this.dispose();
-        
+        new CombinedLoginDialog().setVisible(true);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -298,7 +308,7 @@ public class ValidationFrame extends javax.swing.JFrame {
 
         }
         if (result == JOptionPane.OK_OPTION) {
-            new ExperimentSelectionFrame(referenceFile, filesToCompare);
+            new ExperimentSelectionFrame(referenceFile, filesToCompare).setLocation(this.getLocation());
             this.dispose();
         }
     }//GEN-LAST:event_jButton2ActionPerformed

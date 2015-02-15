@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.view.dataloading.frames;
 
 import com.compomics.pepshell.view.dataloading.ExperimentFileSelectionPanel;
@@ -66,9 +65,9 @@ public class FileSelectionFrame extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(640, 206));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setPreferredSize(new java.awt.Dimension(480, 319));
+        jPanel1.setPreferredSize(new java.awt.Dimension(480, 330));
 
-        addExperimentMetaDataButton.setText("add additional info ...");
+        addExperimentMetaDataButton.setText("add metadata...");
         addExperimentMetaDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addExperimentMetaDataButtonActionPerformed(evt);
@@ -84,7 +83,7 @@ public class FileSelectionFrame extends javax.swing.JFrame {
 
         referenceExperimentCheckBox.setBackground(new java.awt.Color(255, 255, 255));
         referenceExperimentCheckBox.setSelected(true);
-        referenceExperimentCheckBox.setText("refence experiment in separate file");
+        referenceExperimentCheckBox.setText("reference experiment in separate file");
         referenceExperimentCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 referenceExperimentCheckBoxActionPerformed(evt);
@@ -149,24 +148,24 @@ public class FileSelectionFrame extends javax.swing.JFrame {
         boolean proceed = true;
         if (referenceFileBasedExperimentPanel1.getReferenceFile() == null && referenceExperimentCheckBox.isSelected()) {
             proceed = false;
-            JOptionPane.showMessageDialog(this, "no reference experiment is present, and the reference option was selected");
+            JOptionPane.showMessageDialog(this, "no reference experiment is present, and the reference option was selected, Pepshell cannot continue");
         } else if (proceed && experimentFileBasedExperimentSelectionPanel1.getExperimentFiles().isEmpty()) {
             proceed = false;
-            JOptionPane.showMessageDialog(this, "no experiments were selected");
-        }
-        if (proceed) {
+            JOptionPane.showMessageDialog(this, "no experiments were selected, Pepshell cannot continue");
+        } else {
+            ValidationFrame frame;
             if (referenceExperimentCheckBox.isSelected()) {
-                new ValidationFrame(referenceFileBasedExperimentPanel1.getReferenceFile(), experimentFileBasedExperimentSelectionPanel1.getExperimentFiles()).setVisible(true);
-                this.dispose();
+                frame = new ValidationFrame(referenceFileBasedExperimentPanel1.getReferenceFile(), experimentFileBasedExperimentSelectionPanel1.getExperimentFiles());
             } else {
-                ValidationFrame frame = new ValidationFrame(experimentFileBasedExperimentSelectionPanel1.getExperimentFiles());
+                frame = new ValidationFrame(experimentFileBasedExperimentSelectionPanel1.getExperimentFiles());
+            }
+            try {
                 frame.setLocationRelativeTo(this);
                 frame.setVisible(true);
                 this.dispose();
+            } catch (NullPointerException npe) {
+                JOptionPane.showMessageDialog(this, "could not create the validation window");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Pepshell could not continue with the files given");
-
         }
     }//GEN-LAST:event_launchMainWindowButtonActionPerformed
 

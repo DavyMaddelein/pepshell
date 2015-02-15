@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.ViewPreparation;
 
-import com.compomics.pepshell.controllers.DataModes.AbstractDataMode;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionConverting;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddDomains;
@@ -41,6 +40,7 @@ import java.util.Observer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.ProgressMonitor;
@@ -108,19 +108,15 @@ public abstract class AbstractDataRetrieval<T extends Experiment> extends Observ
     boolean removeProteinsNotInReferenceExperiment(T referenceProject, T projectToCompareWith, boolean removeNonOverlappingPeptidesFromReferenceProject) {
         //perhaps change with list so it is easier to notify observers of progress
         boolean finished = false;
-        for (Protein aProtein : referenceProject.getProteins()) {
-            if (projectToCompareWith.getProteins().contains(aProtein)) {
-                aProtein.getProteinInfo().increaseNumberOfProjectOccurences();
-                projectToCompareWith.getProteins().get(projectToCompareWith.getProteins().indexOf(aProtein)).getProteinInfo().increaseNumberOfProjectOccurences();
-            }
-        }
+        referenceProject.getProteins().stream().filter((aProtein) -> (projectToCompareWith.getProteins().contains(aProtein))).map((aProtein) -> {
+            aProtein.getProteinInfo().increaseNumberOfProjectOccurences();
+            return aProtein;
+        }).forEach((aProtein) -> {
+            projectToCompareWith.getProteins().get(projectToCompareWith.getProteins().indexOf(aProtein)).getProteinInfo().increaseNumberOfProjectOccurences();
+        });
         if (removeNonOverlappingPeptidesFromReferenceProject) {
             //replace with iterator and remove
-            for (Protein aProtein : projectToCompareWith.getProteins()) {
-                if (aProtein.getProteinInfo().getNumberOfProjectOccurences() == 0) {
-
-                }
-            }
+            projectToCompareWith.setProteins(projectToCompareWith.getProteins().stream().filter((aProtein) -> (aProtein.getProteinInfo().getNumberOfProjectOccurences() == 0)).collect(Collectors.toList()));
         }
 
         return finished;
@@ -169,19 +165,20 @@ public abstract class AbstractDataRetrieval<T extends Experiment> extends Observ
             List<List<Protein>> partitionedProteinList = Lists.partition(experiment.getProteins(), (int) Math.ceil(experiment.getProteins().size() / Runtime.getRuntime().availableProcessors()));
             for (DataRetrievalStep aStep : stepsToExecute) {
                 List<Future<List<Protein>>> taskList = new ArrayList<>();
-                for (List<Protein> aProteinList : partitionedProteinList) {
-                    DataRetrievalStep toExecute = aStep.getInstance(aProteinList);
+                partitionedProteinList.stream().map((aProteinList) -> aStep.getInstance(aProteinList)).map((toExecute) -> {
                     toExecute.addObserver(observer);
+                    return toExecute;
+                }).forEach((toExecute) -> {
                     taskList.add(executor.submit(toExecute));
-                }
+                });
                 //+2 because the partition returns the rest in an extra list, for example 4 can give 4 or 5 lists
                 progressMonitor.setMaximum(taskList.size() + 2);
 
                 while (!taskList.isEmpty()) {
                     if (skipStep) {
-                        for (Future<List<Protein>> aFuture : taskList) {
+                        taskList.stream().forEach((aFuture) -> {
                             aFuture.cancel(true);
-                        }
+                        });
                         skipStep = false;
                     } else {
                         Iterator<Future<List<Protein>>> futureIter = taskList.listIterator();
@@ -193,9 +190,9 @@ public abstract class AbstractDataRetrieval<T extends Experiment> extends Observ
                             }
                         }
                         if (progressMonitor.isCanceled()) {
-                            for (Future<List<Protein>> aFuture : taskList) {
+                            taskList.stream().forEach((aFuture) -> {
                                 aFuture.cancel(true);
-                            }
+                            });
                         }
                         if (progressMonitor.isCanceled()) {
                             break;

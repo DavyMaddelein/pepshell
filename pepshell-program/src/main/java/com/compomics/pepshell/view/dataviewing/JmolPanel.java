@@ -40,14 +40,12 @@ import javax.swing.JOptionPane;
  */
 public class JmolPanel extends javax.swing.JPanel {
 
-    private final FaultBarrier faultBarrier;
     private Protein presentedProtein;
 
     /**
      * Creates new form PDBPanel
      */
     public JmolPanel() {
-        this.faultBarrier = FaultBarrier.getInstance();
         initComponents();
         this.jProgressBar1.setVisible(false);
     }
@@ -187,7 +185,7 @@ public class JmolPanel extends javax.swing.JPanel {
             } catch (IOException ioe) {
                 if (PDBFileComboBox.getSelectedItem() != "no pdb accessions found for protein") {
                     JOptionPane.showMessageDialog(this, "the PDB file for accession: " + PDBFileComboBox.getSelectedItem().toString() + " could not be retrieved");
-                    faultBarrier.handleException(ioe);
+                    FaultBarrier.getInstance().handleException(ioe);
                 }
             }
 
@@ -214,7 +212,7 @@ public class JmolPanel extends javax.swing.JPanel {
         if (chooser.getSelectedFile() != null) {
             pdbViewPanel1.getViewer().evalString("write Image 1920 1080 PNG " + chooser.getSelectedFile().getAbsolutePath() + PDBFileComboBox.getSelectedItem().toString() + ".png");
         } else {
-            faultBarrier.handleException(new FileNotFoundException());
+            FaultBarrier.getInstance().handleException(new FileNotFoundException());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -239,10 +237,10 @@ public class JmolPanel extends javax.swing.JPanel {
         try {
             PDBFileComboBox.setModel(new DefaultComboBoxModel(PDBDAO.getInstance().getPDBInfoForProtein(protein).toArray()));
         } catch (MalformedURLException ex) {
-            faultBarrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "there has been a problem trying to retrieve the pdb file accessions for this protein: " + protein.getProteinAccession());
-            faultBarrier.handleException(ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
 
     }

@@ -41,7 +41,7 @@ public class DbLoginDialog extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public DbLoginDialog(java.awt.Frame parent, boolean modal) {
+    private DbLoginDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
         initComponents();

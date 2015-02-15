@@ -19,6 +19,7 @@ package com.compomics.pepshell.view.DrawModes.Proteins;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.CalculationException;
@@ -41,10 +42,10 @@ import java.awt.Point;
  * @param <T> the protein type to draw
  * @param <U> the CPDT analysed peptide to draw
  */
-public class CPDTCleavedProteinDrawMode <T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<Protein, Peptide> implements GradientDrawModeInterface<Protein, Peptide> {
 
     @Override
-    public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawProteinAndPeptides(Protein protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         //set colour and alpha for protein
         g.setColor(ProgramVariables.PROTEINCOLOR);
         Composite defensiveComposite = ((Graphics2D) g).getComposite();
@@ -59,14 +60,14 @@ public class CPDTCleavedProteinDrawMode <T extends Protein, U extends Peptide> e
         Point peptideStartPoint = (Point)startPoint.clone();
         //start on the proteins, we will draw the shortest peptide in the peptide group
         for (PeptideGroup aGroup : protein.getCPDTPeptideList()) {
-            Peptide peptideToDraw = aGroup.getShortestPeptide();
+            PeptideInterface peptideToDraw = aGroup.getShortestPeptide();
             if (peptideToDraw.getBeginningProteinMatch() != -1) {
                 //we scale the length of the peptide to fit the protein context
                 int scaledLength = DrawModeUtilities.getInstance().scale(peptideToDraw.getEndProteinMatch() - peptideToDraw.getBeginningProteinMatch());
                 //we scale the starting point of the peptide to the context of the peptide
                 peptideStartPoint.x = DrawModeUtilities.getInstance().scale(peptideToDraw.getBeginningProteinMatch()) + startPoint.x;
                 //look up how to fix this generics brainfart
-                drawPeptide((U) peptideToDraw, g, peptideStartPoint, scaledLength, height);
+                drawPeptide((Peptide) peptideToDraw, g, peptideStartPoint, scaledLength, height);
             }
         }
         ((Graphics2D) g).setComposite(defensiveComposite);
@@ -107,7 +108,7 @@ public class CPDTCleavedProteinDrawMode <T extends Protein, U extends Peptide> e
      * @throws com.compomics.pepshell.model.exceptions.CalculationException 
      */
     @Override
-    public Color calculateAminoAcidGradient(T protein, int location) throws CalculationException {
+    public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
         return (ProgramVariables.PROTEINCOLOR);
     }
 

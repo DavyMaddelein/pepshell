@@ -19,7 +19,7 @@ package com.compomics.pepshell.model.exceptions;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 
 /**
- * Created by svend on 26/11/2014.
+ * Created by Davy Maddelein on 26/11/2014.
  */
 public class ExperimentMetaData {
 

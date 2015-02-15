@@ -22,6 +22,7 @@
 package com.compomics.pepshell.view.dataloading;
 
 import com.compomics.pepshell.model.AnnotatedFile;
+import com.compomics.pepshell.view.components.JFileChooserWithMemory;
 
 import javax.swing.JFileChooser;
 
@@ -105,10 +106,10 @@ public class ReferenceFileExperimentSelectionPanel extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = JFileChooserWithMemory.getInstance();
         chooser.setMultiSelectionEnabled(false);
-        chooser.showOpenDialog(this);
-        if (chooser.getSelectedFile() != null) {
+        int result = chooser.showOpenDialog(this);
+        if (chooser.getSelectedFile() != null && result == JFileChooser.APPROVE_OPTION) {
             referenceFile = new AnnotatedFile(chooser.getSelectedFile().getAbsolutePath());
             referenceExperimentTestTextField.setText(referenceFile.getAbsolutePath());
         }

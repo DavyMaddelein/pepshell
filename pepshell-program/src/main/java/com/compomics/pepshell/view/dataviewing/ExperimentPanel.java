@@ -20,9 +20,10 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.WebDAO;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
@@ -37,6 +38,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 
 /**
@@ -123,23 +125,24 @@ class ExperimentPanel extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
         setForeground(new java.awt.Color(255, 255, 255));
-        setMaximumSize(new java.awt.Dimension(1000, 65));
-        setMinimumSize(new java.awt.Dimension(1000, 65));
-        setPreferredSize(new java.awt.Dimension(1000, 65));
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                formMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                formMousePressed(evt);
-            }
-        });
+        setMaximumSize(new java.awt.Dimension(1000, 70));
+        setMinimumSize(new java.awt.Dimension(1000, 70));
+        setPreferredSize(new java.awt.Dimension(1000, 70));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 formMouseDragged(evt);
             }
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
             }
         });
 
@@ -172,24 +175,24 @@ class ExperimentPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                    .addContainerGap(39, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         //replace with a hashset and call contains
         if (protein != null) {
-            for (PeptideGroup peptideGroup : protein.getPeptideGroups()) {
-                if (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * ProgramVariables.SCALE)) {
-                    //dirty
-                    Protein aProtein = new Protein(protein.getProteinSequence());
-                    if (!protein.getDomains().isEmpty()) {
-                        aProtein.addDomains(protein.getDomains());
-                    }
-                    aProtein.addPeptideGroup(peptideGroup);
-                    ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), aProtein);
+            protein.getPeptideGroups().stream().filter((peptideGroup) -> (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * ProgramVariables.SCALE))).map((peptideGroup) -> {
+                //dirty
+                Protein aProtein = new Protein(protein.getProteinSequence());
+                if (!protein.getDomains().isEmpty()) {
+                    new Thread(() -> aProtein.addDomains(protein.getDomains())).start();
                 }
-            }
+                aProtein.addPeptideGroup(peptideGroup);
+                return aProtein;
+            }).forEach((aProtein) -> {
+                ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), aProtein);
+            });
         }
     }//GEN-LAST:event_formMouseMoved
 
@@ -207,7 +210,7 @@ class ExperimentPanel extends javax.swing.JPanel {
             }
         } else if (jComboBox1.getSelectedIndex() == 1) {
             if (proteinDrawMode instanceof QuantedPeptideDrawMode) {
-                proteinDrawMode = new QuantedPeptideDrawMode<>();
+                proteinDrawMode = new QuantedPeptideDrawMode();
                 ((QuantedPeptideDrawMode) proteinDrawMode).setMaxRatio(experiment.getMaxRatio());
                 recalculate = true;
             }
@@ -271,11 +274,18 @@ class ExperimentPanel extends javax.swing.JPanel {
             if (!nameChanged) {
                 projectNameLabel.setText(experimentName);
             }
-            if (protein.getProteinSequence().isEmpty()) {
+            if (protein.getProteinSequence().isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
                 try {
                     protein.setSequence(WebDAO.fetchSequence(protein.getProteinAccession()));
-                } catch (IOException | ConversionException e) {
+                } catch (ConversionException e) {
                     FaultBarrier.getInstance().handleException(e);
+                } catch (UnknownHostException ex) {
+                    FaultBarrier.getInstance().handleException(ex,
+                            new UpdateMessage(false, "Could not connect to uniprot\nSetting pepshell in offline mode", true));
+                    ProgramVariables.USEINTERNETSOURCES = false;
+                } catch (IOException ex) {
+                    FaultBarrier.getInstance().handleException(ex,
+                            new UpdateMessage(false, "An error occured while reading in the protein sequence from uniprot", true));
                 }
             }
             if (!protein.getProteinSequence().isEmpty()) {

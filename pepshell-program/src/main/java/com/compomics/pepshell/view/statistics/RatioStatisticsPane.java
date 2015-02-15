@@ -20,6 +20,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
@@ -76,9 +77,9 @@ public class RatioStatisticsPane extends JFreeChartPanel {
                 if (anExperiment.getProteins().indexOf(aProtein) != -1) {
                     Protein protein = anExperiment.getProteins().get(anExperiment.getProteins().indexOf(aProtein));
                     Ordering<PeptideGroup> groupOrdering = Ordering.natural().onResultOf(getProteinLocation);
-                    ImmutableList<PeptideGroup> sortedCopy = groupOrdering.immutableSortedCopy(protein.getPeptideGroups());
+                    ImmutableList<PeptideGroup<PeptideInterface>> sortedCopy = groupOrdering.immutableSortedCopy(protein.getPeptideGroups());
                     for (PeptideGroup aPeptideGroup : sortedCopy) {
-                        Peptide aPeptide = aPeptideGroup.getShortestPeptide();
+                        PeptideInterface aPeptide = aPeptideGroup.getShortestPeptide();
                         try {
                             if (aPeptide instanceof QuantedPeptide && ((QuantedPeptide) aPeptide).getRatio() != null) {
                                 Double value = Math.log(((QuantedPeptide) aPeptide).getRatio()) / Math.log(2);

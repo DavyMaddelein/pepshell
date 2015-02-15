@@ -27,7 +27,7 @@ import java.io.IOException;
 public class WebDAO {
 
     public static String fetchSequence(String proteinAccession) throws IOException, ConversionException {
-        String uniprotProteinAccession = proteinAccession;
+        String uniprotProteinAccession;
         uniprotProteinAccession = AccessionConverter.toUniprot(proteinAccession);
         return UniprotDAO.fetchSequenceFromUniprot(uniprotProteinAccession);
     }

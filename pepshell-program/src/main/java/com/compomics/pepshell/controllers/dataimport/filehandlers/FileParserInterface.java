@@ -23,7 +23,7 @@ import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 
 
 /**
- * Created by svend on 02/12/2014.
+ * Created by Davy Maddelein on 02/12/2014.
  */
 public interface FileParserInterface {
 

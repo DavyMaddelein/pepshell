@@ -19,9 +19,11 @@ package com.compomics.pepshell.view.dataviewing.frames;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import java.awt.MouseInfo;
+import java.util.Iterator;
 
 /**
  *
@@ -47,7 +49,8 @@ class ProteinInfoFrame extends javax.swing.JFrame {
     public ProteinInfoFrame(Protein protein, PeptideGroup peptideGroup) {
         this(protein);
         proteinTextArea.append("\n" + "---------------");
-        for (Peptide peptide : peptideGroup.getPeptideList()) {
+        for (Iterator<PeptideInterface> it = peptideGroup.getPeptideList().iterator(); it.hasNext(); ) {
+            PeptideInterface peptide = it.next();
             proteinTextArea.append("\n" + peptide.getSequence());
             proteinTextArea.append("\n" + peptideGroup.getStartingAlignmentPosition());
             proteinTextArea.append("\n" + peptideGroup.getEndAlignmentPosition());

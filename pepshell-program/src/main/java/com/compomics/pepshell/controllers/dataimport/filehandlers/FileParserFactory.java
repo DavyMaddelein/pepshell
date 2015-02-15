@@ -25,7 +25,7 @@ import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 import java.io.File;
 
 /**
- * Created by svend on 02/12/2014.
+ * Created by Davy Maddelein on 02/12/2014.
  */
 public class FileParserFactory {
 

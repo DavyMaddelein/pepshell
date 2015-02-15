@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 public class AddPdbInfo extends DataRetrievalStep {
 
     private Consumer<ProteinInterface> setNotification = new SetNotification();
-    private Consumer<ProteinInterface> addInfoToProtein = new AddInfoToProtein();
+    private final Consumer<ProteinInterface> addInfoToProtein = new AddInfoToProtein();
 
     private AddPdbInfo(List<Protein> aProteinList) {
         this.proteinList = aProteinList;

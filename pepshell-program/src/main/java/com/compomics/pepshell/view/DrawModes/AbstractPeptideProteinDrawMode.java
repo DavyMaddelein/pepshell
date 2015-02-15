@@ -38,7 +38,7 @@ import java.awt.Point;
  * @param <T> the pepshell protein type to draw
  * @param <U> the pepshell peptide type to draw
  */
-public class AbstractPeptideProteinDrawMode<T extends Protein, U extends Peptide> implements DrawProteinPeptidesInterface<T, U> {
+public class AbstractPeptideProteinDrawMode<T extends Protein, U extends PeptideInterface> implements DrawProteinPeptidesInterface<T, U> {
 
     /**
      * the alpha value to draw the protein at
@@ -87,14 +87,14 @@ public class AbstractPeptideProteinDrawMode<T extends Protein, U extends Peptide
         Point peptideStartPoint = (Point)startPoint.clone();
         //start on the proteins, we will draw the shortest peptide in the peptide group
         for (PeptideGroup aGroup : protein.getPeptideGroups()) {
-            Peptide peptideToDraw = aGroup.getShortestPeptide();
+            PeptideInterface peptideToDraw = aGroup.getShortestPeptide();
             if (peptideToDraw.getEndProteinMatch() != -1 && peptideToDraw.getBeginningProteinMatch() != -1) {
                 //we scale the length of the peptide to fit the protein context
                 int scaledLength = DrawModeUtilities.getInstance().scale(peptideToDraw.getEndProteinMatch() - peptideToDraw.getBeginningProteinMatch());
                 //we scale the starting point of the peptide to the context of the peptide
                 peptideStartPoint.x = DrawModeUtilities.getInstance().scale(peptideToDraw.getBeginningProteinMatch()) + startPoint.x;
                 //look up how to fix this generics brainfart
-                drawPeptide(peptideToDraw, g, peptideStartPoint, scaledLength, height);
+                drawPeptide((U) peptideToDraw, g, peptideStartPoint, scaledLength, height);
             }
         }
         ((Graphics2D) g).setComposite(defensiveComposite);
@@ -106,7 +106,7 @@ public class AbstractPeptideProteinDrawMode<T extends Protein, U extends Peptide
      * @throws UndrawableException
      */
     @Override
-    public void drawPeptide(Peptide peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawPeptide(U peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         g.setColor(ProgramVariables.PEPTIDECOLOR);
         ((Graphics2D) g).setStroke(new BasicStroke(2F));
         g.drawRect(startPoint.x, startPoint.y, length, height);

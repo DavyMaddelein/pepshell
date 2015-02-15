@@ -82,6 +82,15 @@
                 </MenuItem>
               </SubComponents>
             </Menu>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItem1">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="show only proteins found in reference"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxMenuItem1ActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="preferencesMenu">
@@ -315,7 +324,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="com.compomics.pepshell.view.panels.dataviewing.ProteinDetailPanel" name="proteinDetailPanel">
+            <Component class="com.compomics.pepshell.view.dataviewing.ProteinDetailPanel" name="proteinDetailPanel">
             </Component>
           </SubComponents>
         </Container>
@@ -423,12 +432,15 @@
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pdbProteinListMouseClicked"/>
                       </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Protein&gt;"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
             </Container>
-            <Component class="com.compomics.pepshell.view.panels.dataviewing.JmolPanel" name="jmolPanel">
+            <Component class="com.compomics.pepshell.view.dataviewing.JmolPanel" name="jmolPanel">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -569,7 +581,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Container class="com.compomics.pepshell.view.panels.dataviewing.StatisticsTabPane" name="statisticsTabbedPane">
+            <Container class="com.compomics.pepshell.view.dataviewing.StatisticsTabPane" name="statisticsTabbedPane">
               <Properties>
                 <Property name="graphData" type="com.compomics.pepshell.model.Protein" editor="org.netbeans.modules.form.ComponentChooserEditor">
                   <ComponentRef name="null"/>

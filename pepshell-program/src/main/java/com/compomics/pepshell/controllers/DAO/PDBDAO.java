@@ -20,7 +20,6 @@ import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -68,7 +67,7 @@ public class PDBDAO {
         File pdbFile = File.createTempFile(aPdbAccession, ".pdb");
         pdbFile.deleteOnExit();
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdbFile), "UTF-8"))) {
-            bw.write(WebUtils.getHTMLPage("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase(Locale.UK) + ".ent"));
+            bw.write(WebUtils.getPage("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase(Locale.UK) + ".ent"));
         }
         return pdbFile;
     }
@@ -77,7 +76,7 @@ public class PDBDAO {
         StringWriter pdbFile = new StringWriter();
         if (aPdbAccession != null) {
             BufferedWriter bw = new BufferedWriter(pdbFile);
-            bw.write(WebUtils.getHTMLPage("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase() + ".ent"));
+            bw.write(WebUtils.getPage("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase() + ".ent"));
         }
         return pdbFile.toString();
     }

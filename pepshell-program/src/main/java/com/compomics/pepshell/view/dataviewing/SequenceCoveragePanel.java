@@ -20,6 +20,7 @@ import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.InteractionPartner;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.ProteinInterface;
 
 import java.awt.*;
@@ -62,7 +63,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         List<Integer> peptideEnds = new ArrayList<>();
         coverage = new int[proteinSequence.length() + 1];
         domains = new int[proteinSequence.length() + 1];
-        Peptide peptide;
+        PeptideInterface peptide;
         for (PeptideGroup peptideGroup : protein.getPeptideGroups()) {
             peptide = peptideGroup.getShortestPeptide();
             int tempPeptideStart = proteinSequence.indexOf(peptide.getSequence());

@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.controllers.InfoFinders;
 
 import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.DasParser;
 import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
 import com.compomics.pepshell.model.DAS.DasFeature;
 import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.enums.DomainWebsitesEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -38,66 +37,44 @@ import javax.xml.stream.XMLStreamException;
  */
 public class ExternalDomainFinder {
 
-    public void execute(List<Protein> proteinList) {
-        for (Protein protein : proteinList) {
-            try {
-                protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
-            } catch (IOException | XMLStreamException ex) {
-                FaultBarrier.getInstance().handleException(ex);
-            }
-        }
-    }
 
-    //TODO move this to internetstructuredatasource
-    public enum DomainWebSites {
-        //todo, add website specific strings to enum to iterate over them and add them
-
-        PFAM,
-        SMART,
-        //PROSITE,
-        UNIPROT
-    }
-
-    public static List<Domain> getDomainsForUniprotAccessionFromSingleSource(String aUniProtAccession, DomainWebSites aDomainWebSite) throws IOException, XMLStreamException {
+    public static List<Domain> getDomainsForUniprotAccessionFromSingleSource(String aUniProtAccession, DomainWebsitesEnum aDomainWebSite) throws IOException, XMLStreamException {
 
         List<Domain> foundDomains = new ArrayList<>();
-        List<DasFeature> features = new ArrayList<>();
-        if (aDomainWebSite == DomainWebSites.PFAM) {
-            features = DasParser.getAllDasFeatures(WebUtils.getHTMLPage("http://das.sanger.ac.uk/das/pfam/features?segment=" + aUniProtAccession));
-        } else if (aDomainWebSite == DomainWebSites.SMART) {
-            features = DasParser.getAllDasFeatures(WebUtils.getHTMLPage("http://smart.embl.de/smart/das/smart/features?segment=" + aUniProtAccession));
-//        } else if (aDomainWebSite == DomainWebSites.PROSITE) {
-//            features = DasParser.getAllDasFeatures(URLController.getHTMLPage("http://proserver.vital-it.ch/das/prositefeature/features?segment=" + aUniProtAccession));
-//        } 
-        } else if (aDomainWebSite == DomainWebSites.UNIPROT) {
+        List<DasFeature> features;
 
-            features = Lists.newArrayList(Collections2.filter(DasParser.getAllDasFeatures(WebUtils.getHTMLPage("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=" + aUniProtAccession)), new Predicate<DasFeature>() {
+        if (aDomainWebSite == DomainWebsitesEnum.UNIPROT) {
 
-                @Override
-                public boolean apply(DasFeature input) {
-                    return input.getFeatureId().contains("DOMAIN");
-                }
-            }));
+            features = DasParser.getAllDasFeatures(WebUtils.getPage(aDomainWebSite.getDomainURLString(aUniProtAccession)))
+                    .stream().filter(e -> e.getFeatureId().contains("DOMAIN")).collect(Collectors.toList());
+        } else {
+            features = DasParser.getAllDasFeatures(WebUtils.getPage(aDomainWebSite.getDomainURLString(aUniProtAccession)));
         }
-        for (DasFeature feature : features) {
+        features.stream().forEach((feature) -> {
             foundDomains.add(new Domain(feature.getFeatureLabel(), feature.getStart(), feature.getEnd(), aDomainWebSite.toString()));
             //smart.setId(features[j].getFeatureLabel());
-        }
+        });
         return foundDomains;
     }
 
     public static List<Domain> getDomainsFromAllSitesForUniprotAccession(String aUniProtAccession) throws IOException, XMLStreamException {
         List<Domain> foundDomains = new ArrayList<>();
         int failedSources = 0;
-        for (DomainWebSites aDomainWebSite : DomainWebSites.values()) {
-            try {
-                foundDomains.addAll(getDomainsForUniprotAccessionFromSingleSource(aUniProtAccession, aDomainWebSite));
-            } catch (IOException ioe) {
-                failedSources++;
+        if (ProgramVariables.USEINTERNETSOURCES) {
+            for (DomainWebsitesEnum aDomainWebSite : DomainWebsitesEnum.values()) {
+                try {
+                    foundDomains.addAll(getDomainsForUniprotAccessionFromSingleSource(aUniProtAccession, aDomainWebSite));
+                } catch (IOException ioe) {
+                    failedSources++;
+                }
             }
         }
-        if (failedSources > 0 ){
-            FaultBarrier.getInstance().handlePartialFailure(new IOException("could not retrieve domain data from all possible sources"));
+        if (failedSources > 0) {
+            if (failedSources < DomainWebsitesEnum.values().length) {
+                FaultBarrier.getInstance().handlePartialFailure(new IOException("could not retrieve domain data from all possible sources"));
+            } else if (failedSources == DomainWebsitesEnum.values().length) {
+                FaultBarrier.getInstance().handleException(new IOException("could not retrieve domain data from online services"));
+            }
         }
         return foundDomains;
     }

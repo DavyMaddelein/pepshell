@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.model;
 
 import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
@@ -30,8 +29,8 @@ public class Protein implements ProteinInterface {
     private int projectId;
     private String sequence = "";
     private final List<Domain> domainsFoundInProtein = new ArrayList<>();
-    private final List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
-    private final Set<PdbInfo> allPDBFileInfoForProtein = new TreeSet<>( new ComparePdbInfoByResolution());
+    private final List<PeptideGroup<PeptideInterface>> peptideGroupsForProtein = new ArrayList<>();
+    private final Set<PdbInfo> allPDBFileInfoForProtein = new TreeSet<>(new ComparePdbInfoByResolution());
     private String proteinName;
     private String originalAccession;
     private String visibleAccession;
@@ -80,13 +79,12 @@ public class Protein implements ProteinInterface {
     }
 
     @Override
-    public List<PeptideGroup> getPeptideGroups() {
+    public List<PeptideGroup<PeptideInterface>> getPeptideGroups() {
         return Collections.unmodifiableList(peptideGroupsForProtein);
     }
 
-
     @Override
-    public <T extends PeptideGroup> void setPeptideGroupsForProtein(List<T> listOfPeptides) {
+    public <T extends PeptideGroup<PeptideInterface>> void setPeptideGroupsForProtein(List<T> listOfPeptides) {
         peptideGroupsForProtein.addAll(listOfPeptides);
     }
 
@@ -152,11 +150,16 @@ public class Protein implements ProteinInterface {
         if (obj != null) {
             if (getClass() == obj.getClass()) {
                 final Protein other = (Protein) obj;
-                if ((this.visibleAccession == null) ? (other.getVisibleAccession() != null) : this.visibleAccession.equals(other.getVisibleAccession())
-                        || (this.originalAccession == null) ? (other.getProteinAccession() != null) : this.originalAccession.equals(other.getProteinAccession())) {
-                    returnValue = true;
+
+                if (this.visibleAccession != null && other.getVisibleAccession() != null) {
+                    if (this.visibleAccession.equals(other.getVisibleAccession())) {
+                        returnValue = true;
+                    }
                 }
-                if (this.sequence == null && other.getProteinSequence() != null && !other.getProteinSequence().isEmpty() && !this.sequence.isEmpty()) {
+                if (this.originalAccession != null && other.getProteinAccession() != null) {
+                    returnValue = this.originalAccession.equals(other.getProteinAccession());
+                }
+                if (this.sequence != null && other.getProteinSequence() != null && !other.getProteinSequence().isEmpty() && !this.sequence.isEmpty()) {
                     if (this.sequence.equals(other.getProteinSequence())) {
                         returnValue = true;
                     }
@@ -178,14 +181,14 @@ public class Protein implements ProteinInterface {
     }
 
     @Override
-    public Protein addPeptideGroups(List<PeptideGroup> aListOfPeptideGroups) {
-        for (PeptideGroup aGroup : aListOfPeptideGroups) {
+    public Protein addPeptideGroups(List<PeptideGroup<PeptideInterface>> aListOfPeptideGroups) {
+        aListOfPeptideGroups.stream().forEach((aGroup) -> {
             if (!peptideGroupsForProtein.contains(aGroup)) {
                 peptideGroupsForProtein.add(aGroup);
             } else {
                 peptideGroupsForProtein.get(peptideGroupsForProtein.indexOf(aGroup)).addPeptides(aGroup.getPeptideList());
             }
-        }
+        });
         return this;
     }
 

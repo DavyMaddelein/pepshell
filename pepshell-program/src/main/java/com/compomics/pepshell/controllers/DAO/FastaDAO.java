@@ -72,6 +72,7 @@ public class FastaDAO {
         while (iterator.hasNext()) {
             T aParsedProtein = iterator.next();
             int index = listOfProteinsToMap.indexOf(aParsedProtein);
+            //if(listOfProteinsToMap.stream().anyMatch(aParsedProtein))
             if (index > -1) {
                 listOfProteinsToMap.get(index).setSequence(aParsedProtein.getProteinSequence());
                 listOfProteinsToMap.get(index).setProteinName(aParsedProtein.getProteinName());

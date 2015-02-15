@@ -163,6 +163,9 @@
               <Connection code="new DefaultListModel()" type="code"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Protein&gt;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

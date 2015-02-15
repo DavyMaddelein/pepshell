@@ -18,7 +18,6 @@ package com.compomics.pepshell.model;
 
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,7 +55,7 @@ public class QuantedPeptide extends Peptide {
     }
 
     public List<Double> getHeavy() {
-        return Collections.unmodifiableList(heavy);
+        return heavy;
     }
 
     public void addHeavy(Double heavy) {
@@ -64,7 +63,7 @@ public class QuantedPeptide extends Peptide {
     }
 
     public List<Double> getLight() {
-        return Collections.unmodifiableList(light);
+        return light;
     }
 
     public void addLight(Double light) {

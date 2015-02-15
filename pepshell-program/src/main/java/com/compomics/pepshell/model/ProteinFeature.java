@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.model.exceptions;
+package com.compomics.pepshell.model;
 
 /**
- * Created by Davy Maddelein on 04/12/2014.
+ * Created by Davy Maddelein on 12/02/2015.
  */
-public class CannotHandleException extends Exception {
+public class ProteinFeature {
 
-    public CannotHandleException(String explanation) {
-        super(explanation);
+    private final String description;
+
+    public ProteinFeature(String aDescription) {
+        description = aDescription;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

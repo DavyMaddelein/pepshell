@@ -17,7 +17,7 @@
 package com.compomics.pepshell.controllers.dataimport.filehandlers;
 
 /**
- * Created by svend on 03/12/2014.
+ * Created by Davy Maddelein on 03/12/2014.
  */
 public class HDXFileParser extends AbstractFileParser {
 

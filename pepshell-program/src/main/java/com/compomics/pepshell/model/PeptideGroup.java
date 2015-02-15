@@ -13,30 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.model;
 
+import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.model.exceptions.CalculationException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * grouping for peptides to keep same location peptides together and not clashing.
+ * @param <T> the type of peptides in this group
  * @author Davy Maddelein
  */
-public class PeptideGroup {
+public class PeptideGroup<T extends PeptideInterface> {
 
     private int startingAlignmentPosition;
     private int endAlignmentPostition;
     private int shortestPeptideIndex = -1;
-    private final List<Peptide> listOfPeptides = new ArrayList<>();
+    private final List<T> listOfPeptides = new ArrayList<>();
 
-    public PeptideGroup(Peptide aPeptide) {
+    public PeptideGroup(T aPeptide) {
         listOfPeptides.add(aPeptide);
         shortestPeptideIndex = 0;
     }
 
-    public Peptide getShortestPeptide() {
+    public T getShortestPeptide() {
         return listOfPeptides.get(shortestPeptideIndex);
     }
 
@@ -53,18 +54,24 @@ public class PeptideGroup {
     }
 
     public int getStartingAlignmentPosition() {
+        if (this.startingAlignmentPosition == -1 && this.getShortestPeptide() != null) {
+            return this.getShortestPeptide().getBeginningProteinMatch();
+        }
         return this.startingAlignmentPosition;
     }
 
     public int getEndAlignmentPosition() {
+        if (this.endAlignmentPostition == -1 && this.getShortestPeptide() != null) {
+            return this.getShortestPeptide().getEndProteinMatch();
+        }
         return this.endAlignmentPostition;
     }
 
-    public List<Peptide> getPeptideList() {
+    public List<T> getPeptideList() {
         return listOfPeptides;
     }
 
-    public PeptideGroup addPeptide(Peptide aPeptide) {
+    public PeptideGroup addPeptide(T aPeptide) {
         if (!listOfPeptides.contains(aPeptide)) {
             listOfPeptides.add(aPeptide);
         } else {
@@ -83,14 +90,27 @@ public class PeptideGroup {
         return this.getShortestPeptide().getSequence();
     }
 
-    public PeptideGroup addPeptides(List<Peptide> peptideList) {
-        for (Peptide aPeptide : peptideList) {
+    public PeptideGroup addPeptides(List<T> peptideList) {
+        peptideList.stream().forEach((aPeptide) -> {
             if (!listOfPeptides.contains(aPeptide)) {
                 listOfPeptides.add(aPeptide);
             } else {
+                PeptideInterface OGPeptide = listOfPeptides.get(listOfPeptides.indexOf(aPeptide));
+                if (!aPeptide.getTotalSpectrumIntensities().isEmpty()) {
+                    OGPeptide.getTotalSpectrumIntensities().addAll(aPeptide.getTotalSpectrumIntensities());
+                }
+                try {
+                    if (aPeptide instanceof QuantedPeptide && OGPeptide instanceof QuantedPeptide && ((QuantedPeptide) aPeptide).getRatio() > 0.0) {
+                        ((QuantedPeptide) aPeptide).getHeavy().addAll(((QuantedPeptide) aPeptide).getHeavy());
+                        ((QuantedPeptide) aPeptide).getLight().addAll(((QuantedPeptide) aPeptide).getLight());
+
+                    }
+                } catch (CalculationException ex) {
+                    FaultBarrier.getInstance().handleException(ex);
+                }
                 listOfPeptides.get(listOfPeptides.indexOf(aPeptide)).incrementTimesFound();
             }
-        }
+        });
         return this;
     }
 
@@ -114,5 +134,4 @@ public class PeptideGroup {
         final PeptideGroup other = (PeptideGroup) obj;
         return this.startingAlignmentPosition == other.getStartingAlignmentPosition() && this.endAlignmentPostition == other.getEndAlignmentPosition() && (other.getPeptideList() == null || other.getPeptideList().equals(this.getPeptideList()));
     }
-
 }

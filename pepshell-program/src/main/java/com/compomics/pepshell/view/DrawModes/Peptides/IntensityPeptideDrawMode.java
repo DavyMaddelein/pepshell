@@ -17,7 +17,7 @@
 package com.compomics.pepshell.view.DrawModes.Peptides;
 
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.Peptide;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
@@ -33,12 +33,12 @@ import java.awt.Point;
  *
  * @author Davy Maddelein
  */
-public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Protein, Peptide> implements GradientDrawModeInterface<Protein, Peptide> {
+public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Protein, PeptideInterface> implements GradientDrawModeInterface<Protein, PeptideInterface> {
 
     private double maxIntensity = 5.0;
 
     @Override
-    public void drawPeptide(Peptide peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawPeptide(PeptideInterface peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         try {
             g.setColor(calculatePeptideGradient(peptide));
         } catch (CalculationException ex) {
@@ -59,8 +59,8 @@ public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pro
     }
 
     @Override
-    public Color calculatePeptideGradient(Peptide peptide) throws CalculationException {
-        int colorValue = (int) Math.floor(255 * (peptide.getTotalSpectrumIntensity() / maxIntensity));
+    public Color calculatePeptideGradient(PeptideInterface peptide) throws CalculationException {
+        int colorValue = (int) Math.floor(255 * ((peptide.getTotalSpectrumIntensities().stream().reduce(0.0, Double::sum)) / peptide.getTotalSpectrumIntensities().size() / maxIntensity));
         if (colorValue > 255 || colorValue < 0) {
             throw new CalculationException("the range of colours was exceeded \n value was " + colorValue);
         }

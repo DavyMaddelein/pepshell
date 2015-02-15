@@ -17,7 +17,7 @@
 package com.compomics.pepshell.model.exceptions;
 
 /**
- * Created by svend on 03/12/2014.
+ * Created by Davy Maddelein on 03/12/2014.
  */
 public class CouldNotParseException extends Exception {
     public CouldNotParseException(String reason){

@@ -77,15 +77,16 @@ public class ExtraMetaDataAnnotatorPanel extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
         setEnabled(false);
-        setMaximumSize(new java.awt.Dimension(500, 100));
-        setMinimumSize(new java.awt.Dimension(500, 100));
-        setPreferredSize(new java.awt.Dimension(500, 100));
+        setMaximumSize(new java.awt.Dimension(200, 80));
+        setMinimumSize(new java.awt.Dimension(200, 100));
+        setPreferredSize(new java.awt.Dimension(200, 100));
         setLayout(new java.awt.GridBagLayout());
 
         possibleMetaDataLabel.setText("possible meta data");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 23, 0, 23);
         add(possibleMetaDataLabel, gridBagConstraints);
 
         addRowButton.setText("add another row");
@@ -100,6 +101,8 @@ public class ExtraMetaDataAnnotatorPanel extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.insets = new java.awt.Insets(0, 22, 0, 22);
         add(addRowButton, gridBagConstraints);
+
+        metaDataRowPanel1.setMinimumSize(new java.awt.Dimension(100, 50));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -160,6 +163,8 @@ public class ExtraMetaDataAnnotatorPanel extends javax.swing.JPanel {
         add(deleteRowButton, constraints);
         addedMetaDataRow.getComponent().requestFocus();
         int height = 0;
+
+        //todo fix this to n metadatarow panels + label height + add row button height
         for (Component aComponent : this.getComponents()) {
             height += aComponent.getHeight();
         }

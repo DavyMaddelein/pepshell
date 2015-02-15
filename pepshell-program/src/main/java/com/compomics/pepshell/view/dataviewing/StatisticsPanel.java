@@ -20,9 +20,11 @@ import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.Protein;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  *
@@ -133,20 +135,20 @@ class StatisticsPanel extends javax.swing.JPanel {
 
         private void peptideLengthDistribution(AnalysisGroup aGroup) {
             HashMap<Integer, HashSet<Protein>> distribution = new HashMap<>();
-            //for for for for for for for for
-            for (Experiment aProject : aGroup.getExperiments()) {
-                for (Protein aProtein : aProject.getProteins()) {
+            for (Iterator<Experiment> it = aGroup.getExperiments().iterator(); it.hasNext(); ) {
+                Experiment aProject = it.next();
+                aProject.getProteins().stream().forEach((aProtein) -> {
                     for (PeptideGroup aPeptideGroup : aProtein.getPeptideGroups()) {
-                        for (Peptide aPeptide : aPeptideGroup.getPeptideList()) {
-                            //todo make an incremental hashmap so this gets less wordy
+                        for (Iterator<PeptideInterface> it2 = aPeptideGroup.getPeptideList().iterator(); it.hasNext(); ) {
+                            PeptideInterface aPeptide = it2.next();
                             if (distribution.containsKey(aPeptide.getSequence().length())) {
                                 distribution.get(aPeptide.getSequence().length()).add(aProtein);
                             } else {
-                                distribution.put(aPeptide.getSequence().length(), new HashSet<Protein>());
+                                distribution.put(aPeptide.getSequence().length(), new HashSet<>());
                             }
                         }
                     }
-                }
+                });
             }
         }
     }

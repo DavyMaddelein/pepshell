@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.controllers.DAO.Iterators;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 
 import java.io.*;
@@ -25,48 +25,83 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * an Iterator to parse a fasta a sequence at a time, to avoid loading everything into memory
- * Created by Davy Maddelein on 07/01/2015.
+ * an Iterator to parse a fasta one sequence at a time, to avoid loading
+ * everything into memory Created by Davy Maddelein on 07/01/2015.
+ *
  * @param <T> a Pepshell compatible {@link Protein}
  */
 public class FastaIterator<T extends Protein> implements Iterator<Protein> {
 
-    private LineNumberReader lineReader;
+    private BufferedReader lineReader;
+    private String header = "";
 
-    public FastaIterator(File aFastaFile) throws IOException {
+
+    /**
+     * a fasta iterator for parsing a fasta file
+     *
+     * @param aFastaFile the file to parse
+     * @throws FastaCouldNotBeReadException if the file does not adhere to the definition of a fasta
+     */
+    public FastaIterator(File aFastaFile) throws FastaCouldNotBeReadException {
         try {
-            lineReader = new LineNumberReader(new FileReader(aFastaFile));
+            lineReader = new BufferedReader(new FileReader(aFastaFile));
         } catch (IOException ioe) {
             throw new FastaCouldNotBeReadException(ioe.getMessage(), aFastaFile.getName());
         }
     }
 
+    /**
+     * a fasta iterator for parsing a stream of characters in fasta format, reaching the end of the iterator will close the stream
+     *
+     * @param streamIn the stream to parse
+     */
+    public FastaIterator(InputStream streamIn) {
+        lineReader = new BufferedReader(new InputStreamReader(streamIn));
+    }
 
     /**
-     * Returns {@code true} if the iteration has more elements.
-     * (In other words, returns {@code true} if {@link #next} would
-     * return an element rather than throwing an exception.)
+     * a fasta iterator for parsing a reader reading in stream of data in fasta format, reaching the end of the reader will close the reader
+     *
+     * @param reader
+     */
+    public FastaIterator(BufferedReader reader) {
+        lineReader = reader;
+
+    }
+
+    /**
+     * not the way I wanted to do it, see mark and reset in buffered readers but this works too
+     * <p/>
+     * Returns {@code true} if the iteration has more elements. (In other words,
+     * returns {@code true} if {@link #next} would return an element rather than
+     * throwing an exception.)
      *
      * @return {@code true} if the iteration has more elements
      */
     @Override
     public boolean hasNext() {
-        boolean returnvalue;
+        boolean hasMore;
         try {
-            lineReader.mark(Integer.MAX_VALUE);
-            String line = lineReader.readLine();
-            if (line != null && line.contains(">")) {
-                returnvalue = true;
+            String line = header;
+            if (line != null) {
+                if (line.isEmpty()) {
+                    line = lineReader.readLine();
+                }
+                if (line.startsWith(">")) {
+                    header = line;
+                    hasMore = true;
+                } else {
+                    throw new CouldNotParseException("file contains non fasta lines");
+                }
             } else {
                 lineReader.close();
-                returnvalue = false;
+                hasMore = false;
             }
-            lineReader.reset();
-        } catch (IOException e) {
-            returnvalue = false;
-            FaultBarrier.getInstance().handleException(e);
+        } catch (IOException | NullPointerException | CouldNotParseException e) {
+            hasMore = false;
+            FaultBarrier.getInstance().handleException(e, true);
         }
-        return returnvalue;
+        return hasMore;
     }
 
     /**
@@ -80,27 +115,24 @@ public class FastaIterator<T extends Protein> implements Iterator<Protein> {
         T aParsedProtein = null;
         try {
             String fastaLine = lineReader.readLine();
-            String header = "";
             String name = "";
             StringBuilder sequence = new StringBuilder();
             while (fastaLine != null) {
-                lineReader.mark(0);
                 if (fastaLine.contains(">")) {
-                    if (!header.isEmpty() && sequence.length() != 0) {
-                        aParsedProtein = (T) new Protein(header, sequence.toString());
-                        aParsedProtein.setProteinName(name);
-                        lineReader.reset();
-                        break;
-                    }
-                    header = fastaLine.substring(fastaLine.indexOf("|") + 1, fastaLine.indexOf("|", fastaLine.indexOf("|") + 1));
-                    name = fastaLine.substring(fastaLine.lastIndexOf("|") + 1, fastaLine.length() - 1);
-                    if (name.isEmpty()) {
-                        name = header;
-                    }
+                    break;
                 } else {
                     sequence.append(fastaLine);
                 }
                 fastaLine = lineReader.readLine();
+            }
+
+            if (!header.isEmpty() && sequence.length() != 0) {
+                name = header.substring(1, header.indexOf("|", header.indexOf("|") + 1));
+                if (name.isEmpty()) {
+                    name = header;
+                }
+                aParsedProtein = (T) new Protein(name, sequence.toString());
+                header = fastaLine;
             }
         } catch (IOException e) {
             NoSuchElementException ex = new NoSuchElementException();
@@ -108,10 +140,11 @@ public class FastaIterator<T extends Protein> implements Iterator<Protein> {
             try {
                 lineReader.close();
             } catch (IOException ioe) {
-
+                FaultBarrier.getInstance().handleExceptionAndSendMail(ioe);
             }
             throw ex;
         }
+
         return aParsedProtein;
     }
 }

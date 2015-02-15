@@ -16,6 +16,9 @@
 
 package com.compomics.pepshell.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Davy Maddelein
@@ -27,7 +30,7 @@ public class Peptide implements PeptideInterface {
     private int endProteinMatch = -1;
     private int timesFound = 0;
     private boolean isMiscleaved;
-    private double totalSpectrumIntensity = 0.0;
+    private List<Double> totalSpectrumIntensity = new ArrayList<>();
     private double probability;
 
     /**
@@ -39,9 +42,9 @@ public class Peptide implements PeptideInterface {
         this.sequence = sequence;
     }
 
-    public Peptide(String sequence, double totalSpectrumIntensity) {
+    public Peptide(String sequence, Double aSpectrumIntensity) {
         this.sequence = sequence;
-        this.totalSpectrumIntensity = totalSpectrumIntensity;
+        totalSpectrumIntensity.add(aSpectrumIntensity);
     }
 
     @Override
@@ -95,13 +98,13 @@ public class Peptide implements PeptideInterface {
     }
 
     @Override
-    public double getTotalSpectrumIntensity() {
+    public List<Double> getTotalSpectrumIntensities() {
         return totalSpectrumIntensity;
     }
 
     @Override
-    public void setTotalSpectrumIntensity(double totalSpectrumIntensity) {
-        this.totalSpectrumIntensity = totalSpectrumIntensity;
+    public void addTotalSpectrumIntensity(Double aTotalSpectrumIntensity) {
+        totalSpectrumIntensity.add(aTotalSpectrumIntensity);
     }
 
     @Override

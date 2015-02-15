@@ -30,20 +30,21 @@ import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.SortedSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- *
- * @author Davy Maddelein
  * @param <T>
  * @param <U>
+ * @author Davy Maddelein
  */
 public class HydrophobicityProteinDrawMode<T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
-    private SortedSet<Color> colorLegend;
+    private List<Color> colorLegend = new ArrayList();
 
     @Override
     public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
@@ -68,24 +69,20 @@ public class HydrophobicityProteinDrawMode<T extends Protein, U extends Peptide>
     public void drawColorLegend(Point legendStartPoint, Graphics g) {
         //order colors by red value
         if (colorLegend == null) {
-            Ordering<Color> colorOrdering = Ordering.natural().onResultOf(getRedValue);
-            colorLegend = ImmutableSortedSet.orderedBy(colorOrdering).addAll(HydrophobicityMaps.getCurrentHydrophobicityMap().values()).build();
+            HydrophobicityMaps.getCurrentHydrophobicityMap().values().stream()
+                    .sorted().distinct().forEach((sortedColor) -> {
+                g.setColor(sortedColor);
+                g.fillRect(legendStartPoint.x + colorLegend.size() * 5, legendStartPoint.y, 5, ProgramVariables.VERTICALSIZE);
+                colorLegend.add(sortedColor);
+            });
         }
-        int colorCounter = 0;
-        for (Color aColor : colorLegend) {
-            g.setColor(aColor);
-            g.fillRect(legendStartPoint.x + colorCounter, legendStartPoint.y, 5, ProgramVariables.VERTICALSIZE);
-            colorCounter += 5;
-        }
+        colorLegend.stream().forEach((sortedColor) -> {
+            g.setColor(sortedColor);
+            g.fillRect(legendStartPoint.x + colorLegend.indexOf(sortedColor) * 5, legendStartPoint.y, 5, ProgramVariables.VERTICALSIZE);
+        });
+
         g.setColor(Color.black);
         g.drawString("acidic", legendStartPoint.x, legendStartPoint.y + 25);
-        g.drawString("basic", legendStartPoint.x + colorCounter - 5, legendStartPoint.y + 25);
+        g.drawString("basic", legendStartPoint.x + colorLegend.size() * 5 - 5, legendStartPoint.y + 25);
     }
-
-    private Function<Color, Integer> getRedValue = new Function<Color, Integer>() {
-        @Override
-        public Integer apply(Color input) {
-            return input.getRed();
-        }
-    };
 }

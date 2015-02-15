@@ -16,6 +16,7 @@
 
 package com.compomics.pepshell.view.dataloading;
 
+import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import com.compomics.pepshell.model.Protein;
@@ -29,8 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.swing.JFileChooser;
-import org.apache.log4j.Logger;
+
+import com.compomics.pepshell.view.components.JFileChooserWithMemory;
 
 /**
  *
@@ -38,7 +39,6 @@ import org.apache.log4j.Logger;
  */
 public class AccessionMaskDialog extends javax.swing.JDialog {
 
-    private static final Logger LOGGER = Logger.getLogger(AccessionMaskDialog.class);
     private static Map<Protein, String> maskMap = new HashMap<>();
     private boolean accept = false;
 
@@ -294,8 +294,8 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
         FileWriter saveWriter = null;
         try {
             // TODO add your handling code here:
-            JFileChooser accessionMaskSaver = new JFileChooser(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
-            accessionMaskSaver.setDialogType(JFileChooser.SAVE_DIALOG);
+            JFileChooserWithMemory accessionMaskSaver = new JFileChooserWithMemory(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+            accessionMaskSaver.setDialogType(JFileChooserWithMemory.SAVE_DIALOG);
             accessionMaskSaver.setMultiSelectionEnabled(false);
             accessionMaskSaver.showOpenDialog(this);
             File saveFile = accessionMaskSaver.getSelectedFile();
@@ -305,7 +305,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
                 saveWriter.append(anAccessionMaskingEntry.getKey().getOriginalAccession()).append("=").append(anAccessionMaskingEntry.getValue()).append("\n");
             }
         } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            FaultBarrier.getInstance().handleException(ex);
         } finally {
             try {
                 if (saveWriter != null) {
@@ -313,14 +313,14 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
                     saveWriter.close();
                 }
             } catch (IOException ex) {
-                LOGGER.error(ex.getMessage(), ex);
+                FaultBarrier.getInstance().handleException(ex);
             }
         }
     }//GEN-LAST:event_loadFileMenuItemActionPerformed
 
     private void exportFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFileMenuItemActionPerformed
-        JFileChooser accessionMaskingChooser = new JFileChooser(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
-        accessionMaskingChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        JFileChooserWithMemory accessionMaskingChooser = new JFileChooserWithMemory(ProgramProperties.getInstance().getProperty(ExportPropertyEnum.LASTACCESSIONMASKEXPORTFOLDER.getKey()));
+        accessionMaskingChooser.setFileSelectionMode(JFileChooserWithMemory.FILES_ONLY);
         accessionMaskingChooser.showOpenDialog(this);
         File selectedFile = accessionMaskingChooser.getSelectedFile();
         try {
@@ -332,7 +332,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
                 }
             }
         } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            FaultBarrier.getInstance().handleException(ex);
         }
     }//GEN-LAST:event_exportFileMenuItemActionPerformed
 

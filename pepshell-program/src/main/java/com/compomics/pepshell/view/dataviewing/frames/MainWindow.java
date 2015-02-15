@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.compomics.pepshell.view.dataviewing.frames;
 
 import com.compomics.pepshell.DataModeController;
@@ -62,7 +61,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private ComboBoxModel experimentComboBoxModel;
 
     public MainWindow() {
-        faultBarrier = FaultBarrier.getInstance();
         initComponents();
 //        downloadBar.setVisible(false);
         this.setLocationRelativeTo(null);
@@ -83,6 +81,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
                 @Override
                 protected Void doInBackground() throws Exception {
                     prep.retrieveData(referenceExperiment);
+                    if (referenceExperiment.getProteins().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "There seems to be no proteins in the reference experiment.\nThis means there are no proteins to be shown in the display");
+                    }
                     return null;
                 }
 
@@ -117,6 +118,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
 //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
         proteinsToDisplay = referenceExperiment.getProteins();
+
         proteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
         proteinListScrollPane.setViewportView(proteinList);
         pdbProteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
@@ -146,7 +148,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             if (((UpdateMessage) o1).repaint()) {
                 proteinsToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins();
                 proteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
-                pdbProteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()   ]));
+                pdbProteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
                 proteinList1.setListData(proteinsToDisplay.toArray());
                 this.repaint();
             }
@@ -162,13 +164,13 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         mainViewPanel = new javax.swing.JPanel();
         proteinsOverviewPanel = new javax.swing.JPanel();
         proteinListScrollPane = new javax.swing.JScrollPane();
-        proteinList = new javax.swing.JList<>();
+        proteinList = new javax.swing.JList<Protein>();
         filterTextField = new javax.swing.JTextField();
         proteinDetailPanel = new com.compomics.pepshell.view.dataviewing.ProteinDetailPanel();
         pdbViewPanel = new javax.swing.JPanel();
         pdbProteinsOverviewPanel = new javax.swing.JPanel();
         pdbProteinListScrollPane = new javax.swing.JScrollPane();
-        pdbProteinList = new javax.swing.JList();
+        pdbProteinList = new javax.swing.JList<Protein>();
         jmolPanel = new com.compomics.pepshell.view.dataviewing.JmolPanel();
         experimentComboBox = new javax.swing.JComboBox();
         statisticsPanel = new javax.swing.JPanel();
@@ -188,6 +190,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         uniProtRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         originalAccessionRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         setAccessionMaskOption = new javax.swing.JMenuItem();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         preferencesMenu = new javax.swing.JMenu();
         jMenu1 = new javax.swing.JMenu();
         ph5CheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
@@ -491,6 +494,15 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
         ViewOptionsMenu.add(accessionMenuItem);
 
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("show only proteins found in reference");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
+        ViewOptionsMenu.add(jCheckBoxMenuItem1);
+
         jMenuBar1.add(ViewOptionsMenu);
 
         preferencesMenu.setText("Preferences...");
@@ -583,7 +595,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             proteinDetailPanel.updateProteinGraphics(proteinOfInterest);
         } catch (SQLException ex) {
             faultBarrier.handleException(ex);
-            JOptionPane.showMessageDialog(null, "there has been a connection error while retrieving the protein sequence:\n" + ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "there has been a connection error while retrieving the protein sequence:\n" + ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         } catch (NullPointerException ex) {
             faultBarrier.handleException(ex);
         }
@@ -694,7 +706,6 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void proteinList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinList1MouseReleased
         // TODO add your handling code here:
-
         statisticsTabbedPane.setGraphData((Protein) proteinList1.getSelectedValue());
     }//GEN-LAST:event_proteinList1MouseReleased
 
@@ -709,7 +720,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private void ph5CheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ph5CheckBoxMenuItemActionPerformed
         // TODO add your handling code here:
         if (ph5CheckBoxMenuItem.isSelected()) {
-
+            //HydrophobicityMaps.setCurrentHydrophobicityMap(HydrophobicityMaps.hydrophobicityMapPh5);
+            proteinDetailPanel.repaint();
         }
     }//GEN-LAST:event_ph5CheckBoxMenuItemActionPerformed
 
@@ -722,6 +734,20 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     }//GEN-LAST:event_pH7CheckBoxMenuItem2ActionPerformed
 
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBoxMenuItem1.isSelected()) {
+            Protein[] listToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins().toArray(new Protein[proteinDetailPanel.getReferenceExperiment().getProteins().size()]);
+            proteinList.setListData(listToDisplay);
+            pdbProteinList.setListData(listToDisplay);
+            proteinList1.setListData(listToDisplay);
+        } else {
+            proteinDetailPanel.getReferenceExperiment().getProteins();
+            //proteinDetailPanel.get
+
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu ViewOptionsMenu;
     private javax.swing.JMenu accessionMenuItem;
@@ -731,6 +757,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JTextField filterTextField;
     private javax.swing.JTextField filterTextField1;
     private javax.swing.ButtonGroup hydroPhobicityButtonGroup;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private com.compomics.pepshell.view.dataviewing.JmolPanel jmolPanel;

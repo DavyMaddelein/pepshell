@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.CharBuffer;
 
@@ -38,7 +39,7 @@ public class WebUtils {
      * @return the page at the url in textual form
      * @throws IOException
      */
-    public static String getHTMLPage(String aUrl) throws IOException {
+    public static String getPage(String aUrl) throws IOException {
         StringBuilder input = new StringBuilder();
         String htmlPage;
         try (Reader r = openReader(aUrl)) {
@@ -64,5 +65,13 @@ public class WebUtils {
         HttpURLConnection c = (HttpURLConnection) myURL.openConnection();
         c.setConnectTimeout(500);
         return new BufferedReader(new InputStreamReader(new BufferedInputStream(c.getInputStream()), "UTF-8"));
+    }
+
+    public static BufferedInputStream openStream(String aURL) throws IOException {
+        URL myURL = new URL(aURL);
+        HttpURLConnection c = (HttpURLConnection) myURL.openConnection();
+        c.setConnectTimeout(500);
+        return new BufferedInputStream(c.getInputStream());
+
     }
 }

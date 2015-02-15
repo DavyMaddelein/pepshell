@@ -25,6 +25,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
@@ -64,7 +65,7 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
                 XYSeries anExperimentSeries = new XYSeries(anExperiment.getExperimentName());
                 Protein experimentProtein = anExperiment.getProteins().get(proteinIndex);
                 for (PeptideGroup aGroup : experimentProtein.getPeptideGroups()) {
-                    Peptide shortestPeptide = aGroup.getShortestPeptide();
+                    PeptideInterface shortestPeptide = aGroup.getShortestPeptide();
 
                     try {
                         if (shortestPeptide instanceof QuantedPeptide && ((QuantedPeptide) shortestPeptide).getRatio() != null) {
