@@ -28,7 +28,7 @@ public class Protein implements ProteinInterface {
     private String accession;
     private int projectId;
     private String sequence = "";
-    private final List<Domain> domainsFoundInProtein = new ArrayList<>();
+    private final List<ProteinFeatureWithLocation> domainsFoundInProtein = new ArrayList<>();
     private final List<PeptideGroup<PeptideInterface>> peptideGroupsForProtein = new ArrayList<>();
     private final Set<PdbInfo> allPDBFileInfoForProtein = new TreeSet<>(new ComparePdbInfoByResolution());
     private String proteinName;
@@ -69,12 +69,12 @@ public class Protein implements ProteinInterface {
     }
 
     @Override
-    public List<Domain> getDomains() {
+    public List<ProteinFeatureWithLocation> getDomains() {
         return Collections.unmodifiableList(domainsFoundInProtein);
     }
 
     @Override
-    public void addDomains(List<Domain> domainsToAdd) {
+    public void addDomains(List<ProteinFeatureWithLocation> domainsToAdd) {
         this.domainsFoundInProtein.addAll(domainsToAdd);
     }
 

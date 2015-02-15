@@ -38,7 +38,7 @@ public class ProteinFeatureWithLocation extends ProteinFeature {
         return endPosition;
     }
 
-    public int getStartPostion() {
+    public int getStartPosition() {
         return startPostion;
     }
 }

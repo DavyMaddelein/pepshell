@@ -27,11 +27,14 @@ import com.compomics.pepshell.controllers.secondarystructureprediction.UniprotSe
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -77,8 +80,8 @@ public class LinkDb<T extends Protein> implements StructureDataSource<T> {
 
     //todo, add domain data for protein to link db
     @Override
-    public List<Domain> getDomainData(T aProtein) throws DataRetrievalException {
-        List<Domain> foundDomains = new ArrayList<>();
+    public List<ProteinFeatureWithLocation> getDomainData(T aProtein) throws DataRetrievalException {
+        List<ProteinFeatureWithLocation> foundDomains = new ArrayList<>();
         //try and get from link db, 
         if (foundDomains.isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
             try {
@@ -86,8 +89,10 @@ public class LinkDb<T extends Protein> implements StructureDataSource<T> {
                 if (foundDomains.isEmpty()) {
                     foundDomains = ExternalDomainFinder.getDomainsFromAllSitesForUniprotAccession(AccessionConverter.toUniprot(aProtein.getVisibleAccession()));
                 }
-            } catch (IOException | ConversionException | XMLStreamException ex) {
+            } catch (IOException | ConversionException | XMLStreamException | SAXException ex) {
                 throw new DataRetrievalException(ex.getMessage(), ex);
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
             }
         }
         return foundDomains;
@@ -273,7 +278,7 @@ public class LinkDb<T extends Protein> implements StructureDataSource<T> {
             ResultSet rs = stat.executeQuery();
             try {
                 while (rs.next()) {
-                    PdbInfo info = new PdbInfo();
+                    PdbInfo info = new PdbInfo(rs.getString("PDB"));
                     info.setMethod(rs.getString("technique"));
                     info.setPdbAccession(rs.getString("PDB"));
                     info.setName(rs.getString("title"));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 svend.
+ * Copyright 2014 Davy Maddelein.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author svend
+ * @author Davy Maddelein
  */
 public class HDXFileValidatorTest {
     

@@ -17,9 +17,9 @@
 package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.ProteinFeatureWithLocation;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
@@ -45,8 +45,8 @@ public class DomainProteinDrawMode<T extends Protein, U extends Peptide> extends
         //g.drawLine(startPoint.x, startPoint.y + (height / 2), length, startPoint.y + (height / 2));
         ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,proteinAlpha));
         Point domainStartPoint = (Point) startPoint.clone();
-        for (Domain domain : protein.getDomains()) {
-            int scaledLength = DrawModeUtilities.getInstance().scale(domain.getStopPosition() - domain.getStartPosition());
+        for (ProteinFeatureWithLocation domain : protein.getDomains()) {
+            int scaledLength = DrawModeUtilities.getInstance().scale(domain.getEndPosition() - domain.getStartPosition());
             domainStartPoint.x = DrawModeUtilities.getInstance().scale(domain.getStartPosition());
             drawDomain(domain, g, domainStartPoint, scaledLength, height);
 
@@ -54,10 +54,10 @@ public class DomainProteinDrawMode<T extends Protein, U extends Peptide> extends
         ((Graphics2D)g).setComposite(originalComposite);
     }
 
-    void drawDomain(Domain domain, Graphics g, Point domainStartPoint, int length, int height) {
+    void drawDomain(ProteinFeatureWithLocation domain, Graphics g, Point domainStartPoint, int length, int height) {
         g.setColor(ProgramVariables.DOMAINCOLOR);
         g.fillRect(domainStartPoint.x, domainStartPoint.y, length, height);
         g.setColor(Color.BLACK);
-        g.drawString(domain.getDomainName(), domainStartPoint.x, domainStartPoint.y);
+        g.drawString(domain.getDescription(), domainStartPoint.x, domainStartPoint.y);
     }
 }

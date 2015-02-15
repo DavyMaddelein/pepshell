@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.compomics.pepshell.controllers;
 
 import java.util.ArrayList;
@@ -59,8 +60,6 @@ public class AccessionConverterTest {
         List<String> expResult = new ArrayList<>();
         List<String> result = AccessionConverter.spToUniProt(aSpAccession);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -69,12 +68,10 @@ public class AccessionConverterTest {
     @Test
     public void testRefSeqToSp() throws Exception {
         System.out.println("refSeqToSp");
-        String aNcbiAccession = "";
+        String aNcbiAccession = "NP_001119584.1.";
         List<String> expResult = null;
         List<String> result = AccessionConverter.refSeqToSp(aNcbiAccession);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -87,8 +84,6 @@ public class AccessionConverterTest {
         List<String> expResult = null;
         List<String> result = AccessionConverter.spToRefSeq(aSpAccession);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -101,8 +96,6 @@ public class AccessionConverterTest {
         List<String> expResult = new ArrayList<>();
         List<String> result = AccessionConverter.uniProtToSp(aUniprotAccession);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -115,8 +108,6 @@ public class AccessionConverterTest {
         List<String> expResult = new ArrayList<>();
         List<String> result = AccessionConverter.uniProtToRefSeq(aUniprotAccession);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -125,12 +116,10 @@ public class AccessionConverterTest {
     @Test
     public void testGIToUniprot() throws Exception {
         System.out.println("GIToUniprot");
-        String GINumber = "";
+        String GINumber = "114326272";
         String expResult = "";
         String result = AccessionConverter.GIToUniprot(GINumber);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -149,9 +138,6 @@ public class AccessionConverterTest {
         accession = "";
         result = AccessionConverter.toUniprot(accession);
         assertEquals(expResult, result);
-
-// TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
 }

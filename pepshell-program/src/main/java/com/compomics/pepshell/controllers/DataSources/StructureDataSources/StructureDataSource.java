@@ -43,7 +43,7 @@ public interface StructureDataSource<T extends ProteinInterface> extends Abstrac
      * @return
      * @throws com.compomics.pepshell.model.exceptions.DataRetrievalException
      */
-    public List<Domain> getDomainData(T aProtein) throws DataRetrievalException;
+    public List<ProteinFeatureWithLocation> getDomainData(T aProtein) throws DataRetrievalException;
 
     /**
      *

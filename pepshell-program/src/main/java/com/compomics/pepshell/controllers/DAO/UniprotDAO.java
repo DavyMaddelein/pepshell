@@ -17,7 +17,6 @@
 package com.compomics.pepshell.controllers.DAO;
 
 import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
-import com.compomics.pepshell.model.Domain;
 import com.compomics.pepshell.model.ProteinFeatureWithLocation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,8 +29,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +37,7 @@ import java.util.Map;
 /**
  * @author Davy Maddelein
  */
-class UniprotDAO {
+public class UniprotDAO {
 
     public static String fetchSequenceFromUniprot(String accession) throws IOException {
         StringBuilder sequence = new StringBuilder();

@@ -43,7 +43,7 @@ public class ExternalStructureDataSource<T extends Protein> implements Structure
      * @throws com.compomics.pepshell.model.exceptions.DataRetrievalException
      */
     @Override
-    public List<Domain> getDomainData(T aProtein) throws DataRetrievalException {
+    public List<ProteinFeatureWithLocation> getDomainData(T aProtein) throws DataRetrievalException {
         return null;
     }
 

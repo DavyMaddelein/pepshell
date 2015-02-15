@@ -87,7 +87,7 @@ public class PDBDAO {
         while ((pdbLine = br.readLine()) != null) {
             if (!pdbLine.startsWith("#")) {
                 String[] pdbSplitLine = pdbLine.split("\t");
-                PdbInfo info = new PdbInfo();
+                PdbInfo info = new PdbInfo(pdbSplitLine[3]);
                 info.setUniprotAccession(pdbSplitLine[0]);
                 info.setPdbAccession(pdbSplitLine[3]);
                 info.setName(pdbSplitLine[4]);
@@ -97,15 +97,18 @@ public class PDBDAO {
         return pdbFilesToReturn;
     }
 
-    public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException {
-        PdbInfo info = new PdbInfo();
+    //TODO change this to actual xml parsing so we don't have to throw nullpointers around
+    public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException, NullPointerException {
+        PdbInfo info = null;
         BufferedReader br = WebUtils.openReader("http://www.pdb.org/pdb/rest/describePDB?structureId=" + pdbAccession);
         String pbdDescription = br.readLine();
         String[] splitXML = pbdDescription.split(" ");
         for (String anXMLPart : splitXML) {
             if (anXMLPart.contains("structureId")) {
+                info = new PdbInfo(anXMLPart.split("=\"")[1].replaceAll("\"", ""));
                 info.setPdbAccession(anXMLPart.split("=\"")[1].replaceAll("\"", ""));
             }
+
             if (anXMLPart.contains("title")) {
                 info.setName(anXMLPart.split("=\"")[1].replaceAll("\"", ""));
             }

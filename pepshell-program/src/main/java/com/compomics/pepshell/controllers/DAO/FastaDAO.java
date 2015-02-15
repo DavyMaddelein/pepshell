@@ -97,10 +97,6 @@ public class FastaDAO {
                 new FastaIterator<>(aFastaFile).forEachRemaining((protein) -> experimentToAddProteinsTo.addProtein(protein));
             } catch (FastaCouldNotBeReadException ex) {
                 arex.addFastaReadingException(ex);
-            } catch (IOException ex) {
-                FastaCouldNotBeReadException fex = new FastaCouldNotBeReadException("there was a problem reading from the file");
-                fex.addSuppressed(ex);
-                arex.addFastaReadingException(fex);
             }
         });
         if (!arex.getExceptionList().isEmpty()) {

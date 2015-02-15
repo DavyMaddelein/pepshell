@@ -79,7 +79,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         //check after retrieval if any PDB info is available
         if (protein.getPdbFilesInfo().isEmpty()) {
             //add a default item
-            PdbInfo defaultPdbInfo = new PdbInfo();
+            PdbInfo defaultPdbInfo = new PdbInfo("no pdb files found");
             defaultPdbInfo.setPdbAccession("no pdb files found");
             pdbSelectionComboBox.addItem(defaultPdbInfo);
         } else {

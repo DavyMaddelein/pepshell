@@ -17,18 +17,18 @@ package com.compomics.pepshell.controllers.InfoFinders;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.controllers.DAO.DasParser;
-import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
-import com.compomics.pepshell.model.DAS.DasFeature;
-import com.compomics.pepshell.model.Domain;
+import com.compomics.pepshell.controllers.DAO.UniprotDAO;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.ProteinFeature;
+import com.compomics.pepshell.model.ProteinFeatureWithLocation;
 import com.compomics.pepshell.model.enums.DomainWebsitesEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -38,33 +38,29 @@ import javax.xml.stream.XMLStreamException;
 public class ExternalDomainFinder {
 
 
-    public static List<Domain> getDomainsForUniprotAccessionFromSingleSource(String aUniProtAccession, DomainWebsitesEnum aDomainWebSite) throws IOException, XMLStreamException {
+    public static List<ProteinFeatureWithLocation> getDomainsForUniprotAccessionFromSingleSource(String aUniProtAccession, DomainWebsitesEnum aDomainWebSite) throws IOException, XMLStreamException, ParserConfigurationException, SAXException {
 
-        List<Domain> foundDomains = new ArrayList<>();
-        List<DasFeature> features;
+        List<ProteinFeatureWithLocation> foundDomains = new ArrayList<>();
 
         if (aDomainWebSite == DomainWebsitesEnum.UNIPROT) {
 
-            features = DasParser.getAllDasFeatures(WebUtils.getPage(aDomainWebSite.getDomainURLString(aUniProtAccession)))
-                    .stream().filter(e -> e.getFeatureId().contains("DOMAIN")).collect(Collectors.toList());
+            foundDomains = UniprotDAO.getDomainsForAccession(aUniProtAccession);
+
         } else {
-            features = DasParser.getAllDasFeatures(WebUtils.getPage(aDomainWebSite.getDomainURLString(aUniProtAccession)));
+            //    features = DasParser.getAllDasFeatures(WebUtils.getPage(aDomainWebSite.getDomainURLString(aUniProtAccession)));
         }
-        features.stream().forEach((feature) -> {
-            foundDomains.add(new Domain(feature.getFeatureLabel(), feature.getStart(), feature.getEnd(), aDomainWebSite.toString()));
-            //smart.setId(features[j].getFeatureLabel());
-        });
         return foundDomains;
     }
 
-    public static List<Domain> getDomainsFromAllSitesForUniprotAccession(String aUniProtAccession) throws IOException, XMLStreamException {
-        List<Domain> foundDomains = new ArrayList<>();
+    public static List<ProteinFeatureWithLocation> getDomainsFromAllSitesForUniprotAccession(String aUniProtAccession) throws IOException, XMLStreamException {
+        List<ProteinFeatureWithLocation> foundDomains = new ArrayList<>();
         int failedSources = 0;
+
         if (ProgramVariables.USEINTERNETSOURCES) {
             for (DomainWebsitesEnum aDomainWebSite : DomainWebsitesEnum.values()) {
                 try {
                     foundDomains.addAll(getDomainsForUniprotAccessionFromSingleSource(aUniProtAccession, aDomainWebSite));
-                } catch (IOException ioe) {
+                } catch (IOException | ParserConfigurationException | SAXException ioe) {
                     failedSources++;
                 }
             }

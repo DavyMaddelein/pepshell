@@ -20,7 +20,7 @@ package com.compomics.pepshell.model;
  *
  * @author Davy Maddelein
  */
-public class PdbInfo {
+public class PdbInfo extends ProteinFeature {
 
     private String species;
     private String name;
@@ -29,7 +29,8 @@ public class PdbInfo {
     private Double resolution;
     private String method;
 
-    public PdbInfo() {
+    public PdbInfo(String description) {
+        super(description);
 
     }
 

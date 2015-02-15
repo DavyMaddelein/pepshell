@@ -16,12 +16,8 @@
 
 package com.compomics.pepshell.view.dataviewing.frames;
 
-import com.compomics.pepshell.model.Domain;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.*;
+
 import java.awt.MouseInfo;
 import java.util.Iterator;
 
@@ -38,10 +34,10 @@ class ProteinInfoFrame extends javax.swing.JFrame {
         initComponents();
         this.setLocation(MouseInfo.getPointerInfo().getLocation());
         proteinTextArea.setText(protein.getProteinAccession() + "\n" + protein.getProteinSequence());
-        for (Domain domainInProtein : protein.getDomains()) {
-            proteinTextArea.append("\n" + domainInProtein.getDomainName());
+        for (ProteinFeatureWithLocation domainInProtein : protein.getDomains()) {
+            proteinTextArea.append("\n" + domainInProtein.getDescription());
             proteinTextArea.append("\nDomain start: " + Integer.toString(domainInProtein.getStartPosition()));
-            proteinTextArea.append("\nDomain stop: " + Integer.toString(domainInProtein.getStopPosition()));
+            proteinTextArea.append("\nDomain stop: " + Integer.toString(domainInProtein.getEndPosition()));
         }
         this.setVisible(true);
     }

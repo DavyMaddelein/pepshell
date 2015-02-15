@@ -21,7 +21,6 @@ import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -55,7 +54,7 @@ public class DatabasePDBDAO extends PDBDAO {
             stat = DbConnectionController.getStructDBConnection().prepareStatement(SQLStatements.getPdbFilesFromDb());
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {
-                PdbInfo pdbInfo = new PdbInfo();
+                PdbInfo pdbInfo = new PdbInfo(rs.getString("PDB"));
                 pdbInfo.setPdbAccession(rs.getString("PDB"));
                 infoSet.add(pdbInfo);
             }
@@ -74,7 +73,7 @@ public class DatabasePDBDAO extends PDBDAO {
             //stat.setString(1,protein.getVisibleAccession);
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {
-                PdbInfo info = new PdbInfo();
+                PdbInfo info = new PdbInfo(rs.getString("PDB"));
                 info.setMethod(rs.getString("PDB"));
                 info.setName(rs.getString("title"));
                 info.setResolution(Double.parseDouble(rs.getString("resolution")));

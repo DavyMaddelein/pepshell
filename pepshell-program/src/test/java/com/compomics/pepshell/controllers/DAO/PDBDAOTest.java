@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.compomics.pepshell.controllers.DAO;
 
-import com.compomics.pepshell.controllers.DAO.DAUtils.FileUtils;
 import com.compomics.pepshell.model.PdbInfo;
 import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
 import java.io.File;
 import java.util.Set;
 import static org.hamcrest.CoreMatchers.*;
@@ -76,7 +75,7 @@ public class PDBDAOTest {
     @Test
     public void testGetPDBInfoForProtein() throws Exception {
         System.out.println("getPDBInfoForProtein");
-        ProteinInterface protein = new Protein("P04637");
+        Protein protein = new Protein("P04637");
         PDBDAO instance = PDBDAO.getInstance();
         Set<PdbInfo> expResult = null;
         Set<PdbInfo> result = instance.getPDBInfoForProtein(protein);
@@ -88,7 +87,7 @@ public class PDBDAOTest {
     @Test
     public void testGetFakePDBInfoForProtein() throws Exception {
         System.out.println("getPDBInfoForProtein");
-        ProteinInterface protein = new Protein("not a protein accession");
+        Protein protein = new Protein("not a protein accession");
         PDBDAO instance = PDBDAO.getInstance();
         Set<PdbInfo> result = instance.getPDBInfoForProtein(protein);
         assertThat(result.isEmpty(), is(true));

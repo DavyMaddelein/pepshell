@@ -26,7 +26,7 @@ import java.util.Set;
 public interface ProteinInterface {
     //TODO move the pepshell specific things to the protein object (like pdb info, domains, CPDT, ...)
 
-    void addDomains(List<Domain> domainsToAdd);
+    void addDomains(List<ProteinFeatureWithLocation> domainsToAdd);
 
     void addPdbFileInfo(Set<PdbInfo> allPDBFileNamesForProtein);
 
@@ -34,7 +34,7 @@ public interface ProteinInterface {
 
     Protein addPeptideGroups(List<PeptideGroup<PeptideInterface>> aListOfPeptideGroups);
 
-    List<Domain> getDomains();
+    List<ProteinFeatureWithLocation> getDomains();
 
     String getOriginalAccession();
 

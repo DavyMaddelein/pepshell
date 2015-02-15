@@ -16,12 +16,7 @@
 
 package com.compomics.pepshell.view.dataviewing;
 
-import com.compomics.pepshell.model.Domain;
-import com.compomics.pepshell.model.InteractionPartner;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -77,8 +72,8 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
             peptideStarts.add(tempPeptideStart);
             peptideEnds.add(tempPeptideEnd);
         }
-        for (Domain proteinDomains : protein.getDomains()) {
-            for (int j = proteinDomains.getStartPosition(); j <= proteinDomains.getStopPosition(); j++) {
+        for (ProteinFeatureWithLocation proteinDomains : protein.getDomains()) {
+            for (int j = proteinDomains.getStartPosition(); j <= proteinDomains.getEndPosition(); j++) {
                 domains[j]++;
             }
         }
