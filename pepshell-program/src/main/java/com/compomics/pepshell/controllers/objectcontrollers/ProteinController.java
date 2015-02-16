@@ -16,15 +16,19 @@
 
 package com.compomics.pepshell.controllers.objectcontrollers;
 
+import com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager;
 import com.compomics.pepshell.model.AminoAcidBiMap;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.ProteinInterface;
 
 /**
  *
  * @author Davy Maddelein
  */
 public class ProteinController {
+
+    private static ProteinStoreManager proteinStoreManager;
 
     /**
      * convenience method to run alignPeptidesOfProteins on all proteins in an
@@ -54,5 +58,15 @@ public class ProteinController {
             translatedSequence.append(AminoAcidBiMap.AminoAcidLetters.inverse().get(peptideSequence.substring(i, i + 3)));
         }
         return translatedSequence.toString();
+    }
+
+    /**
+     * retrieve the protein identified by the given accession from the protein store
+     *
+     * @param accession the protein accession to look in the store for
+     * @return the requested {@link ProteinInterface}
+     */
+    public static ProteinInterface getProtein(String accession) {
+        return proteinStoreManager.retrieveProteinByAccession(accession);
     }
 }
