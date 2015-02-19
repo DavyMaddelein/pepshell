@@ -13,108 +13,96 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.compomics.pepshell.model;
+package com.compomics.pepshell.model.protein.proteinimplementations;
 
 import com.compomics.pepshell.controllers.comparators.ComparePdbInfoByResolution;
+import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.protein.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinInfo;
 
 import java.util.*;
 
 /**
+ * protein class which can store all needed data for Pepshell
  * @author Davy Maddelein
  */
-public class Protein implements ProteinInterface {
+public class PepshellProtein implements ProteinInterface {
 
     private ProteinInfo proteinInfo = new ProteinInfo();
-    private String accession;
-    private int projectId;
+    protected String extraIdentifier;
     private String sequence = "";
     private final List<ProteinFeatureWithLocation> domainsFoundInProtein = new ArrayList<>();
-    private final List<PeptideGroup<PeptideInterface>> peptideGroupsForProtein = new ArrayList<>();
+    private final List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
     private final Set<PdbInfo> allPDBFileInfoForProtein = new TreeSet<>(new ComparePdbInfoByResolution());
     private String proteinName;
-    private String originalAccession;
-    private String visibleAccession;
+    protected String originalAccession;
+    protected String visibleAccession;
     private List<PeptideGroup> CPDTCleavageList = new ArrayList<>();
     private PdbInfo preferedPdbFile;
 
-    public Protein(String accession) {
-        this.accession = accession;
+    public PepshellProtein(String accession) {
         this.visibleAccession = accession;
         this.originalAccession = accession;
     }
 
-    public Protein(String accession, String sequence) {
+    public PepshellProtein(String accession, String sequence) {
         this(accession);
         this.sequence = sequence;
     }
 
-    @Override
     public String getProteinSequence() {
         return this.sequence;
     }
 
-    @Override
-    public String getProteinAccession() {
-        return this.accession;
-    }
-
-    @Override
     public String getProteinName() {
         return proteinName;
     }
 
-    @Override
     public void setProteinName(String aProteinName) {
         this.proteinName = aProteinName;
     }
 
-    @Override
     public List<ProteinFeatureWithLocation> getDomains() {
         return Collections.unmodifiableList(domainsFoundInProtein);
     }
 
-    @Override
     public void addDomains(List<ProteinFeatureWithLocation> domainsToAdd) {
         this.domainsFoundInProtein.addAll(domainsToAdd);
     }
 
-    @Override
-    public List<PeptideGroup<PeptideInterface>> getPeptideGroups() {
+    public List<? extends PeptideGroup> getPeptideGroups() {
         return Collections.unmodifiableList(peptideGroupsForProtein);
     }
 
-    @Override
-    public <T extends PeptideGroup<PeptideInterface>> void setPeptideGroupsForProtein(List<T> listOfPeptides) {
+    public void setPeptideGroupsForProtein(List<? extends PeptideGroup> listOfPeptides) {
         peptideGroupsForProtein.addAll(listOfPeptides);
     }
 
     @Override
-    public Protein addPeptideGroup(PeptideGroup aPeptideGroup) {
+    public void setExtraIdentifier(String anExtraIdentifier) {
+        this.extraIdentifier = anExtraIdentifier;
+    }
+
+    public PepshellProtein addPeptideGroup(PeptideGroup aPeptideGroup) {
         peptideGroupsForProtein.add(aPeptideGroup);
         return this;
     }
 
     @Override
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
+    public String getExtraIdentifier() {
+        return this.extraIdentifier;
     }
 
-    @Override
-    public int getProjectid() {
-        return this.projectId;
-    }
-
-    @Override
     public void setProteinInfo(ProteinInfo proteinInfo) {
         this.proteinInfo = proteinInfo;
     }
 
-    @Override
     public ProteinInfo getProteinInfo() {
         return this.proteinInfo;
     }
 
-    @Override
     public void setSequence(String sequence) {
         this.sequence = sequence;
     }
@@ -124,13 +112,11 @@ public class Protein implements ProteinInterface {
         return visibleAccession;
     }
 
-    @Override
     public void addPdbFileInfo(Set<PdbInfo> allPDBFileNamesForProtein) {
         this.allPDBFileInfoForProtein.clear();
         this.allPDBFileInfoForProtein.addAll(allPDBFileNamesForProtein);
     }
 
-    @Override
     public Set<PdbInfo> getPdbFilesInfo() {
         return Collections.unmodifiableSet(allPDBFileInfoForProtein);
     }
@@ -138,7 +124,7 @@ public class Protein implements ProteinInterface {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + (this.accession != null ? this.accession.hashCode() : 0);
+        hash = 59 * hash + (this.originalAccession != null ? this.originalAccession.hashCode() : 0);
         hash = 59 * hash + (this.visibleAccession != null ? this.visibleAccession.hashCode() : 0);
         hash = 59 * hash + (this.sequence != null ? this.sequence.hashCode() : 0);
         return hash;
@@ -149,15 +135,15 @@ public class Protein implements ProteinInterface {
         boolean returnValue = false;
         if (obj != null) {
             if (getClass() == obj.getClass()) {
-                final Protein other = (Protein) obj;
+                final PepshellProtein other = (PepshellProtein) obj;
 
                 if (this.visibleAccession != null && other.getVisibleAccession() != null) {
                     if (this.visibleAccession.equals(other.getVisibleAccession())) {
                         returnValue = true;
                     }
                 }
-                if (this.originalAccession != null && other.getProteinAccession() != null) {
-                    returnValue = this.originalAccession.equals(other.getProteinAccession());
+                if (this.originalAccession != null && other.getOriginalAccession() != null) {
+                    returnValue = this.originalAccession.equals(other.getOriginalAccession());
                 }
                 if (this.sequence != null && other.getProteinSequence() != null && !other.getProteinSequence().isEmpty() && !this.sequence.isEmpty()) {
                     if (this.sequence.equals(other.getProteinSequence())) {
@@ -171,8 +157,8 @@ public class Protein implements ProteinInterface {
     }
 
     @Override
-    public void setAccession(String anAccession) {
-        this.accession = anAccession;
+    public void setOriginalAccession(String anAccession) {
+        this.originalAccession = anAccession;
     }
 
     @Override
@@ -180,8 +166,7 @@ public class Protein implements ProteinInterface {
         return this.originalAccession;
     }
 
-    @Override
-    public Protein addPeptideGroups(List<PeptideGroup<PeptideInterface>> aListOfPeptideGroups) {
+    public PepshellProtein addPeptideGroups(List<? extends PeptideGroup> aListOfPeptideGroups) {
         aListOfPeptideGroups.stream().forEach((aGroup) -> {
             if (!peptideGroupsForProtein.contains(aGroup)) {
                 peptideGroupsForProtein.add(aGroup);
@@ -202,7 +187,6 @@ public class Protein implements ProteinInterface {
         this.visibleAccession = visibleAccession;
     }
 
-    @Override
     public void setCPDTPeptideList(List<PeptideGroup> CPDTList) {
         this.CPDTCleavageList.clear();
         this.CPDTCleavageList.addAll(CPDTList);
@@ -216,15 +200,14 @@ public class Protein implements ProteinInterface {
         return Collections.unmodifiableList(this.CPDTCleavageList);
     }
 
-    public PdbInfo getPreferedPdbFile() {
+    public PdbInfo getPreferredPdbFile() {
         return preferedPdbFile;
     }
 
-    public void setPreferedPdbFile(PdbInfo preferedPdbFile) {
+    public void setPreferredPdfFile(PdbInfo preferedPdbFile) {
         this.preferedPdbFile = preferedPdbFile;
     }
 
-    @Override
     public List<PeptideGroup> getCPDTPeptideList() {
         return CPDTCleavageList;
     }

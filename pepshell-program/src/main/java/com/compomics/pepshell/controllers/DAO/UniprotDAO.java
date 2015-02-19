@@ -17,7 +17,7 @@
 package com.compomics.pepshell.controllers.DAO;
 
 import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
-import com.compomics.pepshell.model.ProteinFeatureWithLocation;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

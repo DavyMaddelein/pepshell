@@ -17,7 +17,7 @@
 package com.compomics.pepshell.view.DrawModes;
 
 import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import java.awt.Graphics;
 import java.awt.Point;

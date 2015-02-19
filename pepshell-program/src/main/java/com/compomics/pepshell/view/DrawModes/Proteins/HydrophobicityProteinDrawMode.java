@@ -18,31 +18,25 @@ package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.gradientMaps.HydrophobicityMaps;
-import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Ordering;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @param <T>
  * @param <U>
  * @author Davy Maddelein
  */
-public class HydrophobicityProteinDrawMode<T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class HydrophobicityProteinDrawMode<T extends PepshellProtein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
     private List<Color> colorLegend = new ArrayList();
 

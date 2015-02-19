@@ -18,9 +18,9 @@ package com.compomics.pepshell.view.dataviewing;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.PdbInfo;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
+import com.compomics.pepshell.model.protein.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.DrawProteinPeptidesInterface;
@@ -48,11 +48,11 @@ public class ReferenceProteinDrawPanel extends JPanel {
     private static final int VERTICAL_OFFSET = 15;
 
     /**
-     * The reference protein to draw
+     * The reference pepshellProtein to draw
      */
-    private Protein protein;
+    private PepshellProtein pepshellProtein;
     /**
-     * The protein draw mode
+     * The pepshellProtein draw mode
      */
     private DrawProteinPeptidesInterface proteinDrawMode;
 
@@ -91,17 +91,17 @@ public class ReferenceProteinDrawPanel extends JPanel {
         setOpaque(false);
     }
 
-    public ProteinInterface getProtein() {
-        return protein;
+    public ProteinInterface getPepshellProtein() {
+        return pepshellProtein;
     }
 
     /**
-     * Update the protein to draw.
+     * Update the pepshellProtein to draw.
      *
-     * @param protein
+     * @param pepshellProtein
      */
-    public void updateProtein(Protein protein) {
-        this.protein = protein;
+    public void updateProtein(PepshellProtein pepshellProtein) {
+        this.pepshellProtein = pepshellProtein;
 
         this.revalidate();
         this.repaint();
@@ -126,8 +126,8 @@ public class ReferenceProteinDrawPanel extends JPanel {
      * @param pdbInfo the PDB accession
      */
     public void updatePdbInfo(PdbInfo pdbInfo) {
-        if ((pdbInfo != null && protein != null) && protein.getPdbFilesInfo().contains(pdbInfo) && protein instanceof Protein) {
-            ((Protein) protein).setPreferedPdbFile(pdbInfo);
+        if ((pdbInfo != null && pepshellProtein != null) && pepshellProtein.getPdbFilesInfo().contains(pdbInfo) && pepshellProtein instanceof PepshellProtein) {
+            ((PepshellProtein) pepshellProtein).setPreferredPdfFile(pdbInfo);
             this.pdbAccession = pdbInfo;
         } else {
             pdbInfo = null;
@@ -138,8 +138,8 @@ public class ReferenceProteinDrawPanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        if (protein != null) {
-            return new Dimension(DrawModeUtilities.getInstance().scale(protein.getProteinSequence().length()) + 150, this.getHeight());
+        if (pepshellProtein != null) {
+            return new Dimension(DrawModeUtilities.getInstance().scale(pepshellProtein.getProteinSequence().length()) + 150, this.getHeight());
         } else {
             return super.getPreferredSize();
         }
@@ -149,20 +149,20 @@ public class ReferenceProteinDrawPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (protein != null) {
+        if (pepshellProtein != null) {
             try {
                 //draw domains
 
-                int width = DrawModeUtilities.getInstance().scale(protein.getProteinSequence().length());
+                int width = DrawModeUtilities.getInstance().scale(pepshellProtein.getProteinSequence().length());
                 Point offsetPoint = new Point(HORIZONTAL_OFFSET, VERTICAL_OFFSET);
                 //pretty much move this entire try block to a separate thread
-                if (protein.getDomains().isEmpty()) {
+                if (pepshellProtein.getDomains().isEmpty()) {
                     new Runnable() {
 
                         @Override
                         public void run() {
                             try {
-                                protein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein));
+                                pepshellProtein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(pepshellProtein));
                                 repaint();
                             } catch (DataRetrievalException e) {
                                 FaultBarrier.getInstance().handleException(e);
@@ -170,23 +170,23 @@ public class ReferenceProteinDrawPanel extends JPanel {
                         }
                     }.run();
                 }
-                domainDrawMode.drawProteinAndPeptides(protein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
+                domainDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
                 domainBackgroundDrawMode.setProteinAlpha(0.18f);
-                domainBackgroundDrawMode.drawProteinAndPeptides(protein, g, offsetPoint, width, this.getHeight());
+                domainBackgroundDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, this.getHeight());
                 ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 
                 offsetPoint.y += 25;
-                proteinDrawMode.drawProteinAndPeptides(protein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
+                proteinDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
 
                 offsetPoint.y += 25;
-                secondaryDrawMode.drawProteinAndPeptides(protein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
+                secondaryDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
                 if (secondaryDrawMode instanceof GradientDrawModeInterface) {
                     ((GradientDrawModeInterface) secondaryDrawMode).drawColorLegend(new Point(offsetPoint.x + width + 15, offsetPoint.y), g);
                 }
                 offsetPoint.y += 25;
                 try {
                     g.drawString("CPDT", offsetPoint.x + width + 15, offsetPoint.y + 87);
-                    cpdtDrawMode.drawProteinAndPeptides(protein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
+                    cpdtDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
                 } catch (UndrawableException ex) {
                     FaultBarrier.getInstance().handleException(ex);
                 }

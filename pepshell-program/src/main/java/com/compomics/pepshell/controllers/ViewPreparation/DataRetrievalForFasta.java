@@ -24,14 +24,12 @@ import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionControll
 import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.FileBasedExperiment;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.model.exceptions.CalculationException;
-import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 import java.io.File;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -77,14 +75,16 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
                 DbDAO.addPeptideGroupsToProteins(experiment.getProteins());
                 setIntensityValuesForExperiment(experiment);
                 checkAndAddQuantToProteinsInExperiment(experiment);
-                
-                
+
+
             } else if (DataModeController.getInstance().getDataSource() == DataSourceEnum.FILE) {
                 if (!addFastaAfterParsing) {
                     FastaDAO.setExperimentProteinsToFastaFileProteins(fastaFile, experiment);
                 }
                 FileParserFactory.getInstance().parseExperimentFile((FileBasedExperiment) experiment);
             }
+
+
             FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, experiment.getProteins());
             ProteinController.alignPeptidesOfProteinsInExperiment(experiment);
             retrieveSecondaryData(experiment);
@@ -99,7 +99,7 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
     @Override
     protected boolean checkAndAddQuantToProteinsInExperiment(T anExperiment) {
         PreparedStatement stat = null;
-        for (Protein aProtein : anExperiment.getProteins()) {
+        for (PepshellProtein aPepshellProtein : anExperiment.getProteins()) {
             try {
                 stat = DbConnectionController.getExperimentDbConnection().prepareStatement(
                         DataModeController.getInstance()
@@ -109,7 +109,7 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
                         .selectAllQuantedPeptideGroups());
 
                 stat.setInt(1, anExperiment.getExperimentId());
-                stat.setString(2, aProtein.getOriginalAccession());
+                stat.setString(2, aPepshellProtein.getOriginalAccession());
                 try (ResultSet rs = stat.executeQuery()) {
                     while (rs.next()) {
 

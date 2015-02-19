@@ -223,7 +223,7 @@
           <SubComponents>
             <Component class="javax.swing.JCheckBox" name="maskProteinsCheckBox">
               <Properties>
-                <Property name="text" type="java.lang.String" value="mask proteins"/>
+                <Property name="text" type="java.lang.String" value="mask pepshellProteins"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 0, 2, 2]"/>
                 </Property>
@@ -235,7 +235,7 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="filterSubsetCheckBox">
               <Properties>
-                <Property name="text" type="java.lang.String" value="filter proteins"/>
+                <Property name="text" type="java.lang.String" value="filter pepshellProteins"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 0, 2, 2]"/>
                 </Property>
@@ -624,7 +624,7 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="selected" type="boolean" value="true"/>
-                    <Property name="text" type="java.lang.String" value="add only proteins found in experiments"/>
+                    <Property name="text" type="java.lang.String" value="add only pepshellProteins found in experiments"/>
                   </Properties>
                 </Component>
               </SubComponents>

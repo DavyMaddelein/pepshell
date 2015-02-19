@@ -16,7 +16,8 @@
 
 package com.compomics.pepshell.controllers.comparators;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -24,12 +25,12 @@ import java.util.Comparator;
  *
  * @author Davy Maddelein
  */
-class CompareProteins implements Comparator<Protein>,Serializable {
+class CompareProteins implements Comparator<PepshellProtein>, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public int compare(Protein firstProtein, Protein secondProtein) {
-        return firstProtein.toString().compareTo(secondProtein.toString());
+    public int compare(PepshellProtein firstPepshellProtein, PepshellProtein secondPepshellProtein) {
+        return firstPepshellProtein.toString().compareTo(secondPepshellProtein.toString());
     }
 
     

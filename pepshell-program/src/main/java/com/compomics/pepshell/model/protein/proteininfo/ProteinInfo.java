@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.compomics.pepshell.model;
+
+package com.compomics.pepshell.model.protein.proteininfo;
 
 /**
  *
  * @author Davy Maddelein
  */
-class CPDTProtein extends Protein{
+//TODO this needs a better name, this stores temporary data about the project comparisons
+public class ProteinInfo {
 
-    public CPDTProtein(String accession) {
-        super(accession);
-    }
+   private int numberOfProjectOccurences = 0;
     
+   
+   public void increaseNumberOfProjectOccurences(){
+       numberOfProjectOccurences++;
+   }
+   
+   public int getNumberOfProjectOccurences(){
+       return numberOfProjectOccurences;
+   }
 }

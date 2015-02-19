@@ -19,11 +19,9 @@ package com.compomics.pepshell.controllers.ViewPreparation;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DbDAO;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.QuantedExperiment;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Iterator;
 
 /**
  *

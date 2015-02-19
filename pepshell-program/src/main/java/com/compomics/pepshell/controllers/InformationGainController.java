@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.controllers;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 
 /**
  *
@@ -24,7 +24,7 @@ import com.compomics.pepshell.model.Protein;
  */
 class InformationGainController {
 
-    public double calculateInformationGain(Protein referenceProtein,Protein experimentProtein){
+    public double calculateInformationGain(PepshellProtein referencePepshellProtein, PepshellProtein experimentPepshellProtein) {
     double informationGain = -1.0;
     //atm very simple, for each non matching peptide of peptide of difference there is information gain
     

@@ -16,13 +16,13 @@
 
 package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 
 /**
  *
  * @author Davy Maddelein
  */
-public class InternetStructureDataSource<T extends Protein> extends ExternalStructureDataSource<T> {
+public class InternetStructureDataSource<T extends PepshellProtein> extends ExternalStructureDataSource<T> {
     
     
     

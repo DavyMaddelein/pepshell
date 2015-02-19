@@ -17,6 +17,9 @@
 package com.compomics.pepshell.view.dataviewing;
 
 import com.compomics.pepshell.model.*;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
+import com.compomics.pepshell.model.protein.ProteinInterface;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
 
     private int[] coverage;
     private boolean isOriginalCcoverage = false;
-    private ProteinInterface originalProtein;
+    private PepshellProtein originalProtein;
     private int[] domains;
 
     /**
@@ -44,11 +47,11 @@ public class SequenceCoveragePanel extends javax.swing.JPanel {
         this.setBackground(Color.white);
     }
 
-    public void showProteinCoverage(String proteinSequence, ProteinInterface protein) throws ArrayIndexOutOfBoundsException {
+    public void showProteinCoverage(String proteinSequence, PepshellProtein protein) throws ArrayIndexOutOfBoundsException {
         this.showProteinCoverage(proteinSequence, protein, false);
     }
 
-    public void showProteinCoverage(String proteinSequence, ProteinInterface protein, boolean setAsDefaultCoverage) throws ArrayIndexOutOfBoundsException {
+    public void showProteinCoverage(String proteinSequence, PepshellProtein protein, boolean setAsDefaultCoverage) throws ArrayIndexOutOfBoundsException {
         isOriginalCcoverage = false;
         if (setAsDefaultCoverage) {
             originalProtein = protein;

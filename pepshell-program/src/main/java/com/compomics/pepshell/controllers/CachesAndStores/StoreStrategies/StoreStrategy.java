@@ -28,7 +28,7 @@ import java.util.Collection;
  * @param <T> the object type to be used as an identifier for retrieval
  * @param <U> the object type to store in the underlying data structure
  */
-public interface StoreStrategy<T extends Object, U extends Object> {
+public interface StoreStrategy<T, U> {
 
     /**
      * tries to accept a single entry into the underlying data structure
@@ -83,7 +83,7 @@ public interface StoreStrategy<T extends Object, U extends Object> {
      * @param identifiersToPurgeFromStore the identifiers to purge the entries for
      * @return true if successfully purged, false otherwise
      */
-    public boolean purgeSubset(Collection<T> identifiersToPurgeFromStore);
+    public boolean purgeSubset(Collection<? extends T> identifiersToPurgeFromStore);
 
     /**
      * removes all entries from the store

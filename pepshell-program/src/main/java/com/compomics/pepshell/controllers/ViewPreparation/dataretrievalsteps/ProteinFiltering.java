@@ -19,7 +19,7 @@ package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.controllers.filters.FilterParent;
 import com.compomics.pepshell.controllers.filters.NaiveFilter;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,39 +30,39 @@ import java.util.List;
  */
 public class ProteinFiltering extends DataRetrievalStep {
 
-    private FilterParent<Protein> filter = new NaiveFilter<>();
-    private List<Protein> filterList = new ArrayList<>();
+    private FilterParent<PepshellProtein> filter = new NaiveFilter<>();
+    private List<PepshellProtein> filterList = new ArrayList<>();
 
-    private ProteinFiltering(List<Protein> aProteinList) {
-        this.proteinList = aProteinList;
+    private ProteinFiltering(List<PepshellProtein> aPepshellProteinList) {
+        this.pepshellProteinList = aPepshellProteinList;
     }
 
     public ProteinFiltering() {
     }
 
-    void setFilter(FilterParent<Protein> filter) {
+    void setFilter(FilterParent<PepshellProtein> filter) {
         this.filter = filter;
     }
 
-    public void setFilterList(List<Protein> filterList) {
+    public void setFilterList(List<PepshellProtein> filterList) {
         this.filterList = filterList;
     }
 
-    public DataRetrievalStep getInstance(List<Protein> aProteinList) {
-        ProteinFiltering toReturn = new ProteinFiltering(aProteinList);
+    public DataRetrievalStep getInstance(List<PepshellProtein> aPepshellProteinList) {
+        ProteinFiltering toReturn = new ProteinFiltering(aPepshellProteinList);
         toReturn.setFilter(filter);
         toReturn.setFilterList(filterList);
         return toReturn;
     }
 
     @Override
-    public List<Protein> call() throws Exception {
+    public List<PepshellProtein> call() throws Exception {
 
-        List<Protein> returnList = proteinList;
+        List<PepshellProtein> returnList = pepshellProteinList;
         if (!filterList.isEmpty()) {
             this.setChanged();
             this.notifyObservers(new UpdateMessage(false, "filtering protein list",false));
-            returnList = filter.filter(proteinList, filterList);
+            returnList = filter.filter(pepshellProteinList, filterList);
             this.notifyObservers(new UpdateMessage(true, "done filtering",false));
 
         }
@@ -72,6 +72,6 @@ public class ProteinFiltering extends DataRetrievalStep {
 
     @Override
     public String getRetrievalStepDescription() {
-        return "Protein Filtering";
+        return "PepshellProtein Filtering";
     }
 }

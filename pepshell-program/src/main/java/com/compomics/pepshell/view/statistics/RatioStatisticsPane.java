@@ -18,10 +18,9 @@ package com.compomics.pepshell.view.statistics;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.google.common.base.Function;
@@ -41,24 +40,24 @@ import org.jfree.data.category.DefaultCategoryDataset;
  */
 public class RatioStatisticsPane extends JFreeChartPanel {
 
-    private List<Experiment> experimentGroup = new ArrayList<>();
-    private Protein currentProtein;
+    private List<? extends Experiment> experimentGroup = new ArrayList<>();
+    private PepshellProtein currentPepshellProtein;
 
-    public <T extends Experiment> RatioStatisticsPane(List<T> experiments) {
+    public RatioStatisticsPane(List<? extends Experiment> experiments) {
         super();
-        this.experimentGroup = (List<Experiment>) experiments;
+        this.experimentGroup = experiments;
         //chart.setMinimumDrawWidth(5000);
         //chart.setBorder(BorderFactory.createTitledBorder(experiment.getExperimentName()));
     }
 
     @Override
-    public void setGraphData(Protein aProtein) {
+    public void setGraphData(PepshellProtein aPepshellProtein) {
         //obligatory checks
-        if (aProtein != null) {
-            if (aProtein != currentProtein) {
+        if (aPepshellProtein != null) {
+            if (aPepshellProtein != currentPepshellProtein) {
                 //TODO: run this outside of the gui thread
-                CategoryDataset dataset = createRatioDataset(aProtein);
-                JFreeChart ratioChart = ChartFactory.createBarChart("log 2 ratios of peptides on a protein", aProtein.getVisibleAccession(), "log 2 ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
+                CategoryDataset dataset = createRatioDataset(aPepshellProtein);
+                JFreeChart ratioChart = ChartFactory.createBarChart("log 2 ratios of peptides on a protein", aPepshellProtein.getVisibleAccession(), "log 2 ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
                 prettifyChart(ratioChart);
 //((CategoryPlot)ratioChart.getPlot()).setRenderer(new StatisticalBarRenderer());
                 chart.setChart(ratioChart);
@@ -69,15 +68,15 @@ public class RatioStatisticsPane extends JFreeChartPanel {
         }
     }
 
-    private CategoryDataset createRatioDataset(Protein aProtein) {
+    private CategoryDataset createRatioDataset(PepshellProtein aPepshellProtein) {
         DefaultCategoryDataset returnset = new DefaultCategoryDataset();
-        //Protein protein = experimentGroup.get(0).getProteins().get(experimentGroup.get(0).getProteins().indexOf(aProtein));
-        if (aProtein != null) {
+        //PepshellProtein protein = experimentGroup.get(0).getProteins().get(experimentGroup.get(0).getProteins().indexOf(aPepshellProtein));
+        if (aPepshellProtein != null) {
             for (Experiment anExperiment : experimentGroup) {
-                if (anExperiment.getProteins().indexOf(aProtein) != -1) {
-                    Protein protein = anExperiment.getProteins().get(anExperiment.getProteins().indexOf(aProtein));
+                if (anExperiment.getProteins().indexOf(aPepshellProtein) != -1) {
+                    PepshellProtein pepshellProtein = anExperiment.getProteins().get(anExperiment.getProteins().indexOf(aPepshellProtein));
                     Ordering<PeptideGroup> groupOrdering = Ordering.natural().onResultOf(getProteinLocation);
-                    ImmutableList<PeptideGroup<PeptideInterface>> sortedCopy = groupOrdering.immutableSortedCopy(protein.getPeptideGroups());
+                    ImmutableList<? extends PeptideGroup> sortedCopy = groupOrdering.immutableSortedCopy(pepshellProtein.getPeptideGroups());
                     for (PeptideGroup aPeptideGroup : sortedCopy) {
                         PeptideInterface aPeptide = aPeptideGroup.getShortestPeptide();
                         try {

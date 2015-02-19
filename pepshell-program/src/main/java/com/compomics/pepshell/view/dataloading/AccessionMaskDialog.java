@@ -19,7 +19,7 @@ package com.compomics.pepshell.view.dataloading;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.enums.ExportPropertyEnum;
 
 import java.awt.Color;
@@ -39,19 +39,19 @@ import com.compomics.pepshell.view.components.JFileChooserWithMemory;
  */
 public class AccessionMaskDialog extends javax.swing.JDialog {
 
-    private static Map<Protein, String> maskMap = new HashMap<>();
+    private static Map<PepshellProtein, String> maskMap = new HashMap<>();
     private boolean accept = false;
 
     /**
      * Creates new form AccessionMaskDialog
      */
-    public AccessionMaskDialog(java.awt.Frame parent, boolean modal, List<Protein> proteinsToDisplay) {
+    public AccessionMaskDialog(java.awt.Frame parent, boolean modal, List<? extends PepshellProtein> proteinsToDisplay) {
         super(parent, modal);
 
         initComponents();
 
         this.getContentPane().setBackground(Color.WHITE);
-        proteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
+        proteinList.setListData(proteinsToDisplay.toArray(new PepshellProtein[proteinsToDisplay.size()]));
     }
 
     /**
@@ -248,21 +248,21 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
     private void acceptAccessionMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptAccessionMaskButtonActionPerformed
         // TODO add your handling code here:
         if (!accessionMaskTextField.getText().isEmpty()) {
-            maskMap.put(((Protein) proteinList.getSelectedValue()), accessionMaskTextField.getText());
-            ((Protein) proteinList.getSelectedValue()).setVisibleAccession(accessionMaskTextField.getText());
+            maskMap.put(((PepshellProtein) proteinList.getSelectedValue()), accessionMaskTextField.getText());
+            ((PepshellProtein) proteinList.getSelectedValue()).setVisibleAccession(accessionMaskTextField.getText());
         } else {
             maskMap.remove(proteinList.getSelectedValue());
-            ((Protein) proteinList.getSelectedValue()).setVisibleAccession(originalAccessionTextField.getText());
+            ((PepshellProtein) proteinList.getSelectedValue()).setVisibleAccession(originalAccessionTextField.getText());
         }
         proteinList.repaint();
     }//GEN-LAST:event_acceptAccessionMaskButtonActionPerformed
 
     private void proteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseClicked
         // TODO add your handling code here:
-        Protein selectedProtein = ((Protein) proteinList.getSelectedValue());
-        originalAccessionTextField.setText(selectedProtein.getOriginalAccession());
-        if (!selectedProtein.getOriginalAccession().equals(selectedProtein.getVisibleAccession())) {
-            accessionMaskTextField.setText(selectedProtein.getVisibleAccession());
+        PepshellProtein selectedPepshellProtein = ((PepshellProtein) proteinList.getSelectedValue());
+        originalAccessionTextField.setText(selectedPepshellProtein.getOriginalAccession());
+        if (!selectedPepshellProtein.getOriginalAccession().equals(selectedPepshellProtein.getVisibleAccession())) {
+            accessionMaskTextField.setText(selectedPepshellProtein.getVisibleAccession());
         } else {
             accessionMaskTextField.setText("");
         }
@@ -284,7 +284,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
         if (!accept) {
             for (int i = 0; i < proteinList.getModel().getSize(); i++) {
                 if (maskMap.containsKey(proteinList.getModel().getElementAt(i))) {
-                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(((Protein) proteinList.getModel().getElementAt(i)).getOriginalAccession());
+                    ((PepshellProtein) proteinList.getModel().getElementAt(i)).setVisibleAccession(((PepshellProtein) proteinList.getModel().getElementAt(i)).getOriginalAccession());
                 }
             }
         }
@@ -301,7 +301,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
             File saveFile = accessionMaskSaver.getSelectedFile();
             //this could be moved out of this dialog to the controller
             saveWriter = new FileWriter(saveFile);
-            for (Entry<Protein, String> anAccessionMaskingEntry : maskMap.entrySet()) {
+            for (Entry<PepshellProtein, String> anAccessionMaskingEntry : maskMap.entrySet()) {
                 saveWriter.append(anAccessionMaskingEntry.getKey().getOriginalAccession()).append("=").append(anAccessionMaskingEntry.getValue()).append("\n");
             }
         } catch (IOException ex) {
@@ -327,7 +327,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
             maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
             for (int i = 0; i < proteinList.getModel().getSize(); i++) {
                 if (maskMap.containsKey(proteinList.getModel().getElementAt(i))) {
-                    ((Protein) proteinList.getModel().getElementAt(i)).setVisibleAccession(maskMap.get(proteinList.getModel().getElementAt(i)));
+                    ((PepshellProtein) proteinList.getModel().getElementAt(i)).setVisibleAccession(maskMap.get(proteinList.getModel().getElementAt(i)));
                     proteinList.repaint();
                 }
             }

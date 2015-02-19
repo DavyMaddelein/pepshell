@@ -22,7 +22,7 @@
 package com.compomics.pepshell.view.statistics.wrappers;
 
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.view.statistics.RatioComparisonPane;
 import java.util.List;
 
@@ -99,7 +99,7 @@ public class RatioComparisonPaneWrapper extends javax.swing.JPanel implements St
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void setGraphData(Protein aProtein) {
-        ratioComparisonPane.setGraphData(aProtein);
+    public void setGraphData(PepshellProtein aPepshellProtein) {
+        ratioComparisonPane.setGraphData(aPepshellProtein);
     }
 }

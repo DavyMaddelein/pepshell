@@ -28,7 +28,7 @@ import com.compomics.pepshell.controllers.properties.DatabaseProperties;
 import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
@@ -56,7 +56,7 @@ import javax.swing.text.JTextComponent;
 public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private static FaultBarrier faultBarrier;
-    private List<Protein> proteinsToDisplay = new ArrayList<>();
+    private List<? extends PepshellProtein> proteinsToDisplay = new ArrayList<>();
     private final RegexFilter filter = new RegexFilter();
     private ComboBoxModel experimentComboBoxModel;
 
@@ -119,9 +119,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 //proteinsToDisplay.addAll(((InfoPanel) infoPanelTabbedPane.getComponent(0)).getCondensedProject().getProteins());
         proteinsToDisplay = referenceExperiment.getProteins();
 
-        proteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
+        proteinList.setListData(proteinsToDisplay.toArray(new PepshellProtein[proteinsToDisplay.size()]));
         proteinListScrollPane.setViewportView(proteinList);
-        pdbProteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
+        pdbProteinList.setListData(proteinsToDisplay.toArray(new PepshellProtein[proteinsToDisplay.size()]));
         pdbProteinListScrollPane.setViewportView(pdbProteinList);
         proteinList1.setListData(proteinsToDisplay.toArray());
         proteinListScrollPane1.setViewportView(proteinList1);
@@ -147,8 +147,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             }
             if (((UpdateMessage) o1).repaint()) {
                 proteinsToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins();
-                proteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
-                pdbProteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
+                proteinList.setListData(proteinsToDisplay.toArray(new PepshellProtein[proteinsToDisplay.size()]));
+                pdbProteinList.setListData(proteinsToDisplay.toArray(new PepshellProtein[proteinsToDisplay.size()]));
                 proteinList1.setListData(proteinsToDisplay.toArray());
                 this.repaint();
             }
@@ -164,13 +164,13 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         mainViewPanel = new javax.swing.JPanel();
         proteinsOverviewPanel = new javax.swing.JPanel();
         proteinListScrollPane = new javax.swing.JScrollPane();
-        proteinList = new javax.swing.JList<Protein>();
+        proteinList = new javax.swing.JList<PepshellProtein>();
         filterTextField = new javax.swing.JTextField();
         proteinDetailPanel = new com.compomics.pepshell.view.dataviewing.ProteinDetailPanel();
         pdbViewPanel = new javax.swing.JPanel();
         pdbProteinsOverviewPanel = new javax.swing.JPanel();
         pdbProteinListScrollPane = new javax.swing.JScrollPane();
-        pdbProteinList = new javax.swing.JList<Protein>();
+        pdbProteinList = new javax.swing.JList<PepshellProtein>();
         jmolPanel = new com.compomics.pepshell.view.dataviewing.JmolPanel();
         experimentComboBox = new javax.swing.JComboBox();
         statisticsPanel = new javax.swing.JPanel();
@@ -584,15 +584,15 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private void proteinListMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseReleased
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            Protein proteinOfInterest = proteinList.getSelectedValue();
-            if (ProgramVariables.USEINTERNETSOURCES && proteinOfInterest.getProteinSequence().isEmpty()) {
+            PepshellProtein pepshellProteinOfInterest = proteinList.getSelectedValue();
+            if (ProgramVariables.USEINTERNETSOURCES && pepshellProteinOfInterest.getProteinSequence().isEmpty()) {
                 try {
-                    proteinOfInterest.setSequence(WebDAO.fetchSequence(proteinOfInterest.getProteinAccession()));
+                    pepshellProteinOfInterest.setSequence(WebDAO.fetchSequence(pepshellProteinOfInterest.getVisibleAccession()));
                 } catch (IOException | ConversionException ex) {
                     FaultBarrier.getInstance().handleException(ex);
                 }
             }
-            proteinDetailPanel.updateProteinGraphics(proteinOfInterest);
+            proteinDetailPanel.updateProteinGraphics(pepshellProteinOfInterest);
         } catch (SQLException ex) {
             faultBarrier.handleException(ex);
             JOptionPane.showMessageDialog(this, "there has been a connection error while retrieving the protein sequence:\n" + ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
@@ -624,9 +624,9 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
         new SwingWorker<Boolean, Void>() {
             @Override
             public Boolean doInBackground() throws Exception {
-                for (final Protein aProtein : proteinsToDisplay) {
+                for (final PepshellProtein aPepshellProtein : proteinsToDisplay) {
                     try {
-                        aProtein.setVisibleAccession(AccessionConverter.toUniprot(aProtein.getProteinAccession()));
+                        aPepshellProtein.setVisibleAccession(AccessionConverter.toUniprot(aPepshellProtein.getVisibleAccession()));
                         proteinList.revalidate();
                         proteinList.repaint();
                     } catch (IOException | ConversionException ex) {
@@ -643,8 +643,8 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_uniProtRadioButtonMenuItemActionPerformed
 
     private void originalAccessionRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originalAccessionRadioButtonMenuItemActionPerformed
-        for (Protein aProtein : proteinsToDisplay) {
-            aProtein.setAccession(aProtein.getOriginalAccession());
+        for (PepshellProtein aPepshellProtein : proteinsToDisplay) {
+            aPepshellProtein.setOriginalAccession(aPepshellProtein.getOriginalAccession());
         }
         proteinList.repaint();
         proteinList1.repaint();
@@ -663,10 +663,10 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
             }
             List<String> searchRegex = new ArrayList<>(1);
             searchRegex.add(searchTerm);
-            List<Protein> var = filter.filterProtein(proteinsToDisplay, searchRegex);
-            proteinList.setListData(var.toArray(new Protein[var.size()]));
+            List<PepshellProtein> var = filter.filterProtein(proteinsToDisplay, searchRegex);
+            proteinList.setListData(var.toArray(new PepshellProtein[var.size()]));
         } else {
-            proteinList.setListData(proteinsToDisplay.toArray(new Protein[proteinsToDisplay.size()]));
+            proteinList.setListData(proteinsToDisplay.toArray(new PepshellProtein[proteinsToDisplay.size()]));
         }
     }//GEN-LAST:event_filterTextFieldKeyTyped
 
@@ -706,7 +706,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
 
     private void proteinList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinList1MouseReleased
         // TODO add your handling code here:
-        statisticsTabbedPane.setGraphData((Protein) proteinList1.getSelectedValue());
+        statisticsTabbedPane.setGraphData((PepshellProtein) proteinList1.getSelectedValue());
     }//GEN-LAST:event_proteinList1MouseReleased
 
     private void filterTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_filterTextField1FocusGained
@@ -737,7 +737,7 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
         // TODO add your handling code here:
         if (jCheckBoxMenuItem1.isSelected()) {
-            Protein[] listToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins().toArray(new Protein[proteinDetailPanel.getReferenceExperiment().getProteins().size()]);
+            PepshellProtein[] listToDisplay = proteinDetailPanel.getReferenceExperiment().getProteins().toArray(new PepshellProtein[proteinDetailPanel.getReferenceExperiment().getProteins().size()]);
             proteinList.setListData(listToDisplay);
             pdbProteinList.setListData(listToDisplay);
             proteinList1.setListData(listToDisplay);
@@ -765,14 +765,14 @@ public class MainWindow extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenuItem newViewMenuItem;
     private javax.swing.JRadioButtonMenuItem originalAccessionRadioButtonMenuItem;
     private javax.swing.JCheckBoxMenuItem pH7CheckBoxMenuItem2;
-    private javax.swing.JList<Protein> pdbProteinList;
+    private javax.swing.JList<PepshellProtein> pdbProteinList;
     private javax.swing.JScrollPane pdbProteinListScrollPane;
     private javax.swing.JPanel pdbProteinsOverviewPanel;
     private javax.swing.JPanel pdbViewPanel;
     private javax.swing.JCheckBoxMenuItem ph5CheckBoxMenuItem;
     private javax.swing.JMenu preferencesMenu;
     private com.compomics.pepshell.view.dataviewing.ProteinDetailPanel proteinDetailPanel;
-    private javax.swing.JList<Protein> proteinList;
+    private javax.swing.JList<PepshellProtein> proteinList;
     private javax.swing.JList proteinList1;
     private javax.swing.JScrollPane proteinListScrollPane;
     private javax.swing.JScrollPane proteinListScrollPane1;

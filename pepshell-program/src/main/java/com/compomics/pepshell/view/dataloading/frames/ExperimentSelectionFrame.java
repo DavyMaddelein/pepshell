@@ -805,6 +805,6 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void fillProjectList() throws SQLException {
-        projectList.setListData(DbDAO.getProjects().toArray());
+        projectList.setListData(DbDAO.getExperiments().toArray());
     }
 }

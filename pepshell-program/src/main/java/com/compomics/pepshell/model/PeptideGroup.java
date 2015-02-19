@@ -17,27 +17,28 @@ package com.compomics.pepshell.model;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.exceptions.CalculationException;
-import java.util.ArrayList;
-import java.util.List;
+import com.compomics.pepshell.model.protein.proteinimplementations.FlyweightProtein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
+import java.util.*;
 
 /**
  * grouping for peptides to keep same location peptides together and not clashing.
- * @param <T> the type of peptides in this group
  * @author Davy Maddelein
  */
-public class PeptideGroup<T extends PeptideInterface> {
+public class PeptideGroup {
 
     private int startingAlignmentPosition;
     private int endAlignmentPostition;
     private int shortestPeptideIndex = -1;
-    private final List<T> listOfPeptides = new ArrayList<>();
+    private final List<PeptideInterface> listOfPeptides = new ArrayList<>();
 
-    public PeptideGroup(T aPeptide) {
+    public PeptideGroup(PeptideInterface aPeptide) {
         listOfPeptides.add(aPeptide);
         shortestPeptideIndex = 0;
     }
 
-    public T getShortestPeptide() {
+    public PeptideInterface getShortestPeptide() {
         return listOfPeptides.get(shortestPeptideIndex);
     }
 
@@ -67,11 +68,11 @@ public class PeptideGroup<T extends PeptideInterface> {
         return this.endAlignmentPostition;
     }
 
-    public List<T> getPeptideList() {
+    public List<PeptideInterface> getPeptideList() {
         return listOfPeptides;
     }
 
-    public PeptideGroup addPeptide(T aPeptide) {
+    public PeptideGroup addPeptide(PeptideInterface aPeptide) {
         if (!listOfPeptides.contains(aPeptide)) {
             listOfPeptides.add(aPeptide);
         } else {
@@ -90,7 +91,7 @@ public class PeptideGroup<T extends PeptideInterface> {
         return this.getShortestPeptide().getSequence();
     }
 
-    public PeptideGroup addPeptides(List<T> peptideList) {
+    public PeptideGroup addPeptides(List<? extends PeptideInterface> peptideList) {
         peptideList.stream().forEach((aPeptide) -> {
             if (!listOfPeptides.contains(aPeptide)) {
                 listOfPeptides.add(aPeptide);

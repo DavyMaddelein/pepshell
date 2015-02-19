@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.controllers;
 
-import com.compomics.pepshell.model.ProteinInfo;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinInfo;
 
 /**
  *

@@ -16,6 +16,8 @@
 
 package com.compomics.pepshell.model;
 
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +56,8 @@ public class AnalysisGroup {
     public Experiment getAnalysisGroupProteins() {
         Experiment allAnalysisGroupProteins = new Experiment(-1, "combined experiments of analysisgroup " + this.analysisName);
         for (Experiment experiment : groupedExperiments) {
-            for (Protein protein : experiment.getProteins()) {
-                allAnalysisGroupProteins.addProtein(protein);
+            for (PepshellProtein pepshellProtein : experiment.getProteins()) {
+                allAnalysisGroupProteins.addProtein(pepshellProtein);
 
             }
         }

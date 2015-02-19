@@ -20,77 +20,106 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.AbstractProteinStoreStrategy;
 import com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 
 import java.util.Collection;
 
 /**
+ * this class is the storage manager for proteins in the pepshell program, it manages all writes and accesses to the storage strategy pepshell is using at that moment
+ * it does not guarantee that the requested item is in the underlying storage
  * Created by Davy Maddelein on 15/02/2015.
  */
-public class ProteinStoreManager {
+public class ProteinStoreManager implements StoreManagerInterface<Object, PepshellProtein> {
 
     /**
      * the protein storage strategy to use for retrieval
      */
-    private StoreStrategy<String, ProteinInterface> currentStoreStrategy;
+    private StoreStrategy<Object, PepshellProtein> currentStoreStrategy;
+
+    /**
+     * the singleton instance
+     */
+    private static ProteinStoreManager manager;
 
     /**
      * tries to load in the default defined storage strategy from the {@link com.compomics.pepshell.controllers.properties.ProgramProperties}, if this fails
      * defaults to the naive in memory {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.AbstractProteinStoreStrategy} implementation
      */
-    public ProteinStoreManager() {
+    private ProteinStoreManager() {
         String storageStrategyClassName = ProgramProperties.getInstance().getProperty("default.protein.storage.strategy");
         if (storageStrategyClassName != null) {
             try {
                 ClassLoader.getSystemClassLoader().loadClass(storageStrategyClassName);
             } catch (ClassNotFoundException e) {
                 FaultBarrier.getInstance().handleException(e);
-                currentStoreStrategy = new AbstractProteinStoreStrategy();
+                currentStoreStrategy = new AbstractProteinStoreStrategy<>();
             }
         }
+        manager = this;
     }
 
     /**
-     * creates a new ProteinStoreManager backed by the {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy} passed along to the constructor
-     *
-     * @param aStorageStrategy the storage strategy to use
+     * getter for the ProteinStoreManager
+     * @return the ProteinStoreManager
      */
-    public ProteinStoreManager(StoreStrategy<String, ProteinInterface> aStorageStrategy) {
-        currentStoreStrategy = aStorageStrategy;
+    public static ProteinStoreManager getInstance() {
+        if (manager == null) {
+            new ProteinStoreManager();
+        }
+        return manager;
     }
 
     /**
-     * retrieves the protein identified by the given accession from the underlying {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy}
+     * retrieves the {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} identified by the given accession from the underlying {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy}
      *
-     * @param accession the protein accession that identifies the {@link com.compomics.pepshell.model.ProteinInterface} object for retrieval
-     * @return the requested {@link com.compomics.pepshell.model.ProteinInterface}
+     * @param accession the accession that identifies the {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} for retrieval
+     * @return the requested {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein}
      */
-    public ProteinInterface retrieveProteinByAccession(String accession) {
+    @Override
+    public PepshellProtein retrieveFromStore(Object accession) {
         return currentStoreStrategy.retrieve(accession);
     }
 
+    /**
+     * retrieves mutiple {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} from the store identified by the passed collection of identifying accessions
+     *
+     * @param accessions the accessions to retrieve the entries for
+     * @return a {@link java.util.Collection} of the requested entries
+     */
+    @Override
+    public Collection<? extends PepshellProtein> retrieveMultipleFromStore(Collection<Object> accessions) {
+        return currentStoreStrategy.retrieveSubSet(accessions);
+    }
+
 
     /**
-     * add the passed protein to the underlying storage manager
+     * add the passed {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} to the underlying storage manager
      *
-     * @param protein the {@link com.compomics.pepshell.model.ProteinInterface} to store
+     * @param entry the {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} to store
      */
-    public void addAProteinToStore(Protein protein) {
-        currentStoreStrategy.accept(protein);
+    @Override
+    public void addToStore(PepshellProtein entry) {
+        currentStoreStrategy.accept(entry);
     }
 
     /**
-     * adds a {@link java.util.Collection} of {@link com.compomics.pepshell.model.ProteinInterface} objects to the underlying {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy}
+     * adds a collection of {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} to the underlying storage manager
      *
-     * @param proteins the {link ProteinInterface} objects to add
+     * @param entryCollection a collection of {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} to add
      */
-    public void addProteinsToStore(Collection<Protein> proteins) {
-        currentStoreStrategy.accept(proteins);
+    @Override
+    public void addMultipleToStore(Collection<? extends PepshellProtein> entryCollection) {
+        currentStoreStrategy.accept(entryCollection);
+
     }
 
-    public void switchStorageStrategies(StoreStrategy<? extends Object, ProteinInterface> newStorageStrategy) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void switchStorageStrategies(StoreStrategy<Object, PepshellProtein> newStorageStrategy) {
         newStorageStrategy.accept(currentStoreStrategy.retrieveAll());
-    }
+        this.currentStoreStrategy = newStorageStrategy;
 
+    }
 }

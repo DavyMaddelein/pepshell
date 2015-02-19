@@ -16,7 +16,8 @@
 
 package com.compomics.pepshell.view.dataviewing;
 
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,7 +28,7 @@ import java.awt.Dimension;
  */
 public class ExperimentAggregatorPanel extends javax.swing.JPanel {
 
-    private ProteinInterface referenceProtein;
+    private PepshellProtein referenceProtein;
 
     /**
      * Creates new form ExperimentAggregatorPanel
@@ -36,7 +37,7 @@ public class ExperimentAggregatorPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setReferenceProtein(ProteinInterface referenceProtein) {
+    public void setReferenceProtein(PepshellProtein referenceProtein) {
         this.referenceProtein = referenceProtein;
     }
 

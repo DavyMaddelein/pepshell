@@ -19,8 +19,8 @@ package com.compomics.pepshell.view.dataviewing;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.ProteinInterface;
 import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -36,7 +36,7 @@ import javax.swing.BorderFactory;
 public class ProteinDetailPanel extends javax.swing.JPanel {
 
     private Experiment referenceExperiment;
-    private ProteinInterface referenceProtein;
+    private PepshellProtein referenceProtein;
 
     public ProteinDetailPanel() {
         initComponents();
@@ -127,20 +127,20 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_experimentsPanelMouseExited
 
-    public void updateProteinGraphics(Protein proteinOfInterest) throws SQLException {
+    public void updateProteinGraphics(PepshellProtein pepshellProteinOfInterest) throws SQLException {
         try{
-            sequenceCoveragePanel.showProteinCoverage(proteinOfInterest.getProteinSequence(), proteinOfInterest, true);
+            sequenceCoveragePanel.showProteinCoverage(pepshellProteinOfInterest.getProteinSequence(), pepshellProteinOfInterest, true);
         } catch (ArrayIndexOutOfBoundsException aix){
             FaultBarrier.getInstance().handleException(aix);
         }
-        referenceProtein = proteinOfInterest;
+        referenceProtein = pepshellProteinOfInterest;
         this.revalidate();
         this.repaint();
-        referenceExperimentPanel.updateProtein(proteinOfInterest);
+        referenceExperimentPanel.updateProtein(pepshellProteinOfInterest);
         referenceExperimentPanel.revalidate();
         referenceExperimentPanel.repaint();
         experimentAggregatorPanel.setReferenceProtein(referenceProtein);
-        this.updatePeptideGraphics(proteinOfInterest);
+        this.updatePeptideGraphics(pepshellProteinOfInterest);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private ExperimentAggregatorPanel experimentAggregatorPanel;
@@ -189,15 +189,15 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
     }
 
 
-    private void updatePeptideGraphics(ProteinInterface aProtein) {
+    private void updatePeptideGraphics(PepshellProtein aProtein) {
         for (int i = 0; i < experimentAggregatorPanel.getComponents().length; i++) {
-            ((ExperimentPanel) experimentAggregatorPanel.getComponent(i)).setProtein(aProtein);
+            ((ExperimentPanel) experimentAggregatorPanel.getComponent(i)).setPepshellProtein(aProtein);
         }
     }
 
-    void setSequenceCoverage(String proteinSequence, Protein protein) {
+    void setSequenceCoverage(String proteinSequence, PepshellProtein pepshellProtein) {
         // this is a very quick fix to get updating sequence coverage but has to be refined
-        sequenceCoveragePanel.showProteinCoverage(proteinSequence, protein, false);
+        sequenceCoveragePanel.showProteinCoverage(proteinSequence, pepshellProtein, false);
     }
 
     protected void setSequenceCoverageToOriginal() {

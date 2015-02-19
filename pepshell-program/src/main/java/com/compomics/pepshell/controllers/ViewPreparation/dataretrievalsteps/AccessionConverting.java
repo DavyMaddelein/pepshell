@@ -19,7 +19,7 @@ package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.util.Collections;
@@ -36,29 +36,29 @@ public class AccessionConverting extends DataRetrievalStep {
     public AccessionConverting() {
     }
 
-    private AccessionConverting(List<Protein> aProteinList) {
-        this.proteinList = aProteinList;
+    private AccessionConverting(List<PepshellProtein> aPepshellProteinList) {
+        this.pepshellProteinList = aPepshellProteinList;
     }
 
     @Override
-    public List<Protein> call() throws Exception {
-        for (Protein aProtein : proteinList) {
+    public List<PepshellProtein> call() throws Exception {
+        for (PepshellProtein aPepshellProtein : pepshellProteinList) {
             try {
                 if (coTo == ConversionTo.TO_UNIPROT) {
-                    aProtein.setAccession(AccessionConverter.toUniprot(aProtein.getOriginalAccession()));
+                    aPepshellProtein.setVisibleAccession(AccessionConverter.toUniprot(aPepshellProtein.getOriginalAccession()));
                     this.setChanged();
-                    this.notifyObservers(new UpdateMessage(true, "changed accession of " + aProtein.getOriginalAccession() + " to " + aProtein.getProteinAccession(),false));
+                    this.notifyObservers(new UpdateMessage(true, "changed accession of " + aPepshellProtein.getOriginalAccession() + " to " + aPepshellProtein.getVisibleAccession(), false));
                 }
             } catch (ConversionException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
         }
-        return Collections.unmodifiableList(proteinList);
+        return Collections.unmodifiableList(pepshellProteinList);
     }
 
     @Override
-    public DataRetrievalStep getInstance(List<Protein> aProteinList) {
-        return new AccessionConverting(aProteinList);
+    public DataRetrievalStep getInstance(List<PepshellProtein> aPepshellProteinList) {
+        return new AccessionConverting(aPepshellProteinList);
     }
 
     public enum ConversionTo {

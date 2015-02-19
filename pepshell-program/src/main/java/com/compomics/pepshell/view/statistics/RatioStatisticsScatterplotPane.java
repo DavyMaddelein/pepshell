@@ -23,10 +23,9 @@ package com.compomics.pepshell.view.statistics;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import java.awt.BasicStroke;
@@ -56,15 +55,15 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
     }
 
     @Override
-    public void setGraphData(Protein aProtein) {
+    public void setGraphData(PepshellProtein aPepshellProtein) {
         List<XYLineAnnotation> annotations = new ArrayList<>();
         XYSeriesCollection allExperiments = new XYSeriesCollection();
         for (Experiment anExperiment : experiments) {
-            int proteinIndex = anExperiment.getProteins().indexOf(aProtein);
+            int proteinIndex = anExperiment.getProteins().indexOf(aPepshellProtein);
             if (proteinIndex != -1) {
                 XYSeries anExperimentSeries = new XYSeries(anExperiment.getExperimentName());
-                Protein experimentProtein = anExperiment.getProteins().get(proteinIndex);
-                for (PeptideGroup aGroup : experimentProtein.getPeptideGroups()) {
+                PepshellProtein experimentPepshellProtein = anExperiment.getProteins().get(proteinIndex);
+                for (PeptideGroup aGroup : experimentPepshellProtein.getPeptideGroups()) {
                     PeptideInterface shortestPeptide = aGroup.getShortestPeptide();
 
                     try {
@@ -99,7 +98,7 @@ public class RatioStatisticsScatterplotPane extends JFreeChartPanel {
 
             }
         }
-        JFreeChart ratioChart = ChartFactory.createHistogram("ratio for " + aProtein.getVisibleAccession() + " over all experiments", "peptide start", "log^2 ratio", allExperiments, PlotOrientation.VERTICAL, true, true, false);
+        JFreeChart ratioChart = ChartFactory.createHistogram("ratio for " + aPepshellProtein.getVisibleAccession() + " over all experiments", "peptide start", "log^2 ratio", allExperiments, PlotOrientation.VERTICAL, true, true, false);
         chart.setChart(ratioChart);
         for (XYLineAnnotation anAnnotation : annotations) {
             ((XYPlot) ratioChart.getPlot()).addAnnotation(anAnnotation);

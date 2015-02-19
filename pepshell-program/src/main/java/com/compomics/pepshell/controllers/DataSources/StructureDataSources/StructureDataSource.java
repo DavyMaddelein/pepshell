@@ -19,11 +19,13 @@ package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 import com.compomics.pepshell.controllers.DataSources.AbstractDataSource;
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
-import java.util.Comparator;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
+import com.compomics.pepshell.model.protein.ProteinInterface;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  *

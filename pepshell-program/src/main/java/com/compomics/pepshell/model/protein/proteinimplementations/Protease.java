@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.model;
+package com.compomics.pepshell.model.protein.proteinimplementations;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author Davy Maddelein
  */
-public class Protease extends Protein {
+public class Protease extends PepshellProtein {
 
     private StringBuilder startRegex = new StringBuilder();
     private StringBuilder stopRegex = new StringBuilder();

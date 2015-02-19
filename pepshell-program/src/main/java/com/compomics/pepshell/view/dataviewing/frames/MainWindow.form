@@ -85,7 +85,7 @@
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItem1">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="show only proteins found in reference"/>
+                <Property name="text" type="java.lang.String" value="show only pepshellProteins found in reference"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxMenuItem1ActionPerformed"/>
@@ -245,7 +245,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="reference proteins"/>
+                    <TitledBorder title="reference pepshellProteins"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -383,7 +383,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="proteins"/>
+                    <TitledBorder title="pepshellProteins"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -444,7 +444,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="protein PDB detail"/>
+                    <TitledBorder title="pepshellProtein PDB detail"/>
                   </Border>
                 </Property>
               </Properties>
@@ -505,7 +505,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="reference proteins"/>
+                    <TitledBorder title="reference pepshellProteins"/>
                   </Border>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -583,7 +583,7 @@
             </Container>
             <Container class="com.compomics.pepshell.view.dataviewing.StatisticsTabPane" name="statisticsTabbedPane">
               <Properties>
-                <Property name="graphData" type="com.compomics.pepshell.model.Protein" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                <Property name="graphData" type="com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein.Protein" editor="org.netbeans.modules.form.ComponentChooserEditor">
                   <ComponentRef name="null"/>
                 </Property>
               </Properties>

@@ -16,7 +16,8 @@
 
 package com.compomics.pepshell.view.dataloading;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,11 +36,11 @@ public class PreloadProteinFilterPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public List<Protein> getProteinsToFilterWith() {
-        List<Protein> filterList = new ArrayList<>();
+    public List<PepshellProtein> getProteinsToFilterWith() {
+        List<PepshellProtein> filterList = new ArrayList<>();
         if (!accessionTextArea.getText().isEmpty()) {
             for (String accession : Arrays.asList(accessionTextArea.getText().split("\n"))) {
-                filterList.add(new Protein(accession));
+                filterList.add(new PepshellProtein(accession));
             }
         }
         return filterList;
