@@ -317,7 +317,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
     private void referenceProteinDrawPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_referenceProteinDrawPanelMouseClicked
         // TODO add your handling code here:
         if (evt.isShiftDown()) {
-            DrawModeUtilities.getInstance().getCurrentScalingStrategy().getCurrentStrategy().setScale(1.0);
+            DrawModeUtilities.setSCALE(1.0);
             this.repaint();
         }
     }//GEN-LAST:event_referenceProteinDrawPanelMouseClicked

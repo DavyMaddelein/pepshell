@@ -19,10 +19,8 @@ package com.compomics.pepshell.controllers.dataimport.filehandlers;
 import com.compomics.pepshell.model.AnnotatedFile;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.FileBasedExperiment;
-import com.compomics.pepshell.model.SeparatedvalueExperimentMetaData;
+import com.compomics.pepshell.model.SeparatedValueExperimentMetadata;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
-
-import java.io.File;
 
 /**
  * Created by Davy Maddelein on 02/12/2014.
@@ -71,7 +69,7 @@ public class FileParserFactory {
     public Experiment parseExperimentFile(AnnotatedFile anAnnotatedFile) throws CouldNotParseException {
         Experiment parsedExperiment = new Experiment(anAnnotatedFile.getName());
         if(anAnnotatedFile.isValidated()){
-            if(anAnnotatedFile.getAnnotations() instanceof SeparatedvalueExperimentMetaData){
+            if(anAnnotatedFile.getAnnotations() instanceof SeparatedValueExperimentMetadata){
                 parsedExperiment = genericFileParser.parseExperimentFile(anAnnotatedFile);
             }
         }

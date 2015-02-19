@@ -29,7 +29,7 @@ public class Protein implements ProteinInterface {
     private int projectId;
     private String sequence = "";
     private final List<ProteinFeatureWithLocation> domainsFoundInProtein = new ArrayList<>();
-    private final List<PeptideGroup<PeptideInterface>> peptideGroupsForProtein = new ArrayList<>();
+    private final List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
     private final Set<PdbInfo> allPDBFileInfoForProtein = new TreeSet<>(new ComparePdbInfoByResolution());
     private String proteinName;
     private String originalAccession;
@@ -79,12 +79,12 @@ public class Protein implements ProteinInterface {
     }
 
     @Override
-    public List<PeptideGroup<PeptideInterface>> getPeptideGroups() {
+    public List<PeptideGroup> getPeptideGroups() {
         return Collections.unmodifiableList(peptideGroupsForProtein);
     }
 
     @Override
-    public <T extends PeptideGroup<PeptideInterface>> void setPeptideGroupsForProtein(List<T> listOfPeptides) {
+    public <T extends PeptideGroup> void setPeptideGroupsForProtein(List<T> listOfPeptides) {
         peptideGroupsForProtein.addAll(listOfPeptides);
     }
 
@@ -93,6 +93,7 @@ public class Protein implements ProteinInterface {
         peptideGroupsForProtein.add(aPeptideGroup);
         return this;
     }
+
 
     @Override
     public void setProjectId(int projectId) {
@@ -181,7 +182,7 @@ public class Protein implements ProteinInterface {
     }
 
     @Override
-    public Protein addPeptideGroups(List<PeptideGroup<PeptideInterface>> aListOfPeptideGroups) {
+    public Protein addPeptideGroups(List<PeptideGroup> aListOfPeptideGroups) {
         aListOfPeptideGroups.stream().forEach((aGroup) -> {
             if (!peptideGroupsForProtein.contains(aGroup)) {
                 peptideGroupsForProtein.add(aGroup);

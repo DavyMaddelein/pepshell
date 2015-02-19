@@ -73,7 +73,7 @@ public class SolventAccessibleProteinDrawMode<T extends Protein, U extends Pepti
 
     @Override
     public Color calculatePeptideGradient(U peptide) throws CalculationException {
-        return ProgramVariables.PEPTIDECOLOR;
+        return peptideColor;
     }
 
     @Override

@@ -16,7 +16,7 @@
 package com.compomics.pepshell.controllers.dataimport.filevalidation;
 
 import com.compomics.pepshell.model.AnnotatedFile;
-import com.compomics.pepshell.model.SeparatedvalueExperimentMetaData;
+import com.compomics.pepshell.model.SeparatedValueExperimentMetadata;
 import com.compomics.pepshell.model.exceptions.CannotValidateException;
 import com.compomics.pepshell.model.exceptions.ValidationException;
 
@@ -152,7 +152,7 @@ public class AbstractFileValidator implements FileValidatorInterface {
 
     @Override
     public boolean canValidateFile(File aFile) {
-        return aFile instanceof AnnotatedFile && ((AnnotatedFile) aFile).getAnnotations() instanceof SeparatedvalueExperimentMetaData;
+        return aFile instanceof AnnotatedFile && ((AnnotatedFile) aFile).getAnnotations() instanceof SeparatedValueExperimentMetadata;
     }
 
     /**
@@ -167,12 +167,12 @@ public class AbstractFileValidator implements FileValidatorInterface {
      * @throws ValidationException if the validation failure needs more
      * explanation
      */
-    private boolean validateExperiment(String[] experimentColumns, SeparatedvalueExperimentMetaData metaData) throws ValidationException {
+    private boolean validateExperiment(String[] experimentColumns, SeparatedValueExperimentMetadata metaData) throws ValidationException {
         boolean validated = true;
         if (experimentColumns[metaData.getProteinAccessionColumn() - 1].length() == 0) {
             validated = false;
         }
-        if (validated && experimentColumns[metaData.getPeptideSequence() - 1].length() == 0) {
+        if (validated && experimentColumns[metaData.getPeptideSequenceColumn() - 1].length() == 0) {
             validated = false;
         } else {
         }

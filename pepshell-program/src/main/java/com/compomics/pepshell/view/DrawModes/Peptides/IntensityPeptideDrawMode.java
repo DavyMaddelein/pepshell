@@ -55,7 +55,7 @@ public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pro
 
     @Override
     public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
-        return ProgramVariables.PROTEINCOLOR;
+        return proteinColor;
     }
 
     @Override

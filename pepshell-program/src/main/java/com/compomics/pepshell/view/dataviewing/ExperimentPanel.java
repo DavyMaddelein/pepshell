@@ -182,7 +182,7 @@ class ExperimentPanel extends javax.swing.JPanel {
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         //replace with a hashset and call contains
         if (protein != null) {
-            protein.getPeptideGroups().stream().filter((peptideGroup) -> (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * ProgramVariables.SCALE))).map((peptideGroup) -> {
+            protein.getPeptideGroups().stream().filter((peptideGroup) -> (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * DrawModeUtilities.getSCALE()) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * DrawModeUtilities.getSCALE()))).map((peptideGroup) -> {
                 //dirty
                 Protein aProtein = new Protein(protein.getProteinSequence());
                 if (!protein.getDomains().isEmpty()) {
@@ -212,6 +212,7 @@ class ExperimentPanel extends javax.swing.JPanel {
             if (proteinDrawMode instanceof QuantedPeptideDrawMode) {
                 proteinDrawMode = new QuantedPeptideDrawMode();
                 ((QuantedPeptideDrawMode) proteinDrawMode).setMaxRatio(experiment.getMaxRatio());
+                ((QuantedPeptideDrawMode) proteinDrawMode).setMinRatio(experiment.getMinRatio());
                 recalculate = true;
             }
         }

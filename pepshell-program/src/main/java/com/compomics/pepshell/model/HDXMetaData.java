@@ -22,9 +22,9 @@ import com.compomics.pepshell.model.enums.DataSourceEnum;
  *
  * @author Davy Maddelein
  */
-public class HDXMetaData extends SeparatedvalueExperimentMetaData {
+public class HDXMetadata extends SeparatedValueExperimentMetadata {
 
-    public HDXMetaData(DataSourceEnum aDataSource) {
+    public HDXMetadata(DataSourceEnum aDataSource) {
         super(aDataSource);
     }
     

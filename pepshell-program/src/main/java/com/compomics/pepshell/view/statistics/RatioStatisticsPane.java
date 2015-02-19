@@ -28,7 +28,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -74,18 +77,22 @@ public class RatioStatisticsPane extends JFreeChartPanel {
         //Protein protein = experimentGroup.get(0).getProteins().get(experimentGroup.get(0).getProteins().indexOf(aProtein));
         if (aProtein != null) {
             for (Experiment anExperiment : experimentGroup) {
+
                 if (anExperiment.getProteins().indexOf(aProtein) != -1) {
                     Protein protein = anExperiment.getProteins().get(anExperiment.getProteins().indexOf(aProtein));
-                    Ordering<PeptideGroup> groupOrdering = Ordering.natural().onResultOf(getProteinLocation);
-                    ImmutableList<PeptideGroup<PeptideInterface>> sortedCopy = groupOrdering.immutableSortedCopy(protein.getPeptideGroups());
+                    List<PeptideGroup> sortedCopy = protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> e.getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
+
                     for (PeptideGroup aPeptideGroup : sortedCopy) {
                         PeptideInterface aPeptide = aPeptideGroup.getShortestPeptide();
+
                         try {
                             if (aPeptide instanceof QuantedPeptide && ((QuantedPeptide) aPeptide).getRatio() != null) {
                                 Double value = Math.log(((QuantedPeptide) aPeptide).getRatio()) / Math.log(2);
                                 returnset.addValue(value, anExperiment.getExperimentName(), String.valueOf(aPeptide.getBeginningProteinMatch()));
                                 //this part can be put in it's own method
+
                                 for (Experiment checkList : experimentGroup) {
+
                                     if (!checkList.equals(anExperiment) && returnset.getRowKeys().contains(checkList.getExperimentName())) {
                                         if (returnset.getValue(checkList.getExperimentName(), String.valueOf(aPeptide.getBeginningProteinMatch())) == null) {
                                             returnset.addValue(null, checkList.getExperimentName(), String.valueOf(aPeptide.getBeginningProteinMatch()));
@@ -102,13 +109,7 @@ public class RatioStatisticsPane extends JFreeChartPanel {
                 }
             }
         }
+
         return returnset;
     }
-
-    private Function<PeptideGroup, Integer> getProteinLocation = new Function<PeptideGroup, Integer>() {
-        @Override
-        public Integer apply(PeptideGroup input) {
-            return input.getShortestPeptide().getBeginningProteinMatch();
-        }
-    };
 }

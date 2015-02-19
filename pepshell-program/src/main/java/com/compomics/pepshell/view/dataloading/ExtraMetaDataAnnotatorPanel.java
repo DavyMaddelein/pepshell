@@ -21,7 +21,7 @@
  */
 package com.compomics.pepshell.view.dataloading;
 
-import com.compomics.pepshell.model.SeparatedvalueExperimentMetaData;
+import com.compomics.pepshell.model.SeparatedValueExperimentMetadata;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.view.PossibleMetaDataAnnotationsEnum;
 
@@ -51,8 +51,8 @@ public class ExtraMetaDataAnnotatorPanel extends javax.swing.JPanel {
         }
     }
 
-    public SeparatedvalueExperimentMetaData getAllAnnotations() {
-        SeparatedvalueExperimentMetaData metaData = new SeparatedvalueExperimentMetaData(DataSourceEnum.FILE);
+    public SeparatedValueExperimentMetadata getAllAnnotations() {
+        SeparatedValueExperimentMetadata metaData = new SeparatedValueExperimentMetadata(DataSourceEnum.FILE);
         for (Component aComponent : getComponents()) {
             if (aComponent instanceof MetaDataRowPanel) {
                 metaData.addMetaData((PossibleMetaDataAnnotationsEnum) ((MetaDataRowPanel) aComponent).getComboBox().getSelectedItem(), ((MetaDataRowPanel) aComponent).getText());

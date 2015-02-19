@@ -32,7 +32,7 @@ public interface ProteinInterface {
 
     Protein addPeptideGroup(PeptideGroup aPeptideGroup);
 
-    Protein addPeptideGroups(List<PeptideGroup<PeptideInterface>> aListOfPeptideGroups);
+    Protein addPeptideGroups(List<PeptideGroup> aListOfPeptideGroups);
 
     List<ProteinFeatureWithLocation> getDomains();
 
@@ -40,7 +40,7 @@ public interface ProteinInterface {
 
     Set<PdbInfo> getPdbFilesInfo();
 
-    List<PeptideGroup<PeptideInterface>> getPeptideGroups();
+    List<PeptideGroup> getPeptideGroups();
 
     int getProjectid();
 
@@ -60,7 +60,7 @@ public interface ProteinInterface {
 
     List<PeptideGroup> getCPDTPeptideList();
 
-    <T extends PeptideGroup<PeptideInterface>> void setPeptideGroupsForProtein(List<T> listOfPeptides);
+    <T extends PeptideGroup> void setPeptideGroupsForProtein(List<T> listOfPeptides);
 
     void setProjectId(int projectId);
 

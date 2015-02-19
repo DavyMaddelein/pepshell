@@ -39,15 +39,14 @@ import java.awt.Point;
  * this drawing mode is meant to only add CPDT 
  * 
  * @author Davy Maddelein
- * @param <T> the protein type to draw
- * @param <U> the CPDT analysed peptide to draw
  */
+
 public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<Protein, Peptide> implements GradientDrawModeInterface<Protein, Peptide> {
 
     @Override
     public void drawProteinAndPeptides(Protein protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         //set colour and alpha for protein
-        g.setColor(ProgramVariables.PROTEINCOLOR);
+        g.setColor(proteinColor);
         Composite defensiveComposite = ((Graphics2D) g).getComposite();
         ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, proteinAlpha));
         //actually draw the protein
@@ -109,7 +108,7 @@ public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<P
      */
     @Override
     public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
-        return (ProgramVariables.PROTEINCOLOR);
+        return proteinColor;
     }
 
     @Override
