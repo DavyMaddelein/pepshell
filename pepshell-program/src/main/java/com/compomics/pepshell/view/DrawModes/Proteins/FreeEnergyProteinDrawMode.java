@@ -69,7 +69,7 @@ public class FreeEnergyProteinDrawMode<T extends PepshellProtein, U extends Pept
 
     @Override
     public Color calculatePeptideGradient(U peptide) throws CalculationException {
-        return ProgramVariables.PEPTIDECOLOR;
+        return peptideColor;
     }
 
     @Override

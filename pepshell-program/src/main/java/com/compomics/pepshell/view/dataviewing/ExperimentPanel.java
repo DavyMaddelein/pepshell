@@ -210,6 +210,7 @@ class ExperimentPanel extends javax.swing.JPanel {
             if (proteinDrawMode instanceof QuantedPeptideDrawMode) {
                 proteinDrawMode = new QuantedPeptideDrawMode();
                 ((QuantedPeptideDrawMode) proteinDrawMode).setMaxRatio(experiment.getMaxRatio());
+                ((QuantedPeptideDrawMode) proteinDrawMode).setMinRatio(experiment.getMinRatio());
                 recalculate = true;
             }
         }

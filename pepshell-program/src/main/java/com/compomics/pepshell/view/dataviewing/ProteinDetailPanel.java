@@ -213,9 +213,9 @@ public class ProteinDetailPanel extends javax.swing.JPanel {
             try {
             double tempscale = (double) (referenceExperimentPanel.getWidth() - 100) / referenceProtein.getProteinSequence().length();
             if (tempscale < 1) {
-                DrawModeUtilities.getInstance().getCurrentScalingStrategy().getCurrentStrategy().setScale(1.0);
+                DrawModeUtilities.setSCALE(1.0);
             } else {
-                DrawModeUtilities.getInstance().getCurrentScalingStrategy().getCurrentStrategy().setScale(tempscale);
+                DrawModeUtilities.setSCALE(tempscale);
             }
             } catch (NumberFormatException ex) {
                 FaultBarrier.getInstance().handleException(ex);

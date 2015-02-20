@@ -23,6 +23,7 @@ import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
@@ -38,15 +39,14 @@ import java.awt.Point;
  * this drawing mode is meant to only add CPDT 
  * 
  * @author Davy Maddelein
- * @param <T> the protein type to draw
- * @param <U> the CPDT analysed peptide to draw
  */
+
 public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<PepshellProtein, Peptide> implements GradientDrawModeInterface<PepshellProtein, Peptide> {
 
     @Override
-    public void drawProteinAndPeptides(PepshellProtein pepshellProtein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
-        //set colour and alpha for pepshellProtein
-        g.setColor(ProgramVariables.PROTEINCOLOR);
+    public void drawProteinAndPeptides(PepshellProtein protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+        //set colour and alpha for protein
+        g.setColor(proteinColor);
         Composite defensiveComposite = ((Graphics2D) g).getComposite();
         ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, proteinAlpha));
         //actually draw the pepshellProtein
@@ -107,8 +107,8 @@ public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<P
      * @throws com.compomics.pepshell.model.exceptions.CalculationException 
      */
     @Override
-    public Color calculateAminoAcidGradient(PepshellProtein pepshellProtein, int location) throws CalculationException {
-        return (ProgramVariables.PROTEINCOLOR);
+    public Color calculateAminoAcidGradient(PepshellProtein protein, int location) throws CalculationException {
+        return proteinColor;
     }
 
     @Override

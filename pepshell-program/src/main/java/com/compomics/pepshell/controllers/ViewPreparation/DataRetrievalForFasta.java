@@ -73,7 +73,6 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
             if (DataModeController.getInstance().getDataSource() == DataSourceEnum.DATABASE) {
                 experiment.addProteins(DbDAO.fetchProteins(experiment));
                 DbDAO.addPeptideGroupsToProteins(experiment.getProteins());
-                setIntensityValuesForExperiment(experiment);
                 checkAndAddQuantToProteinsInExperiment(experiment);
 
 
@@ -87,6 +86,7 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
 
             FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, experiment.getProteins());
             ProteinController.alignPeptidesOfProteinsInExperiment(experiment);
+            setIntensityValuesForExperiment(experiment);
             retrieveSecondaryData(experiment);
         } catch (FastaCouldNotBeReadException ex) {
             FaultBarrier.getInstance().handleException(ex, false);
@@ -135,37 +135,36 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
 
     //clear sign that the db dao needs to be redone
     private void setIntensityValuesForExperiment(T experiment) {
-        experiment.getProteins().stream().forEach((aProtein) -> {
-            aProtein.getPeptideGroups().stream().forEach((aPeptideGroup) -> {
-                aPeptideGroup.getPeptideList().stream().forEach(aPeptide -> {
-                    List<Double> currentIntensities = aPeptide.getTotalSpectrumIntensities();
-                    //intensities
-                    currentIntensities.stream().forEach(currentIntensity -> {
-                        if (currentIntensity < experiment.getMinIntensity() || experiment.getMinIntensity() == 0.0) {
-                            experiment.setMinIntensity(currentIntensity);
-                        }
-                        //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
-                        if (currentIntensity > experiment.getMaxIntensity() || experiment.getMaxIntensity() == 0.0) {
-                            experiment.setMaxIntensity(currentIntensity);
-                        }
-                    });
-                
-                    //ratios
-                    if (aPeptide instanceof QuantedPeptide) {
-                        try {
-                            Double currentRatio = ((QuantedPeptide) aPeptide).getRatio();
-                            //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
-                            if (currentRatio != null) {
-                                if (experiment.getMaxRatio() == null || currentRatio > experiment.getMaxRatio()) {
-                                    experiment.setMaxRatio(currentRatio);
-                                }
-                            }
-                        } catch (CalculationException ex) {
-                            FaultBarrier.getInstance().handleException(ex);
-                        }
-                    }
-                });
+        experiment.getProteins().stream().forEach((aProtein) -> aProtein.getPeptideGroups().stream().forEach((aPeptideGroup) -> aPeptideGroup.getPeptideList().stream().forEach(aPeptide -> {
+            List<Double> currentIntensities = aPeptide.getTotalSpectrumIntensities();
+            //intensities
+            currentIntensities.stream().forEach(currentIntensity -> {
+                if (currentIntensity < experiment.getMinIntensity() || experiment.getMinIntensity() == 0.0) {
+                    experiment.setMinIntensity(currentIntensity);
+                }
+                //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
+                if (currentIntensity > experiment.getMaxIntensity() || experiment.getMaxIntensity() == 0.0) {
+                    experiment.setMaxIntensity(currentIntensity);
+                }
             });
-        });
+
+            //ratios
+            if (aPeptide instanceof QuantedPeptide) {
+                try {
+                    double currentRatio = ((QuantedPeptide) aPeptide).getRatio();
+                    //no else if just in case someone loads an experiment with just one peptide and for getting a max and a min on first pass
+
+                    if (currentRatio > experiment.getMaxRatio()) {
+                        experiment.setMaxRatio(currentRatio);
+                    }
+
+                    if (currentRatio < experiment.getMinRatio()) {
+                        experiment.setMinRatio(currentRatio);
+                    }
+                } catch (CalculationException ex) {
+                    FaultBarrier.getInstance().handleException(ex);
+                }
+            }
+        })));
         }
     }

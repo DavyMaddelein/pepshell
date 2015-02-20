@@ -37,12 +37,13 @@ public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pepsh
 
     private RatioType topnumber = RatioType.LIGHT;
     private RatioType divisor = RatioType.HEAVY;
-    private Double maxRatio = 0.0;
+    private double maxRatio = 0.0;
+    private double minRatio = 0.0;
 
     @Override
     public void drawPeptide(QuantedPeptide peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         try {
-            g.setColor(calculatePeptideGradient(peptide));
+           peptideColor = calculatePeptideGradient(peptide);
         } catch (CalculationException ex) {
             UndrawableException updatedEx = new UndrawableException("could not calculate the ratio gradient");
             updatedEx.initCause(ex);
@@ -61,9 +62,20 @@ public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pepsh
             }
         }
         //if needed add medium here
-        System.out.println(peptide.getRatio());
+
         try {
-            gradientColor = new Color((int) Math.ceil(255 * (Math.log(peptide.getRatio()) / Math.log(2) / (Math.log(maxRatio) / Math.log(2)))), (int) Math.ceil(255 / (Math.log(peptide.getRatio()) / Math.log(2)) / (Math.log(maxRatio))), 255);
+            double logRatio = Math.log(peptide.getRatio());
+            double absRatio = Math.abs(logRatio);
+
+            if (peptide.getRatio() < 1.0) {
+                float blue = (float) (absRatio / Math.abs(Math.log(minRatio)));
+
+                gradientColor = new Color(0.0f, 1.0f - blue, blue);
+            } else {
+                float red = (float) (absRatio / Math.abs(Math.log(maxRatio)));
+
+                gradientColor = new Color(red, 1.0f - red, 0.0f);
+            }
         } catch (IllegalArgumentException iae) {
             FaultBarrier.getInstance().handleException(iae);
         }
@@ -80,8 +92,8 @@ public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pepsh
     }
 
     @Override
-    public Color calculateAminoAcidGradient(PepshellProtein pepshellProtein, int location) throws CalculationException {
-        return ProgramVariables.PROTEINCOLOR;
+    public Color calculateAminoAcidGradient(PepshellProtein protein, int location) throws CalculationException {
+        return proteinColor;
     }
 
     @Override
@@ -99,8 +111,11 @@ public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pepsh
 
     }
 
-    public void setMaxRatio(Double maxRatio) {
+    public void setMaxRatio(double maxRatio) {
         this.maxRatio = maxRatio;
+    }
+    public void setMinRatio(double minRatio) {
+        this.minRatio = minRatio;
     }
 
     public enum RatioType {

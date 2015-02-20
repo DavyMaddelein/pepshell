@@ -68,7 +68,7 @@ public class SecondaryStructureProteinDrawMode<T extends PepshellProtein, U exte
 
     @Override
     public Color calculatePeptideGradient(Peptide peptide) throws CalculationException {
-        return ProgramVariables.PEPTIDECOLOR;
+        return peptideColor;
     }
 
     @Override

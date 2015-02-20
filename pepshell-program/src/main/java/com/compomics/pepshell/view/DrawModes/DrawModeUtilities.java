@@ -29,6 +29,7 @@ public class DrawModeUtilities {
 
     private static final DrawModeUtilities instance = new DrawModeUtilities();
     private SCALINGOPERATION scalingOperation = SCALINGOPERATION.LINEARSCALE;
+    private static double SCALE = 1;
 
     /**
      * should not be instanciated
@@ -43,6 +44,14 @@ public class DrawModeUtilities {
 
     public static DrawModeUtilities getInstance() {
         return instance;
+    }
+
+    public static double getSCALE() {
+        return SCALE;
+    }
+
+    public static void setSCALE(double SCALE) {
+        DrawModeUtilities.SCALE = SCALE;
     }
 
     public void setScalingStrategy(SCALINGOPERATION aScalingStrategy) {
@@ -70,10 +79,6 @@ public class DrawModeUtilities {
          */
         public int scale(int distanceToScale);
 
-        /**
-         * @param aScale
-         */
-        public void setScale(double aScale);
 
     }
 
@@ -103,61 +108,42 @@ public class DrawModeUtilities {
         public enum SCALINGSTRATEGY implements scale {
 
             MULTIPLYINGSCALE {
-                private double scale;
 
                 @Override
                 public int scale(int distanceToScale) {
                     int scaledSize = distanceToScale;
-                    scaledSize = (int) (Math.ceil(scaledSize * scale));
+                    scaledSize = (int) (Math.ceil(scaledSize * DrawModeUtilities.getSCALE()));
                     return scaledSize;
-                }
-
-                @Override
-                public void setScale(double aScale) {
-                    scale = aScale;
                 }
 
             },
             DIVIDINGSCALE {
-                private double scale;
 
                 @Override
                 public int scale(int distanceToScale) {
                     int scaledSize = distanceToScale;
-                    scaledSize = (int) (Math.ceil(scaledSize / scale));
+                    scaledSize = (int) (Math.ceil(scaledSize / DrawModeUtilities.getSCALE()));
                     return scaledSize;
                 }
 
-                @Override
-                public void setScale(double aScale) {
-                    scale = aScale;
-                }
             },
-            EXPONENTIALSCALE {private double scale;
+            EXPONENTIALSCALE {
 
                 @Override
                 public int scale(int distanceToScale) {
                     //to remove floating point schenanigans
-                    return (int) Math.ceil(Math.pow(distanceToScale, scale));
+                    return (int) Math.ceil(Math.pow(distanceToScale, DrawModeUtilities.getSCALE()));
                 }
 
-                @Override
-                public void setScale(double aScale) {
-                    scale = aScale;
-                }
+
             }, LOGSCALE {
-                private double scale;
 
                 @Override
                 public int scale(int distanceToScale) {
                     //to remove floating point schenanigans
-                    return (int) (Math.log(distanceToScale) / Math.log(scale) + 1e-10);
+                    return (int) (Math.log(distanceToScale) / Math.log(DrawModeUtilities.getSCALE()) + 1e-10);
                 }
 
-                @Override
-                public void setScale(double aScale) {
-                    scale = aScale;
-                }
             }
         }
     }

@@ -33,7 +33,8 @@ public class Experiment {
     private List<PepshellProtein> proteinList = new ArrayList<>();
     private double maxIntensity = Double.MIN_VALUE;
     private double minIntensity = Double.MAX_VALUE;
-    private Double maxRatio = Double.MIN_VALUE;
+    private double maxRatio = Double.MIN_VALUE;
+    private double minRatio = Double.MAX_VALUE;
 
     public Experiment(String experimentName) {
         this.experimentId = -1;
@@ -140,11 +141,19 @@ public class Experiment {
         this.minIntensity = minIntensity;
     }
 
-    public Double getMaxRatio() {
+    public double getMaxRatio() {
         return maxRatio;
     }
 
-    public void setMaxRatio(Double aRatio) {
+    public void setMaxRatio(double aRatio) {
         maxRatio = aRatio;
+    }
+
+    public double getMinRatio() {
+        return minRatio;
+    }
+
+    public void setMinRatio(double aRatio) {
+        minRatio = aRatio;
     }
 }

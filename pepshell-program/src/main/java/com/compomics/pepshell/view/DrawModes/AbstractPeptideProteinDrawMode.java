@@ -28,9 +28,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
+import java.awt.*;
+
 /**
  *
- * this class is a skeletal implementation of the {@link DrawModeInterface} to
+ * this class is a skeletal implementation of the {@link com.compomics.pepshell.view.DrawModes.DrawProteinPeptidesInterface} to
  * draw a simple protein representation with its peptides. It will draw a
  * uniformly coloured bar for the proteins and will try and fit the protein and
  * its peptides on the given horizontal size. The colour of the protein and
@@ -51,6 +53,17 @@ public class AbstractPeptideProteinDrawMode<T extends PepshellProtein, U extends
      * the alpha value to draw the peptides at
      */
     protected float peptideAlpha = 1f;
+
+    /**
+     * the color the proteins should be displayed in
+     */
+    protected Color proteinColor = new Color(93, 100, 202);
+
+
+    /**
+     * the color the peptides should be displayed in
+     */
+    protected Color peptideColor = new Color(223, 156, 55);
 
     /**
      * method to draw a protein on the given graphics with the given parameters
@@ -76,7 +89,7 @@ public class AbstractPeptideProteinDrawMode<T extends PepshellProtein, U extends
     @Override
     public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         //set colour and alpha for protein
-        g.setColor(ProgramVariables.PROTEINCOLOR);
+        g.setColor(proteinColor);
         Composite defensiveComposite = ((Graphics2D) g).getComposite();
         ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, proteinAlpha));
         //actually draw the protein
@@ -109,7 +122,7 @@ public class AbstractPeptideProteinDrawMode<T extends PepshellProtein, U extends
      */
     @Override
     public void drawPeptide(U peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
-        g.setColor(ProgramVariables.PEPTIDECOLOR);
+        g.setColor(peptideColor);
         ((Graphics2D) g).setStroke(new BasicStroke(2F));
         g.drawRect(startPoint.x, startPoint.y, length, height);
     }
@@ -122,5 +135,17 @@ public class AbstractPeptideProteinDrawMode<T extends PepshellProtein, U extends
     @Override
     public void setPeptideAlpha(float alpha) {
         proteinAlpha = alpha;
+    }
+
+    @Override
+    public void setProteinColor(Color aColor) {
+        this.proteinColor = aColor;
+    }
+
+    @Override
+    public void setPeptideColor(Color aColor) {
+        this.peptideColor = aColor;
+
+
     }
 }

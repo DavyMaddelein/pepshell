@@ -19,8 +19,8 @@ package com.compomics.pepshell.view.DrawModes;
 import com.compomics.pepshell.model.PeptideInterface;
 import com.compomics.pepshell.model.protein.ProteinInterface;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
-import java.awt.Graphics;
-import java.awt.Point;
+
+import java.awt.*;
 
 /**
  *
@@ -72,4 +72,8 @@ public interface DrawProteinPeptidesInterface<T extends ProteinInterface, U exte
      * @param alpha 
      */
     public void setPeptideAlpha(float alpha);
+
+    public void setProteinColor(Color aColor);
+
+    public void setPeptideColor(Color aColor);
 }

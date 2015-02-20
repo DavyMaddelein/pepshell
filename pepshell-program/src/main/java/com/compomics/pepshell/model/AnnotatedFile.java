@@ -16,8 +16,6 @@
 
 package com.compomics.pepshell.model;
 
-import com.compomics.pepshell.model.exceptions.ExperimentMetaData;
-
 import java.io.File;
 import java.net.URI;
 
@@ -26,7 +24,7 @@ import java.net.URI;
  */
 public class AnnotatedFile extends File {
 
-    private SeparatedvalueExperimentMetaData annotations;
+    private SeparatedValueExperimentMetadata annotations;
     private boolean validationState = false;
 
     public AnnotatedFile(String parent, String child) {
@@ -45,7 +43,7 @@ public class AnnotatedFile extends File {
         super(pathname);
     }
 
-    public AnnotatedFile addAnnotationsToFile(SeparatedvalueExperimentMetaData annotation) {
+    public AnnotatedFile addAnnotationsToFile(SeparatedValueExperimentMetadata annotation) {
         if (annotations == null) {
             annotations = annotation;
         } else {
@@ -59,7 +57,7 @@ public class AnnotatedFile extends File {
 
     }
 
-    public SeparatedvalueExperimentMetaData getAnnotations() {
+    public SeparatedValueExperimentMetadata getAnnotations() {
         return annotations;
     }
 

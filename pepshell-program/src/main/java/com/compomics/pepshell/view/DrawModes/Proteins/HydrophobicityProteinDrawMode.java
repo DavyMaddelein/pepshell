@@ -56,7 +56,7 @@ public class HydrophobicityProteinDrawMode<T extends PepshellProtein, U extends 
 
     @Override
     public Color calculatePeptideGradient(U peptide) throws CalculationException {
-        return ProgramVariables.PEPTIDECOLOR;
+        return peptideColor;
     }
 
     @Override

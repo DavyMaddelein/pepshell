@@ -36,10 +36,7 @@ public class ProgramVariables {
 
     //TODO move all these to their designated preferences
     //viewpreferences
-    public static final Color PROTEINCOLOR = new Color(93, 100, 202);
-    public static final Color PEPTIDECOLOR = new Color(223, 156, 55);
     public static final Color DOMAINCOLOR = Color.GREEN;
-    public static int SCALE = 1;
     public static final int VERTICALSIZE = 15;
     public static boolean RESIZEPANELS = true;
     //program properties

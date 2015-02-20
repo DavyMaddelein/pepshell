@@ -32,6 +32,10 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author Davy Maddelein
@@ -63,11 +67,13 @@ public class RatioComparisonPane extends JFreeChartPanel {
 
     private CategoryDataset createRatioDataset(PepshellProtein aPepshellProtein) {
         DefaultCategoryDataset returnset = new DefaultCategoryDataset();
-        PepshellProtein pepshellProtein = referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(aPepshellProtein));
-        Ordering<PeptideGroup> groupOrdering = Ordering.natural().onResultOf(getProteinLocation);
-        ImmutableList<? extends PeptideGroup> sortedCopy = groupOrdering.immutableSortedCopy(pepshellProtein.getPeptideGroups());
+
+        PepshellProtein protein = referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(aProtein));
+        List<PeptideGroup> sortedCopy =protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> e.getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
+
         for (PeptideGroup aPeptideGroup : sortedCopy) {
             PeptideInterface aPeptide = aPeptideGroup.getShortestPeptide();
+
             try {
                 if (aPeptide instanceof QuantedPeptide && ((QuantedPeptide) aPeptide).getRatio() != null) {
                     Double value = Math.log(((QuantedPeptide) aPeptide).getRatio()) / Math.log(2);
@@ -79,11 +85,13 @@ public class RatioComparisonPane extends JFreeChartPanel {
 
             }
         }
-        pepshellProtein = referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(aPepshellProtein));
-        groupOrdering = Ordering.natural().onResultOf(getProteinLocation);
-        sortedCopy = groupOrdering.immutableSortedCopy(pepshellProtein.getPeptideGroups());
+
+        protein = experimentToCompareTo.getProteins().get(referenceExperiment.getProteins().indexOf(aProtein));
+        sortedCopy =protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> e.getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
+
         for (PeptideGroup aPeptideGroup : sortedCopy) {
             PeptideInterface aPeptide = aPeptideGroup.getShortestPeptide();
+
             try {
                 if (aPeptide instanceof QuantedPeptide && ((QuantedPeptide) aPeptide).getRatio() != null) {
                     Double value = Math.log(((QuantedPeptide) aPeptide).getRatio()) / Math.log(2);
@@ -94,15 +102,10 @@ public class RatioComparisonPane extends JFreeChartPanel {
                 FaultBarrier.getInstance().handleException(ex);
             }
         }
+
         return returnset;
     }
 
-    private Function<PeptideGroup, Integer> getProteinLocation = new Function<PeptideGroup, Integer>() {
-        @Override
-        public Integer apply(PeptideGroup input) {
-            return input.getShortestPeptide().getBeginningProteinMatch();
-        }
-    };
 
     public void setComparisonExperiment(Experiment anExperiment) {
         experimentToCompareTo = anExperiment;

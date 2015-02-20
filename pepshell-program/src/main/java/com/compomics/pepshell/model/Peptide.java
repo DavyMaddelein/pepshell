@@ -28,7 +28,7 @@ public class Peptide implements PeptideInterface {
     private final String sequence;
     private int beginningProteinMatch = -1;
     private int endProteinMatch = -1;
-    private int timesFound = 0;
+    private int timesFound = 1;
     private boolean isMiscleaved;
     private List<Double> totalSpectrumIntensity = new ArrayList<>();
     private double probability;

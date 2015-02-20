@@ -16,9 +16,8 @@
 
 package com.compomics.pepshell.controllers.dataimport.filevalidation;
 
-import com.compomics.pepshell.controllers.dataimport.filevalidation.AbstractFileValidator;
 import com.compomics.pepshell.model.AnnotatedFile;
-import com.compomics.pepshell.model.SeparatedvalueExperimentMetaData;
+import com.compomics.pepshell.model.SeparatedValueExperimentMetadata;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.model.exceptions.CannotValidateException;
 
@@ -79,7 +78,7 @@ public class AbstractFileValidatorTest {
     public void testValidateFileWithExperimentMetaData() throws Exception {
         System.out.println("validateGenericFileWithMetadata");
         AnnotatedFile aFile = new AnnotatedFile(tinytestFile.getAbsolutePath());
-        SeparatedvalueExperimentMetaData metaData = new SeparatedvalueExperimentMetaData(DataSourceEnum.FILE);
+        SeparatedValueExperimentMetadata metaData = new SeparatedValueExperimentMetadata(DataSourceEnum.FILE);
         metaData.setHasHeaders(true).
                 setProteinAccessionColumn(1).
                 setPeptidesequenceColumn(2).
@@ -103,14 +102,14 @@ public class AbstractFileValidatorTest {
         boolean result = instance.validateFile(aFile);
         boolean expResult = false;
         assertThat(result, is(expResult));
-        instance.validateFile(aFile.addAnnotationsToFile(new SeparatedvalueExperimentMetaData(DataSourceEnum.FILE)));
+        instance.validateFile(aFile.addAnnotationsToFile(new SeparatedValueExperimentMetadata(DataSourceEnum.FILE)));
     }
 
     @Test(expected = CannotValidateException.class)
     public void testValidateFileWithInvalidMetaData() throws CannotValidateException {
         AnnotatedFile aFile = new AnnotatedFile(tinytestFile.getAbsolutePath());
         AbstractFileValidator instance = new AbstractFileValidator();
-        boolean expResult = instance.validateFile(aFile.addAnnotationsToFile(new SeparatedvalueExperimentMetaData(DataSourceEnum.FILE)) );
+        boolean expResult = instance.validateFile(aFile.addAnnotationsToFile(new SeparatedValueExperimentMetadata(DataSourceEnum.FILE)) );
         //should never get here
         assertThat(expResult, is(false));
     }
@@ -119,7 +118,7 @@ public class AbstractFileValidatorTest {
     public void testValidateFileWithConflictingMetaData() throws CannotValidateException {
         AnnotatedFile aFile = new AnnotatedFile(tinytestFile.getAbsolutePath());
         AbstractFileValidator instance = new AbstractFileValidator();
-        SeparatedvalueExperimentMetaData metaData = new SeparatedvalueExperimentMetaData(DataSourceEnum.FILE);
+        SeparatedValueExperimentMetadata metaData = new SeparatedValueExperimentMetadata(DataSourceEnum.FILE);
         metaData.setHasHeaders(true);
         metaData.setHeavyIntensityColumn(4);
         metaData.setLightIntensityColumn(3);
@@ -148,7 +147,7 @@ public class AbstractFileValidatorTest {
     public void testValidateMultipleExperimentFileWithExperimentMetaData() throws Exception {
         System.out.println("validateGenericFileWithMetadata");
         AnnotatedFile aFile = new AnnotatedFile(tinyMultipleTestFile.getAbsolutePath());
-        SeparatedvalueExperimentMetaData metaData = new SeparatedvalueExperimentMetaData(DataSourceEnum.FILE);
+        SeparatedValueExperimentMetadata metaData = new SeparatedValueExperimentMetadata(DataSourceEnum.FILE);
         metaData.setHasHeaders(true).
                 setProteinAccessionColumn(1).
                 setPeptidesequenceColumn(2).
@@ -167,7 +166,7 @@ public class AbstractFileValidatorTest {
     @Test(expected = com.compomics.pepshell.model.exceptions.CannotValidateException.class)
     public void testValidateMultipleExperimentFileWithFalseMetaData() throws Exception {
         AnnotatedFile aFile = new AnnotatedFile(emptyFile.getAbsolutePath());
-        aFile.addAnnotationsToFile(new SeparatedvalueExperimentMetaData(DataSourceEnum.FILE));
+        aFile.addAnnotationsToFile(new SeparatedValueExperimentMetadata(DataSourceEnum.FILE));
         aFile.getAnnotations().setHasHeaders(true).setValueSeparator("\t");
         AbstractFileValidator instance = new AbstractFileValidator();
         instance.validateFile(aFile);

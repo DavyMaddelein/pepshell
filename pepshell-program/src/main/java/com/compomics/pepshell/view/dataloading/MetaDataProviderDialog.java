@@ -18,7 +18,7 @@ package com.compomics.pepshell.view.dataloading;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.AnnotatedFile;
-import com.compomics.pepshell.model.SeparatedvalueExperimentMetaData;
+import com.compomics.pepshell.model.SeparatedValueExperimentMetadata;
 import com.compomics.pepshell.view.PossibleMetaDataAnnotationsEnum;
 import com.compomics.pepshell.view.components.JFileChooserWithMemory;
 import java.awt.event.KeyEvent;
@@ -318,7 +318,7 @@ public class MetaDataProviderDialog extends javax.swing.JDialog {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        SeparatedvalueExperimentMetaData data = extraMetaDataAnnotatorPanel1.getAllAnnotations();
+        SeparatedValueExperimentMetadata data = extraMetaDataAnnotatorPanel1.getAllAnnotations();
         JFileChooserWithMemory chooser = JFileChooserWithMemory.getInstance();
         chooser.setMultiSelectionEnabled(false);
         int state = chooser.showSaveDialog(this);
