@@ -45,15 +45,15 @@ public class AddDomains extends DataRetrievalStep {
 
     @Override
     public List<Protein> call() throws Exception {
-        for (Protein protein : proteinList) {
+        proteinList.stream().filter(protein -> protein.getDomains().size() == 0).forEach(protein -> {
             try {
                 protein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein));
                 this.setChanged();
-                this.notifyObservers(new UpdateMessage(true, "added domain info to " + protein.getProteinAccession(),false));
+                this.notifyObservers(new UpdateMessage(true, "added domain info to " + protein.getProteinAccession(), false));
             } catch (DataRetrievalException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
-        }
+        });
         return Collections.unmodifiableList(proteinList);
     }
 

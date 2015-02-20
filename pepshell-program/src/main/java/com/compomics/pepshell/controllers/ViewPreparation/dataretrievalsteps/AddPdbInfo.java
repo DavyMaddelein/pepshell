@@ -48,8 +48,8 @@ public class AddPdbInfo extends DataRetrievalStep {
 
     @Override
     public List<Protein> call() throws Exception {
+        proteinList.stream().filter(protein -> protein.getPdbFilesInfo().size() == 0).forEach(protein -> addInfoToProtein.andThen(setNotification));
 
-           proteinList.stream().forEach(e -> addInfoToProtein.andThen(setNotification));
         return Collections.unmodifiableList(proteinList);
     }
 

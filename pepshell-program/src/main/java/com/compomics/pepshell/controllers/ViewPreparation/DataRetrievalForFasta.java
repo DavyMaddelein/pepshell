@@ -84,9 +84,9 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
                 }
                 FileParserFactory.getInstance().parseExperimentFile((FileBasedExperiment) experiment);
             }
+            setIntensityValuesForExperiment(experiment);
             FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, experiment.getProteins());
             ProteinController.alignPeptidesOfProteinsInExperiment(experiment);
-            setIntensityValuesForExperiment(experiment);
             retrieveSecondaryData(experiment);
         } catch (FastaCouldNotBeReadException ex) {
             FaultBarrier.getInstance().handleException(ex, false);
@@ -166,5 +166,6 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
                 }
             }
         })));
-        }
+    System.out.println(experiment.getMaxIntensity());
+    }
     }

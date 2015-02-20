@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -35,7 +36,7 @@ import java.awt.Point;
  */
 public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Protein, PeptideInterface> implements GradientDrawModeInterface<Protein, PeptideInterface> {
 
-    private double maxIntensity = 5.0;
+    private double maxIntensity = 1.0;
 
     @Override
     public void drawPeptide(PeptideInterface peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
@@ -60,6 +61,8 @@ public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pro
 
     @Override
     public Color calculatePeptideGradient(PeptideInterface peptide) throws CalculationException {
+        System.out.println("intensities: "+String.join(", ", peptide.getTotalSpectrumIntensities().stream().map(Object::toString).collect(Collectors.toList())));
+        System.out.println("maxintensity: "+ maxIntensity);
         int colorValue = (int) Math.floor(255 * ((peptide.getTotalSpectrumIntensities().stream().reduce(0.0, Double::sum)) / peptide.getTotalSpectrumIntensities().size() / maxIntensity));
         if (colorValue > 255 || colorValue < 0) {
             throw new CalculationException("the range of colours was exceeded \n value was " + colorValue);

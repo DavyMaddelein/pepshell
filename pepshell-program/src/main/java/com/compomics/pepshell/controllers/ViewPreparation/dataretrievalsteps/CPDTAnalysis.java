@@ -77,17 +77,19 @@ public class CPDTAnalysis extends DataRetrievalStep {
         });
 
         for (Protein aProtein : proteinList) {
-            this.setChanged();
-            this.notifyObservers(new UpdateMessage(false, "running CP-DT on " + aProtein.getProteinAccession(), false));
-            String filename = System.currentTimeMillis() + aProtein.getProteinAccession();
-            filename = filename.replaceAll("\\|", "");
-            File outputFile = new File(CPDTFolder, filename);
-            ProcessBuilder builder = new ProcessBuilder(CPDTLocation.getAbsolutePath(), "--all", "--sequence", aProtein.getProteinSequence());
-            builder.redirectOutput(outputFile);
-            builder.start().waitFor();
-            aProtein.setCPDTPeptideList(parseCPDTOutput(outputFile, aProtein));
-            this.setChanged();
-            this.notifyObservers(new UpdateMessage(true, "done running CP-DT on " + aProtein.getProteinAccession(), false));
+            if (aProtein.getCPDTPeptideList().size() == 0) {
+                this.setChanged();
+                this.notifyObservers(new UpdateMessage(false, "running CP-DT on " + aProtein.getProteinAccession(), false));
+                String filename = System.currentTimeMillis() + aProtein.getProteinAccession();
+                filename = filename.replaceAll("\\|", "");
+                File outputFile = new File(CPDTFolder, filename);
+                ProcessBuilder builder = new ProcessBuilder(CPDTLocation.getAbsolutePath(), "--all", "--sequence", aProtein.getProteinSequence());
+                builder.redirectOutput(outputFile);
+                builder.start().waitFor();
+                aProtein.setCPDTPeptideList(parseCPDTOutput(outputFile, aProtein));
+                this.setChanged();
+                this.notifyObservers(new UpdateMessage(true, "done running CP-DT on " + aProtein.getProteinAccession(), false));
+            }
         }
         return Collections.unmodifiableList(proteinList);
     }

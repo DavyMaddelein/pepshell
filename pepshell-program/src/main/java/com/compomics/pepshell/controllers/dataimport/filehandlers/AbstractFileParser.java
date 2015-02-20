@@ -83,14 +83,6 @@ public class AbstractFileParser implements FileParserInterface {
                     if (aFile.getExperimentFile().getAnnotations().experimentHasRatio()) {
                         linePeptide = new QuantedPeptide(columns[aFile.getExperimentFile().getAnnotations().getPeptideSequenceColumn() - 1]);
                         ((QuantedPeptide) linePeptide).setRatio(Double.parseDouble(columns[aFile.getExperimentFile().getAnnotations().getRatioColumn() - 1]));
-
-                        if (((QuantedPeptide) linePeptide).getRatio() > aFile.getMaxRatio()) {
-                            aFile.setMaxRatio(((QuantedPeptide) linePeptide).getRatio());
-                        }
-
-                        if (((QuantedPeptide) linePeptide).getRatio() < aFile.getMinRatio()) {
-                            aFile.setMinRatio(((QuantedPeptide) linePeptide).getRatio());
-                        }
                     } else {
                         linePeptide = new Peptide(columns[aFile.getExperimentFile().getAnnotations().getPeptideSequenceColumn() - 1]);
                     }
@@ -104,12 +96,6 @@ public class AbstractFileParser implements FileParserInterface {
                         Double intensityValue = Double.parseDouble(columns[aFile.getExperimentFile().getAnnotations().getIntensityColumn() - 1]);
                         linePeptide.addTotalSpectrumIntensity(intensityValue);
 
-                        if (intensityValue > aFile.getMaxIntensity()) {
-                            aFile.setMaxIntensity(intensityValue);
-                        }
-                        if (intensityValue < aFile.getMinIntensity()) {
-                            aFile.setMinIntensity(intensityValue);
-                        }
                     }
 
                     lineProtein.addPeptideGroup(new PeptideGroup(linePeptide));
