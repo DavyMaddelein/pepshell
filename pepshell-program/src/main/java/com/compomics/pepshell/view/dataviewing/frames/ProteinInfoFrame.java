@@ -17,6 +17,8 @@
 package com.compomics.pepshell.view.dataviewing.frames;
 
 import com.compomics.pepshell.model.*;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
 
 import java.awt.MouseInfo;
 import java.util.Iterator;
@@ -30,11 +32,11 @@ class ProteinInfoFrame extends javax.swing.JFrame {
     /**
      * Creates new form ProteinInfoFrame
      */
-    private ProteinInfoFrame(Protein protein) {
+    private ProteinInfoFrame(PepshellProtein pepshellProtein) {
         initComponents();
         this.setLocation(MouseInfo.getPointerInfo().getLocation());
-        proteinTextArea.setText(protein.getProteinAccession() + "\n" + protein.getProteinSequence());
-        for (ProteinFeatureWithLocation domainInProtein : protein.getDomains()) {
+        proteinTextArea.setText(pepshellProtein.getVisibleAccession() + "\n" + pepshellProtein.getProteinSequence());
+        for (ProteinFeatureWithLocation domainInProtein : pepshellProtein.getDomains()) {
             proteinTextArea.append("\n" + domainInProtein.getDescription());
             proteinTextArea.append("\nDomain start: " + Integer.toString(domainInProtein.getStartPosition()));
             proteinTextArea.append("\nDomain stop: " + Integer.toString(domainInProtein.getEndPosition()));
@@ -42,8 +44,8 @@ class ProteinInfoFrame extends javax.swing.JFrame {
         this.setVisible(true);
     }
 
-    public ProteinInfoFrame(Protein protein, PeptideGroup peptideGroup) {
-        this(protein);
+    public ProteinInfoFrame(PepshellProtein pepshellProtein, PeptideGroup peptideGroup) {
+        this(pepshellProtein);
         proteinTextArea.append("\n" + "---------------");
         for (Iterator<PeptideInterface> it = peptideGroup.getPeptideList().iterator(); it.hasNext(); ) {
             PeptideInterface peptide = it.next();
@@ -65,7 +67,7 @@ class ProteinInfoFrame extends javax.swing.JFrame {
         proteinTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Protein Info");
+        setTitle("PepshellProtein Info");
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
             }

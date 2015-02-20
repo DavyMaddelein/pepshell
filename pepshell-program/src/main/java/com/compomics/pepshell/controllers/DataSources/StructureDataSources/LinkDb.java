@@ -21,12 +21,15 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
+import com.compomics.pepshell.controllers.DAO.UniprotDAO;
 import com.compomics.pepshell.controllers.InfoFinders.ExternalDomainFinder;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
-import com.compomics.pepshell.controllers.secondarystructureprediction.UniprotSecondaryStructurePrediction;
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -41,7 +44,7 @@ import javax.xml.stream.XMLStreamException;
  *
  * @author Davy Maddelein
  */
-public class LinkDb<T extends Protein> implements StructureDataSource<T> {
+public class LinkDb<T extends PepshellProtein> implements StructureDataSource<T> {
 //TODO subtype this to uniprot protein since we need to be sure we have uniprot accessions
 
     private static final Double NO_RESOLUTION_RETRIEVED_VALUE = 20D;
@@ -104,7 +107,7 @@ public class LinkDb<T extends Protein> implements StructureDataSource<T> {
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getStructDBConnection().prepareStatement(SQLStatements.getInteractionPartnersForRange());
-            stat.setString(1, aProtein.getProteinAccession());
+            stat.setString(1, aProtein.getVisibleAccession());
             stat.setInt(2, start);
             stat.setInt(3, stop);
             ResultSet rs = stat.executeQuery();
@@ -125,7 +128,7 @@ public class LinkDb<T extends Protein> implements StructureDataSource<T> {
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getStructDBConnection().prepareStatement(SQLStatements.getInteractionPartnersForResidue());
-            stat.setString(1, aProtein.getProteinAccession());
+            stat.setString(1, aProtein.getOriginalAccession());
             ResultSet rs = stat.executeQuery();
             try {
                 while (rs.next()) {
@@ -236,9 +239,8 @@ public class LinkDb<T extends Protein> implements StructureDataSource<T> {
         if (secondaryStructureValues.isEmpty()
                 && ProgramVariables.USEINTERNETSOURCES) {
             try {
-                UniprotSecondaryStructurePrediction structurePredictor = new UniprotSecondaryStructurePrediction();
-                structurePredictor.getPrediction(AccessionConverter.toUniprot(protein.getVisibleAccession()));
-            } catch (IOException | ConversionException ex) {
+                UniprotDAO.getSecondaryStructureForAccession(AccessionConverter.toUniprot(protein.getVisibleAccession()));
+            } catch (IOException | ConversionException | ParserConfigurationException | SAXException ex) {
             }
         }
         return secondaryStructureValues;

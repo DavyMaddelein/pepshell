@@ -18,7 +18,7 @@ package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
@@ -35,13 +35,13 @@ import java.util.Map;
  * @param <T>
  * @param <U>
  */
-public class FreeEnergyProteinDrawMode<T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class FreeEnergyProteinDrawMode<T extends PepshellProtein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
     @Override
     public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
 
-        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy() && protein.getPreferedPdbFile() != null) {
-            Map<Integer, Double> freeEnergyValues = ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForStructure(protein, protein.getPreferedPdbFile());
+        if (ProgramVariables.STRUCTUREDATASOURCE.isAbleToGetFreeEnergy() && protein.getPreferredPdbFile() != null) {
+            Map<Integer, Double> freeEnergyValues = ProgramVariables.STRUCTUREDATASOURCE.getFreeEnergyForStructure(protein, protein.getPreferredPdbFile());
             //go over all locations retrieved from the data source
             for (int location : freeEnergyValues.keySet()) {
                 Double freeEnergyValue = freeEnergyValues.get(location);

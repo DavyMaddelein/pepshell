@@ -2,15 +2,131 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e857557c-c82e-42cc-b532-63fb4522650a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/ExperimentTestBase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteinimplementations/FlyweightProtein.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__bouncycastle_bcmail_jdk14_138.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__bouncycastle_bcprov_jdk14_138.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_15_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_lowagie_itext_2_1_5.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_cli_commons_cli_1_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_5.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_collections_commons_collections_2_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_dbcp_commons_dbcp_1_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_sql_jdbc_stdext_2_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_11.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__log4j_log4j_1_2_17.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__mysql_mysql_connector_java_5_1_21.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_jmol_jmol_12_2_34.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_poi_poi_3_9.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_biojava_biojava_1_5.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_all_1_3.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jdesktop_beansbinding_1_2_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jfree_jcommon_1_0_17.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jfree_jfreechart_1_0_14.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xerces_xercesImpl_2_0_2.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xml_apis_xml_apis_1_3_04.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/ProteinInterface.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/CachesAndStores/StoreManagerInterface.java" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\DAO\DasParser.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\DASImplementations\PDB\PDBDAS.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\secondarystructureprediction\UniprotSecondaryStructurePrediction.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\CPDTProtein.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\DAS\DasFeature.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\DAS\DasMethod.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\DAS\DasType.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\DAS\PDBDAS\DasAlignment.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\DAS\PDBDAS\DasBlock.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\ProteinInterface.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\src\main\resources\CPDT.exe" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\src\main\resources\vcredist_x86.exe" afterPath="" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\comparators\CompareDasFeatures.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/comparators/CompareProteins.java" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\PdbInfo.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteininfo/PdbInfo.java" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\Protease.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteinimplementations/Protease.java" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\Proteases.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/Proteases.java" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\Protein.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteinimplementations/PepshellProtein.java" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\ProteinFeature.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteininfo/ProteinFeature.java" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\ProteinFeatureWithLocation.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteininfo/ProteinFeatureWithLocation.java" />
+      <change type="MOVED" beforePath="C:\Users\Iain\Documents\Code\Projects\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\ProteinInfo.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteininfo/ProteinInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/AbstractDataRetrieval.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/AbstractDataRetrieval.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filehandlers/AbstractFileParser.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filehandlers/AbstractFileParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/AbstractPeptideProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/AbstractPeptideProteinDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/CachesAndStores/StoreStrategies/AbstractProteinStoreStrategy.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/CachesAndStores/StoreStrategies/AbstractProteinStoreStrategy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AccessionConverting.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AccessionConverting.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/AccessionMaskDialog.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/AccessionMaskDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/AccessionMaskReader.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/AccessionMaskReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AccessionMasking.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AccessionMasking.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddDomains.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddDomains.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddPdbInfo.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddPdbInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/AnalysisGroup.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/AnalysisGroup.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/CPDTAnalysis.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/CPDTAnalysis.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/CPDTCleavedProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/CPDTCleavedProteinDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/CleavingProbabilityPane.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/CleavingProbabilityPane.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/comparators/ComparePdbInfoByResolution.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/comparators/ComparePdbInfoByResolution.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataexport/DataExport.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataexport/DataExport.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/DataRetrievalForFasta.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/DataRetrievalForFasta.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/DataRetrievalStepsDialog.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/DataRetrievalStepsDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/dataimport/filehandlers/FileParserFactoryTest.java" afterPath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/dataimport/filehandlers/FileParserFactoryTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/IntensityPeptideDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/IntensityPeptideDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/InfoFinders/DataRetrievalStep.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/InfoFinders/DataRetrievalStep.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/DatabasePDBDAO.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/DatabasePDBDAO.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/DbDAO.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/DbDAO.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/DomainProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/DomainProteinDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/DrawProteinPeptidesInterface.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/DrawProteinPeptidesInterface.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataexport/ExcelExport.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataexport/ExcelExport.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/Experiment.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/Experiment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ExperimentAggregatorPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ExperimentAggregatorPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ExperimentPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ExperimentPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/frames/ExperimentSelectionFrame.form" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/frames/ExperimentSelectionFrame.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/frames/ExperimentSelectionFrame.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/frames/ExperimentSelectionFrame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/InfoFinders/ExternalDomainFinder.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/InfoFinders/ExternalDomainFinder.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/ExternalStructureDataSource.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/ExternalStructureDataSource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/FastaDAO.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/FastaDAO.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/Iterators/FastaIterator.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/Iterators/FastaIterator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/FreeEnergyProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/FreeEnergyProteinDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/GradientDrawModeInterface.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/GradientDrawModeInterface.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/parsers/HDXechangeParser.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/parsers/HDXechangeParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/HistogramPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/HistogramPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/HydrophobicityProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/HydrophobicityProteinDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/InformationGainController.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/InformationGainController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/InternetStructureDataSource.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/InternetStructureDataSource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/JFreeChartPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/JFreeChartPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/JmolPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/JmolPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/LinkDb.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/LinkDb.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/MainWindow.form" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/MainWindow.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/MainWindow.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/MainWindow.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/PDBDAO.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/PDBDAO.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/DAO/PDBDAOTest.java" afterPath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/DAO/PDBDAOTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/PeptideGroup.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/PeptideGroup.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/objectcontrollers/PeptideGroupController.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/objectcontrollers/PeptideGroupController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/PreferenceFrame.form" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/PreferenceFrame.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/PreloadProteinFilterPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/PreloadProteinFilterPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/PreloadProteinMaskPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/PreloadProteinMaskPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/PreparationForDbData.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/PreparationForDbData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/objectcontrollers/ProteinController.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/objectcontrollers/ProteinController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ProteinDetailPanel.form" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ProteinDetailPanel.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ProteinDetailPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ProteinDetailPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/ProteinFiltering.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/ProteinFiltering.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ProteinInfoFetcher.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ProteinInfoFetcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/ProteinInfoFrame.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/frames/ProteinInfoFrame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/CachesAndStores/ProteinStoreManager.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/CachesAndStores/ProteinStoreManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/QuantedPeptideDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/QuantedPeptideDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioComparisonPane.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioComparisonPane.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/wrappers/RatioComparisonPaneWrapper.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/wrappers/RatioComparisonPaneWrapper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioStatisticsPane.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioStatisticsPane.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioStatisticsScatterplotPane.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioStatisticsScatterplotPane.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ReferenceExperimentPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ReferenceExperimentPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ReferenceProteinDrawPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ReferenceProteinDrawPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/filters/RegexFilter.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/filters/RegexFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/SecondaryStructureProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/SecondaryStructureProteinDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/SequenceCoveragePanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/SequenceCoveragePanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/SolventAccessibleProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/SolventAccessibleProteinDrawMode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/StatisticsPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/StatisticsPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/StatisticsTabPane.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/StatisticsTabPane.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/wrappers/StatisticsWrapperInterface.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/wrappers/StatisticsWrapperInterface.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/CachesAndStores/StoreStrategies/StoreStrategy.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/CachesAndStores/StoreStrategies/StoreStrategy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/StructureDataSource.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/StructureDataSource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/UniprotDAO.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/UniprotDAO.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/multipleExperimentPerFileParsingInfoPanel.form" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataloading/multipleExperimentPerFileParsingInfoPanel.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="partial-tryp.iws" />
@@ -92,8 +208,8 @@
       <file leaf-file-name="AbstractDataRetrieval.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/AbstractDataRetrieval.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2775">
-              <caret line="76" column="51" selection-start-line="76" selection-start-column="51" selection-end-line="76" selection-end-column="51" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="2820">
+              <caret line="75" column="51" selection-start-line="75" selection-start-column="51" selection-end-line="75" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -102,7 +218,7 @@
       <file leaf-file-name="AccessionConverting.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AccessionConverting.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="825">
+            <state vertical-scroll-proportion="0.0" vertical-offset="150" max-vertical-offset="930">
               <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
               <folding />
             </state>
@@ -112,7 +228,7 @@
       <file leaf-file-name="AddPdbInfo.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddPdbInfo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="92" max-vertical-offset="990">
+            <state vertical-scroll-proportion="0.0" vertical-offset="227" max-vertical-offset="1125">
               <caret line="58" column="57" selection-start-line="58" selection-start-column="57" selection-end-line="58" selection-end-column="57" />
               <folding />
             </state>
@@ -132,11 +248,11 @@
       <file leaf-file-name="CPDTAnalysis.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/CPDTAnalysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="1470">
-              <caret line="85" column="88" selection-start-line="85" selection-start-column="88" selection-end-line="85" selection-end-column="88" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="1680">
+              <caret line="83" column="21" selection-start-line="83" selection-start-column="21" selection-end-line="83" selection-end-column="21" />
               <folding>
-                <element signature="e#5514#5515#0" expanded="true" />
-                <element signature="e#5561#5562#0" expanded="true" />
+                <element signature="e#5602#5603#0" expanded="true" />
+                <element signature="e#5649#5650#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -145,11 +261,11 @@
       <file leaf-file-name="AddDomains.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddDomains.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="113" max-vertical-offset="675">
-              <caret line="47" column="80" selection-start-line="47" selection-start-column="28" selection-end-line="47" selection-end-column="80" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="233" max-vertical-offset="795">
+              <caret line="47" column="3" selection-start-line="47" selection-start-column="3" selection-end-line="47" selection-end-column="3" />
               <folding>
-                <element signature="e#2139#2140#0" expanded="true" />
-                <element signature="e#2175#2176#0" expanded="true" />
+                <element signature="e#2240#2241#0" expanded="true" />
+                <element signature="e#2276#2277#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1524,7 +1640,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1928" y="-56" width="1936" height="1058" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1539,7 +1655,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3488121" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20309168" sideWeight="0.57197946" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20309168" sideWeight="0.57197946" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28509718" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
@@ -1865,7 +1981,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="517" max-vertical-offset="1755">
           <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
           <folding>
-            <element signature="e#2420#2421#0" expanded="false" />
+            <element signature="e#2559#2560#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1927,13 +2043,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3603083" vertical-offset="998" max-vertical-offset="1530">
           <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
-          <folding>
-            <element signature="e#1766#1767#0" expanded="true" />
-            <element signature="e#1830#1831#0" expanded="true" />
-            <element signature="e#2144#2145#0" expanded="true" />
-            <element signature="e#2181#2182#0" expanded="true" />
-            <element signature="e#3018#3019#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1942,19 +2052,6 @@
         <state vertical-scroll-proportion="0.9248555" vertical-offset="990" max-vertical-offset="1875">
           <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/Protein.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.11278196" vertical-offset="630" max-vertical-offset="2730">
-          <caret line="66" column="0" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="3" />
-          <caret line="68" column="0" selection-start-line="66" selection-start-column="3" selection-end-line="68" selection-end-column="0" />
-          <folding>
-            <element signature="e#2103#2104#0" expanded="false" />
-            <element signature="e#2518#2519#0" expanded="false" />
-            <element signature="e#2594#2595#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2040,11 +2137,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/CPDTAnalysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="1470">
-          <caret line="85" column="88" selection-start-line="85" selection-start-column="88" selection-end-line="85" selection-end-column="88" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="1680">
+          <caret line="83" column="21" selection-start-line="83" selection-start-column="21" selection-end-line="83" selection-end-column="21" />
           <folding>
-            <element signature="e#5514#5515#0" expanded="true" />
-            <element signature="e#5561#5562#0" expanded="true" />
+            <element signature="e#5602#5603#0" expanded="true" />
+            <element signature="e#5649#5650#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2067,11 +2164,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddDomains.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="113" max-vertical-offset="675">
-          <caret line="47" column="80" selection-start-line="47" selection-start-column="28" selection-end-line="47" selection-end-column="80" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="233" max-vertical-offset="795">
+          <caret line="47" column="3" selection-start-line="47" selection-start-column="3" selection-end-line="47" selection-end-column="3" />
           <folding>
-            <element signature="e#2139#2140#0" expanded="true" />
-            <element signature="e#2175#2176#0" expanded="true" />
+            <element signature="e#2240#2241#0" expanded="true" />
+            <element signature="e#2276#2277#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2094,8 +2191,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/AbstractDataRetrieval.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2775">
-          <caret line="76" column="51" selection-start-line="76" selection-start-column="51" selection-end-line="76" selection-end-column="51" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="2820">
+          <caret line="75" column="51" selection-start-line="75" selection-start-column="51" selection-end-line="75" selection-end-column="51" />
           <folding />
         </state>
       </provider>

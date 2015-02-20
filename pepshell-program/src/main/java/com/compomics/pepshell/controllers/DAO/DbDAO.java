@@ -21,7 +21,7 @@ import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionControll
 import com.compomics.pepshell.controllers.objectcontrollers.PeptideGroupController;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedExperiment;
 
 import java.io.IOException;
@@ -40,20 +40,20 @@ import java.util.Observable;
  */
 public class DbDAO extends Observable {
 
-    public static List<Protein> fetchProteins(Experiment experiment) throws SQLException {
-        Protein protToAdd;
-        List<Protein> fetchedProteins = new ArrayList<>();
+    public static List<PepshellProtein> fetchProteins(Experiment experiment) throws SQLException {
+        PepshellProtein protToAdd;
+        List<PepshellProtein> fetchedPepshellProteins = new ArrayList<>();
         try (PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().selectAllProteins())) {
             stat.setInt(1, experiment.getExperimentId());
             try (ResultSet rs = stat.executeQuery()) {
                 while (rs.next()) {
-                    protToAdd = new Protein(rs.getString("accession"));
-                    protToAdd.setProjectId(experiment.getExperimentId());
-                    fetchedProteins.add(protToAdd);
+                    protToAdd = new PepshellProtein(rs.getString("accession"));
+                    protToAdd.setExtraIdentifier(String.valueOf(experiment.getExperimentId()));
+                    fetchedPepshellProteins.add(protToAdd);
                 }
             }
         }
-        return fetchedProteins;
+        return fetchedPepshellProteins;
     }
 
     public static boolean fetchPeptidesAndProteins(Experiment project) throws SQLException, IOException {
@@ -76,14 +76,14 @@ public class DbDAO extends Observable {
         return true;
     }
 
-    public static <E extends Protein> List<E> addPeptideGroupsToProteins(List<E> proteins) throws SQLException {
+    public static <E extends PepshellProtein> List<E> addPeptideGroupsToProteins(List<E> proteins) throws SQLException {
         try (PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().selectAllPeptidesGrouped())) {
             //todo change this to not execute the query per protein
-            for (Protein protein : proteins) {
-                stat.setInt(1, protein.getProjectid());
-                stat.setString(2, protein.getProteinAccession());
+            for (PepshellProtein protein : proteins) {
+                stat.setInt(1, Integer.parseInt(protein.getExtraIdentifier()));
+                stat.setString(2, protein.getOriginalAccession());
                 try (ResultSet rs = stat.executeQuery()) {
-                    protein.setPeptideGroupsForProtein(PeptideGroupController.createPeptideGroups(rs, true));
+                    protein.addPeptideGroups(PeptideGroupController.createPeptideGroups(rs, true));
                 }
             }
         }
@@ -91,12 +91,12 @@ public class DbDAO extends Observable {
     }
 
     //this could be in one method, and return the quanted peptide groups instead of adding them
-    private static <E extends Protein> List<E> addQuantedPeptideGroupsToProteins(List<E> fetchedProteins) throws SQLException {
+    private static <E extends PepshellProtein> List<E> addQuantedPeptideGroupsToProteins(List<E> fetchedProteins) throws SQLException {
         try (PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().selectAllQuantedPeptideGroups())) {
             //todo change this to not execute the query per protein
             for (E protein : fetchedProteins) {
-                stat.setInt(1, protein.getProjectid());
-                stat.setString(2, protein.getProteinAccession());
+                stat.setInt(1, Integer.parseInt(protein.getExtraIdentifier()));
+                stat.setString(2, protein.getOriginalAccession());
                 try (ResultSet rs = stat.executeQuery()) {
                     protein.setPeptideGroupsForProtein(PeptideGroupController.createQuantedPeptideGroups(rs));
                 }
@@ -105,7 +105,7 @@ public class DbDAO extends Observable {
         return fetchedProteins;
     }
 
-    public static List<PeptideGroup> getPeptideGroupsForAccession(String proteinAccession, int projectid) throws SQLException {
+    public static List<? extends PeptideGroup> getPeptideGroupsForAccession(String proteinAccession, int projectid) throws SQLException {
         try (PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().selectAllPeptidesGroupedForProteinAccession())) {
             stat.setInt(1, projectid);
             stat.setString(2, proteinAccession);
@@ -129,25 +129,25 @@ public class DbDAO extends Observable {
 
     }
 
-    public static List<Experiment> getProjects() throws SQLException {
-        List<Experiment> projects = new ArrayList<>();
+    public static List<? extends Experiment> getExperiments() throws SQLException {
+        List<Experiment> experiments = new ArrayList<>();
         try (PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().selectAllExperiments())) {
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {
-                projects.add(new Experiment(rs.getInt("projectid"), rs.getInt("projectid") + " - " + rs.getString("title")));
+                experiments.add(new Experiment(rs.getInt("projectid"), rs.getInt("projectid") + " - " + rs.getString("title")));
             }
             rs.close();
         }
-        return projects;
+        return experiments;
     }
 
-    public static Experiment getProject(int projectid, boolean addProteins) throws SQLException, NullPointerException, URISyntaxException, MalformedURLException, IOException {
+    public static Experiment getExperiment(int experimentId, boolean addProteins) throws SQLException, NullPointerException, URISyntaxException, MalformedURLException, IOException {
         Experiment project = null;
         try (PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().selectASingleExperiment())) {
-            stat.setInt(1, projectid);
+            stat.setInt(1, experimentId);
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {
-                project = new Experiment(projectid, projectid + " - " + rs.getString("title"));
+                project = new Experiment(experimentId, experimentId + " - " + rs.getString("title"));
             }
             if (addProteins) {
                 DbDAO.fetchPeptidesAndProteins(project);
@@ -157,7 +157,7 @@ public class DbDAO extends Observable {
         return project;
     }
 
-    public static boolean projectIsQuanted(Experiment project) throws SQLException {
+    public static boolean experimentIsQuanted(Experiment project) throws SQLException {
         boolean projectIsQuanted;
         PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(DataModeController.getInstance().getDb().getDataMode().getExperimentDatabase().ExperimentHasQuant());
         stat.setInt(1, project.getExperimentId());

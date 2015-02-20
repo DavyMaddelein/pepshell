@@ -20,9 +20,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.WebDAO;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
-import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
@@ -49,7 +47,7 @@ class ExperimentPanel extends javax.swing.JPanel {
 
     private int horizontalOffset = this.getX() + 15;
     private int verticalOffset = 25;
-    private Protein protein;
+    private PepshellProtein pepshellProtein;
     private AbstractPeptideProteinDrawMode proteinDrawMode = new IntensityPeptideDrawMode();
     private boolean recalculate = true;
     private Experiment experiment;
@@ -78,17 +76,17 @@ class ExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setText(experiment.getExperimentName());
     }
 
-    public void setProtein(ProteinInterface aProtein) {
+    public void setPepshellProtein(PepshellProtein aProtein) {
         try {
-            if (this.protein == null || !this.protein.equals(aProtein)) {
-                this.protein = experiment.getProteins().get(experiment.getProteins().indexOf(aProtein));
+            if (this.pepshellProtein == null || !this.pepshellProtein.equals(aProtein)) {
+                this.pepshellProtein = experiment.getProteins().get(experiment.getProteins().indexOf(aProtein));
                 if (!aProtein.getDomains().isEmpty()) {
-                    this.protein.addDomains(aProtein.getDomains());
+                    this.pepshellProtein.addDomains(aProtein.getDomains());
                 }
                 proteinChanged = true;
             }
         } catch (IndexOutOfBoundsException e) {
-            this.protein = null;
+            this.pepshellProtein = null;
         }
         this.revalidate();
         this.repaint();
@@ -181,17 +179,17 @@ class ExperimentPanel extends javax.swing.JPanel {
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         //replace with a hashset and call contains
-        if (protein != null) {
-            protein.getPeptideGroups().stream().filter((peptideGroup) -> (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * DrawModeUtilities.getSCALE()) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * DrawModeUtilities.getSCALE()))).map((peptideGroup) -> {
+        if (pepshellProtein != null) {
+            pepshellProtein.getPeptideGroups().stream().filter((peptideGroup) -> (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * ProgramVariables.SCALE))).map((peptideGroup) -> {
                 //dirty
-                Protein aProtein = new Protein(protein.getProteinSequence());
-                if (!protein.getDomains().isEmpty()) {
-                    new Thread(() -> aProtein.addDomains(protein.getDomains())).start();
+                PepshellProtein aPepshellProtein = new PepshellProtein(pepshellProtein.getProteinSequence());
+                if (!pepshellProtein.getDomains().isEmpty()) {
+                    new Thread(() -> aPepshellProtein.addDomains(pepshellProtein.getDomains())).start();
                 }
-                aProtein.addPeptideGroup(peptideGroup);
-                return aProtein;
+                aPepshellProtein.addPeptideGroup(peptideGroup);
+                return aPepshellProtein;
             }).forEach((aProtein) -> {
-                ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(protein.getProteinSequence(), aProtein);
+                ((ProteinDetailPanel) this.getParent().getParent().getParent().getParent()).setSequenceCoverage(pepshellProtein.getProteinSequence(), aProtein);
             });
         }
     }//GEN-LAST:event_formMouseMoved
@@ -226,9 +224,9 @@ class ExperimentPanel extends javax.swing.JPanel {
         //when extracting this code to it's own mouse adapter flip the scale calculations so the doubles are always bigger than 1 instead of smaller
         endingZoomCoordinate = evt.getX() + 15;
         Double tempScale = (double) (endingZoomCoordinate / startingZoomCoordinate);
-        if (tempScale * protein.getProteinSequence().length() < 1) {
+        if (tempScale * pepshellProtein.getProteinSequence().length() < 1) {
             // zoomed in to a value greater than one amino acid
-            tempScale = (double) 10 / protein.getProteinSequence().length();
+            tempScale = (double) 10 / pepshellProtein.getProteinSequence().length();
         } else {
             if (tempScale < 1) {
                 //dragged to the left
@@ -237,7 +235,7 @@ class ExperimentPanel extends javax.swing.JPanel {
                 //dragged to the right, flip the start and end
                 endingZoomCoordinate = startingZoomCoordinate;
                 startingZoomCoordinate = evt.getX() + 15;
-                if ((1 / tempScale) * protein.getProteinSequence().length() < 1) {
+                if ((1 / tempScale) * pepshellProtein.getProteinSequence().length() < 1) {
                 } else {
                     scale = 1 / tempScale;
                 }
@@ -269,15 +267,15 @@ class ExperimentPanel extends javax.swing.JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
-        //replace protein recalculation with a buffered image to display
+        //replace pepshellProtein recalculation with a buffered image to display
         super.paintComponent(g);
-        if (protein != null) {
+        if (pepshellProtein != null) {
             if (!nameChanged) {
                 projectNameLabel.setText(experimentName);
             }
-            if (protein.getProteinSequence().isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
+            if (pepshellProtein.getProteinSequence().isEmpty() && ProgramVariables.USEINTERNETSOURCES) {
                 try {
-                    protein.setSequence(WebDAO.fetchSequence(protein.getProteinAccession()));
+                    pepshellProtein.setSequence(WebDAO.fetchSequence(pepshellProtein.getOriginalAccession()));
                 } catch (ConversionException e) {
                     FaultBarrier.getInstance().handleException(e);
                 } catch (UnknownHostException ex) {
@@ -286,24 +284,24 @@ class ExperimentPanel extends javax.swing.JPanel {
                     ProgramVariables.USEINTERNETSOURCES = false;
                 } catch (IOException ex) {
                     FaultBarrier.getInstance().handleException(ex,
-                            new UpdateMessage(false, "An error occured while reading in the protein sequence from uniprot", true));
+                            new UpdateMessage(false, "An error occured while reading in the pepshellProtein sequence from uniprot", true));
                 }
             }
-            if (!protein.getProteinSequence().isEmpty()) {
+            if (!pepshellProtein.getProteinSequence().isEmpty()) {
                 if (recalculate) {
                     Point offsetPoint = new Point(horizontalOffset, verticalOffset + 10);
-                    int width = DrawModeUtilities.getInstance().scale(protein.getProteinSequence().length());
+                    int width = DrawModeUtilities.getInstance().scale(pepshellProtein.getProteinSequence().length());
                     BufferedImage tempImage = new BufferedImage(width + 65, ProgramVariables.VERTICALSIZE + 10, BufferedImage.TYPE_INT_ARGB);
                     try {
-                        //proteinDrawMode.drawProtein(protein, tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
-                        proteinDrawMode.drawProteinAndPeptides(protein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE); //((DrawableProtein) protein).draw(horizontalOffset, verticalOffset, g);
+                        //proteinDrawMode.drawProtein(pepshellProtein, tempImage.getGraphics(), horizontalOffset, verticalOffset + 5, horizontalBarSize, ProgramVariables.VERTICALSIZE); //((DrawableProtein) pepshellProtein).draw(horizontalOffset, verticalOffset, g);
+                        proteinDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE); //((DrawableProtein) pepshellProtein).draw(horizontalOffset, verticalOffset, g);
                     } catch (UndrawableException ex) {
                         FaultBarrier.getInstance().handleException(ex);
                     }
-                    if (!protein.getDomains().isEmpty()) {
+                    if (!pepshellProtein.getDomains().isEmpty()) {
                         try {
                             domainBackgroundDrawMode.setProteinAlpha(0.18f);
-                            domainBackgroundDrawMode.drawProteinAndPeptides(protein, g, offsetPoint, width, this.getHeight());
+                            domainBackgroundDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, this.getHeight());
                         } catch (UndrawableException ex) {
                             FaultBarrier.getInstance().handleException(ex);
                         }
@@ -317,7 +315,7 @@ class ExperimentPanel extends javax.swing.JPanel {
 
                 }
             } else {
-                projectNameLabel.setText(experimentName + ": protein not found");
+                projectNameLabel.setText(experimentName + ": pepshellProtein not found");
             }
         }
         if (cachedImage != null) {

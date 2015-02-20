@@ -18,9 +18,8 @@ package com.compomics.pepshell.controllers.InfoFinders;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.UniprotDAO;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinFeature;
-import com.compomics.pepshell.model.ProteinFeatureWithLocation;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
 import com.compomics.pepshell.model.enums.DomainWebsitesEnum;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import org.xml.sax.SAXException;
@@ -75,7 +74,7 @@ public class ExternalDomainFinder {
         return foundDomains;
     }
 
-    public static void addDomainsToProtein(Protein protein) throws IOException, ConversionException, XMLStreamException {
-        protein.addDomains(getDomainsFromAllSitesForUniprotAccession(protein.getProteinAccession()));
+    public static void addDomainsToProtein(PepshellProtein pepshellProtein) throws IOException, ConversionException, XMLStreamException {
+        pepshellProtein.addDomains(getDomainsFromAllSitesForUniprotAccession(pepshellProtein.getVisibleAccession()));
     }
 }

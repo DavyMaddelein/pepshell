@@ -18,8 +18,8 @@ package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinFeatureWithLocation;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
@@ -36,7 +36,7 @@ import java.awt.Point;
  * @param <T>
  * @param <U>
  */
-public class DomainProteinDrawMode<T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> {
+public class DomainProteinDrawMode<T extends PepshellProtein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> {
 
     @Override
     public void drawProteinAndPeptides(T protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {

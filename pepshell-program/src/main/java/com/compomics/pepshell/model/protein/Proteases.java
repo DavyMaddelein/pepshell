@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.model;
+package com.compomics.pepshell.model.protein;
+
+import com.compomics.pepshell.model.protein.proteinimplementations.Protease;
 
 import java.util.ArrayList;
 import java.util.Collections;

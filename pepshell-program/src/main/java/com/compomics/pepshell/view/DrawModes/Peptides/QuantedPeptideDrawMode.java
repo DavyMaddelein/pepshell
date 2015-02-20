@@ -18,9 +18,7 @@ package com.compomics.pepshell.view.DrawModes.Peptides;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
-import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
@@ -35,7 +33,7 @@ import java.awt.Point;
  * @author Davy Maddelein
  * @param <U>
  */
-public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Protein, QuantedPeptide> implements GradientDrawModeInterface<Protein, QuantedPeptide> {
+public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<PepshellProtein, QuantedPeptide> implements GradientDrawModeInterface<PepshellProtein, QuantedPeptide> {
 
     private RatioType topnumber = RatioType.LIGHT;
     private RatioType divisor = RatioType.HEAVY;
@@ -94,7 +92,7 @@ public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Prote
     }
 
     @Override
-    public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
+    public Color calculateAminoAcidGradient(PepshellProtein protein, int location) throws CalculationException {
         return proteinColor;
     }
 

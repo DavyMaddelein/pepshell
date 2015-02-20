@@ -19,6 +19,14 @@ package com.compomics.pepshell.view.DrawModes;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Composite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 
 import java.awt.*;
 
@@ -34,7 +42,7 @@ import java.awt.*;
  * @param <T> the pepshell protein type to draw
  * @param <U> the pepshell peptide type to draw
  */
-public class AbstractPeptideProteinDrawMode<T extends Protein, U extends PeptideInterface> implements DrawProteinPeptidesInterface<T, U> {
+public class AbstractPeptideProteinDrawMode<T extends PepshellProtein, U extends PeptideInterface> implements DrawProteinPeptidesInterface<T, U> {
 
     /**
      * the alpha value to draw the protein at

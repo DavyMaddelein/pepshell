@@ -18,7 +18,7 @@ package com.compomics.pepshell.view.dataloading;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.AccessionMaskReader;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.enums.ExportPropertyEnum;
 import com.compomics.pepshell.view.components.JFileChooserWithMemory;
 
@@ -38,7 +38,7 @@ import javax.swing.JFileChooser;
  */
 public class PreloadProteinMaskPanel extends javax.swing.JPanel {
 
-    private Set<Protein> accessionMasks = new HashSet<>();
+    private Set<PepshellProtein> accessionMasks = new HashSet<>();
 
     /**
      * Creates new form PreloadProteinMaskPanel
@@ -66,7 +66,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
         removeAccessionMaskingButton = new javax.swing.JButton();
         removeMaskingsFromListButton = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
-        accessionMaskingList = new javax.swing.JList<Protein>();
+        accessionMaskingList = new javax.swing.JList<PepshellProtein>();
 
         loadAccessionMaskingFile.setText("load a masking file");
         loadAccessionMaskingFile.addActionListener(new java.awt.event.ActionListener() {
@@ -177,13 +177,13 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
         accessionMaskingChooser.showOpenDialog(this);
         File selectedFile = accessionMaskingChooser.getSelectedFile();
         try {
-            Map<Protein, String> maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
+            Map<PepshellProtein, String> maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
             maskMap.entrySet().stream().forEach((entry) -> {
                 entry.getKey().setVisibleAccession(entry.getValue());
                 accessionMasks.add(entry.getKey());
 
             });
-            accessionMaskingList.setListData(accessionMasks.toArray(new Protein[accessionMasks.size()]));
+            accessionMaskingList.setListData(accessionMasks.toArray(new PepshellProtein[accessionMasks.size()]));
         } catch (IOException ex) {
             FaultBarrier.getInstance().handleException(ex);
         }
@@ -199,7 +199,7 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
             File saveFile = accessionMaskSaver.getSelectedFile();
             //this could be moved out of this dialog to the controller
             saveWriter = new FileWriter(saveFile);
-            for (Protein anAccessionMaskingEntry : accessionMasks) {
+            for (PepshellProtein anAccessionMaskingEntry : accessionMasks) {
                 saveWriter.append(anAccessionMaskingEntry.getOriginalAccession()).append("=").append(anAccessionMaskingEntry.getVisibleAccession()).append("\n");
             }
         } catch (IOException ex) {
@@ -219,32 +219,32 @@ public class PreloadProteinMaskPanel extends javax.swing.JPanel {
     private void addMaskingAccessionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMaskingAccessionButtonActionPerformed
         //TODO add model that displays the original -> masked decently
         if (!accessionToMaskTextField.getText().isEmpty() && !maskingAccessionTextField.getText().isEmpty()) {
-            Protein maskedProtein = new Protein(accessionToMaskTextField.getText());
-            maskedProtein.setVisibleAccession(maskingAccessionTextField.getText());
-            accessionMasks.add(maskedProtein);
+            PepshellProtein maskedPepshellProtein = new PepshellProtein(accessionToMaskTextField.getText());
+            maskedPepshellProtein.setVisibleAccession(maskingAccessionTextField.getText());
+            accessionMasks.add(maskedPepshellProtein);
 
-            accessionMaskingList.setListData(accessionMasks.toArray(new Protein[accessionMasks.size()]));
+            accessionMaskingList.setListData(accessionMasks.toArray(new PepshellProtein[accessionMasks.size()]));
         }
     }//GEN-LAST:event_addMaskingAccessionButtonActionPerformed
 
     private void removeAccessionMaskingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAccessionMaskingButtonActionPerformed
         if (!accessionMaskingList.getSelectedValuesList().isEmpty()) {
             accessionMasks.removeIf(e -> accessionMasks.contains(e));
-            accessionMaskingList.setListData(accessionMasks.toArray(new Protein[accessionMasks.size()]));
+            accessionMaskingList.setListData(accessionMasks.toArray(new PepshellProtein[accessionMasks.size()]));
         }
     }//GEN-LAST:event_removeAccessionMaskingButtonActionPerformed
 
     private void removeMaskingsFromListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMaskingsFromListButtonActionPerformed
         accessionMasks.clear();
-        accessionMaskingList.setListData(new Protein[10]);
+        accessionMaskingList.setListData(new PepshellProtein[10]);
     }//GEN-LAST:event_removeMaskingsFromListButtonActionPerformed
 
-    public Set<Protein> getProteinsToMaskWith() {
+    public Set<PepshellProtein> getProteinsToMaskWith() {
         return Collections.unmodifiableSet(accessionMasks);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList<Protein> accessionMaskingList;
+    private javax.swing.JList<PepshellProtein> accessionMaskingList;
     private javax.swing.JTextField accessionToMaskTextField;
     private javax.swing.JButton addMaskingAccessionButton;
     private javax.swing.JLabel jLabel1;

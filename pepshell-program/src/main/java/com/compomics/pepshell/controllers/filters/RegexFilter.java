@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.controllers.filters;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -52,8 +52,8 @@ public class RegexFilter extends FilterParent<String> {
         return matchedItems;
     }
 
-    public List<Protein> filterProtein(List<Protein> listToFilter, List<String> regexesToFilterAgainst) {
-        List<Protein> matchedItems = new ArrayList<>();
+    public List<PepshellProtein> filterProtein(List<? extends PepshellProtein> listToFilter, List<String> regexesToFilterAgainst) {
+        List<PepshellProtein> matchedItems = new ArrayList<>();
         /**
          * for (String aRegex : regexesToFilterAgainst) { if (inclusive) {
          * matchedItems.addAll(Collections2.filter(listToFilter,
@@ -62,9 +62,9 @@ public class RegexFilter extends FilterParent<String> {
          * Predicates.not(Predicates.contains(Pattern.compile(aRegex))))); } }
          */
         for (String aString : regexesToFilterAgainst) {
-            for (Protein aProtein : listToFilter) {
-                if (aProtein.getVisibleAccession().matches(aString)) {
-                    matchedItems.add(aProtein);
+            for (PepshellProtein aPepshellProtein : listToFilter) {
+                if (aPepshellProtein.getVisibleAccession().matches(aString)) {
+                    matchedItems.add(aPepshellProtein);
                 }
             }
         }

@@ -19,7 +19,7 @@ package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import java.util.Collections;
@@ -31,30 +31,30 @@ import java.util.List;
  */
 public class AddDomains extends DataRetrievalStep {
 
-    private AddDomains(List<Protein> aProteinList) {
-        this.proteinList = aProteinList;
+    private AddDomains(List<PepshellProtein> aPepshellProteinList) {
+        this.pepshellProteinList = aPepshellProteinList;
     }
 
     public AddDomains() {
     }
 
     @Override
-    public DataRetrievalStep getInstance(List<Protein> aProteinList) {
-        return new AddDomains(aProteinList);
+    public DataRetrievalStep getInstance(List<PepshellProtein> aPepshellProteinList) {
+        return new AddDomains(aPepshellProteinList);
     }
 
     @Override
-    public List<Protein> call() throws Exception {
-        proteinList.stream().filter(protein -> protein.getDomains().size() == 0).forEach(protein -> {
+    public List<PepshellProtein> call() throws Exception {
+        for (PepshellProtein pepshellProtein : pepshellProteinList) {
             try {
-                protein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(protein));
+                pepshellProtein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(pepshellProtein));
                 this.setChanged();
-                this.notifyObservers(new UpdateMessage(true, "added domain info to " + protein.getProteinAccession(), false));
+                this.notifyObservers(new UpdateMessage(true, "added domain info to " + pepshellProtein.getVisibleAccession(), false));
             } catch (DataRetrievalException ex) {
                 FaultBarrier.getInstance().handleException(ex);
             }
-        });
-        return Collections.unmodifiableList(proteinList);
+        }
+        return Collections.unmodifiableList(pepshellProteinList);
     }
 
     @Override

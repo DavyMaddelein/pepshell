@@ -21,7 +21,7 @@
  */
 package com.compomics.pepshell.view.statistics.wrappers;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 
 /**
  * this interface is meant to serve as a wrapper for all jfreechart panels that
@@ -33,5 +33,5 @@ import com.compomics.pepshell.model.Protein;
  */
 public interface StatisticsWrapperInterface {
 
-    public void setGraphData(Protein aProtein);
+    public void setGraphData(PepshellProtein aPepshellProtein);
 }

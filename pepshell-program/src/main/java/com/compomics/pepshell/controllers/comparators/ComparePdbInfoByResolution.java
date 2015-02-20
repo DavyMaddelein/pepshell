@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.controllers.comparators;
 
-import com.compomics.pepshell.model.PdbInfo;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;

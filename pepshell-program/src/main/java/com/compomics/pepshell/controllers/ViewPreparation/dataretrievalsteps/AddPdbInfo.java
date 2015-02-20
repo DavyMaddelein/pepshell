@@ -18,8 +18,8 @@ package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.ProteinInterface;
 import com.compomics.pepshell.model.UpdateMessage;
 import java.util.Collections;
 import java.util.List;
@@ -31,29 +31,29 @@ import java.util.function.Consumer;
  */
 public class AddPdbInfo extends DataRetrievalStep {
 
-    private Consumer<ProteinInterface> setNotification = new SetNotification();
-    private final Consumer<ProteinInterface> addInfoToProtein = new AddInfoToProtein();
+    private Consumer<PepshellProtein> setNotification = new SetNotification();
+    private final Consumer<PepshellProtein> addInfoToProtein = new AddInfoToProtein();
 
-    private AddPdbInfo(List<Protein> aProteinList) {
-        this.proteinList = aProteinList;
+    private AddPdbInfo(List<PepshellProtein> aPepshellProteinList) {
+        this.pepshellProteinList = aPepshellProteinList;
     }
 
     public AddPdbInfo() {
     }
 
     @Override
-    public DataRetrievalStep getInstance(List<Protein> aProteinList) {
-        return new AddPdbInfo(aProteinList);
+    public DataRetrievalStep getInstance(List<PepshellProtein> aPepshellProteinList) {
+        return new AddPdbInfo(aPepshellProteinList);
     }
 
     @Override
-    public List<Protein> call() throws Exception {
-        proteinList.stream().filter(protein -> protein.getPdbFilesInfo().size() == 0).forEach(protein -> addInfoToProtein.andThen(setNotification));
+    public List<PepshellProtein> call() throws Exception {
 
-        return Collections.unmodifiableList(proteinList);
+        pepshellProteinList.stream().forEach(e -> addInfoToProtein.andThen(setNotification));
+        return Collections.unmodifiableList(pepshellProteinList);
     }
 
-    private class SetNotification implements Consumer<ProteinInterface> {
+    private class SetNotification implements Consumer<PepshellProtein> {
 
         /**
          * Performs this operation on the given argument.
@@ -61,13 +61,13 @@ public class AddPdbInfo extends DataRetrievalStep {
          * @param protein the input argument
          */
         @Override
-        public void accept(ProteinInterface protein) {
+        public void accept(PepshellProtein protein) {
             setChanged();
-            notifyObservers(new UpdateMessage(false,"added PDB info to " + protein.getProteinAccession(),false));
+            notifyObservers(new UpdateMessage(false, "added PDB info to " + protein.getVisibleAccession(), false));
         }
     }
 
-    private class AddInfoToProtein implements Consumer<ProteinInterface> {
+    private class AddInfoToProtein implements Consumer<PepshellProtein> {
 
         /**
          * Performs this operation on the given argument.
@@ -75,7 +75,7 @@ public class AddPdbInfo extends DataRetrievalStep {
          * @param protein the input argument
          */
         @Override
-        public void accept(ProteinInterface protein) {
+        public void accept(PepshellProtein protein) {
             protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein));
         }
     }

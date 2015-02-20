@@ -25,7 +25,7 @@ import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import java.io.File;
 import java.io.FileReader;
@@ -69,7 +69,7 @@ class HDXechangeParser {
                 Experiment currentExperiment = iter.next();
                 // experiment should contain the only protein that is run on hd exchange in the file
                 if (currentExperiment.getProteins().isEmpty()) {
-                    currentExperiment.addProtein(new Protein(results[0]));
+                    currentExperiment.addProtein(new PepshellProtein(results[0]));
                 }
                 //to make sure no overlap is lost we just make a new group per peptide
                 if (!results[i + 4].isEmpty()) {

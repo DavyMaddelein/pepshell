@@ -18,8 +18,8 @@ package com.compomics.pepshell.controllers.DAO;
 
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
-import com.compomics.pepshell.model.PdbInfo;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -51,10 +51,10 @@ public class PDBDAO {
         return instance;
     }
 
-    public Set<PdbInfo> getPDBInfoForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
+    public Set<PdbInfo> getPDBInfoForProtein(PepshellProtein pepshellProtein) throws MalformedURLException, IOException, ConversionException {
         String pdbLine;
         Set<PdbInfo> pdbInfoToReturn = new HashSet<>();
-        BufferedReader br = WebUtils.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(protein.getVisibleAccession()));
+        BufferedReader br = WebUtils.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(pepshellProtein.getVisibleAccession()));
         while ((pdbLine = br.readLine()) != null) {
             if (pdbLine.contains("Uniprot to PDB mapping")) {
                 pdbInfoToReturn = startUniprotPDBParsing(br);

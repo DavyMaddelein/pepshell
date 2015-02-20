@@ -20,10 +20,10 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
 import com.compomics.pepshell.view.DrawModes.DrawModeUtilities;
@@ -41,27 +41,27 @@ import java.awt.Point;
  * @author Davy Maddelein
  */
 
-public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<Protein, Peptide> implements GradientDrawModeInterface<Protein, Peptide> {
+public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<PepshellProtein, Peptide> implements GradientDrawModeInterface<PepshellProtein, Peptide> {
 
     @Override
-    public void drawProteinAndPeptides(Protein protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawProteinAndPeptides(PepshellProtein protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         //set colour and alpha for protein
         g.setColor(proteinColor);
         Composite defensiveComposite = ((Graphics2D) g).getComposite();
         ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, proteinAlpha));
-        //actually draw the protein
+        //actually draw the pepshellProtein
         g.fillRect(startPoint.x, startPoint.y, length, height);
 
-        //protein has been drawn, we move on to the peptides, first alpha
+        //pepshellProtein has been drawn, we move on to the peptides, first alpha
         ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, peptideAlpha));
 
         //we will use this point as a sliding starting point for each peptide
         Point peptideStartPoint = (Point)startPoint.clone();
         //start on the proteins, we will draw the shortest peptide in the peptide group
-        for (PeptideGroup aGroup : protein.getCPDTPeptideList()) {
+        for (PeptideGroup aGroup : pepshellProtein.getCPDTPeptideList()) {
             PeptideInterface peptideToDraw = aGroup.getShortestPeptide();
             if (peptideToDraw.getBeginningProteinMatch() != -1) {
-                //we scale the length of the peptide to fit the protein context
+                //we scale the length of the peptide to fit the pepshellProtein context
                 int scaledLength = DrawModeUtilities.getInstance().scale(peptideToDraw.getEndProteinMatch() - peptideToDraw.getBeginningProteinMatch());
                 //we scale the starting point of the peptide to the context of the peptide
                 peptideStartPoint.x = DrawModeUtilities.getInstance().scale(peptideToDraw.getBeginningProteinMatch()) + startPoint.x;
@@ -101,13 +101,13 @@ public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<P
 
     /**
      * {@inheritDoc }
-     * @param protein
+     * @param pepshellProtein
      * @param location
      * @return 
      * @throws com.compomics.pepshell.model.exceptions.CalculationException 
      */
     @Override
-    public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
+    public Color calculateAminoAcidGradient(PepshellProtein protein, int location) throws CalculationException {
         return proteinColor;
     }
 

@@ -21,11 +21,11 @@
  */
 package com.compomics.pepshell.view.dataviewing;
 
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.view.statistics.wrappers.RatioComparisonPaneWrapper;
 import com.compomics.pepshell.view.statistics.wrappers.StatisticsWrapperInterface;
 import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.view.statistics.CleavingProbabilityPane;
 import com.compomics.pepshell.view.statistics.JFreeChartPanel;
 import com.compomics.pepshell.view.statistics.RatioStatisticsPane;
@@ -58,12 +58,12 @@ public class StatisticsTabPane extends JTabbedPane {
         this.addTab("ratio scatterplot",scatterplot);
     }
 
-    public void setGraphData(Protein aProtein) {
+    public void setGraphData(PepshellProtein aPepshellProtein) {
         for (int i = 0; i < this.getComponentCount(); i++) {
             if (this.getComponentAt(i) instanceof JFreeChartPanel) {
-                ((JFreeChartPanel) this.getComponentAt(i)).setGraphData(aProtein);
+                ((JFreeChartPanel) this.getComponentAt(i)).setGraphData(aPepshellProtein);
             } else if (this.getComponentAt(i) instanceof StatisticsWrapperInterface) {
-                ((StatisticsWrapperInterface) this.getComponentAt(i)).setGraphData(aProtein);
+                ((StatisticsWrapperInterface) this.getComponentAt(i)).setGraphData(aPepshellProtein);
             }
         }
     }

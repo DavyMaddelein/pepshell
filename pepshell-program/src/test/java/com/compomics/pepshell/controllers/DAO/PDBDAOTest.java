@@ -16,8 +16,9 @@
 
 package com.compomics.pepshell.controllers.DAO;
 
-import com.compomics.pepshell.model.PdbInfo;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
+
 import java.io.File;
 import java.util.Set;
 import static org.hamcrest.CoreMatchers.*;
@@ -75,10 +76,10 @@ public class PDBDAOTest {
     @Test
     public void testGetPDBInfoForProtein() throws Exception {
         System.out.println("getPDBInfoForProtein");
-        Protein protein = new Protein("P04637");
+        PepshellProtein pepshellProtein = new PepshellProtein("P04637");
         PDBDAO instance = PDBDAO.getInstance();
         Set<PdbInfo> expResult = null;
-        Set<PdbInfo> result = instance.getPDBInfoForProtein(protein);
+        Set<PdbInfo> result = instance.getPDBInfoForProtein(pepshellProtein);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -87,9 +88,9 @@ public class PDBDAOTest {
     @Test
     public void testGetFakePDBInfoForProtein() throws Exception {
         System.out.println("getPDBInfoForProtein");
-        Protein protein = new Protein("not a protein accession");
+        PepshellProtein pepshellProtein = new PepshellProtein("not a pepshellProtein accession");
         PDBDAO instance = PDBDAO.getInstance();
-        Set<PdbInfo> result = instance.getPDBInfoForProtein(protein);
+        Set<PdbInfo> result = instance.getPDBInfoForProtein(pepshellProtein);
         assertThat(result.isEmpty(), is(true));
     }
 

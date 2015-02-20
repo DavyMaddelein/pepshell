@@ -17,8 +17,10 @@ package com.compomics.pepshell.model;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.exceptions.CalculationException;
-import java.util.ArrayList;
-import java.util.List;
+import com.compomics.pepshell.model.protein.proteinimplementations.FlyweightProtein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
+import java.util.*;
 
 /**
  * grouping for peptides to keep same location peptides together and not clashing.
@@ -89,7 +91,7 @@ public class PeptideGroup {
         return this.getShortestPeptide().getSequence();
     }
 
-    public PeptideGroup addPeptides(List<PeptideInterface> peptideList) {
+    public PeptideGroup addPeptides(List<? extends PeptideInterface> peptideList) {
         peptideList.stream().forEach((aPeptide) -> {
             if (!listOfPeptides.contains(aPeptide)) {
                 listOfPeptides.add(aPeptide);

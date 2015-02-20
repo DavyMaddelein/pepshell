@@ -18,10 +18,9 @@ package com.compomics.pepshell.view.statistics;
 
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.google.common.base.Function;
@@ -56,20 +55,20 @@ public class RatioComparisonPane extends JFreeChartPanel {
     }
 
     @Override
-    public void setGraphData(Protein aProtein) {
-        if (aProtein != null && referenceExperiment.getProteins().contains(aProtein) && experimentToCompareTo.getProteins().contains(aProtein)) {
-            CategoryDataset dataset = createRatioDataset(aProtein);
-            JFreeChart ratioChart = ChartFactory.createBarChart("log ratios of peptides on a protein", aProtein.getProteinAccession(), "log^2 ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
+    public void setGraphData(PepshellProtein aPepshellProtein) {
+        if (aPepshellProtein != null && referenceExperiment.getProteins().contains(aPepshellProtein) && experimentToCompareTo.getProteins().contains(aPepshellProtein)) {
+            CategoryDataset dataset = createRatioDataset(aPepshellProtein);
+            JFreeChart ratioChart = ChartFactory.createBarChart("log ratios of peptides on a protein", aPepshellProtein.getVisibleAccession(), "log^2 ratio", dataset, PlotOrientation.VERTICAL, true, true, false);
             prettifyChart(ratioChart);
             chart.setChart(ratioChart);
         }
 
     }
 
-    private CategoryDataset createRatioDataset(Protein aProtein) {
+    private CategoryDataset createRatioDataset(PepshellProtein aPepshellProtein) {
         DefaultCategoryDataset returnset = new DefaultCategoryDataset();
 
-        Protein protein = referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(aProtein));
+        PepshellProtein protein = referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(aProtein));
         List<PeptideGroup> sortedCopy =protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> e.getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
 
         for (PeptideGroup aPeptideGroup : sortedCopy) {

@@ -16,7 +16,7 @@
 package com.compomics.pepshell.controllers.DAO.Iterators;
 
 import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 
@@ -28,9 +28,9 @@ import java.util.NoSuchElementException;
  * an Iterator to parse a fasta one sequence at a time, to avoid loading
  * everything into memory Created by Davy Maddelein on 07/01/2015.
  *
- * @param <T> a Pepshell compatible {@link Protein}
+ * @param <T> a Pepshell compatible {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein}
  */
-public class FastaIterator<T extends Protein> implements Iterator<Protein> {
+public class FastaIterator<T extends PepshellProtein> implements Iterator<PepshellProtein> {
 
     private BufferedReader lineReader;
     private String header = "";
@@ -131,7 +131,7 @@ public class FastaIterator<T extends Protein> implements Iterator<Protein> {
                 if (name.isEmpty()) {
                     name = header;
                 }
-                aParsedProtein = (T) new Protein(name, sequence.toString());
+                aParsedProtein = (T) new PepshellProtein(name, sequence.toString());
                 header = fastaLine;
             }
         } catch (IOException e) {

@@ -20,9 +20,8 @@ import com.compomics.pepshell.DataModeController;
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DataSources.StructureDataSources.LinkDb;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.PdbInfo;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.QuantedPeptide;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 import com.compomics.pepshell.model.enums.DataModeEnum;
 import com.compomics.pepshell.view.DrawModes.DrawProteinPeptidesInterface;
 import com.compomics.pepshell.view.DrawModes.Peptides.QuantedPeptideDrawMode;
@@ -66,24 +65,24 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         projectNameLabel.setText(project.getExperimentName());
     }
 
-    public void updateProtein(Protein protein) {
+    public void updateProtein(PepshellProtein pepshellProtein) {
         pdbSelectionComboBox.removeAllItems();
 
-        if (protein.getPdbFilesInfo().isEmpty()) {
-            //retrieve the PDB info objects and add them to the protein
+        if (pepshellProtein.getPdbFilesInfo().isEmpty()) {
+            //retrieve the PDB info objects and add them to the pepshellProtein
             //TODO fix this later
             if (DataModeController.getInstance().getDb() != DataModeEnum.FILE) {
-                protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein));
+                pepshellProtein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(pepshellProtein));
             }
         }
         //check after retrieval if any PDB info is available
-        if (protein.getPdbFilesInfo().isEmpty()) {
+        if (pepshellProtein.getPdbFilesInfo().isEmpty()) {
             //add a default item
             PdbInfo defaultPdbInfo = new PdbInfo("no pdb files found");
             defaultPdbInfo.setPdbAccession("no pdb files found");
             pdbSelectionComboBox.addItem(defaultPdbInfo);
         } else {
-            for (PdbInfo pdbInfo : protein.getPdbFilesInfo()) {
+            for (PdbInfo pdbInfo : pepshellProtein.getPdbFilesInfo()) {
                 pdbSelectionComboBox.addItem(pdbInfo);
             }
         }
@@ -92,7 +91,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         pdbSelectionComboBox.setSelectedIndex(0);
 
         //update the draw panel
-        referenceProteinDrawPanel.updateProtein(protein);
+        referenceProteinDrawPanel.updateProtein(pepshellProtein);
     }
 
     public void setReferenceExperiment(Experiment reference) {
@@ -242,7 +241,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
 
     private void drawModeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawModeChooserActionPerformed
         //todo change the selection combobox to holding these drawing classes
-        if (referenceProteinDrawPanel.getProtein() != null) {
+        if (referenceProteinDrawPanel.getPepshellProtein() != null) {
             DrawProteinPeptidesInterface secondaryDrawMode;
             PdbInfo pdbAccession = null;
 

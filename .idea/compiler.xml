@@ -25,17 +25,16 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="partial-tryp" />
+        <module name="pepshell (1)" />
         <module name="pepshell-program" />
         <module name="pepshell-wrapper" />
         <module name="pepshellwrapper" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.6">
+    <bytecodeTargetLevel target="1.8">
       <module name="pepshell" target="1.8" />
-      <module name="pepshell (1)" target="1.7" />
       <module name="pepshell-program" target="1.8" />
       <module name="pepshell-wrapper" target="1.8" />
-      <module name="pepshellwrapper" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -19,16 +19,14 @@ package com.compomics.pepshell.controllers.objectcontrollers;
 import com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager;
 import com.compomics.pepshell.model.AminoAcidBiMap;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.Protein;
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.ProteinInterface;
 
 /**
  *
  * @author Davy Maddelein
  */
 public class ProteinController {
-
-    private static ProteinStoreManager proteinStoreManager;
 
     /**
      * convenience method to run alignPeptidesOfProteins on all proteins in an
@@ -37,8 +35,8 @@ public class ProteinController {
      * @param experiment the epxeriment to map all the peptide groups of the proteins to
      */
     public static void alignPeptidesOfProteinsInExperiment(Experiment experiment) {
-        for (Protein aProtein : experiment.getProteins()) {
-            PeptideGroupController.mapPeptideGroupsToProtein(aProtein);
+        for (PepshellProtein aPepshellProtein : experiment.getProteins()) {
+            PeptideGroupController.mapPeptideGroupsToProtein(aPepshellProtein);
         }
     }
 
@@ -61,12 +59,12 @@ public class ProteinController {
     }
 
     /**
-     * retrieve the protein identified by the given accession from the protein store
+     * retrieve the {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} identified by the given accession from the protein store
      *
      * @param accession the protein accession to look in the store for
      * @return the requested {@link ProteinInterface}
      */
-    public static ProteinInterface getProtein(String accession) {
-        return proteinStoreManager.retrieveProteinByAccession(accession);
+    public static PepshellProtein getProtein(String accession) {
+        return ProteinStoreManager.getInstance().retrieveFromStore(accession);
     }
 }

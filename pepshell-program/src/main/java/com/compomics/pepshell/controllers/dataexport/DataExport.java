@@ -16,7 +16,8 @@
 
 package com.compomics.pepshell.controllers.dataexport;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,13 +36,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 class DataExport {
 
     public void exportToTSV(JList listOfProteins, File saveLocation) throws IOException {
-        Protein protein;
+        PepshellProtein pepshellProtein;
         StringBuilder tsvOutput = new StringBuilder();
         for (int i = 0; i < listOfProteins.getModel().getSize(); i++) {
-            protein = (Protein) listOfProteins.getModel().getElementAt(i);
-            tsvOutput.append(protein.getProteinAccession()).append("\t");
-            tsvOutput.append(DataPreparationForExport.returnListCommaSeparated(protein.getPeptideGroups())).append("\t");
-            tsvOutput.append(DataPreparationForExport.returnListCommaSeparated(protein.getPdbFilesInfo())).append("\t");
+            pepshellProtein = (PepshellProtein) listOfProteins.getModel().getElementAt(i);
+            tsvOutput.append(pepshellProtein.getVisibleAccession()).append("\t");
+            tsvOutput.append(DataPreparationForExport.returnListCommaSeparated(pepshellProtein.getPeptideGroups())).append("\t");
+            tsvOutput.append(DataPreparationForExport.returnListCommaSeparated(pepshellProtein.getPdbFilesInfo())).append("\t");
             tsvOutput.append("\n");
         }
         writeFileToDisk(tsvOutput.toString(), saveLocation);

@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.controllers;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,14 +31,14 @@ import java.util.Map;
  */
 public class AccessionMaskReader {
 
-    public static Map<Protein, String> parseAccessionFile(File selectedFile) throws FileNotFoundException, IOException {
-        Map<Protein, String> accessionMasks = new HashMap<>();
+    public static Map<PepshellProtein, String> parseAccessionFile(File selectedFile) throws FileNotFoundException, IOException {
+        Map<PepshellProtein, String> accessionMasks = new HashMap<>();
         if (selectedFile != null && selectedFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] splitLines = line.split("=");
-                    accessionMasks.put(new Protein(splitLines[0]), splitLines[1]);
+                    accessionMasks.put(new PepshellProtein(splitLines[0]), splitLines[1]);
                 }
             }
         }

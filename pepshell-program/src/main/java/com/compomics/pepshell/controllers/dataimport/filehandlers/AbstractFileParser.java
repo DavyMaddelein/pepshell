@@ -17,14 +17,17 @@
 package com.compomics.pepshell.controllers.dataimport.filehandlers;
 
 import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager;
 import com.compomics.pepshell.model.AnnotatedFile;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.FileBasedExperiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.FlyweightProtein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -77,7 +80,6 @@ public class AbstractFileParser implements FileParserInterface {
                         throw new CouldNotParseException("missing accession value at line " + lineReader.getLineNumber());
                     }
 
-                    Protein lineProtein = new Protein(columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1]);
                     Peptide linePeptide;
 
                     if (aFile.getExperimentFile().getAnnotations().experimentHasRatio()) {
@@ -97,9 +99,10 @@ public class AbstractFileParser implements FileParserInterface {
                         linePeptide.addTotalSpectrumIntensity(intensityValue);
 
                     }
-
-                    lineProtein.addPeptideGroup(new PeptideGroup(linePeptide));
-                    aFile.addProtein(lineProtein);
+                    PeptideGroup peptideGroup = (new PeptideGroup(linePeptide));
+                    PepshellProtein proteinToAdd = new FlyweightProtein(linePepshellProtein.getOriginalAccession(), linePepshellProtein.getExtraIdentifier());
+                    proteinToAdd.addPeptideGroup(peptideGroup);
+                    aFile.addProtein(proteinToAdd);
                     line = lineReader.readLine();
                 } catch (Exception ex) {
                     ex.printStackTrace();

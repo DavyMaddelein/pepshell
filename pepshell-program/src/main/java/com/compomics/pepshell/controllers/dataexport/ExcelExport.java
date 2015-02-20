@@ -17,7 +17,7 @@
 package com.compomics.pepshell.controllers.dataexport;
 
 import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptideGroup;
 import javax.swing.JList;
 import org.apache.poi.ss.usermodel.Row;
@@ -39,9 +39,9 @@ class ExcelExport {
         }
     }
 
-    private static void excelPDBExportOfProtein(Protein protein, Row pdbRow) {
-        pdbRow.createCell(0).setCellValue(protein.getProteinAccession());
-        pdbRow.createCell(1).setCellValue(DataPreparationForExport.returnListCommaSeparated(protein.getPdbFilesInfo()));
+    private static void excelPDBExportOfProtein(PepshellProtein pepshellProtein, Row pdbRow) {
+        pdbRow.createCell(0).setCellValue(pepshellProtein.getVisibleAccession());
+        pdbRow.createCell(1).setCellValue(DataPreparationForExport.returnListCommaSeparated(pepshellProtein.getPdbFilesInfo()));
     }
 
     private static void addHeadersToPDBSheet(Sheet PDBSheet) {
@@ -52,29 +52,29 @@ class ExcelExport {
 
     public static void exportProteinToExcelWorkBook(JList listOfProteins, Workbook workBook) throws ArrayIndexOutOfBoundsException {
         int row = 1;
-        Protein proteinToExport;
+        PepshellProtein pepshellProteinToExport;
         int listWalkCounter = 0;
         Sheet proteinSheet = workBook.createSheet("proteins");
         Sheet PDBSheet = workBook.createSheet("PDB");
 
-        addHeadersToProteinsSheet(proteinSheet, ((Protein) listOfProteins.getModel().getElementAt(0)).getPeptideGroups().get(0) instanceof QuantedPeptideGroup);
+        addHeadersToProteinsSheet(proteinSheet, ((PepshellProtein) listOfProteins.getModel().getElementAt(0)).getPeptideGroups().get(0) instanceof QuantedPeptideGroup);
         addHeadersToPDBSheet(PDBSheet);
 
         while (listWalkCounter < listOfProteins.getModel().getSize()) {
-            proteinToExport = (Protein) listOfProteins.getModel().getElementAt(listWalkCounter);
+            pepshellProteinToExport = (PepshellProtein) listOfProteins.getModel().getElementAt(listWalkCounter);
             proteinSheet.createRow(row);
-            excelProteinInfoExportOfProtein(proteinToExport, proteinSheet);
-            excelPDBExportOfProtein(proteinToExport, PDBSheet.createRow(listWalkCounter + 1));
+            excelProteinInfoExportOfProtein(pepshellProteinToExport, proteinSheet);
+            excelPDBExportOfProtein(pepshellProteinToExport, PDBSheet.createRow(listWalkCounter + 1));
             listWalkCounter++;
         }
     }
 
-    private static void excelProteinInfoExportOfProtein(Protein proteinToExport, Sheet proteinSheet) {
+    private static void excelProteinInfoExportOfProtein(PepshellProtein pepshellProteinToExport, Sheet proteinSheet) {
         int column = 0;
         Row proteinRow = proteinSheet.createRow(proteinSheet.getLastRowNum() + 1);
-        proteinRow.createCell(column).setCellValue(proteinToExport.getProteinAccession());
+        proteinRow.createCell(column).setCellValue(pepshellProteinToExport.getVisibleAccession());
         column++;
-        for (PeptideGroup peptideGroup : proteinToExport.getPeptideGroups()) {
+        for (PeptideGroup peptideGroup : pepshellProteinToExport.getPeptideGroups()) {
             proteinRow.createCell(column).setCellValue(peptideGroup.getShortestPeptide().getSequence());
             if (peptideGroup instanceof QuantedPeptideGroup) {
                 proteinRow.createCell(column + 1).setCellValue(Integer.toString(((QuantedPeptideGroup) peptideGroup).getRatio()));

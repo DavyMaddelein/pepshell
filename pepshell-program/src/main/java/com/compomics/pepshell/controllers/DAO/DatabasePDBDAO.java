@@ -19,8 +19,8 @@ package com.compomics.pepshell.controllers.DAO;
 import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionController;
-import com.compomics.pepshell.model.PdbInfo;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -47,7 +47,7 @@ public class DatabasePDBDAO extends PDBDAO {
         return instance;
     }
 
-    public static Set<PdbInfo> getPDBFileAccessionsForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
+    public static Set<PdbInfo> getPDBFileAccessionsForProtein(PepshellProtein pepshellProtein) throws MalformedURLException, IOException, ConversionException {
         Set<PdbInfo> infoSet = new HashSet<>();
         try {
             PreparedStatement stat;
@@ -65,12 +65,12 @@ public class DatabasePDBDAO extends PDBDAO {
     }
 
     @Override
-    public Set<PdbInfo> getPDBInfoForProtein(Protein protein) throws MalformedURLException, IOException, ConversionException {
+    public Set<PdbInfo> getPDBInfoForProtein(PepshellProtein pepshellProtein) throws MalformedURLException, IOException, ConversionException {
         Set<PdbInfo> infoSet = new HashSet<>();
         PreparedStatement stat = null;
         try {
             stat = DbConnectionController.getStructDBConnection().prepareStatement(SQLStatements.getPdbInfoForProtein());
-            //stat.setString(1,protein.getVisibleAccession);
+            //stat.setString(1,pepshellProtein.getVisibleAccession);
             ResultSet rs = stat.executeQuery();
             while (rs.next()) {
                 PdbInfo info = new PdbInfo(rs.getString("PDB"));

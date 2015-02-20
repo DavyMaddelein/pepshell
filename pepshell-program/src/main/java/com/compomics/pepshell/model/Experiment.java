@@ -16,6 +16,8 @@
 
 package com.compomics.pepshell.model;
 
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +30,7 @@ public class Experiment {
 
     private final int experimentId;
     private final String experimentName;
-    private List<Protein> proteinList = new ArrayList<>();
+    private List<PepshellProtein> proteinList = new ArrayList<>();
     private double maxIntensity = Double.MIN_VALUE;
     private double minIntensity = Double.MAX_VALUE;
     private double maxRatio = Double.MIN_VALUE;
@@ -44,24 +46,49 @@ public class Experiment {
         this.experimentName = experimentName;
     }
 
+    /**
+     * returns the experiment identifier
+     *
+     * @return the experiment identifier
+     */
     public int getExperimentId() {
         return experimentId;
     }
 
-    public void setProteins(List<Protein> fetchedProteins) {
+    /**
+     * sets a list of grouped peptides as this experiments results
+     *
+     * @param aListOfProteins the proteins to add
+     */
+    public void setProteins(List<? extends PepshellProtein> aListOfProteins) {
         proteinList.clear();
-        proteinList.addAll(fetchedProteins);
+        proteinList.addAll(aListOfProteins);
     }
 
-    public void addProteins(List<Protein> proteins) {
+    /**
+     * adds a list of proteins to the list already connected to this experiment
+     *
+     * @param proteins the proteins to add
+     */
+    public void addProteins(List<? extends PepshellProtein> proteins) {
         proteinList.addAll(proteins);
     }
 
-    public List<Protein> getProteins() {
+    /**
+     * returns an unmodifiable list of the proteins connected to this experiment
+     *
+     * @return an unmodifiable list of {@link com.compomics.pepshell.model.protein.ProteinInterface}
+     */
+    public List<? extends PepshellProtein> getProteins() {
         return Collections.unmodifiableList(proteinList);
     }
 
-    public void addProtein(Protein aProtein) {
+    /**
+     * add a protein to this experiment
+     *
+     * @param aProtein the protein to add
+     */
+    public void addProtein(PepshellProtein aProtein) {
         if (!proteinList.contains(aProtein)) {
             proteinList.add(aProtein);
         } else {

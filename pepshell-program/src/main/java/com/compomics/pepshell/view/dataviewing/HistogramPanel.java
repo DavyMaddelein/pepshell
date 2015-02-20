@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.view.dataviewing;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 class HistogramPanel extends javax.swing.JPanel {
 
-    private HashMap<Integer, HashSet<Protein>> distribution;
+    private HashMap<Integer, HashSet<PepshellProtein>> distribution;
 
     /**
      * Creates new form HistogramPanel
@@ -42,7 +42,7 @@ class HistogramPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setDistribution(HashMap<Integer, HashSet<Protein>> aDistribution) {
+    public void setDistribution(HashMap<Integer, HashSet<PepshellProtein>> aDistribution) {
         this.distribution = aDistribution;
     }
 
@@ -68,8 +68,8 @@ class HistogramPanel extends javax.swing.JPanel {
                     public void mouseMoved(MouseEvent me) {
                         super.mouseMoved(me);
                         if (me.getX() >= xcoordinate && me.getX() <= xcoordinate + 10 && me.getY() > 100 && me.getY() < maxycoordinate) {
-                            for (HashSet<Protein> proteins : distribution.values()) {
-                                System.out.println(proteins.size());
+                            for (HashSet<PepshellProtein> pepshellProteins : distribution.values()) {
+                                System.out.println(pepshellProteins.size());
                             }
                         }
                         //To change body of generated methods, choose Tools | Templates.

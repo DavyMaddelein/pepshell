@@ -18,6 +18,9 @@ package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
 
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
+import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +30,7 @@ import java.util.Set;
  *
  * @author Davy Maddelein
  */
-public class ExternalStructureDataSource<T extends Protein> implements StructureDataSource<T> {
+public class ExternalStructureDataSource<T extends PepshellProtein> implements StructureDataSource<T> {
 
     /**
      * @return

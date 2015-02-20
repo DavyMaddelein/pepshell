@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.model;
+package com.compomics.pepshell.model.protein.proteininfo;
 
 /**
  * Created by Davy Maddelein on 12/02/2015.

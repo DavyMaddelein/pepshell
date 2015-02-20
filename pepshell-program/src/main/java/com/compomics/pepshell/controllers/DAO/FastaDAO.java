@@ -21,8 +21,8 @@ import com.compomics.pepshell.controllers.properties.ViewProperties;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.Proteases;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.Proteases;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.enums.ViewPropertyEnum;
 import com.compomics.pepshell.model.exceptions.AggregateFastaReadingException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
@@ -39,11 +39,11 @@ import java.util.stream.Collectors;
 public class FastaDAO {
 
     /**
-     * sets the {@code Protein}s in a project to the projects contained in the
+     * sets the {@code PepshellProtein}s in a project to the projects contained in the
      * fasta file
      *
-     * @param fastaFile                 fasta file to read {@code Protein}s from
-     * @param experimentToAddProteinsTo the project to add the {@code Protein}s
+     * @param fastaFile                 fasta file to read {@code PepshellProtein}s from
+     * @param experimentToAddProteinsTo the project to add the {@code PepshellProtein}s
      *                                  to
      * @throws FastaCouldNotBeReadException is thrown when there is an error
      *                                      reading and parsing from the fasta file
@@ -51,7 +51,7 @@ public class FastaDAO {
      * @throws IOException                  if there was a problem with the file reader
      */
     public static void setExperimentProteinsToFastaFileProteins(File fastaFile, Experiment experimentToAddProteinsTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
-        FastaIterator<Protein> iterator = new FastaIterator<>(fastaFile);
+        FastaIterator<PepshellProtein> iterator = new FastaIterator<>(fastaFile);
         while (iterator.hasNext()){
             experimentToAddProteinsTo.addProtein(iterator.next());
         }
@@ -67,7 +67,7 @@ public class FastaDAO {
      * @throws FileNotFoundException if the file was not found
      * @throws IOException if there was a problem parsing the fasta file
      */
-    public static <T extends Protein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<? extends T> listOfProteinsToMap) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
+    public static <T extends PepshellProtein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<? extends T> listOfProteinsToMap) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
         FastaIterator<T> iterator = new FastaIterator<>(fastaFile);
         while (iterator.hasNext()) {
             T aParsedProtein = iterator.next();

@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.view.statistics;
 
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.view.statistics.wrappers.StatisticsWrapperInterface;
 import java.awt.Color;
 import java.awt.Font;
@@ -74,7 +74,7 @@ public abstract class JFreeChartPanel extends javax.swing.JPanel implements Stat
         this.validate();
     }
 
-    public abstract void setGraphData(Protein aProtein);
+    public abstract void setGraphData(PepshellProtein aPepshellProtein);
 
     private static GridBagConstraints getDefaultGridBagConstraints() {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();

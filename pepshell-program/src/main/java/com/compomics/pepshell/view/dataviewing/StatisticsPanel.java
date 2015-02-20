@@ -17,11 +17,11 @@
 package com.compomics.pepshell.view.dataviewing;
 
 import com.compomics.pepshell.model.AnalysisGroup;
-import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -88,13 +88,13 @@ class StatisticsPanel extends javax.swing.JPanel {
 
 //        private void peptideOccurence(AnalysisGroup anAnalysisGroup) {
 //            //redo this completely with a hashmap containing arraylists
-//            Set<Protein> onceFound = new HashSet();
-//            Set<Protein> twiceFound = new HashSet();
-//            Set<Protein> multipleFound = new HashSet();
+//            Set<PepshellProtein> onceFound = new HashSet();
+//            Set<PepshellProtein> twiceFound = new HashSet();
+//            Set<PepshellProtein> multipleFound = new HashSet();
 //
 //            for (Experiment aProject : anAnalysisGroup.getExperiments()) {
 //                int peptidesFound;
-//                for (Protein aProjectProtein : aProject.getProteins()) {
+//                for (PepshellProtein aProjectProtein : aProject.getProteins()) {
 //                    peptidesFound = aProjectProtein.getPeptideGroupsForProtein().size();
 //                    if (peptidesFound == 1) {
 //                        if (onceFound.contains(aProjectProtein)) {
@@ -134,7 +134,7 @@ class StatisticsPanel extends javax.swing.JPanel {
 //        }
 
         private void peptideLengthDistribution(AnalysisGroup aGroup) {
-            HashMap<Integer, HashSet<Protein>> distribution = new HashMap<>();
+            HashMap<Integer, HashSet<PepshellProtein>> distribution = new HashMap<>();
             for (Iterator<Experiment> it = aGroup.getExperiments().iterator(); it.hasNext(); ) {
                 Experiment aProject = it.next();
                 aProject.getProteins().stream().forEach((aProtein) -> {

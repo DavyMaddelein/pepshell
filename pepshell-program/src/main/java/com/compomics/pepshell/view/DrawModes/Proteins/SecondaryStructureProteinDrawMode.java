@@ -18,7 +18,7 @@ package com.compomics.pepshell.view.DrawModes.Proteins;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.Protein;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.model.gradientMaps.SecondaryStructureMaps;
@@ -37,7 +37,7 @@ import java.util.Map.Entry;
  * @param <T>
  * @param <U>
  */
-public class SecondaryStructureProteinDrawMode<T extends Protein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
+public class SecondaryStructureProteinDrawMode<T extends PepshellProtein, U extends Peptide> extends AbstractPeptideProteinDrawMode<T, U> implements GradientDrawModeInterface<T, U> {
 
     private String pdbAccession;
 

@@ -21,9 +21,9 @@ import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.PDBDAO;
 import com.compomics.pepshell.controllers.objectcontrollers.ProteinController;
 import com.compomics.pepshell.model.InteractionPartner;
-import com.compomics.pepshell.model.PdbInfo;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 import com.compomics.pepshell.model.PeptideGroup;
-import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.ConversionException;
 
 import java.io.FileNotFoundException;
@@ -40,7 +40,7 @@ import javax.swing.JOptionPane;
  */
 public class JmolPanel extends javax.swing.JPanel {
 
-    private Protein presentedProtein;
+    private PepshellProtein presentedPepshellProtein;
 
     /**
      * Creates new form PDBPanel
@@ -163,7 +163,7 @@ public class JmolPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void PDBFileComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PDBFileComboBoxActionPerformed
-        if (PDBFileComboBox.getSelectedItem() != null && presentedProtein != null) {
+        if (PDBFileComboBox.getSelectedItem() != null && presentedPepshellProtein != null) {
             try {
                 //if loading in pdb files becomes extraordinarily slow, this is probably the first place to look to speed it up, especially the loading into memory, then parsing sequence and then translating, all on the fly --> cache that stuff
                 pdbViewPanel1.setPdbFile(PDBFileComboBox.getSelectedItem().toString());
@@ -171,15 +171,15 @@ public class JmolPanel extends javax.swing.JPanel {
                 //temp
                 try {
                     if (showPDBSequenceCheckBox.isSelected()) {
-                        sequenceCoveragePanel.showProteinCoverage(ProteinController.fromThreeLetterToOneLetterAminoAcids(PDBDAO.getSequenceFromPdbFile(PDBDAO.getPdbFileInMem(PDBFileComboBox.getSelectedItem().toString()))), presentedProtein);
+                        sequenceCoveragePanel.showProteinCoverage(ProteinController.fromThreeLetterToOneLetterAminoAcids(PDBDAO.getSequenceFromPdbFile(PDBDAO.getPdbFileInMem(PDBFileComboBox.getSelectedItem().toString()))), presentedPepshellProtein);
                     } else {
-                        sequenceCoveragePanel.showProteinCoverage(presentedProtein.getProteinSequence(), presentedProtein);
+                        sequenceCoveragePanel.showProteinCoverage(presentedPepshellProtein.getProteinSequence(), presentedPepshellProtein);
                     }
                 } catch (Exception e) {
                     FaultBarrier.getInstance().handleException(e);
                 }
                 sequenceCoveragePanel.setInteractionCoverage(ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForPDBName(PDBFileComboBox.getSelectedItem().toString()));
-                for (PeptideGroup aGroup : presentedProtein.getPeptideGroups()) {
+                for (PeptideGroup aGroup : presentedPepshellProtein.getPeptideGroups()) {
                     pdbViewPanel1.executeScript("select " + aGroup.getShortestPeptide().getBeginningProteinMatch() + "-" + aGroup.getShortestPeptide().getEndProteinMatch() + "; colour green");
                 }
             } catch (IOException ioe) {
@@ -194,11 +194,11 @@ public class JmolPanel extends javax.swing.JPanel {
 
     private void sequenceCoveragePanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sequenceCoveragePanelMouseDragged
         // TODO add your handling code here:
-        if (presentedProtein != null) {
+        if (presentedPepshellProtein != null) {
             int start = ((SequenceCoveragePanel) evt.getComponent()).getTextSelectionStart();
             int stop = ((SequenceCoveragePanel) evt.getComponent()).getTextSelectionEnd();
             pdbViewPanel1.executeScript("select " + start + "-" + stop + "; colour red");
-            for (InteractionPartner aPartner : (List<InteractionPartner>)ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForRange(presentedProtein, start, stop)) {
+            for (InteractionPartner aPartner : (List<InteractionPartner>) ProgramVariables.STRUCTUREDATASOURCE.getInteractionPartnersForRange(presentedPepshellProtein, start, stop)) {
                 pdbViewPanel1.executeScript("select " + aPartner.getInteractorLocation() + "; colour red");
             }
         }
@@ -233,38 +233,38 @@ public class JmolPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox showPDBSequenceCheckBox;
     // End of variables declaration//GEN-END:variables
 
-    public void preparePDBPanelForProtein(Protein protein) throws ConversionException {
+    public void preparePDBPanelForProtein(PepshellProtein pepshellProtein) throws ConversionException {
         try {
-            PDBFileComboBox.setModel(new DefaultComboBoxModel(PDBDAO.getInstance().getPDBInfoForProtein(protein).toArray()));
+            PDBFileComboBox.setModel(new DefaultComboBoxModel(PDBDAO.getInstance().getPDBInfoForProtein(pepshellProtein).toArray()));
         } catch (MalformedURLException ex) {
             FaultBarrier.getInstance().handleException(ex);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "there has been a problem trying to retrieve the pdb file accessions for this protein: " + protein.getProteinAccession());
+            JOptionPane.showMessageDialog(this, "there has been a problem trying to retrieve the pdb file accessions for this pepshellProtein: " + pepshellProtein.getVisibleAccession());
             FaultBarrier.getInstance().handleException(ex);
         }
 
     }
 
-    public void setPDBProtein(Protein protein) throws MalformedURLException, ConversionException, SQLException {
-        if (protein != null) {
-            presentedProtein = protein;
-            sequenceCoveragePanel.showProteinCoverage(protein.getProteinSequence(), protein);
+    public void setPDBProtein(PepshellProtein pepshellProtein) throws MalformedURLException, ConversionException, SQLException {
+        if (pepshellProtein != null) {
+            presentedPepshellProtein = pepshellProtein;
+            sequenceCoveragePanel.showProteinCoverage(pepshellProtein.getProteinSequence(), pepshellProtein);
             jProgressBar1.setVisible(true);
             jProgressBar1.setIndeterminate(true);
             jProgressBar1.setString("fetching pdb files");
             //todo remove this and actually multithread it
-            if (protein.getPdbFilesInfo().isEmpty()) {
-                protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein));
+            if (pepshellProtein.getPdbFilesInfo().isEmpty()) {
+                pepshellProtein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(pepshellProtein));
             }
             PDBFileComboBox.removeAllItems();
-            if (protein.getPdbFilesInfo().isEmpty()) {
-                PDBFileComboBox.addItem("no pdb accessions found for protein");
+            if (pepshellProtein.getPdbFilesInfo().isEmpty()) {
+                PDBFileComboBox.addItem("no pdb accessions found for pepshellProtein");
                 PDBFileComboBox.addItem("some test accessions");
                 PDBFileComboBox.addItem("1GZX");
                 PDBFileComboBox.addItem("3Q4C");
                 PDBFileComboBox.addItem("3C4C");
             } else {
-                for (PdbInfo aPDBFileAccession : protein.getPdbFilesInfo()) {
+                for (PdbInfo aPDBFileAccession : pepshellProtein.getPdbFilesInfo()) {
                     PDBFileComboBox.addItem(aPDBFileAccession);
                 }
             }

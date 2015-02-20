@@ -102,7 +102,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="protein identifier column"/>
+        <Property name="text" type="java.lang.String" value="pepshellProtein identifier column"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">

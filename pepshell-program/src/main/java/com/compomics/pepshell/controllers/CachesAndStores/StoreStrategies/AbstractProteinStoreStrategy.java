@@ -16,12 +16,9 @@
 
 package com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies;
 
-import com.compomics.pepshell.model.ProteinInterface;
+import com.compomics.pepshell.model.protein.ProteinInterface;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,10 +29,10 @@ import java.util.stream.Collectors;
 /**
  * a simple storage strategy to store proteins and retrieve them by their accessions, backed by a {@link java.util.Set}
  *
- * @param <T> the type of the string identifier
- * @param <U> the type of the {@link com.compomics.pepshell.model.ProteinInterface} to accept, is lower bounded
+ * @param <T> the type of the identifier
+ * @param <U> the type of the {@link com.compomics.pepshell.model.protein.ProteinInterface} to accept, is lower bounded
  */
-public class AbstractProteinStoreStrategy<T extends String, U extends ProteinInterface> implements StoreStrategy<T, U> {
+public class AbstractProteinStoreStrategy<T, U extends ProteinInterface> implements StoreStrategy<T, U> {
 
     private Set<U> backingStructure = new HashSet<>();
 
@@ -59,8 +56,8 @@ public class AbstractProteinStoreStrategy<T extends String, U extends ProteinInt
      * {@inheritDoc}
      */
     @Override
-    public U retrieve(T identifier) {
-        return backingStructure.stream().filter(e -> e.getProteinAccession().equals(identifier)).findFirst().get();
+    public U retrieve(T accession) throws NoSuchElementException {
+        return backingStructure.stream().filter(e -> e.getVisibleAccession().equals(accession)).findFirst().get();
     }
 
     /**
@@ -75,24 +72,24 @@ public class AbstractProteinStoreStrategy<T extends String, U extends ProteinInt
      * {@inheritDoc}
      */
     @Override
-    public Collection<? extends U> retrieveSubSet(Collection<? extends T> identifiers) {
-        return backingStructure.stream().filter(e -> identifiers.contains(e.getProteinAccession())).collect(Collectors.toList());
+    public Collection<? extends U> retrieveSubSet(Collection<? extends T> accessions) {
+        return backingStructure.stream().filter(e -> accessions.contains(e.getVisibleAccession())).collect(Collectors.toList());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean purge(T identifierToPurgeFromStore) {
-        return backingStructure.remove(backingStructure.stream().filter(e -> e.getProteinAccession().equals(identifierToPurgeFromStore)).findFirst().get());
+    public boolean purge(T accessionToPurgeFromStore) {
+        return backingStructure.remove(backingStructure.stream().filter(e -> e.getVisibleAccession().equals(accessionToPurgeFromStore)).findFirst().get());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean purgeSubset(Collection<T> identifiersToPurgeFromStore) {
-        return backingStructure.removeAll(backingStructure.stream().filter(e -> identifiersToPurgeFromStore.contains(e.getProteinAccession())).collect(Collectors.toList()));
+    public boolean purgeSubset(Collection<? extends T> accessionsToPurgeFromStore) {
+        return backingStructure.removeAll(backingStructure.stream().filter(e -> accessionsToPurgeFromStore.contains(e.getVisibleAccession())).collect(Collectors.toList()));
     }
 
     /**
