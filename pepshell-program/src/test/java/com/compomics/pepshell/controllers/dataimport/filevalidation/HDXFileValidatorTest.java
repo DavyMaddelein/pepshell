@@ -15,11 +15,8 @@
  */
 package com.compomics.pepshell.controllers.dataimport.filevalidation;
 
-import com.compomics.pepshell.model.AnnotatedFile;
-import com.compomics.pepshell.model.HDXMetaDataAnnotations;
 import java.io.File;
 
-import com.compomics.pepshell.model.enums.DataSourceEnum;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -74,7 +71,7 @@ public class HDXFileValidatorTest {
 //    public void testValidateFile_File_ExperimentMetaData() {
 //        System.out.println("validateFile");
 //        AnnotatedFile aFile = null;
-//        aFile.addAnnotationsToFile(new HDXMetaDataAnnotations(DataSourceEnum.FILE));
+//        aFile.addAnnotationsToFile(new HDXMetadataAnnotations(DataSourceEnum.FILE));
 //        HDXFileValidator instance = new HDXFileValidator();
 //        boolean expResult = false;
 //        boolean result = instance.validateFile(aFile);

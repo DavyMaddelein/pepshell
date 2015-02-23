@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.controllers.CachesAndStores;
+package com.compomics.pepshell.controllers.datamanagment.cachesandstores;
 
 import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.AbstractProteinStoreStrategy;
-import com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy;
+import com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.AbstractProteinStoreStrategy;
+import com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.StoreStrategy;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 
@@ -43,7 +43,7 @@ public class ProteinStoreManager implements StoreManagerInterface<Object, Pepshe
 
     /**
      * tries to load in the default defined storage strategy from the {@link com.compomics.pepshell.controllers.properties.ProgramProperties}, if this fails
-     * defaults to the naive in memory {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.AbstractProteinStoreStrategy} implementation
+     * defaults to the naive in memory {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.AbstractProteinStoreStrategy} implementation
      */
     private ProteinStoreManager() {
         String storageStrategyClassName = ProgramProperties.getInstance().getProperty("default.protein.storage.strategy");
@@ -70,7 +70,7 @@ public class ProteinStoreManager implements StoreManagerInterface<Object, Pepshe
     }
 
     /**
-     * retrieves the {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} identified by the given accession from the underlying {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy}
+     * retrieves the {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} identified by the given accession from the underlying {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.StoreStrategy}
      *
      * @param accession the accession that identifies the {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein} for retrieval
      * @return the requested {@link com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein}

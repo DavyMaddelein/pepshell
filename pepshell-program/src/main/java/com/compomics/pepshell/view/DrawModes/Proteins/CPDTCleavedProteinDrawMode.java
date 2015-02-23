@@ -58,7 +58,7 @@ public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<P
         //we will use this point as a sliding starting point for each peptide
         Point peptideStartPoint = (Point)startPoint.clone();
         //start on the proteins, we will draw the shortest peptide in the peptide group
-        for (PeptideGroup aGroup : pepshellProtein.getCPDTPeptideList()) {
+        for (PeptideGroup aGroup : protein.getCPDTPeptideList()) {
             PeptideInterface peptideToDraw = aGroup.getShortestPeptide();
             if (peptideToDraw.getBeginningProteinMatch() != -1) {
                 //we scale the length of the peptide to fit the pepshellProtein context

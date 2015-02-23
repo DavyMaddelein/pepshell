@@ -40,7 +40,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Niels Hulstaert
+ * @author Niels Hulstaert,Davy Maddelein
  */
 public class ReferenceProteinDrawPanel extends JPanel {
 
@@ -126,8 +126,8 @@ public class ReferenceProteinDrawPanel extends JPanel {
      * @param pdbInfo the PDB accession
      */
     public void updatePdbInfo(PdbInfo pdbInfo) {
-        if ((pdbInfo != null && pepshellProtein != null) && pepshellProtein.getPdbFilesInfo().contains(pdbInfo) && pepshellProtein instanceof PepshellProtein) {
-            ((PepshellProtein) pepshellProtein).setPreferredPdfFile(pdbInfo);
+        if ((pdbInfo != null && pepshellProtein != null) && pepshellProtein.getPdbFilesInfo().contains(pdbInfo)) {
+            pepshellProtein.setPreferredPdfFile(pdbInfo);
             this.pdbAccession = pdbInfo;
         } else {
             pdbInfo = null;
@@ -150,38 +150,48 @@ public class ReferenceProteinDrawPanel extends JPanel {
         super.paintComponent(g);
 
         if (pepshellProtein != null) {
-            try {
                 //draw domains
 
                 int width = DrawModeUtilities.getInstance().scale(pepshellProtein.getProteinSequence().length());
                 Point offsetPoint = new Point(HORIZONTAL_OFFSET, VERTICAL_OFFSET);
                 //pretty much move this entire try block to a separate thread
                 if (pepshellProtein.getDomains().isEmpty()) {
-                    new Runnable() {
-
-                        @Override
-                        public void run() {
-                            try {
-                                pepshellProtein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(pepshellProtein));
-                                repaint();
-                            } catch (DataRetrievalException e) {
-                                FaultBarrier.getInstance().handleException(e);
-                            }
+                    ((Runnable) () -> {
+                        try {
+                            pepshellProtein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(pepshellProtein));
+                            repaint();
+                        } catch (DataRetrievalException e) {
+                            FaultBarrier.getInstance().handleException(e);
                         }
-                    }.run();
+                    }).run();
                 }
+            try {
                 domainDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
+            } catch (UndrawableException ex) {
+                FaultBarrier.getInstance().handleException(ex);
+            }
+            try {
                 domainBackgroundDrawMode.setProteinAlpha(0.18f);
                 domainBackgroundDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, this.getHeight());
+            } catch (UndrawableException ex) {
+                FaultBarrier.getInstance().handleException(ex);
+            }
                 ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 
                 offsetPoint.y += 25;
+            try {
                 proteinDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
-
+            } catch (UndrawableException ex) {
+                FaultBarrier.getInstance().handleException(ex);
+            }
                 offsetPoint.y += 25;
+            try {
                 secondaryDrawMode.drawProteinAndPeptides(pepshellProtein, g, offsetPoint, width, ProgramVariables.VERTICALSIZE);
                 if (secondaryDrawMode instanceof GradientDrawModeInterface) {
                     ((GradientDrawModeInterface) secondaryDrawMode).drawColorLegend(new Point(offsetPoint.x + width + 15, offsetPoint.y), g);
+                }
+            } catch (UndrawableException ex) {
+                FaultBarrier.getInstance().handleException(ex);
                 }
                 offsetPoint.y += 25;
                 try {
@@ -190,11 +200,9 @@ public class ReferenceProteinDrawPanel extends JPanel {
                 } catch (UndrawableException ex) {
                     FaultBarrier.getInstance().handleException(ex);
                 }
-            } catch (UndrawableException ex) {
-                FaultBarrier.getInstance().handleException(ex);
             }
         }
-    }
+
 
     void updateMainProteinDrawMode(DrawProteinPeptidesInterface aProteinDrawMode) {
         proteinDrawMode = aProteinDrawMode;

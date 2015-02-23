@@ -69,7 +69,7 @@ public class FileParserFactory {
     public Experiment parseExperimentFile(AnnotatedFile anAnnotatedFile) throws CouldNotParseException {
         Experiment parsedExperiment = new Experiment(anAnnotatedFile.getName());
         if(anAnnotatedFile.isValidated()){
-            if(anAnnotatedFile.getAnnotations() instanceof SeparatedValueExperimentMetadata){
+            if (anAnnotatedFile.getAnnotations() instanceof SeparatedValueExperimentMetadata) {
                 parsedExperiment = genericFileParser.parseExperimentFile(anAnnotatedFile);
             }
         }

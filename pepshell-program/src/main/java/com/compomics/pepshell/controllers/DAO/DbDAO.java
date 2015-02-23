@@ -21,6 +21,7 @@ import com.compomics.pepshell.controllers.objectcontrollers.DbConnectionControll
 import com.compomics.pepshell.controllers.objectcontrollers.PeptideGroupController;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.protein.proteinimplementations.FlyweightProtein;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedExperiment;
 
@@ -47,7 +48,7 @@ public class DbDAO extends Observable {
             stat.setInt(1, experiment.getExperimentId());
             try (ResultSet rs = stat.executeQuery()) {
                 while (rs.next()) {
-                    protToAdd = new PepshellProtein(rs.getString("accession"));
+                    protToAdd = new FlyweightProtein(rs.getString("accession"));
                     protToAdd.setExtraIdentifier(String.valueOf(experiment.getExperimentId()));
                     fetchedPepshellProteins.add(protToAdd);
                 }

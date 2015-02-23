@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.model.protein.proteinimplementations;
 
-import com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager;
+import com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 import com.compomics.pepshell.model.protein.proteininfo.ProteinFeatureWithLocation;
@@ -107,7 +107,7 @@ public class FlyweightProtein extends PepshellProtein {
     //additional data that needs to be retrieved from the store
 
     /**
-     * gets the protein sequence from the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * gets the protein sequence from the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the protein sequence
      */
@@ -118,7 +118,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * gets the protein name from the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * gets the protein name from the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the protein name
      */
@@ -128,7 +128,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * sets the protein name for the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * sets the protein name for the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param aProteinName the name to set
      */
@@ -139,7 +139,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * gets the domains from the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * gets the domains from the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the domains added to the protein
      */
@@ -149,7 +149,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * adds domain information to the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * adds domain information to the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param domainsToAdd the domains to add to the protein
      */
@@ -159,7 +159,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * sets the protein info for the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * sets the protein info for the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param proteinInfo the info to set
      */
@@ -169,7 +169,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * gets the protein info from the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * gets the protein info from the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the protein info
      */
@@ -179,7 +179,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * sets the protein sequence for the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * sets the protein sequence for the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param sequence the sequence to set
      */
@@ -197,7 +197,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * add PDB file info to the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * add PDB file info to the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param allPDBFileNamesForProtein the pdb info to set
      */
@@ -207,7 +207,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * gets the pdb info from the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * gets the pdb info from the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the pdb info
      */
@@ -236,7 +236,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * sets the CPDT cleavage results for the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * sets the CPDT cleavage results for the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param CPDTPeptides the cleavage results to set
      */
@@ -246,7 +246,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * adds CPDT cleavage results to the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * adds CPDT cleavage results to the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param CPDTPeptides the
      */
@@ -256,7 +256,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * returns the CPDT cleavage results from the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * returns the CPDT cleavage results from the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the CPDT cleavage results
      */
@@ -266,7 +266,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * gets the preferred pdb file for the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * gets the preferred pdb file for the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the preferred pdb file
      */
@@ -276,7 +276,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * returns the CPDT cleavage results for the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * returns the CPDT cleavage results for the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @return the CPDT cleavage results
      */
@@ -286,7 +286,7 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * sets the preffered pdb file for the protein returned by the {@link com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager}
+     * sets the preffered pdb file for the protein returned by the {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager}
      *
      * @param preferredPdbFile the preferred pdb file
      */

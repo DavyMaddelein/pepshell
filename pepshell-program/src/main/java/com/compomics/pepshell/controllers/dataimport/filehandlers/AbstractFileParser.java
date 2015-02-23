@@ -17,7 +17,7 @@
 package com.compomics.pepshell.controllers.dataimport.filehandlers;
 
 import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager;
+import com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager;
 import com.compomics.pepshell.model.AnnotatedFile;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.FileBasedExperiment;
@@ -114,7 +114,9 @@ public class AbstractFileParser implements FileParserInterface {
                         }
                     }
                     PeptideGroup peptideGroup = (new PeptideGroup(linePeptide));
-                    PepshellProtein proteinToAdd = new FlyweightProtein(linePepshellProtein.getOriginalAccession(), linePepshellProtein.getExtraIdentifier());
+                    PepshellProtein proteinToAdd = new PepshellProtein(columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1]);
+                    ProteinStoreManager.getInstance().addToStore(proteinToAdd);
+                    proteinToAdd = new FlyweightProtein(proteinToAdd.getOriginalAccession(), proteinToAdd.getExtraIdentifier());
                     proteinToAdd.addPeptideGroup(peptideGroup);
                     aFile.addProtein(proteinToAdd);
                     line = lineReader.readLine();

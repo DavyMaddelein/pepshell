@@ -22,6 +22,8 @@ import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
+
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,6 +54,10 @@ public class AddDomains extends DataRetrievalStep {
                 this.notifyObservers(new UpdateMessage(true, "added domain info to " + pepshellProtein.getVisibleAccession(), false));
             } catch (DataRetrievalException ex) {
                 FaultBarrier.getInstance().handleException(ex);
+                if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException){
+                    ProgramVariables.USEINTERNETSOURCES = false;
+                    break;
+                }
             }
         }
         return Collections.unmodifiableList(pepshellProteinList);

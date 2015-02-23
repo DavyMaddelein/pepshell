@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.controllers.CachesAndStores;
+package com.compomics.pepshell.controllers.datamanagment.cachesandstores;
 
-import com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy;
-import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
+import com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.StoreStrategy;
 
 import java.util.Collection;
 
@@ -28,7 +27,7 @@ import java.util.Collection;
 public interface StoreManagerInterface<T, U> {
 
     /**
-     * retrieves the entry identified by the given accession from the underlying {@link com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies.StoreStrategy}
+     * retrieves the entry identified by the given accession from the underlying {@link com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.StoreStrategy}
      *
      * @param accession the entry accession that identifies the entry for retrieval
      * @return the requested object

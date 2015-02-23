@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.controllers.dataimport;
+package com.compomics.pepshell.model;
 
-import com.compomics.pepshell.model.ExperimentMetadata;
+import com.compomics.pepshell.model.enums.DataSourceEnum;
 
 /**
- *
- * @author Davy Maddelein
+ * Created by Davy Maddelein on 26/11/2014.
  */
-public interface DataValidationHandlerInterface<T extends ExperimentMetadata> {
-    
-    public boolean canHandle(Object objectToHandle,T metaDataToHandle);
-    
-    public boolean validate(Object objectToValidate,T additionalMetaData);
-    
+public class ExperimentMetadata {
+
+    private DataSourceEnum dataSource;
+
+    protected ExperimentMetadata(DataSourceEnum aDataSource) {
+            dataSource = aDataSource;
+    }
+
+    public ExperimentMetadata mergeAnnotations(ExperimentMetadata annotation) {
+
+        return this;
+    }
 }

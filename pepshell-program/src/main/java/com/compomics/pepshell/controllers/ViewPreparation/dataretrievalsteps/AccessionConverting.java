@@ -17,11 +17,14 @@
 package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
 import com.compomics.pepshell.FaultBarrier;
+import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.AccessionConverter;
 import com.compomics.pepshell.controllers.InfoFinders.DataRetrievalStep;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,13 +47,17 @@ public class AccessionConverting extends DataRetrievalStep {
     public List<PepshellProtein> call() throws Exception {
         for (PepshellProtein aPepshellProtein : pepshellProteinList) {
             try {
-                if (coTo == ConversionTo.TO_UNIPROT) {
+                if (ProgramVariables.USEINTERNETSOURCES && coTo == ConversionTo.TO_UNIPROT) {
                     aPepshellProtein.setVisibleAccession(AccessionConverter.toUniprot(aPepshellProtein.getOriginalAccession()));
                     this.setChanged();
                     this.notifyObservers(new UpdateMessage(true, "changed accession of " + aPepshellProtein.getOriginalAccession() + " to " + aPepshellProtein.getVisibleAccession(), false));
                 }
             } catch (ConversionException ex) {
                 FaultBarrier.getInstance().handleException(ex);
+                if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException){
+                    ProgramVariables.USEINTERNETSOURCES = false;
+                    break;
+                }
             }
         }
         return Collections.unmodifiableList(pepshellProteinList);

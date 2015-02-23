@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.model.exceptions;
+package com.compomics.pepshell.model;
 
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 
 /**
- * Created by Davy Maddelein on 26/11/2014.
+ *
+ * @author Davy Maddelein
  */
-public class ExperimentMetaData {
+public class HDXMetadata extends SeparatedValueExperimentMetadata {
 
-    private DataSourceEnum dataSource;
-
-    protected ExperimentMetaData(DataSourceEnum aDataSource){
-            dataSource = aDataSource;
+    public HDXMetadata(DataSourceEnum aDataSource) {
+        super(aDataSource);
     }
-
-    public ExperimentMetaData mergeAnnotations(ExperimentMetaData annotation){
-
-        return this;
-    }
+    
 }

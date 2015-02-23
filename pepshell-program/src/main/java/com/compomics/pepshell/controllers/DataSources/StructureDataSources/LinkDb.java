@@ -92,10 +92,8 @@ public class LinkDb<T extends PepshellProtein> implements StructureDataSource<T>
                 if (foundDomains.isEmpty()) {
                     foundDomains = ExternalDomainFinder.getDomainsFromAllSitesForUniprotAccession(AccessionConverter.toUniprot(aProtein.getVisibleAccession()));
                 }
-            } catch (IOException | ConversionException | XMLStreamException | SAXException ex) {
+            } catch (IOException | ConversionException | XMLStreamException | SAXException | ParserConfigurationException ex) {
                 throw new DataRetrievalException(ex.getMessage(), ex);
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
             }
         }
         return foundDomains;

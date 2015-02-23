@@ -43,7 +43,7 @@ public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pepsh
     @Override
     public void drawPeptide(QuantedPeptide peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         try {
-           peptideColor = calculatePeptideGradient(peptide);
+            peptideColor = calculatePeptideGradient(peptide);
         } catch (CalculationException ex) {
             UndrawableException updatedEx = new UndrawableException("could not calculate the ratio gradient");
             updatedEx.initCause(ex);
@@ -114,6 +114,7 @@ public class QuantedPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pepsh
     public void setMaxRatio(double maxRatio) {
         this.maxRatio = maxRatio;
     }
+
     public void setMinRatio(double minRatio) {
         this.minRatio = minRatio;
     }

@@ -146,6 +146,11 @@ public abstract class AbstractDataRetrieval<T extends Experiment> extends Observ
              */
 
             List<List<PepshellProtein>> partitionedProteinList = Lists.partition((List<PepshellProtein>) experiment.getProteins(), (int) Math.ceil(experiment.getProteins().size() / Runtime.getRuntime().availableProcessors()));
+
+            int totalTasks = (partitionedProteinList.size() * stepsToExecute.size());
+
+            progressMonitor.setMaximum(totalTasks + 2);
+
             for (DataRetrievalStep aStep : stepsToExecute) {
                 List<Future<List<PepshellProtein>>> taskList = new ArrayList<>();
                 partitionedProteinList.stream().map(aStep::getInstance).map((toExecute) -> {
@@ -153,7 +158,6 @@ public abstract class AbstractDataRetrieval<T extends Experiment> extends Observ
                     return toExecute;
                 }).forEach((toExecute) -> taskList.add(executor.submit(toExecute)));
                 //+2 because the partition returns the rest in an extra list, for example 4 can give 4 or 5 lists
-                progressMonitor.setMaximum(taskList.size() + 2);
 
                 while (!taskList.isEmpty()) {
                     if (skipStep) {
@@ -165,13 +169,12 @@ public abstract class AbstractDataRetrieval<T extends Experiment> extends Observ
                             Future<List<PepshellProtein>> aFuture = futureIter.next();
                             if (aFuture.isDone() || aFuture.isCancelled()) {
                                 futureIter.remove();
-                                progressMonitor.setProgress(progressMonitor.getMaximum() - taskList.size());
+                                totalTasks--;
+                                progressMonitor.setProgress(progressMonitor.getMaximum() - totalTasks);
                             }
                         }
                         if (progressMonitor.isCanceled()) {
-                            taskList.stream().forEach((aFuture) -> {
-                                aFuture.cancel(true);
-                            });
+                            taskList.stream().forEach((aFuture) -> aFuture.cancel(true));
                         }
                         if (progressMonitor.isCanceled()) {
                             break;

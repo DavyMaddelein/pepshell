@@ -17,7 +17,6 @@
 package com.compomics.pepshell.controllers.dataimport.filevalidation;
 
 import com.compomics.pepshell.model.AnnotatedFile;
-import com.compomics.pepshell.model.HDXMetaDataAnnotations;
 
 import java.io.File;
 

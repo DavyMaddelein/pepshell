@@ -77,8 +77,9 @@ public class RatioStatisticsPane extends JFreeChartPanel {
         if (aPepshellProtein != null) {
             for (Experiment anExperiment : experimentGroup) {
 
-                if (anExperiment.getProteins().indexOf(aProtein) != -1) {
-                    Protein protein = anExperiment.getProteins().get(anExperiment.getProteins().indexOf(aProtein));
+                if (anExperiment.getProteins().indexOf(aPepshellProtein) != -1) {
+                    PepshellProtein protein = anExperiment.getProteins().get(anExperiment.getProteins().indexOf(aPepshellProtein));
+
                     List<PeptideGroup> sortedCopy = protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> e.getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
 
                     for (PeptideGroup aPeptideGroup : sortedCopy) {

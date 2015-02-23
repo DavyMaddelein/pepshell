@@ -3,6 +3,7 @@ package com.compomics.pepshell.controllers.dataimport.filehandlers;
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import org.junit.Test;
 
 import java.io.*;
@@ -111,7 +112,7 @@ public class FileParserFactoryTest {
     private int countPeptides(FileBasedExperiment experiment) {
         int peptideCount = 0;
 
-        for (Protein protein : experiment.getProteins()) {
+        for (PepshellProtein protein : experiment.getProteins()) {
             for (PeptideGroup peptideGroup : protein.getPeptideGroups()) {
                 for (PeptideInterface peptide : peptideGroup.getPeptideList()) {
                     peptideCount += peptide.getTimesFound();
@@ -128,7 +129,7 @@ public class FileParserFactoryTest {
 
         FileParserFactory.getInstance().parseExperimentFile(experiment);
 
-        for (Protein aProtein : experiment.getProteins()) {
+        for (PepshellProtein aProtein : experiment.getProteins()) {
             for (PeptideGroup peptideGroup : aProtein.getPeptideGroups()) {
                 for (PeptideInterface peptide : peptideGroup.getPeptideList()) {
                     int colorValue = (int) Math.floor(255 * ((peptide.getTotalSpectrumIntensities().stream().reduce(0.0, Double::sum)) / peptide.getTotalSpectrumIntensities().size() / experiment.getMaxIntensity()));

@@ -82,8 +82,6 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
                 }
                 FileParserFactory.getInstance().parseExperimentFile((FileBasedExperiment) experiment);
             }
-
-
             FastaDAO.mapFastaSequencesToProteinAccessions(fastaFile, experiment.getProteins());
             ProteinController.alignPeptidesOfProteinsInExperiment(experiment);
             setIntensityValuesForExperiment(experiment);

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.controllers.dataimport;
-
-import com.compomics.pepshell.model.ExperimentMetadata;
+package com.compomics.pepshell.controllers.datamanagment.cachesandstores.caches;
 
 /**
- *
- * @author Davy Maddelein
+ * Created by Davy Maddelein on 22/02/2015.
  */
-public interface DataValidationHandlerInterface<T extends ExperimentMetadata> {
-    
-    public boolean canHandle(Object objectToHandle,T metaDataToHandle);
-    
-    public boolean validate(Object objectToValidate,T additionalMetaData);
-    
+public interface CacheManagerInterface<T> {
+
+    public T getFromCache();
+
+    public boolean addToCache(T objectToCache);
 }

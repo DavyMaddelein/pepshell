@@ -72,7 +72,7 @@ public class PepshellProtein implements ProteinInterface {
         this.domainsFoundInProtein.addAll(domainsToAdd);
     }
 
-    public List<? extends PeptideGroup> getPeptideGroups() {
+    public List<PeptideGroup> getPeptideGroups() {
         return Collections.unmodifiableList(peptideGroupsForProtein);
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.controllers.CachesAndStores.StoreStrategies;
+package com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores;
 
 import java.util.Collection;
 

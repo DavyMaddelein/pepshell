@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/pepshell.iml" filepath="$PROJECT_DIR$/pepshell.iml" />
       <module fileurl="file://$PROJECT_DIR$/pepshell-program/pepshell-program.iml" filepath="$PROJECT_DIR$/pepshell-program/pepshell-program.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pepshell-program/pepshell-program.iml" filepath="$PROJECT_DIR$/pepshell-program/pepshell-program.iml" />
       <module fileurl="file://$PROJECT_DIR$/pepshell-wrapper/pepshell-wrapper.iml" filepath="$PROJECT_DIR$/pepshell-wrapper/pepshell-wrapper.iml" />
     </modules>
   </component>

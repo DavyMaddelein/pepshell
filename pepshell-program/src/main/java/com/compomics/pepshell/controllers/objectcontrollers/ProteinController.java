@@ -16,7 +16,7 @@
 
 package com.compomics.pepshell.controllers.objectcontrollers;
 
-import com.compomics.pepshell.controllers.CachesAndStores.ProteinStoreManager;
+import com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager;
 import com.compomics.pepshell.model.AminoAcidBiMap;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
@@ -35,9 +35,7 @@ public class ProteinController {
      * @param experiment the epxeriment to map all the peptide groups of the proteins to
      */
     public static void alignPeptidesOfProteinsInExperiment(Experiment experiment) {
-        for (PepshellProtein aPepshellProtein : experiment.getProteins()) {
-            PeptideGroupController.mapPeptideGroupsToProtein(aPepshellProtein);
-        }
+        experiment.getProteins().forEach(PeptideGroupController::mapPeptideGroupsToProtein);
     }
 
     /**

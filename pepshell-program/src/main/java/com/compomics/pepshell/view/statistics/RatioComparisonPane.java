@@ -68,8 +68,10 @@ public class RatioComparisonPane extends JFreeChartPanel {
     private CategoryDataset createRatioDataset(PepshellProtein aPepshellProtein) {
         DefaultCategoryDataset returnset = new DefaultCategoryDataset();
 
-        PepshellProtein protein = referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(aProtein));
-        List<PeptideGroup> sortedCopy =protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> e.getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
+        PepshellProtein protein = referenceExperiment.getProteins().get(referenceExperiment.getProteins().indexOf(aPepshellProtein));
+        List<PeptideGroup> sortedCopy = protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> {
+            return e.getShortestPeptide().getBeginningProteinMatch();
+        })).collect(Collectors.toList());
 
         for (PeptideGroup aPeptideGroup : sortedCopy) {
             PeptideInterface aPeptide = aPeptideGroup.getShortestPeptide();
@@ -86,8 +88,8 @@ public class RatioComparisonPane extends JFreeChartPanel {
             }
         }
 
-        protein = experimentToCompareTo.getProteins().get(referenceExperiment.getProteins().indexOf(aProtein));
-        sortedCopy =protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> e.getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
+        protein = experimentToCompareTo.getProteins().get(referenceExperiment.getProteins().indexOf(aPepshellProtein));
+        sortedCopy = protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> ((PeptideGroup) e).getShortestPeptide().getBeginningProteinMatch())).collect(Collectors.toList());
 
         for (PeptideGroup aPeptideGroup : sortedCopy) {
             PeptideInterface aPeptide = aPeptideGroup.getShortestPeptide();
