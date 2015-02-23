@@ -5,48 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e857557c-c82e-42cc-b532-63fb4522650a" name="Default" comment="started with adding delta encoding for sequences">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/cachesandstores/caches/CacheManagerInterface.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/sequenceutilities/DeltaSequenceEncoder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/ExperimentMetadata.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/HDXMetadata.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/HDXMetadataAnnotations.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/cachesandstores/ProteinStoreManager.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/SeparatedValueExperimentMetadata.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/cachesandstores/StoreManagerInterface.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pepshell-program/pepshell-program.iml" />
-      <change type="DELETED" beforePath="C:\Users\Public\dropbox\Dropbox\Public\pepshell-project\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\exceptions\ExperimentMetaData.java" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\Public\dropbox\Dropbox\Public\pepshell-project\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\CachesAndStores\ProteinStoreManager.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/cachesandstores/ProteinStoreManager.java" />
-      <change type="MOVED" beforePath="C:\Users\Public\dropbox\Dropbox\Public\pepshell-project\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\CachesAndStores\StoreManagerInterface.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/cachesandstores/StoreManagerInterface.java" />
-      <change type="MOVED" beforePath="C:\Users\Public\dropbox\Dropbox\Public\pepshell-project\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\CachesAndStores\StoreStrategies\AbstractProteinStoreStrategy.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/cachesandstores/stores/AbstractProteinStoreStrategy.java" />
-      <change type="MOVED" beforePath="C:\Users\Public\dropbox\Dropbox\Public\pepshell-project\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\controllers\CachesAndStores\StoreStrategies\StoreStrategy.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/datamanagment/cachesandstores/stores/StoreStrategy.java" />
-      <change type="MOVED" beforePath="C:\Users\Public\dropbox\Dropbox\Public\pepshell-project\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\HDXMetaDataAnnotations.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/HDXMetadataAnnotations.java" />
-      <change type="MOVED" beforePath="C:\Users\Public\dropbox\Dropbox\Public\pepshell-project\pepshell\pepshell-program\src\main\java\com\compomics\pepshell\model\SeparatedvalueExperimentMetaData.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/SeparatedValueExperimentMetadata.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/AbstractDataRetrieval.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/AbstractDataRetrieval.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filehandlers/AbstractFileParser.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filehandlers/AbstractFileParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AccessionConverting.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AccessionConverting.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddDomains.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/dataretrievalsteps/AddDomains.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/CPDTCleavedProteinDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Proteins/CPDTCleavedProteinDrawMode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/DataRetrievalForFasta.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/ViewPreparation/DataRetrievalForFasta.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/DataValidationHandlerInterface.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/DataValidationHandlerInterface.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/DbDAO.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DAO/DbDAO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ExperimentPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ExperimentPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filehandlers/FileParserFactory.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filehandlers/FileParserFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/dataimport/filehandlers/FileParserFactoryTest.java" afterPath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/dataimport/filehandlers/FileParserFactoryTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteinimplementations/FlyweightProtein.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteinimplementations/FlyweightProtein.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filevalidation/HDXFileValidator.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/dataimport/filevalidation/HDXFileValidator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/dataimport/filevalidation/HDXFileValidatorTest.java" afterPath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/controllers/dataimport/filevalidation/HDXFileValidatorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/IntensityPeptideDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/IntensityPeptideDrawMode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/view/DrawModes/Peptides/IntensityPeptideDrawModeTest.java" afterPath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/view/DrawModes/Peptides/IntensityPeptideDrawModeTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/LinkDb.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/DataSources/StructureDataSources/LinkDb.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteinimplementations/PepshellProtein.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/model/protein/proteinimplementations/PepshellProtein.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/objectcontrollers/ProteinController.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/controllers/objectcontrollers/ProteinController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/QuantedPeptideDrawMode.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/DrawModes/Peptides/QuantedPeptideDrawMode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/view/DrawModes/Peptides/QuantedPeptideDrawModeTest.java" afterPath="$PROJECT_DIR$/pepshell-program/src/test/java/com/compomics/pepshell/view/DrawModes/Peptides/QuantedPeptideDrawModeTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioComparisonPane.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioComparisonPane.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioStatisticsPane.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/statistics/RatioStatisticsPane.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ReferenceProteinDrawPanel.java" afterPath="$PROJECT_DIR$/pepshell-program/src/main/java/com/compomics/pepshell/view/dataviewing/ReferenceProteinDrawPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pepshell-wrapper/pom.xml" afterPath="$PROJECT_DIR$/pepshell-wrapper/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="partial-tryp.iws" />
@@ -621,6 +579,120 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell-program" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="InfoFinders" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell-program" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dataimport" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell-program" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pepshell" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DAO" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1803,7 +1875,7 @@
       <workItem from="1423992957011" duration="6752000" />
       <workItem from="1424070607172" duration="39976000" />
       <workItem from="1424352410034" duration="11570000" />
-      <workItem from="1424422434299" duration="7922000" />
+      <workItem from="1424422434299" duration="8325000" />
     </task>
     <task id="LOCAL-00001" summary="removed the Domain class and replaced all references with the ProteinFeatureWithLocation class">
       <created>1423996335395</created>
@@ -1829,11 +1901,17 @@
       <option name="project" value="LOCAL" />
       <updated>1424422580792</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="started with adding delta encoding for sequences">
+      <created>1424694713135</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1424694713135</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="350127000" />
+    <option name="totallyTimeSpent" value="350530000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1688" y="-8" width="1696" height="1066" extended-state="6" />
@@ -1842,7 +1920,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39770356" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39770356" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1853,7 +1931,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23007712" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24285714" sideWeight="0.57197946" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24285714" sideWeight="0.57197946" order="0" side_tool="false" content_ui="combo" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.49100256" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1925,7 +2003,8 @@
     <MESSAGE value="---------- clean up --------------&#10;&#10;removed the (empty) CPDTProtein class, all CPDT output will be kept in the heavy Protein class&#10;&#10;removed the obsolete getProteinAccession method from the PepshellProtein class and refactored all references to it with more sensible ones&#10;&#10;added javadoc to the Experiment,PepshellProtein,ProteinInterface and FlyWeightProtein class&#10;&#10;changed the protein class to pepshellprotein and slimmed down the ProteinInterface class&#10;&#10;added a lot more generics everywhere to aid with making the code more flexible&#10;&#10;removed the das parser part, as the servers are shutting down&#10;&#10;---------- new features --------------&#10;&#10;added the ability to add storage managers which can utilise different storage strategies to Pepshell, this allows for deep storage and unicity of the objects being stored, it also ensures that all data presented is uniform, for the moment only proteins have received this treatment&#10;&#10;added the flyweightprotein class to alleviate the memory pressure redundant protein data has, this flyweight communicates with the storage manager for all non identifier and non peptide data&#10;&#10;changed the DbDAO class with the changes to the ProteinInterface class, still need to refactor to flyweights&#10;&#10;added flyweights to the file parsing, &#10;&#10;started going through the flow of the program and switch out the PepshellProtein class with the fly weight where possible&#10;&#10;added more generics to the storage manager and strategy classes so it is easier to expand upon this" />
     <MESSAGE value="fixed the drawing issues&#10;&#10;fixed redoing data that was already present" />
     <MESSAGE value="started with adding delta encoding for sequences" />
-    <option name="LAST_COMMIT_MESSAGE" value="started with adding delta encoding for sequences" />
+    <MESSAGE value="moved store manager classes to different package" />
+    <option name="LAST_COMMIT_MESSAGE" value="moved store manager classes to different package" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
