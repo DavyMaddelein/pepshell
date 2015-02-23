@@ -80,6 +80,7 @@ public class AbstractFileParser implements FileParserInterface {
                         throw new CouldNotParseException("missing accession value at line " + lineReader.getLineNumber());
                     }
 
+                    PepshellProtein linePepshellProtein = new PepshellProtein(columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1]);
                     Peptide linePeptide;
 
                     if (aFile.getExperimentFile().getAnnotations().experimentHasRatio()) {

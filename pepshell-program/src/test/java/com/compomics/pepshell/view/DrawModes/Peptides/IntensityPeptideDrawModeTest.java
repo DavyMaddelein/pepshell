@@ -1,8 +1,6 @@
 package com.compomics.pepshell.view.DrawModes.Peptides;
 
-import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
-import com.compomics.pepshell.model.Protein;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import org.junit.Test;
 

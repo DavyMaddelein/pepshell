@@ -5,6 +5,7 @@ import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import org.junit.Test;
 
 import java.awt.*;
@@ -55,7 +56,7 @@ public class QuantedPeptideDrawModeTest {
 
         Color color;
 
-        for (Protein protein : experiment.getProteins()) {
+        for (PepshellProtein protein : experiment.getProteins()) {
             for (PeptideGroup peptideGroup : protein.getPeptideGroups()) {
                 for (PeptideInterface peptide : peptideGroup.getPeptideList()) {
                     color = drawMode.calculatePeptideGradient((QuantedPeptide) peptide);

@@ -18,9 +18,10 @@ package com.compomics.pepshell.view.DrawModes.Peptides;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.PeptideInterface;
-import com.compomics.pepshell.model.Protein;
+
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
+import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.view.DrawModes.GradientDrawModeInterface;
 import com.compomics.pepshell.view.DrawModes.AbstractPeptideProteinDrawMode;
 import java.awt.BasicStroke;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author Davy Maddelein
  */
-public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Protein, PeptideInterface> implements GradientDrawModeInterface<Protein, PeptideInterface> {
+public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<PepshellProtein, PeptideInterface> implements GradientDrawModeInterface<PepshellProtein, PeptideInterface> {
 
     private double maxIntensity = 1.0;
 
@@ -55,7 +56,7 @@ public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<Pro
     }
 
     @Override
-    public Color calculateAminoAcidGradient(Protein protein, int location) throws CalculationException {
+    public Color calculateAminoAcidGradient(PepshellProtein protein, int location) throws CalculationException {
         return proteinColor;
     }
 

@@ -180,7 +180,7 @@ class ExperimentPanel extends javax.swing.JPanel {
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         //replace with a hashset and call contains
         if (pepshellProtein != null) {
-            pepshellProtein.getPeptideGroups().stream().filter((peptideGroup) -> (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * ProgramVariables.SCALE) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * ProgramVariables.SCALE))).map((peptideGroup) -> {
+            pepshellProtein.getPeptideGroups().stream().filter((peptideGroup) -> (evt.getX() >= (int) Math.ceil((double) horizontalOffset + peptideGroup.getStartingAlignmentPosition() * scale) && evt.getX() <= (int) Math.ceil((double) horizontalOffset + peptideGroup.getEndAlignmentPosition() * scale))).map((peptideGroup) -> {
                 //dirty
                 PepshellProtein aPepshellProtein = new PepshellProtein(pepshellProtein.getProteinSequence());
                 if (!pepshellProtein.getDomains().isEmpty()) {
