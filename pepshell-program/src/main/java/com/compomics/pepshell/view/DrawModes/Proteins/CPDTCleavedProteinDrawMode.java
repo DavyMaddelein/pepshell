@@ -44,7 +44,7 @@ import java.awt.Point;
 public class CPDTCleavedProteinDrawMode extends AbstractPeptideProteinDrawMode<PepshellProtein, Peptide> implements GradientDrawModeInterface<PepshellProtein, Peptide> {
 
     @Override
-    public void drawProteinAndPeptides(PepshellProtein protein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
+    public void drawProteinAndPeptides(PepshellProtein pepshellProtein, Graphics g, Point startPoint, int length, int height) throws UndrawableException {
         //set colour and alpha for protein
         g.setColor(proteinColor);
         Composite defensiveComposite = ((Graphics2D) g).getComposite();

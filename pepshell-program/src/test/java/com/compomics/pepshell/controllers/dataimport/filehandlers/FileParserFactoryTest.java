@@ -1,5 +1,6 @@
 package com.compomics.pepshell.controllers.dataimport.filehandlers;
 
+import com.compomics.pepshell.ExperimentTestBase;
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.enums.DataSourceEnum;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
@@ -14,36 +15,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Iain on 16/02/2015.
  */
-public class FileParserFactoryTest {
-
-    public String testFile;
-
-    /**
-     * Prepare the braf experiment
-     *
-     * @return The braf experiment
-     */
-    public FileBasedExperiment setupExperiment(String path) {
-        testFile = this.getClass().getClassLoader().getResource("braf/" + path).getFile();
-
-        SeparatedValueExperimentMetadata metadata = new SeparatedValueExperimentMetadata(DataSourceEnum.FILE);
-        metadata.setHasHeaders(true)
-            .setPeptidesequenceColumn(1)
-            .setProteinAccessionColumn(2)
-            .setPeptideStartColumn(3)
-            .setPeptideEndColumn(4)
-            .setIntensityColumn(5)
-            .setRatioColumn(6)
-            .setValueSeparator("\t");
-
-        AnnotatedFile aFile = new AnnotatedFile(testFile);
-        aFile.addAnnotationsToFile(metadata);
-
-        FileBasedExperiment experiment = new FileBasedExperiment("braf");
-        experiment.setFile(aFile);
-
-        return experiment;
-    }
+public class FileParserFactoryTest extends ExperimentTestBase {
 
     /**
      * Testing the path of gold
@@ -67,7 +39,7 @@ public class FileParserFactoryTest {
 
         FileParserFactory.getInstance().parseExperimentFile(experiment);
 
-        LineNumberReader reader = new LineNumberReader(new FileReader(testFile));
+        LineNumberReader reader = new LineNumberReader(new FileReader("reference.txt"));
         reader.skip(Long.MAX_VALUE);
 
         assertThat(experiment.getProteins().size(), lessThan(reader.getLineNumber() - 1));
@@ -85,7 +57,7 @@ public class FileParserFactoryTest {
 
         FileParserFactory.getInstance().parseExperimentFile(experiment);
 
-        LineNumberReader reader = new LineNumberReader(new FileReader(testFile));
+        LineNumberReader reader = new LineNumberReader(new FileReader("reference.txt"));
         reader.skip(Long.MAX_VALUE);
 
         assertEquals(countPeptides(experiment), reader.getLineNumber() - 1);
@@ -103,7 +75,7 @@ public class FileParserFactoryTest {
 
         FileParserFactory.getInstance().parseExperimentFile(experiment);
 
-        LineNumberReader reader = new LineNumberReader(new FileReader(testFile));
+        LineNumberReader reader = new LineNumberReader(new FileReader("reference.txt"));
         reader.skip(Long.MAX_VALUE);
 
         assertEquals(countPeptides(experiment), reader.getLineNumber() - 2);

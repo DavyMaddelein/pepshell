@@ -18,6 +18,7 @@ package com.compomics.pepshell.view.DrawModes.Peptides;
 
 import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.model.PeptideInterface;
+
 import com.compomics.pepshell.model.exceptions.CalculationException;
 import com.compomics.pepshell.model.exceptions.UndrawableException;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
@@ -35,7 +36,7 @@ import java.awt.Point;
  */
 public class IntensityPeptideDrawMode extends AbstractPeptideProteinDrawMode<PepshellProtein, PeptideInterface> implements GradientDrawModeInterface<PepshellProtein, PeptideInterface> {
 
-    private double maxIntensity = 5.0;
+    private double maxIntensity = 1.0;
 
     @Override
     public void drawPeptide(PeptideInterface peptide, Graphics g, Point startPoint, int length, int height) throws UndrawableException {

@@ -80,19 +80,12 @@ public class AbstractFileParser implements FileParserInterface {
                         throw new CouldNotParseException("missing accession value at line " + lineReader.getLineNumber());
                     }
 
+                    PepshellProtein linePepshellProtein = new PepshellProtein(columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1]);
                     Peptide linePeptide;
 
                     if (aFile.getExperimentFile().getAnnotations().experimentHasRatio()) {
                         linePeptide = new QuantedPeptide(columns[aFile.getExperimentFile().getAnnotations().getPeptideSequenceColumn() - 1]);
                         ((QuantedPeptide) linePeptide).setRatio(Double.parseDouble(columns[aFile.getExperimentFile().getAnnotations().getRatioColumn() - 1]));
-
-                        if (((QuantedPeptide) linePeptide).getRatio() > aFile.getMaxRatio()) {
-                            aFile.setMaxRatio(((QuantedPeptide) linePeptide).getRatio());
-                        }
-
-                        if (((QuantedPeptide) linePeptide).getRatio() < aFile.getMinRatio()) {
-                            aFile.setMinRatio(((QuantedPeptide) linePeptide).getRatio());
-                        }
                     } else {
                         linePeptide = new Peptide(columns[aFile.getExperimentFile().getAnnotations().getPeptideSequenceColumn() - 1]);
                     }
@@ -106,12 +99,6 @@ public class AbstractFileParser implements FileParserInterface {
                         Double intensityValue = Double.parseDouble(columns[aFile.getExperimentFile().getAnnotations().getIntensityColumn() - 1]);
                         linePeptide.addTotalSpectrumIntensity(intensityValue);
 
-                        if (intensityValue > aFile.getMaxIntensity()) {
-                            aFile.setMaxIntensity(intensityValue);
-                        }
-                        if (intensityValue < aFile.getMinIntensity()) {
-                            aFile.setMinIntensity(intensityValue);
-                        }
                     }
                     PeptideGroup peptideGroup = (new PeptideGroup(linePeptide));
                     PepshellProtein proteinToAdd = new PepshellProtein(columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1]);

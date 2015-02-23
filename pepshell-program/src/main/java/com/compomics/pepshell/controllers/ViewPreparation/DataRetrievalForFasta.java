@@ -74,8 +74,8 @@ public class DataRetrievalForFasta<T extends Experiment> extends AbstractDataRet
                 experiment.addProteins(DbDAO.fetchProteins(experiment));
                 DbDAO.addPeptideGroupsToProteins(experiment.getProteins());
                 checkAndAddQuantToProteinsInExperiment(experiment);
-
-
+                
+                
             } else if (DataModeController.getInstance().getDataSource() == DataSourceEnum.FILE) {
                 if (!addFastaAfterParsing) {
                     FastaDAO.setExperimentProteinsToFastaFileProteins(fastaFile, experiment);

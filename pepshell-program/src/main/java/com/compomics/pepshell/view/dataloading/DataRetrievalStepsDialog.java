@@ -321,14 +321,10 @@ public class DataRetrievalStepsDialog extends javax.swing.JDialog {
             }
         });
         Collections.sort(loadedEnabledList, dataRetrievalStepComparator);
-        loadedEnabledList.stream().forEach((aStep) -> {
-            enabledListModel.addElement(aStep);
-        });
+        loadedEnabledList.stream().forEach((aStep) -> enabledListModel.addElement(aStep));
 
         Collections.sort(loadedDisabledList, dataRetrievalStepComparator);
-        loadedDisabledList.stream().forEach((aStep) -> {
-            disabledListModel.addElement(aStep);
-        });
+        loadedDisabledList.stream().forEach((aStep) -> disabledListModel.addElement(aStep));
         enabledStepsList.setModel(enabledListModel);
         disabledStepsList.setModel(disabledListModel);
     }
