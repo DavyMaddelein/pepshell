@@ -18,6 +18,7 @@ package startup;
 
 import autoupdater.DownloadLatestZipFromRepo;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.*;
@@ -33,10 +34,13 @@ public class StartupManager {
 
         try {
             FileSystem jar = FileSystems.getFileSystem(StartupManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            jar.getRootDirectories().forEach(e -> Files.walkFileTree(e, new pepshellVisitor()));
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            jar.getRootDirectories().forEach(e -> {
+                try {
+                    Files.walkFileTree(e, new pepshellVisitor());
+                }catch (IOException ex){
+                    ex.printStackTrace();
+                }});
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
@@ -53,7 +57,13 @@ public class StartupManager {
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
             if (file.getFileName().startsWith("pepshell-program")) {
 
-                DownloadLatestZipFromRepo.downloadLatestZipFromRepo(file);
+                try {
+                    DownloadLatestZipFromRepo.downloadLatestZipFromRepo(file);
+                } catch (XMLStreamException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
             //we found what we wanted, let the updater handle it from here
             return FileVisitResult.TERMINATE;

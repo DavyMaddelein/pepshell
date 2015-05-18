@@ -98,6 +98,7 @@ public class DownloadLatestZipFromRepo implements Runnable {
         } else {
             fileDAO = new GUIFileDAO();
         }
+
     }
 
     public void setStartFileAfterDownload(boolean startFileAfterDownload) {
@@ -147,7 +148,9 @@ public class DownloadLatestZipFromRepo implements Runnable {
 
         //TL;DR of the next three lines: make the url for the latest version location of a maven jar file
         String artifactInRepoLocation = new StringBuilder(jarRepository.toExternalForm()).append(groupId.replaceAll("\\.", "/")).append("/").append(artifactId).toString();
+
         String latestRemoteRelease = WebDAO.getLatestVersionNumberFromRemoteRepo(new URL(new StringBuilder(artifactInRepoLocation).append("/maven-metadata.xml").toString()));
+
         String latestArtifactLocation = new StringBuilder(artifactInRepoLocation).append("/").append(latestRemoteRelease).toString();
 
         // download and unzip the files
@@ -305,16 +308,14 @@ public class DownloadLatestZipFromRepo implements Runnable {
         URL archiveURL;
 
         // get the archive url
+        String folderName;
         if (artifactURL.getPath().contains(".zip")) {
-            archiveURL = WebDAO.getUrlOfZippedVersion(jarRepository, ".zip", false);
+            archiveURL = WebDAO.getUrlOfZippedVersion(artifactURL, ".zip", false);
             folderName = archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/"), archiveURL.getFile().lastIndexOf(".zip"));
         } else {
-            archiveURL = WebDAO.getUrlOfZippedVersion(jarRepository, ".tar.gz", false);
+            archiveURL = WebDAO.getUrlOfZippedVersion(artifactURL, ".tar.gz", false);
             if (archiveURL != null) {
                 folderName = archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/"), archiveURL.getFile().lastIndexOf(".tar.gz"));
-            } else {
-                archiveURL = WebDAO.getUrlOfZippedVersion(jarRepository, ".zip", false);
-                folderName = archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/"), archiveURL.getFile().lastIndexOf(".zip"));
             }
         }
 
@@ -337,14 +338,14 @@ public class DownloadLatestZipFromRepo implements Runnable {
         downloadedFile = new File(destination, archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/")));
 
         // download and unzip the file
-        downloadedFile = fileDAO.writeStreamToDisk(archiveURL.openStream(), archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/")), downloadFolder);
+        downloadedFile = fileDAO.writeStreamToDisk(archiveURL.openStream(), archiveURL.getFile().substring(archiveURL.getFile().lastIndexOf("/")), destination);
         return downloadedFile;
     }
 
     /**
      * Aggregation method for downloading and unzipping.
      *
-     * @param jarRepository the url of the version specific location
+     * @param jarURL the url of the version specific location
      * @param fileDAO       which fileDAO implementation that should be used
      * @param isWindows     if true, the OS will assumed to be windows
      *                      download
@@ -353,13 +354,13 @@ public class DownloadLatestZipFromRepo implements Runnable {
      * @throws IOException
      * @throws XMLStreamException
      */
-    private static MavenJarFile downloadAndUnzipJar(final File aDownloadFolder, final String artifactId, URL jarRepository,
+    private static MavenJarFile downloadAndUnzipJar(final File downloadFolder, final String artifactId, URL jarURL,
                                                     FileDAO fileDAO, boolean cleanupZipFile, boolean isWindows) throws MalformedURLException, IOException, XMLStreamException {
 
         if (isWindows) {
             fileDAO.unzipFile(new ZipFile(downloadedFile), downloadFolder.getParentFile());
         } else {
-            fileDAO.unGzipAndUntarFile(new GZIPInputStream(archiveURL.openStream()), downloadedFile);
+            fileDAO.unGzipAndUntarFile(new GZIPInputStream(jarURL.openStream()), downloadedFile);
         }
 
         // get the new jar file
@@ -367,7 +368,7 @@ public class DownloadLatestZipFromRepo implements Runnable {
         if (isWindows) {
             newMavenJar = fileDAO.getMavenJarFileFromFolderWithArtifactId(downloadFolder, artifactId);
         } else {
-            newMavenJar = fileDAO.getMavenJarFileFromFolderWithArtifactId(new File(downloadFolder, folderName), artifactId);
+            newMavenJar = fileDAO.getMavenJarFileFromFolderWithArtifactId(downloadFolder, artifactId);
         }
 
         // delete the downloaded zip file

@@ -21,6 +21,8 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
+
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import net.jimmc.jshortcut.JShellLink;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -168,9 +170,9 @@ public abstract class FileDAO {
     public boolean unzipFile(ZipFile zip, File fileLocationOnDiskToDownloadTo) throws IOException {
         FileOutputStream dest = null;
         InputStream inStream = null;
-        Enumeration<? extends ZipEntry> zipFileEnum = zip.entries();
+        Enumeration<ZipArchiveEntry> zipFileEnum = zip.getEntries();
         while (zipFileEnum.hasMoreElements()) {
-            ZipEntry entry = zipFileEnum.nextElement();
+            ZipArchiveEntry entry = zipFileEnum.nextElement();
             File destFile = new File(fileLocationOnDiskToDownloadTo, entry.getName());
             if (!destFile.getParentFile().exists()) {
                 if (!destFile.getParentFile().mkdirs()) {
@@ -228,7 +230,6 @@ public abstract class FileDAO {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return true;
     }
 

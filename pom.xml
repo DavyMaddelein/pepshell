@@ -30,18 +30,15 @@
     </properties>
 
     <modules>
-        <module>pepshell-program</module>
+        <module>pepshell-model</module>
+        <module>pepshell-mslims-connector</module>
+        <module>pepshell-colims-connector</module>
+        <module>pepshell-api</module>
         <module>pepshell-wrapper</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>15.0</version>
-                <type>jar</type>
-            </dependency>
             <!--<dependency>
     <groupId>org.clapper</groupId>
     <artifactId>javautil</artifactId>

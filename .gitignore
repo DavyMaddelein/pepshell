@@ -2,4 +2,7 @@
 /pepshell-program/src/test/java/
 /pepshell-program/target/
 /pepshell-wrapper/target/
+/pepshell-api/target/
+/pepshell-model/target/
+.*iml
 /.idea/workspace.xml
