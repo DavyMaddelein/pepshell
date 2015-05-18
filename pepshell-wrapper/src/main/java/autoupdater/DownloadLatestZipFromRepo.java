@@ -101,24 +101,30 @@ public class DownloadLatestZipFromRepo implements Runnable {
 
     }
 
-    public void setStartFileAfterDownload(boolean startFileAfterDownload) {
+    public DownloadLatestZipFromRepo setStartFileAfterDownload(boolean startFileAfterDownload) {
         DownloadLatestZipFromRepo.startFileAfterDownload = startFileAfterDownload;
+
+        return this;
     }
 
-    public void setCreateDesktopShortcut(boolean createDesktopShortcut) {
+    public DownloadLatestZipFromRepo setCreateDesktopShortcut(boolean createDesktopShortcut) {
         DownloadLatestZipFromRepo.createDesktopShortcut = createDesktopShortcut;
+        return this;
     }
 
-    public void setDeletePreviousVersion(boolean deletePreviousVersion) {
+    public DownloadLatestZipFromRepo setDeletePreviousVersion(boolean deletePreviousVersion) {
         DownloadLatestZipFromRepo.deletePreviousVersion = deletePreviousVersion;
+        return this;
     }
 
-    public void setDownloadURL(URL downloadURL) {
+    public DownloadLatestZipFromRepo setDownloadURL(URL downloadURL) {
         DownloadLatestZipFromRepo.downloadURL = downloadURL;
+        return this;
     }
 
-    public void setFileDAO(FileDAO fileDAO) {
+    public DownloadLatestZipFromRepo setFileDAO(FileDAO fileDAO) {
         DownloadLatestZipFromRepo.fileDAO = fileDAO;
+        return this;
     }
 
     /**
