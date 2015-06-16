@@ -33,7 +33,7 @@ Test files can be found [here](http://genesis.ugent.be/pepshell/testfiles).
 ----
 
 ## Usage
-See the [wiki](https://github.com/compomics/thermo-msf-parser/wiki) for additional information on how to use Pepshell.
+See the [wiki](https://github.com/compomics/pepshell/wiki) for additional information on how to use Pepshell.
 
 [Go to top of page](#pepshell)
 
