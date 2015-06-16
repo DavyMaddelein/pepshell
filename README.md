@@ -21,9 +21,9 @@ PepShell is a peptide centric tool that allows the visualization, analysis, and 
 ----
 
 ## Downloads
-| Download | Version | Release info |
-| :------------: |:---------------:| :-----:|
-| [![download](https://github.com/compomics/thermo-msf-parser/wiki/images/download_button.png)](http://genesis.ugent.be/downloadredirect.php?toolname=thermo-msf-parser) | *2.0.5 - All platforms* |    [Release notes](https://github.com/compomics/thermo-msf-parser/wiki/ReleaseNotes) |
+| Download | Version |
+| :------------: |:---------------:|
+| [![download](https://github.com/compomics/thermo-msf-parser/wiki/images/download_button.png)](http://genesis.ugent.be/downloadredirect.php?toolname=pepshell) | *2.0.5 - All platforms* |
 
 ### Example Dataset
 [Example Dataset 1](https://github.com/compomics/thermo-msf-parser/blob/master/thermo_msf_parser_API/src/test/resources/test-msf-v-1.2.msf), click on *raw* to download.
