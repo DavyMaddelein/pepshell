@@ -10,11 +10,11 @@
 
 ## Tool Description
 
-!PepShell is a peptide centric tool that allows the visualization, analysis, and interpretation of (quantitative) conformational proteomics data. !PepShell provides the user with the ability to compare the results from different experiments, and thus allows changes in protein conformation to be detected between different experimental conditions. !PepShell can read data from each of the most common forms of conformational proteomics approaches, including limited proteolysis, hydrogen-deuterium exchange (HDX), and MS footprinting.
+PepShell is a peptide centric tool that allows the visualization, analysis, and interpretation of (quantitative) conformational proteomics data. PepShell provides the user with the ability to compare the results from different experiments, and thus allows changes in protein conformation to be detected between different experimental conditions. PepShell can read data from each of the most common forms of conformational proteomics approaches, including limited proteolysis, hydrogen-deuterium exchange (HDX), and MS footprinting.
 
 ### Citation
  * [Vandermarliere et al: J Proteome Res. 2015 Apr 3;14(4):1987-90.](http://pubs.acs.org/doi/abs/10.1021/pr5012125)
- * If you use *Pepshell* as part of a paper, please include the reference above.
+ * If you use Pepshell as part of a paper, please include the reference above.
 
 [Go to top of page](#pepshell)
 
@@ -33,7 +33,7 @@
 ----
 
 ## Usage
-See the [wiki](https://github.com/compomics/thermo-msf-parser/wiki) for additional information on how to use *Thermo MSF Parser*.
+See the [wiki](https://github.com/compomics/thermo-msf-parser/wiki) for additional information on how to use Pepshell.
 
 [Go to top of page](#pepshell)
 
@@ -41,7 +41,7 @@ See the [wiki](https://github.com/compomics/thermo-msf-parser/wiki) for addition
 
 ## Project Description
 
-Proteins are dynamic molecules; they undergo crucial conformational changes induced by post-translational modifications and by binding of cofactors or other molecules. The characterization of these conformational changes and their relation to protein function is a central goal of structural biology. Unfortunately, most conventional methods to obtain structural information do not provide information on protein dynamics. Therefore, mass spectrometry-based approaches such as limited proteolysis, hydrogen-deuterium exchange and stable-isotope labeling are nowadays frequently used to characterize protein conformation and dynamics. Here, we present !PepShell, a tool that allows interactive data analysis of mass spectrometry-based conformational proteomics studies by visualization of the identified peptides both at the sequence and at the structure level. Moreover, !PepShell allows the comparison of experiments under different conditions including different proteolysis times or binding of the protein to different substrates or inhibitors.
+Proteins are dynamic molecules; they undergo crucial conformational changes induced by post-translational modifications and by binding of cofactors or other molecules. The characterization of these conformational changes and their relation to protein function is a central goal of structural biology. Unfortunately, most conventional methods to obtain structural information do not provide information on protein dynamics. Therefore, mass spectrometry-based approaches such as limited proteolysis, hydrogen-deuterium exchange and stable-isotope labeling are nowadays frequently used to characterize protein conformation and dynamics. Here, we present PepShell, a tool that allows interactive data analysis of mass spectrometry-based conformational proteomics studies by visualization of the identified peptides both at the sequence and at the structure level. Moreover, PepShell allows the comparison of experiments under different conditions including different proteolysis times or binding of the protein to different substrates or inhibitors.
 
 [Go to top of page](#pepshell)
 
@@ -49,7 +49,7 @@ Proteins are dynamic molecules; they undergo crucial conformational changes indu
 
 ## Project Support
 
-The *Pepshell* project is grateful for the support by:
+The Pepshell project is grateful for the support by:
 
 | Compomics | VIB | Ghent University|
 |:--:|:--:|:--:|
