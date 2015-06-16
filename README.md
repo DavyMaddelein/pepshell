@@ -23,7 +23,7 @@ PepShell is a peptide centric tool that allows the visualization, analysis, and 
 ## Downloads
 | Download | Version |
 | :------------: |:---------------:|
-| [![download](http://genesis.ugent.be/uvpublicdata/thermo-msf-parser/wiki/images/download_button.png)](http://genesis.ugent.be/downloadredirect.php?toolname=pepshell) | *0.9 - All platforms* |
+| [![download](http://genesis.ugent.be/uvpublicdata/pepshell/downloadpepshellbutton.png)](http://genesis.ugent.be/downloadredirect.php?toolname=pepshell) | *0.9 - All platforms* |
 
 ### Example Dataset
 Test file can be found [here](http://genesis.ugent.be/pepshell/testfiles).
