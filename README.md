@@ -10,7 +10,7 @@
 
 ## Tool Description
 
-PepShell is a peptide centric tool that allows the visualization, analysis, and interpretation of (quantitative) conformational proteomics data. PepShell provides the user with the ability to compare the results from different experiments, and thus allows changes in protein conformation to be detected between different experimental conditions. PepShell can read data from each of the most common forms of conformational proteomics approaches, including limited proteolysis, hydrogen-deuterium exchange (HDX), and MS footprinting.
+PepShell is a peptide centric tool that allows the visualization, analysis, and interpretation of (quantitative) conformational proteomics data. PepShell provides the user with the ability to compare the results from different experiments, and thus allows changes in protein conformation to be detected between different experimental conditions. PepShell can read data from each of the most common forms of conformational proteomics approaches, including limited proteolysis, hydrogen-deuterium exchange (HDX), and MS footprinting. 
 
 ### Citation
  * [Vandermarliere et al: J Proteome Res. 2015 Apr 3;14(4):1987-90.](http://pubs.acs.org/doi/abs/10.1021/pr5012125)
