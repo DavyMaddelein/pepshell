@@ -14,7 +14,7 @@ PepShell is a peptide centric tool that allows the visualization, analysis, and 
 
 ### Citation
  * [Vandermarliere et al: J Proteome Res. 2015 Apr 3;14(4):1987-90.](http://pubs.acs.org/doi/abs/10.1021/pr5012125)
- * If you use Pepshell as part of a paper, please include the reference above.
+ * If you use Pepshell as part of a paper, please include the reference above. 
 
 [Go to top of page](#pepshell)
 
