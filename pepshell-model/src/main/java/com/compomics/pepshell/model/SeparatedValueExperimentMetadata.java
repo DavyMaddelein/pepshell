@@ -18,6 +18,7 @@ package com.compomics.pepshell.model;
 
 import com.compomics.pepshell.model.enums.PossibleMetaDataAnnotationsEnum;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +49,6 @@ public class SeparatedValueExperimentMetadata {
     private int peptideStartColumn;
     private int peptideEndColumn;
     private String missingValue;
-    private boolean hasMissingValues = false;
 
     public boolean fileHasHeaders() {
         return hasHeaders;
@@ -133,6 +133,7 @@ public class SeparatedValueExperimentMetadata {
                 break;
             case PEPTIDESTARTLOCATION:
                 setPeptideStartColumn(Integer.parseInt(aColumn));
+                break;
             default:
                 break;
         }
@@ -278,7 +279,4 @@ public class SeparatedValueExperimentMetadata {
         this.missingValue = missingValue;
     }
 
-    public boolean hasMissingValues() {
-        return hasMissingValues;
-    }
 }

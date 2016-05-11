@@ -22,7 +22,7 @@ package com.compomics.pepshell.model.enums;
  */
 public interface PropertyEnum {
 
-    public String getKey();
+    String getKey();
 
-    public String getDefaultValue();
+    String getDefaultValue();
 }

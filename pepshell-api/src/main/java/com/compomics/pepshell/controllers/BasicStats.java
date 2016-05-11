@@ -32,9 +32,9 @@ class BasicStats {
 
     private BasicStats(){}
 
-    public static void getInstance(){
+    public static BasicStats getInstance(){
 
-
+        return basicStatsInstance;
     }
 
     /**

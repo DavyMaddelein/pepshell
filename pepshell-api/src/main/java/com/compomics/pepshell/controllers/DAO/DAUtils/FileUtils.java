@@ -31,11 +31,8 @@ public class FileUtils {
         return !Files.exists(Files.walkFileTree(aDirectory, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                try {
                     Files.delete(file);
-                } catch (IOException ioex) {
-                    
-                }
+
                 return FileVisitResult.CONTINUE;
             }
         }));

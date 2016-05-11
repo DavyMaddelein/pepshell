@@ -16,14 +16,15 @@
 
 package com.compomics.pepshell.controllers.dataimport.databasehandlers;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.SQLStatements;
 import com.compomics.pepshell.controllers.ViewPreparation.DataRetrievalForFasta;
 import com.compomics.pepshell.controllers.ViewPreparation.AbstractDataRetrieval;
 import com.compomics.pepshell.model.DataModes.DataHandlerInterface;
 import com.compomics.pepshell.controllers.dataimport.DbConnectionController;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,22 +39,23 @@ public class CoLimsImportHandler<T extends Connection> implements DataHandlerInt
 
 
     @Override
-    public boolean canHandle(T objectToHandle) {
+    public boolean canHandle(T objectToHandle) throws IOException{
         boolean iCanHandleIt = false;
         try {
-            PreparedStatement stat = DbConnectionController.getExperimentDbConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS);
+            PreparedStatement stat = DbConnectionController.getExistingConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS);
             ResultSet set = stat.executeQuery();
             //returns empty
             iCanHandleIt = set.isBeforeFirst() && set.isAfterLast();
         } catch (SQLException e) {
-            //obviously we can't
-            FaultBarrier.getInstance().handleException(e,true);
+            IOException ex = new IOException("there was ap roblem with accessing the database");
+            ex.addSuppressed(e);
+            throw ex;
         }
         return iCanHandleIt;
     }
 
     @Override
-    public Experiment addData(Experiment anExperiment) {
+    public Experiment addData(Experiment anExperiment) throws DataRetrievalException {
         return colimsAbstractDataRetrieval.retrieveData(anExperiment);
     }
 

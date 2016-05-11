@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.model.enums;
 
-import javax.swing.text.DocumentFilter;
 
 /**
  *
@@ -31,7 +30,6 @@ public enum PossibleMetaDataAnnotationsEnum {
     PROTEINACCESSION("protein identifier column",Integer.class),
     PROTEINSEQUENCE("protein sequence column",Integer.class),
     VALUESEPARATOR("separator between values in a text file",String.class),
-    //isbooleannotstring
     HASHEADERS("file has headers", Boolean.class),
     PEPTIDEENDLOCATION("end location of the peptide", String.class),
     PEPTIDESTARTLOCATION("start location of the peptide", String.class);

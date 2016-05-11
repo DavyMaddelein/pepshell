@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.dataimport.filehandlers;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.datamanagment.FlyweightProtein;
 import com.compomics.pepshell.controllers.datamanagment.cachesandstores.ProteinStoreManager;
 import com.compomics.pepshell.model.AnnotatedFile;
@@ -24,11 +23,11 @@ import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.FileBasedExperiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
+import com.compomics.pepshell.model.exceptions.AggregatedException;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -44,34 +43,18 @@ public class AbstractFileParser implements FileParserInterface {
             throw new CouldNotParseException("annotations missing from file");
         }
 
-        LineNumberReader lineReader;
+        try (LineNumberReader lineReader = new LineNumberReader(new FileReader(aFile.getExperimentFile()))) {
 
-        try {
-            lineReader = new LineNumberReader(new FileReader(aFile.getExperimentFile()));
-        } catch (FileNotFoundException ex) {
-            CouldNotParseException e = new CouldNotParseException("file could not be found");
-            e.initCause(ex);
-            throw e;
-        }
+            String line;
 
-        String line;
-
-        if (aFile.getExperimentFile().getAnnotations().fileHasHeaders()) {
-            try {
+            if (aFile.getExperimentFile().getAnnotations().fileHasHeaders()) {
                 //we don't need headers
-                line = lineReader.readLine();
-            } catch (IOException ex) {
-                CouldNotParseException e = new CouldNotParseException("file could not be found");
-                e.initCause(ex);
-                throw e;
+                lineReader.readLine();
             }
-        }
 
-        try {
-            line = lineReader.readLine();
             String[] columns;
-
-            while (line != null) {
+            AggregatedException exceptionList = null;
+            while ((line = lineReader.readLine()) != null) {
                 try {
                     columns = line.split(aFile.getExperimentFile().getAnnotations().getValueSeparator());
 
@@ -106,18 +89,19 @@ public class AbstractFileParser implements FileParserInterface {
                     proteinToAdd = new FlyweightProtein(proteinToAdd.getOriginalAccession(), proteinToAdd.getExtraIdentifier());
                     proteinToAdd.addPeptideGroup(peptideGroup);
                     aFile.addProtein(proteinToAdd);
-                    line = lineReader.readLine();
                 } catch (Exception ex) {
-                    FaultBarrier.getInstance().handleException(ex);
+                    if (exceptionList == null) {
+                        exceptionList = new AggregatedException("could not parse certain lines");
+                    }
+                    exceptionList.addException(ex);
                 }
             }
-        } catch (Exception ex) {
-            CouldNotParseException e = new CouldNotParseException("file could not be found");
-            e.initCause(ex);
-            throw e;
-
+            //TODO do something with the aggregated exception
+        } catch (IOException e) {
+            CouldNotParseException ex = new CouldNotParseException("file could not be found");
+            ex.initCause(e);
+            throw ex;
         }
-
         return aFile;
     }
 

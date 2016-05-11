@@ -54,19 +54,12 @@ public class RegexFilter extends FilterParent<String> {
 
     public List<PepshellProtein> filterProtein(List<? extends PepshellProtein> listToFilter, List<String> regexesToFilterAgainst) {
         List<PepshellProtein> matchedItems = new ArrayList<>();
-        /**
-         * for (String aRegex : regexesToFilterAgainst) { if (inclusive) {
-         * matchedItems.addAll(Collections2.filter(listToFilter,
-         * Predicates.contains(Pattern.compile(aRegex)))); } else {
-         * matchedItems.addAll(Collections2.filter(listToFilter,
-         * Predicates.not(Predicates.contains(Pattern.compile(aRegex))))); } }
-         */
         for (String aString : regexesToFilterAgainst) {
-            for (PepshellProtein aPepshellProtein : listToFilter) {
-                if (aPepshellProtein.getVisibleAccession().matches(aString)) {
-                    matchedItems.add(aPepshellProtein);
-                }
-            }
+            Pattern aPattern = Pattern.compile(aString);
+            matchedItems.addAll(listToFilter
+                    .stream()
+                    .filter(aPepshellProtein -> aPattern.matcher(aPepshellProtein.getVisibleAccession()).matches())
+                    .collect(Collectors.toList()));
         }
         return matchedItems;
     }

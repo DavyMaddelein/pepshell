@@ -34,7 +34,7 @@ public abstract class FilterParent<T> {
 
         int value;
 
-        private FilterMode(int mode) {
+        FilterMode(int mode) {
             this.value = mode;
         }
 

@@ -24,6 +24,7 @@ import com.compomics.pepshell.model.FileBasedExperiment;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -36,13 +37,13 @@ public class DataModeController {
 
     public static void fetchDataToVisualize(Experiment anExperiment) throws DataRetrievalException {
         try {
-            if (DbConnectionController.getExperimentDbConnection() != null && databaseHandlers.canHandle(DbConnectionController.getExperimentDbConnection())) {
+            if (DbConnectionController.getExistingConnection() != null && databaseHandlers.canHandle(DbConnectionController.getExistingConnection())) {
                 SQLStatements.instantiateLinkDbStatements();
                 databaseHandlers.addData(anExperiment);
             } else if (anExperiment instanceof FileBasedExperiment) {
                 FileParserFactory.getInstance().parseExperimentFile((FileBasedExperiment) anExperiment);
             }
-        } catch (SQLException|CouldNotParseException sqle) {
+        } catch (SQLException|CouldNotParseException|IOException sqle) {
             throw new DataRetrievalException("could not retrieve any data for experiment",sqle);
         }
     }

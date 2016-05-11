@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.controllers.DataSources.StructureDataSources;
+package com.compomics.pepshell.controllers.datasources.structuredatasources;
 
 import com.compomics.pepshell.model.*;
 import com.compomics.pepshell.model.DataModes.StructureDataSource;
@@ -146,7 +146,14 @@ public class ExternalStructureDataSource<T extends PepshellProtein> implements S
     }
 
     @Override
-    public Set<PdbInfo> getPdbInforForProtein(T protein) {
+    public Set<PdbInfo> getPdbInforForProtein(T protein) throws DataRetrievalException {
         return null;
+    }
+
+    //todo change to final static ints?
+
+    public enum DomainDataLevel{
+        ALLDOMAINDATA,
+        ONLYFULLYQUALIFIEDDOMAINS
     }
 }

@@ -16,9 +16,11 @@
 
 package com.compomics.pepshell.controllers.properties;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Property;
 import com.compomics.pepshell.model.enums.PropertyEnum;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -34,12 +36,12 @@ import java.util.Properties;
  *
  * @author Davy Maddelein
  */
-abstract class AbstractProperties implements Observer {
+public abstract class AbstractProperties implements Observer {
 
     private Properties properties = new Properties();
     private EnumSet propertyEnum;
     
-    AbstractProperties(final File aPropertyFile, final EnumSet aPropertyEnum) throws IOException {
+    public AbstractProperties(final File aPropertyFile, final EnumSet aPropertyEnum) throws IOException {
         FileReader propertiesFileReader = null;
         try {
             if (aPropertyFile.exists()) {
@@ -67,8 +69,8 @@ abstract class AbstractProperties implements Observer {
                     if (aPropertyFile != null && aPropertyFile.exists()) {
                         try {
                             properties.store(new FileWriter(aPropertyFile), null);
-                        } catch (IOException ex) {
-                            FaultBarrier.getInstance().handleException(ex);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -78,7 +80,7 @@ abstract class AbstractProperties implements Observer {
         }
     }
 
-    AbstractProperties(EnumSet aProperyEnum) {
+    public AbstractProperties(EnumSet aProperyEnum) {
         this.propertyEnum = aProperyEnum;
         setPropertiesFromEnumSet(aProperyEnum);
     }
@@ -122,11 +124,9 @@ abstract class AbstractProperties implements Observer {
     }
 
     public boolean setProperties(List<Property> propertiesList) throws IllegalArgumentException {
-        for (Property aPropertyEntry : propertiesList) {
-            if (propertyEnum.contains(aPropertyEntry.getName())) {
-                properties.setProperty(aPropertyEntry.getName().getKey(), aPropertyEntry.getValue());
-            }
-        }
+        propertiesList.stream()
+                .filter(aPropertyEntry -> propertyEnum.contains(aPropertyEntry.getName()))
+                .forEach(aPropertyEntry -> properties.setProperty(aPropertyEntry.getName().getKey(), aPropertyEntry.getValue()));
         return true;
     }
 }

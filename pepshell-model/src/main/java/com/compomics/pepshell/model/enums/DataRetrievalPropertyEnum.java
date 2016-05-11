@@ -24,12 +24,15 @@ public enum DataRetrievalPropertyEnum implements PropertyEnum {
 
     UNIPROTTOGI("protein.uniprottoncbi", ""),
     GITOUNIPROT("protein.ncbitouniprot", "http://www.uniprot.org/mapping/?from=P_GI&to=ACC&format=tab&query="),
-    GETPDBFORUNIPROT("protein.pdbforuniprot", "http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=");
+    GETPDBFORUNIPROT("protein.pdbforuniprot", "http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot="),
+    PREFERREDENZYME("protein.enzyme","trypsin"),
+    PROTEININFOWEBSITE("protein.externaldatalocation", "www.uniprot.org/uniprot/");
+
 
     private final String defaultValue;
     private final String key;
 
-    private DataRetrievalPropertyEnum(String key, String value) {
+    DataRetrievalPropertyEnum(String key, String value) {
         this.key = key;
         this.defaultValue = value;
     }

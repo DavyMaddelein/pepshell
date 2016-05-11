@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.properties;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.enums.DataRetrievalPropertyEnum;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,7 @@ public class DataRetrievalProperties extends AbstractProperties {
     }
 
     private DataRetrievalProperties(File aPropertyFile) throws IOException {
-        super(dataRetrievalPropertiesFile, EnumSet.allOf(DataRetrievalPropertyEnum.class));
+        super(aPropertyFile, EnumSet.allOf(DataRetrievalPropertyEnum.class));
     }
 
             public static DataRetrievalProperties getInstance() {
@@ -44,7 +43,6 @@ public class DataRetrievalProperties extends AbstractProperties {
             try {
                 dataRetrievalProperties = new DataRetrievalProperties(dataRetrievalPropertiesFile);
             } catch (IOException ex) {
-                FaultBarrier.getInstance().handleException(ex);
                 dataRetrievalProperties = new DataRetrievalProperties();
             }
         }

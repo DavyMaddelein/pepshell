@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.properties;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.enums.StartupPropertyEnum;
 
 import java.io.File;
@@ -44,7 +43,7 @@ public class StartupProperties extends AbstractProperties {
             try {
                 startupProperties = new StartupProperties(propertyFile, EnumSet.allOf(StartupPropertyEnum.class));
             } catch (IOException ex) {
-                FaultBarrier.getInstance().handleException(ex);
+                //FaultBarrier.getInstance().handleException(ex);
                 startupProperties = new StartupProperties(EnumSet.allOf(StartupPropertyEnum.class));
             }
         }

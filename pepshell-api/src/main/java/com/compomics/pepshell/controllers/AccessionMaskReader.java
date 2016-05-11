@@ -31,14 +31,15 @@ import java.util.Map;
  */
 public class AccessionMaskReader {
 
-    public static Map<PepshellProtein, String> parseAccessionFile(File selectedFile) throws FileNotFoundException, IOException {
+    public static Map<PepshellProtein, String> parseAccessionFile(File selectedFile) throws IOException {
         Map<PepshellProtein, String> accessionMasks = new HashMap<>();
         if (selectedFile != null && selectedFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
+                String line = reader.readLine();
+                while (line != null) {
                     String[] splitLines = line.split("=");
                     accessionMasks.put(new PepshellProtein(splitLines[0]), splitLines[1]);
+                    line = reader.readLine();
                 }
             }
         }

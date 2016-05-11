@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.compomics.pepshell.controllers.DataSources;
+package com.compomics.pepshell.controllers.datasources;
 
 /**
  *

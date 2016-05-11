@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.datamanagment.sequenceutilities;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
 
 /**
@@ -24,15 +23,14 @@ import com.compomics.pepshell.controllers.properties.ProgramProperties;
  */
 public class SequenceEncoder {
 
-
-    private SequenceEncoder(){
+    /**
+     *
+     * @throws ClassNotFoundException
+     */
+    private SequenceEncoder() throws ClassNotFoundException{
         String storageStrategyClassName = ProgramProperties.getInstance().getProperty("default.aminoacid.delta.map");
         if (storageStrategyClassName != null && !storageStrategyClassName.isEmpty()) {
-            try {
                 ClassLoader.getSystemClassLoader().loadClass(storageStrategyClassName);
-            } catch (ClassNotFoundException e) {
-                FaultBarrier.getInstance().handleException(e);
-            }
         }
     }
 
@@ -46,8 +44,8 @@ public class SequenceEncoder {
 
     public static String fromByteEncoding(byte[] sequenceByteArray){
         StringBuilder translatedSequence = new StringBuilder();
-        for(byte aByte : sequenceByteArray){
-            translatedSequence.append((char)(aByte+'A'));
+        for (byte aByte : sequenceByteArray) {
+            translatedSequence.append((char)(aByte + 'A'));
         }
         return translatedSequence.toString();
     }

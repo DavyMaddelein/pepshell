@@ -44,7 +44,7 @@ public class ExternalDomainInfoFinderTest {
         assertThat(domainsReturned.get(0).getDescription(),is("RBD"));
         assertThat(domainsReturned.get(0).getStartPosition(),is(155));
         assertThat(domainsReturned.get(0).getEndPosition(),is(227));
-        assertThat(domainsReturned.get(1).getDescription(),is("PepshellProtein kinase"));
+        assertThat(domainsReturned.get(1).getDescription(),is("Protein kinase"));
         assertThat(domainsReturned.get(1).getStartPosition(),is(457));
         assertThat(domainsReturned.get(1).getEndPosition(),is(717));
         domainsReturned = ExternalDomainFinder.getDomainsForUniprotAccessionFromSingleSource(p53UniprotAccession, DomainWebsitesEnum.PFAM);

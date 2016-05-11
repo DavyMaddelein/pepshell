@@ -34,7 +34,7 @@ public interface DbDAOInterface {
 
     <T extends Experiment> List<PepshellProtein> fetchProteins(T experiment, Connection aConnection) throws SQLException;
 
-    Experiment fetchPeptidesAndProteins(Experiment experiment, Connection aConnection) throws SQLException, IOException;
+    <T extends Experiment> T fetchPeptidesAndProteins(T experiment, Connection aConnection) throws SQLException, IOException;
 
     <E extends PepshellProtein> List<E> addPeptideGroupsToProteins(List<E> proteins, Connection aConnection) throws SQLException;
 

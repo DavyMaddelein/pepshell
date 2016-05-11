@@ -155,7 +155,7 @@ public class UniprotDAO {
         NodeList sequenceNode = uniprotDoc.getElementsByTagName("sequence");
         String sequence = "";
         if (sequenceNode.item(0).getNodeType() == Node.ELEMENT_NODE) {
-            sequence = ((Element) sequenceNode.item(0)).getTextContent();
+            sequence = (sequenceNode.item(0)).getTextContent();
         }
         return sequence;
     }

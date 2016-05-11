@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.datamanagment.cachesandstores;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.AbstractProteinStoreStrategy;
 import com.compomics.pepshell.controllers.datamanagment.cachesandstores.stores.StoreStrategy;
 import com.compomics.pepshell.controllers.properties.ProgramProperties;
@@ -34,7 +33,7 @@ public class ProteinStoreManager implements StoreManagerInterface<Object, Pepshe
     /**
      * the protein storage strategy to use for retrieval
      */
-    private StoreStrategy<Object, PepshellProtein> currentStoreStrategy;
+    private StoreStrategy<Object, PepshellProtein> currentStoreStrategy = new AbstractProteinStoreStrategy<>();
 
     /**
      * the singleton instance
@@ -49,10 +48,9 @@ public class ProteinStoreManager implements StoreManagerInterface<Object, Pepshe
         String storageStrategyClassName = ProgramProperties.getInstance().getProperty("default.protein.storage.strategy");
         if (storageStrategyClassName != null) {
             try {
-                ClassLoader.getSystemClassLoader().loadClass(storageStrategyClassName);
-            } catch (ClassNotFoundException e) {
-                FaultBarrier.getInstance().handleException(e);
-                currentStoreStrategy = new AbstractProteinStoreStrategy<>();
+               currentStoreStrategy = (StoreStrategy<Object, PepshellProtein>) ClassLoader.getSystemClassLoader().loadClass(storageStrategyClassName).cast(StoreStrategy.class);
+            } catch (ClassNotFoundException|ClassCastException e) {
+                //FaultBarrier.getInstance().handleException(e);
             }
         }
         manager = this;

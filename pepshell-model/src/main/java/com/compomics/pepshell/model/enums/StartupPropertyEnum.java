@@ -28,7 +28,7 @@ public enum StartupPropertyEnum implements PropertyEnum{
     private final String keyName;
     private final String defaultValue;
 
-    private StartupPropertyEnum(String keyName, String defaultValue) {
+    StartupPropertyEnum(String keyName, String defaultValue) {
         this.keyName = keyName;
         this.defaultValue = defaultValue;
     }

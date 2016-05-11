@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.properties;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.enums.PDBPropertyEnum;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,7 +44,7 @@ public class PDBProperties extends AbstractProperties {
             try {
                 aPDBPropertiesInstance = new PDBProperties(PDBPropertiesFile);
             } catch (IOException ex) {
-                FaultBarrier.getInstance().handleException(ex);
+                //FaultBarrier.getInstance().handleException(ex);
                 aPDBPropertiesInstance = new PDBProperties();
             }
         }

@@ -29,7 +29,7 @@ public enum PDBPropertyEnum implements PropertyEnum {
     private final String keyName;
     private final String defaultValue;
 
-    private PDBPropertyEnum(String keyName, String aDefaultValue) {
+    PDBPropertyEnum(String keyName, String aDefaultValue) {
         this.keyName = keyName;
         this.defaultValue = aDefaultValue;
     }
@@ -43,5 +43,6 @@ public enum PDBPropertyEnum implements PropertyEnum {
     public String getDefaultValue() {
         return defaultValue;
     }
+
     public static final EnumSet<PDBPropertyEnum> allEnumValues = EnumSet.allOf(PDBPropertyEnum.class);
 }

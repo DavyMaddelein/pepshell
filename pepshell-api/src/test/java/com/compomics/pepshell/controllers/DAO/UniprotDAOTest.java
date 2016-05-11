@@ -73,7 +73,8 @@ public class UniprotDAOTest {
                 "AVKMLNVTAPTPQQLQAFKNEVGVLRKTRHVNILLFMGYSTKPQLAIVTQWCEGSSLYHH" +
                 "LHIIETKFEMIKLIDIARQTAQGMDYLHAKSIIHRDLKSNNIFLHEDLTVKIGDFGLATV" +
                 "KSRWSGSHQFEQLSGSILWMAPEVIRMQDKNPYSFQSDVYAFGIVLYELMTGQLPYSNIN" +
-                "NRDQIIFMVGRGYLSPDLSKVRSNCPKAMKRLMAECLKKKRDERPLFPQILASIELLARS")));
+                "NRDQIIFMVGRGYLSPDLSKVRSNCPKAMKRLMAECLKKKRDERPLFPQILASIELLARS" +
+                "LPKIHRSASEPSLNRAGFQTEDFSLYACASPKTPIQAGGYGAFPVH")));
     }
 
     @Test
@@ -140,7 +141,7 @@ public class UniprotDAOTest {
         assertThat(domains.get(0).getStartPosition(), is(155));
         assertThat(domains.get(0).getEndPosition(), is(227));
 
-        assertThat(domains.get(1).getDescription(), is("PepshellProtein kinase"));
+        assertThat(domains.get(1).getDescription(), is("Protein kinase"));
         assertThat(domains.get(1).getStartPosition(), is(457));
         assertThat(domains.get(1).getEndPosition(), is(717));
     }
@@ -156,7 +157,7 @@ public class UniprotDAOTest {
         assertThat(domains.get(0).getStartPosition(), is(155));
         assertThat(domains.get(0).getEndPosition(), is(227));
 
-        assertThat(domains.get(1).getDescription(), is("PepshellProtein kinase"));
+        assertThat(domains.get(1).getDescription(), is("Protein kinase"));
         assertThat(domains.get(1).getStartPosition(), is(457));
         assertThat(domains.get(1).getEndPosition(), is(717));
     }
@@ -165,14 +166,14 @@ public class UniprotDAOTest {
     public void testGetSecondaryStructureFromUniprotXML() throws IOException, SAXException, ParserConfigurationException {
         File testXML = new File(ClassLoader.getSystemClassLoader().getResource("testuniprotxml.xml").getPath());
         List<FeatureWithLocation> secondaryStructures = UniprotDAO.getSecondaryStructureFromUniprotXML(UniprotDAO.loadUniprotXMLIntoDOM(new FileInputStream(testXML)));
-        assertThat(secondaryStructures.size(), is(37));
+        assertThat(secondaryStructures.size(), is(39));
         assertThat(secondaryStructures.get(3).getDescription(), is("helix"));
     }
 
     @Test
     public void testGetSecondaryStructureForAccession() throws ParserConfigurationException, SAXException, IOException {
         List<FeatureWithLocation> secondaryStructures = UniprotDAO.getSecondaryStructureForAccession(testAccession);
-        assertThat(secondaryStructures.size(), is(37));
+        assertThat(secondaryStructures.size(), is(39));
         assertThat(secondaryStructures.get(3).getDescription(), is("helix"));
 
     }

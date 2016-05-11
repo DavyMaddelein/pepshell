@@ -16,9 +16,10 @@
 
 package com.compomics.pepshell.controllers.DAO.Iterators;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.junit.Test;
 
 import java.io.File;
@@ -72,21 +73,22 @@ public class FastaIteratorTest {
             fail("should not have thrown an error here");
         }
         ObserverStub observerStub = new ObserverStub();
-        FaultBarrier.getInstance().addObserver(observerStub);
+        EventBus bus = new EventBus("testbus");
+        bus.register(observerStub);
         if (it.hasNext()) {
             //this should fail and trigger the faultbarrier
             PepshellProtein aPepshellProtein = it.next();
             fail("we shouldn't even have gotten a next");
         }
-        assertThat(observerStub.getHopefullyFaultBarrier(),is(equalTo(FaultBarrier.getInstance())));
         assertThat(observerStub.getHopefullyMessage(),is((instanceOf(String.class))));
         assertThat(observerStub.getHopefullyMessage(),is(equalTo("file contains non fasta lines")));
     }
 
-    public class ObserverStub implements Observer {
+    public class ObserverStub {
 
-        Observable hopefullyFaultBarrier;
-        Object hopefullyMessage;
+        EventBus hopefullyFaultBus;
+        Exception hopefullyMessage;
+
 
         /**
          * This method is called whenever the observed object is changed. An
@@ -94,20 +96,14 @@ public class FastaIteratorTest {
          * <code>notifyObservers</code> method to have all the object's
          * observers notified of the change.
          *
-         * @param o   the observable object.
          * @param arg an argument passed to the <code>notifyObservers</code>
          */
-        @Override
-        public void update(Observable o, Object arg) {
-            hopefullyFaultBarrier = o;
+        @Subscribe
+        public void receiveMessage(Exception arg) {
             hopefullyMessage = arg;
         }
 
-        public Observable getHopefullyFaultBarrier() {
-            return hopefullyFaultBarrier;
-        }
-
-        public Object getHopefullyMessage() {
+        public Exception getHopefullyMessage() {
             return hopefullyMessage;
         }
     }

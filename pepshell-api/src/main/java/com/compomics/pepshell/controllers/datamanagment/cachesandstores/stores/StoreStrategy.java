@@ -36,7 +36,7 @@ public interface StoreStrategy<T, U> {
      * @param anEntry the entry to be passed to the underlying data structure
      * @return true if successfully stored, false otherwise
      */
-    public boolean accept(U anEntry);
+    boolean accept(U anEntry);
 
     /**
      * tries to accept a collection of entries into the underlying data structure, there are no guarantees about the state of the store if an exception happens while storing
@@ -44,7 +44,7 @@ public interface StoreStrategy<T, U> {
      * @param entries the collection of entries
      * @return
      */
-    public boolean accept(Collection<? extends U> entries);
+    boolean accept(Collection<? extends U> entries);
 
     /**
      * tries to retrieve an entry from the store with the given identifier
@@ -52,14 +52,14 @@ public interface StoreStrategy<T, U> {
      * @param identifier the identifier to retrieve the entry with
      * @return the entry from the store
      */
-    public U retrieve(T identifier);
+    U retrieve(T identifier);
 
     /**
      * retrieves all entries from the store
      *
      * @return a {@link java.util.Collection} filled with all the entries from the store
      */
-    public Collection<? extends U> retrieveAll();
+    Collection<? extends U> retrieveAll();
 
     /**
      * retrieves a subset of entries from the store identified by members of the passed collection
@@ -67,7 +67,7 @@ public interface StoreStrategy<T, U> {
      * @param identifiers the identifiers to retrieve the entries for
      * @return a {@link java.util.Collection} filled with all the entries requested
      */
-    public Collection<? extends U> retrieveSubSet(Collection<? extends T> identifiers);
+    Collection<? extends U> retrieveSubSet(Collection<? extends T> identifiers);
 
     /**
      * removes a single entry from the store identified by the passed identifier
@@ -75,7 +75,7 @@ public interface StoreStrategy<T, U> {
      * @param identifierToPurgeFromStore the identifier to pure the entry for
      * @return true if successfully purged, false otherwise
      */
-    public boolean purge(T identifierToPurgeFromStore);
+    boolean purge(T identifierToPurgeFromStore);
 
     /**
      * removes a subset of entries from the store identified by members of the passed collection
@@ -83,12 +83,12 @@ public interface StoreStrategy<T, U> {
      * @param identifiersToPurgeFromStore the identifiers to purge the entries for
      * @return true if successfully purged, false otherwise
      */
-    public boolean purgeSubset(Collection<? extends T> identifiersToPurgeFromStore);
+    boolean purgeSubset(Collection<? extends T> identifiersToPurgeFromStore);
 
     /**
      * removes all entries from the store
      *
      * @return true if successfully purged, false otherwise
      */
-    public boolean purgeAll();
+    boolean purgeAll();
 }

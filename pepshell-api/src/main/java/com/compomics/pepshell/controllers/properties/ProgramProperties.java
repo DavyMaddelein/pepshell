@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.properties;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.enums.ProgramPropertyEnum;
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +43,6 @@ public class ProgramProperties extends AbstractProperties {
             try {
                 programProperties = new ProgramProperties(propertyFile, EnumSet.allOf(ProgramPropertyEnum.class));
             } catch (IOException ex) {
-                FaultBarrier.getInstance().handleException(ex);
                 programProperties = new ProgramProperties(EnumSet.allOf(ProgramPropertyEnum.class));
             }
         }

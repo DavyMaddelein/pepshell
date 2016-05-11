@@ -16,14 +16,11 @@
 
 package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
-import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.controllers.datasources.structuredatasources.ExternalStructureDataSource;
 import com.compomics.pepshell.model.DataModes.DataRetrievalStep;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
-import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,17 +45,10 @@ public class AddDomains extends DataRetrievalStep {
     @Override
     public List<PepshellProtein> call() throws Exception {
         for (PepshellProtein pepshellProtein : pepshellProteinList) {
-            try {
-                pepshellProtein.addDomains(ProgramVariables.STRUCTUREDATASOURCE.getDomainData(pepshellProtein));
+                //todo fix this
+                pepshellProtein.addDomains(new ExternalStructureDataSource<>().getDomainData(pepshellProtein));
                 this.setChanged();
                 this.notifyObservers(new UpdateMessage(true, "added domain info to " + pepshellProtein.getVisibleAccession(), false));
-            } catch (DataRetrievalException ex) {
-                FaultBarrier.getInstance().handleException(ex);
-                if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException){
-                    ProgramVariables.USEINTERNETSOURCES = false;
-                    break;
-                }
-            }
         }
         return Collections.unmodifiableList(pepshellProteinList);
     }

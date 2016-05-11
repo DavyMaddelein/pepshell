@@ -16,8 +16,6 @@
 
 package com.compomics.pepshell.controllers.dataexport;
 
-import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.ProgramVariables;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -41,9 +39,9 @@ public class PNGExport extends ImageExport {
     @Override
     public void exportImage(BufferedImage imageToExport, String filename) {
         try {
-            ImageIO.write(imageToExport, "png", new FileOutputStream(new File(ProgramVariables.EXPORTFOLDER, filename + ".png")));
+            ImageIO.write(imageToExport, "png", new FileOutputStream(new File(exportFolder, filename + ".png")));
         } catch (IOException ex) {
-            FaultBarrier.getInstance().handleException(ex);
+            //FaultBarrier.getInstance().handleException(ex);
         }
 
     }

@@ -15,7 +15,6 @@
  */
 package com.compomics.pepshell.controllers.DAO.Iterators;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
@@ -87,7 +86,7 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
                 if (line.isEmpty()) {
                     line = lineReader.readLine();
                 }
-                if (line.startsWith(">")) {
+                if (line != null && line.startsWith(">")) {
                     header = line;
                     hasMore = true;
                 } else {
@@ -99,7 +98,6 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
             }
         } catch (IOException | NullPointerException | CouldNotParseException e) {
             hasMore = false;
-            FaultBarrier.getInstance().handleException(e, true);
         }
         return hasMore;
     }
@@ -115,7 +113,7 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
         T aParsedProtein = null;
         try {
             String fastaLine = lineReader.readLine();
-            String name = "";
+            String name;
             StringBuilder sequence = new StringBuilder();
             while (fastaLine != null) {
                 if (fastaLine.contains(">")) {
@@ -140,7 +138,9 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
             try {
                 lineReader.close();
             } catch (IOException ioe) {
-                FaultBarrier.getInstance().handleExceptionAndSendMail(ioe);
+                NoSuchElementException fail = new NoSuchElementException("stream unexpectedly closed");
+                fail.initCause(ioe);
+                throw fail;
             }
             throw ex;
         }

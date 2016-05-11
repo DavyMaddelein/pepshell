@@ -226,14 +226,6 @@ public class FlyweightProtein extends PepshellProtein {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    /**
      * adds peptide groups to this protein
      *
      * @param aListOfPeptideGroups the peptide groups to add to this protein

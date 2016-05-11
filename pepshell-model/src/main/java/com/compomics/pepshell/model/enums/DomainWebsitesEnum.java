@@ -23,8 +23,8 @@ public enum DomainWebsitesEnum implements PropertyEnum {
     PFAM("http://das.sanger.ac.uk/das/pfam/features?segment="),
     SMART("http://smart.embl.de/smart/das/smart/features?segment="),
     //PROSITE("http://proserver.vital-it.ch/das/prositefeature/features?segment="),
-    UNIPROT("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment=");
-    //UNIPROT("http://www.uniprot.org/uniprot/P15056.xml");
+    UNIPROT("https://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/features?segment="),
+    NEXTPROT("https://api.nextprot.org/entry/NX_P01308/secondary-structure.xml");
 
     public String getDomainURLString(String aUniProtAccession) {
         return rootURL + aUniProtAccession;

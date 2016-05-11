@@ -38,7 +38,7 @@ public class FileParserFactoryTest extends ExperimentTestBase {
 
         FileParserFactory.getInstance().parseExperimentFile(experiment);
 
-        LineNumberReader reader = new LineNumberReader(new FileReader("reference.txt"));
+        LineNumberReader reader = new LineNumberReader(new FileReader(new File(this.getClass().getClassLoader().getResource("braf/reference.txt").getFile())));
         reader.skip(Long.MAX_VALUE);
 
         assertThat(experiment.getProteins().size(), lessThan(reader.getLineNumber() - 1));
@@ -56,7 +56,7 @@ public class FileParserFactoryTest extends ExperimentTestBase {
 
         FileParserFactory.getInstance().parseExperimentFile(experiment);
 
-        LineNumberReader reader = new LineNumberReader(new FileReader("reference.txt"));
+        LineNumberReader reader = new LineNumberReader(new FileReader(new File(this.getClass().getClassLoader().getResource("braf/reference.txt").getFile())));
         reader.skip(Long.MAX_VALUE);
 
         assertEquals(countPeptides(experiment), reader.getLineNumber() - 1);
@@ -74,7 +74,7 @@ public class FileParserFactoryTest extends ExperimentTestBase {
 
         FileParserFactory.getInstance().parseExperimentFile(experiment);
 
-        LineNumberReader reader = new LineNumberReader(new FileReader("reference.txt"));
+        LineNumberReader reader = new LineNumberReader(new FileReader(new File(this.getClass().getClassLoader().getResource("braf/reference.txt").getFile())));
         reader.skip(Long.MAX_VALUE);
 
         assertEquals(countPeptides(experiment), reader.getLineNumber() - 2);
@@ -83,13 +83,10 @@ public class FileParserFactoryTest extends ExperimentTestBase {
     private int countPeptides(FileBasedExperiment experiment) {
         int peptideCount = 0;
 
-        for (PepshellProtein protein : experiment.getProteins()) {
-            for (PeptideGroup peptideGroup : protein.getPeptideGroups()) {
-                for (PeptideInterface peptide : peptideGroup.getPeptideList()) {
-                    peptideCount += peptide.getTimesFound();
-                }
-            }
-        }
+        experiment.getProteins().stream()
+                .forEach(e -> e.getPeptideGroups().stream()
+                        .forEach(e2 -> e2.getPeptideList().stream()
+                                .forEach(PeptideInterface::getTimesFound)));
 
         return peptideCount;
     }

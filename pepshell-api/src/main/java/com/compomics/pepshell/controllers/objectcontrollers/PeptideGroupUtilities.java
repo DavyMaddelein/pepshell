@@ -190,7 +190,6 @@ public class PeptideGroupUtilities {
      */
     public static void mapPeptideGroupsToProtein(PepshellProtein pepshellProtein) throws StringIndexOutOfBoundsException {
         pepshellProtein.getPeptideGroups().stream().forEach((aPeptideGroup) -> {
-            try {
                 if (aPeptideGroup.getRepresentativePeptide().getBeginningProteinMatch() > -1 && aPeptideGroup.getRepresentativePeptide().getEndProteinMatch() > -1) {
                     //locations have probably already been added to the peptides
                 } else {
@@ -216,9 +215,7 @@ public class PeptideGroupUtilities {
                         morePeptideGroupLocations = pepshellProtein.getProteinSequence().indexOf(newGroup.getRepresentativePeptide().getSequence(), newGroup.getEndAlignmentPosition()) > -1;
                     }
                 }
-            } catch (StringIndexOutOfBoundsException e) {
-                //if this happens we have been given the wrong peptides for the pepshellProtein and we should let the user know
-            }
+
         });
     }
 
@@ -255,8 +252,7 @@ public class PeptideGroupUtilities {
     //it will also get slower the more groups of peptides there are, so prime target is speeding up if needed
     private static boolean isPartiallyPresent(ResultSet rs, Map<String, PeptideGroup> peptideGroupHolder) throws SQLException {
         boolean partiallyPresent = false;
-        for (Iterator<PeptideGroup> it = peptideGroupHolder.values().iterator(); it.hasNext();) {
-            PeptideGroup currentGroup = it.next();
+        for (PeptideGroup currentGroup : peptideGroupHolder.values()) {
             if (rs.getInt("start") >= currentGroup.getStartingAlignmentPosition() && rs.getInt("end") <= currentGroup.getEndAlignmentPosition()) {
                 if (rs.getInt("start") > currentGroup.getStartingAlignmentPosition() || rs.getInt("end") < currentGroup.getEndAlignmentPosition()) {
                     Peptide peptideToAdd = new QuantedPeptide(rs.getString("sequence"), rs.getDouble("total_spectrum_intensity"));
@@ -291,12 +287,12 @@ public class PeptideGroupUtilities {
 
     //TODO phase this out
     private static Double setRatioForPeptide(int anIdentificationId) throws SQLException {
-        return new MsLimsDbDAO().getRatioForPeptide(anIdentificationId, DbConnectionController.getExperimentDbConnection());
+        return new MsLimsDbDAO().getRatioForPeptide(anIdentificationId, DbConnectionController.getExistingConnection());
 
     }
 
     //TODO phase this out
     private static Double setErrorForPeptide(int anIdentificationId) throws SQLException {
-        return new MsLimsDbDAO().setErrorForPeptide(anIdentificationId,DbConnectionController.getExperimentDbConnection());
+        return new MsLimsDbDAO().setErrorForPeptide(anIdentificationId,DbConnectionController.getExistingConnection());
     }
 }

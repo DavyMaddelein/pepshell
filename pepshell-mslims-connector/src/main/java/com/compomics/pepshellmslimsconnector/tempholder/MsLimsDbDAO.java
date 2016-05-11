@@ -95,28 +95,32 @@ public class MsLimsDbDAO extends Observable implements DbDAOInterface {
         return fetchedProteins;
     }
 
+
+    // FIXME: 3/22/2016 rewrite this to get quant decently?
     @Override
     public List<? extends PeptideGroup> getPeptideGroupsForAccession(String proteinAccession, int projectid, Connection aConnection) throws SQLException {
         try (PreparedStatement stat = aConnection.prepareStatement(db.selectAllPeptidesGroupedForProteinAccession())) {
             stat.setInt(1, projectid);
             stat.setString(2, proteinAccession);
+            List<PeptideGroup> groups = new ArrayList<>();
             try (ResultSet rs = stat.executeQuery()) {
-                return createPeptideGroups(rs).stream().map(e -> {
-                    e.getPeptideList()
-                            .stream()
-                            .map(e2 -> new QuantedPeptide(e2.getSequence()))
-                            .forEach(e3 -> {
-                                try {
-                                    e3.setRatio(getRatioForPeptide(rs.getInt("identificationid"), aConnection));
-                                    e3.setStandardError(setErrorForPeptide(rs.getInt("identificationid"), aConnection));
-                                } catch (SQLException e1) {
-                                    e1.printStackTrace();
-                                }
-                            });
-                    return e;
-                }).collect(Collectors.toList());
-
+                for(PeptideGroup aPeptideGroupList : createPeptideGroups(rs)){
+                    PeptideGroup quantedGroup = null;
+                    for(PeptideInterface aPeptide : aPeptideGroupList.getPeptideList()){
+                        QuantedPeptide qpeptide = new QuantedPeptide(aPeptide.getSequence());
+                        if(quantedGroup == null){
+                            quantedGroup = new PeptideGroup(qpeptide);
+                        }
+                        qpeptide.setRatio(getRatioForPeptide(rs.getInt("identificationid"), aConnection));
+                        qpeptide.setStandardError(setErrorForPeptide(rs.getInt("identificationid"), aConnection));
+                    }
+                    if(groups != null){
+                        //this makes us lose all the non quanted peptides
+                    groups.add(quantedGroup);
+                    }
+                }
             }
+            return groups;
         }
     }
 

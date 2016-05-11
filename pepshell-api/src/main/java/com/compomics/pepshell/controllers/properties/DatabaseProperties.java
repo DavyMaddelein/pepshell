@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.properties;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.enums.DataBasePropertyEnum;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +32,7 @@ public final class DatabaseProperties extends AbstractProperties {
     private static final File propertyFile = new File(System.getProperty("user.home"), ".compomics/pepshell/dbpreferences");
 
     private DatabaseProperties(File aPropertyFile, EnumSet DataBasePropertyEnumSet) throws FileNotFoundException, IOException {
-        super(DatabaseProperties.propertyFile, DataBasePropertyEnumSet);
+        super(aPropertyFile, DataBasePropertyEnumSet);
     }
     
     private DatabaseProperties(EnumSet DataBasePropertyEnumSet){
@@ -45,7 +44,7 @@ public final class DatabaseProperties extends AbstractProperties {
             try {
                 databaseProperties = new DatabaseProperties(propertyFile, DataBasePropertyEnum.allEnumValues);
             } catch (IOException ex) {
-            FaultBarrier.getInstance().handleException(ex);
+            //FaultBarrier.getInstance().handleException(ex);
             databaseProperties = new DatabaseProperties(DataBasePropertyEnum.allEnumValues);
             }
         }

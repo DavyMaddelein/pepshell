@@ -16,17 +16,39 @@
 
 package com.compomics.pepshell.controllers.datamanagment.cachesandstores.caches;
 
+import java.util.List;
+
 /**
  * Created by Davy Maddelein on 10/04/2015.
  */
 public class HibernateCacheManager<T>  implements  CacheManagerInterface<T>{
     @Override
-    public T getFromCache() {
+    public T popFromCache() {
         return null;
     }
 
     @Override
-    public boolean addToCache(T objectToCache) {
+    public List<T> popBatchFromCache(int amountToGet) {
+        return null;
+    }
+
+    @Override
+    public T getFromCache(T cachedReference) {
+        return null;
+    }
+
+    @Override
+    public T getRandomFromCache() {
+        return null;
+    }
+
+    @Override
+    public T getLastFromCache() {
+        return null;
+    }
+
+    @Override
+    public boolean pushToCache(T objectToCache) {
         return false;
     }
 }

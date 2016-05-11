@@ -28,8 +28,6 @@ public class FileValidatorFactory {
 
     private static final FileValidatorFactory instance = new FileValidatorFactory();
 
-    HDXFileValidator hdxFileValidator = new HDXFileValidator();
-
     public static FileValidatorFactory getInstance() {
         return instance;
     }
@@ -38,7 +36,7 @@ public class FileValidatorFactory {
     }
 
     public <T extends File> boolean validate(T fileToValidate) throws CannotValidateException {
-        boolean validated = false;
+        boolean validated;
         if (fileToValidate == null || !fileToValidate.exists()) {
             throw new CannotValidateException("no file was given or the file could not be found");
         }

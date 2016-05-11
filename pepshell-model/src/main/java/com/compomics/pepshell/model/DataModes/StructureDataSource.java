@@ -37,7 +37,7 @@ public interface StructureDataSource<T extends ProteinInterface> {
      *
      * @return
      */
-    public StructureDataSource getInstance();
+    StructureDataSource getInstance();
 
     /**
      *
@@ -45,21 +45,21 @@ public interface StructureDataSource<T extends ProteinInterface> {
      * @return
      * @throws com.compomics.pepshell.model.exceptions.DataRetrievalException
      */
-    public List<FeatureWithLocation> getDomainData(T aProtein) throws DataRetrievalException;
+     List<FeatureWithLocation> getDomainData(T aProtein) throws DataRetrievalException;
 
     /**
      *
      * @param pdbAccession
      * @return
      */
-    public String getPDBDataForPDBName(String pdbAccession);
+    String getPDBDataForPDBName(String pdbAccession);
 
     /**
      *
      * @param aProtein
      * @return
      */
-    public List<InteractionPartner> getInteractionPartners(T aProtein);
+    List<InteractionPartner> getInteractionPartners(T aProtein);
 
     /**
      *
@@ -68,10 +68,10 @@ public interface StructureDataSource<T extends ProteinInterface> {
      * @param stop
      * @return
      */
-    public List<InteractionPartner> getInteractionPartnersForRange(T aProtein, int start, int stop);
+    List<InteractionPartner> getInteractionPartnersForRange(T aProtein, int start, int stop);
 
     //TODO think of a cleaner way to handle below
-    public boolean isAbleToGetFreeEnergy();
+    boolean isAbleToGetFreeEnergy();
 
     /**
      * Get the free energy for a given PDB structure. Returns a map (key: fasta
@@ -81,7 +81,7 @@ public interface StructureDataSource<T extends ProteinInterface> {
      * @param pdbAccession the PDB accession
      * @return the rel. solvent acc. map
      */
-    public Map<Integer, Double> getFreeEnergyForStructure(T protein, PdbInfo pdbAccession);
+    Map<Integer, Double> getFreeEnergyForStructure(T protein, PdbInfo pdbAccession);
 
     /**
      * Get the relative solvent accessibility for a given PDB structure. Returns
@@ -91,13 +91,13 @@ public interface StructureDataSource<T extends ProteinInterface> {
      * @param psbAccession the PDB accession
      * @return the rel. solvent acc. map
      */
-    public Map<Integer, Double> getRelativeSolventAccessibilityForStructure(T protein, String psbAccession);
+    Map<Integer, Double> getRelativeSolventAccessibilityForStructure(T protein, String psbAccession);
 
     /**
      *
      * @return 
      */
-    public boolean isAbleToGetSolventAccessibility();
+    boolean isAbleToGetSolventAccessibility();
 
     /**
      *
@@ -105,18 +105,18 @@ public interface StructureDataSource<T extends ProteinInterface> {
      * @param pdbAccession
      * @return
      */
-    public Map<Integer, String> getSecondaryStructureForStructure(T protein, String pdbAccession);
+    Map<Integer, String> getSecondaryStructureForStructure(T protein, String pdbAccession);
 
     /**
      *
      */
-    public List<InteractionPartner> getInteractionPartnersForPDBName(String string);
+    List<InteractionPartner> getInteractionPartnersForPDBName(String string);
 
     /**
      *
      * @return
      */
-    public boolean isAbleTogetSecondaryStructure();
+    boolean isAbleTogetSecondaryStructure();
 
-    public Set<PdbInfo> getPdbInforForProtein(T protein);
+    Set<PdbInfo> getPdbInforForProtein(T protein) throws DataRetrievalException;
 }

@@ -16,8 +16,9 @@
 
 package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
-import com.compomics.pepshell.ProgramVariables;
+import com.compomics.pepshell.controllers.datasources.structuredatasources.InternetStructureDataSource;
 import com.compomics.pepshell.model.DataModes.DataRetrievalStep;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
 import java.util.Collections;
@@ -75,7 +76,12 @@ public class AddPdbInfo extends DataRetrievalStep {
          */
         @Override
         public void accept(PepshellProtein protein) {
-            protein.addPdbFileInfo(ProgramVariables.STRUCTUREDATASOURCE.getPdbInforForProtein(protein));
+        //todo fix this
+            try {
+               protein.addPdbFileInfo(new InternetStructureDataSource<>().getPdbInforForProtein(protein));
+            } catch(DataRetrievalException e){
+
+            }
         }
     }
 

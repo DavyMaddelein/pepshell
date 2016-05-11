@@ -21,6 +21,9 @@ import com.compomics.pepshell.controllers.DAO.DAUtils.WebUtils;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 import com.compomics.pepshell.model.exceptions.ConversionException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,14 +38,14 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 
 /**
- *
  * @author Davy Maddelein
  */
 public class PDBDAO {
 
-    PDBDAO(){}
-    
-    private static volatile PDBDAO instance;
+    PDBDAO() {
+    }
+
+    private static PDBDAO instance;
 
     public static PDBDAO getInstance() {
         if (instance == null) {
@@ -51,14 +54,20 @@ public class PDBDAO {
         return instance;
     }
 
-    public Set<PdbInfo> getPDBInfoForProtein(PepshellProtein pepshellProtein) throws MalformedURLException, IOException, ConversionException {
-        String pdbLine;
+    public Set<PdbInfo> getPDBInfoForProtein(PepshellProtein pepshellProtein) throws IOException {
         Set<PdbInfo> pdbInfoToReturn = new HashSet<>();
-        BufferedReader br = WebUtils.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(pepshellProtein.getVisibleAccession()));
-        while ((pdbLine = br.readLine()) != null) {
-            if (pdbLine.contains("Uniprot to PDB mapping")) {
-                pdbInfoToReturn = startUniprotPDBParsing(br);
+        try (BufferedReader br = WebUtils.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(pepshellProtein.getVisibleAccession()))){
+            String pdbLine = br.readLine();
+            while (pdbLine != null) {
+                if (pdbLine.contains("Uniprot to PDB mapping")) {
+                    pdbInfoToReturn = startUniprotPDBParsing(br);
+                }
+                pdbLine = br.readLine();
             }
+        } catch (ConversionException e) {
+            IOException ioe = new IOException("could not retrieve pdb info for "+pepshellProtein.getVisibleAccession());
+            ioe.addSuppressed(e);
+            throw ioe;
         }
         return pdbInfoToReturn;
     }
@@ -67,8 +76,9 @@ public class PDBDAO {
         File pdbFile = File.createTempFile(aPdbAccession, ".pdb");
         pdbFile.deleteOnExit();
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdbFile), "UTF-8"))) {
-            bw.write(WebUtils.getPage("www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase(Locale.UK) + ".ent"));
+            bw.write(WebUtils.getPage("http://www.ebi.ac.uk/pdbe-srv/view/files/" + aPdbAccession.toLowerCase(Locale.UK) + ".ent"));
         }
+        pdbFile.deleteOnExit();
         return pdbFile;
     }
 
@@ -83,7 +93,7 @@ public class PDBDAO {
 
     private static Set<PdbInfo> startUniprotPDBParsing(BufferedReader br) throws IOException {
         Set<PdbInfo> pdbFilesToReturn = new HashSet<>();
-        String pdbLine = "#";
+        String pdbLine;
         while ((pdbLine = br.readLine()) != null) {
             if (!pdbLine.startsWith("#")) {
                 String[] pdbSplitLine = pdbLine.split("\t");

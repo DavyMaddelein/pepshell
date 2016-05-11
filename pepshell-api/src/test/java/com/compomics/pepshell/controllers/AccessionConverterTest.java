@@ -80,8 +80,9 @@ public class AccessionConverterTest {
     @Test
     public void testSpToRefSeq() throws Exception {
         System.out.println("spToRefSeq");
-        String aSpAccession = "";
-        List<String> expResult = null;
+        String aSpAccession = "Q9UDR5";
+        List<String> expResult = new ArrayList<>();
+        expResult.add("NM_005763");
         List<String> result = AccessionConverter.spToRefSeq(aSpAccession);
         assertEquals(expResult, result);
     }

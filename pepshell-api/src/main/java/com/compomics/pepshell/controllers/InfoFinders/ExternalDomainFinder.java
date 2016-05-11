@@ -15,8 +15,6 @@
  */
 package com.compomics.pepshell.controllers.InfoFinders;
 
-import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.ProgramVariables;
 import com.compomics.pepshell.controllers.DAO.UniprotDAO;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.protein.proteininfo.FeatureWithLocation;
@@ -55,7 +53,6 @@ public class ExternalDomainFinder {
         List<FeatureWithLocation> foundDomains = new ArrayList<>();
         int failedSources = 0;
 
-        if (ProgramVariables.USEINTERNETSOURCES) {
             for (DomainWebsitesEnum aDomainWebSite : DomainWebsitesEnum.values()) {
                 try {
                     foundDomains.addAll(getDomainsForUniprotAccessionFromSingleSource(aUniProtAccession, aDomainWebSite));
@@ -63,12 +60,11 @@ public class ExternalDomainFinder {
                     failedSources++;
                 }
             }
-        }
         if (failedSources > 0) {
             if (failedSources < DomainWebsitesEnum.values().length) {
-                FaultBarrier.getInstance().handlePartialFailure(new IOException("could not retrieve domain data from all possible sources"));
+                //FaultBarrier.getInstance().handlePartialFailure(new IOException("could not retrieve domain data from all possible sources"));
             } else if (failedSources == DomainWebsitesEnum.values().length) {
-                FaultBarrier.getInstance().handleException(new IOException("could not retrieve domain data from online services"));
+                //FaultBarrier.getInstance().handleException(new IOException("could not retrieve domain data from online services"));
             }
         }
         return foundDomains;

@@ -31,7 +31,7 @@ public enum DataBasePropertyEnum implements PropertyEnum {
     private final String keyName;
     private final String defaultValue;
 
-    private DataBasePropertyEnum(String keyName, String defaultValue) {
+    DataBasePropertyEnum(String keyName, String defaultValue) {
         this.keyName = keyName;
         this.defaultValue = defaultValue;
     }

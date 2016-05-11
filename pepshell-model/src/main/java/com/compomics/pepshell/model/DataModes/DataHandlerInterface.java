@@ -17,13 +17,16 @@
 package com.compomics.pepshell.model.DataModes;
 
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
+
+import java.io.IOException;
 
 /**
  * Created by Davy Maddelein on 04/12/2014.
  */
 public interface DataHandlerInterface<T> {
 
-    public boolean canHandle(T objectToHandle);
+    boolean canHandle(T objectToHandle) throws IOException;
 
-    public Experiment addData(Experiment anExperiment);
+    Experiment addData(Experiment anExperiment) throws DataRetrievalException;
 }

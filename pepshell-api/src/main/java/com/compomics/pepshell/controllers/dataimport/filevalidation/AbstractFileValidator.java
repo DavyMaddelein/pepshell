@@ -99,7 +99,7 @@ public class AbstractFileValidator implements FileValidatorInterface {
             String line;
             if (annotatedFile.getAnnotations().fileHasHeaders()) {
                 //we don't need headers
-                line = lineReader.readLine();
+                lineReader.readLine();
             }
             try {
                 line = lineReader.readLine();
@@ -107,7 +107,7 @@ public class AbstractFileValidator implements FileValidatorInterface {
                     throw new CannotValidateException("it appears that the file is empty");
                 }
             } catch (EOFException eof) {
-                throw new CannotValidateException("reached end of file when expecting data");
+                throw new CannotValidateException("reached end of file when expecting data, line was: "+lineReader.getLineNumber());
             }
             String[] splitValues = line.split(annotatedFile.getAnnotations().getValueSeparator());
             int allExperimentalColumns = splitValues.length - annotatedFile.getAnnotations().getFirstExperimentColumn() - annotatedFile.getAnnotations().getLastExperimentColumn();
@@ -174,7 +174,6 @@ public class AbstractFileValidator implements FileValidatorInterface {
         }
         if (validated && experimentColumns[metaData.getPeptideSequenceColumn() - 1].length() == 0) {
             validated = false;
-        } else {
         }
         if (validated && metaData.experimentHasIntensityValues()) {
 

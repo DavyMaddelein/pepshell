@@ -21,7 +21,6 @@
  */
 package com.compomics.pepshell.controllers.DAO.parsers;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
@@ -64,7 +63,7 @@ class HDXechangeParser {
                 //a block of results
                 if (!iter.hasNext()) {
                     //trouuuuuble
-                    FaultBarrier.getInstance().handleException(new IOException());
+                    throw new IOException();
                 }
                 Experiment currentExperiment = iter.next();
                 // experiment should contain the only protein that is run on hd exchange in the file

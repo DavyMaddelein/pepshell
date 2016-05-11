@@ -48,16 +48,14 @@ public class AccessionMasking extends DataRetrievalStep {
 
     @Override
     public List<PepshellProtein> call() throws Exception {
-        int counter = 0;
-        for (PepshellProtein maskingPepshellProtein : maskingSet) {
-            if (pepshellProteinList.contains(maskingPepshellProtein)) {
-                PepshellProtein matchedPepshellProtein = pepshellProteinList.get(pepshellProteinList.indexOf(maskingPepshellProtein));
-                matchedPepshellProtein.setVisibleAccession(maskingPepshellProtein.getVisibleAccession());
-                counter++;
-                this.setChanged();
-                this.notifyObservers(new UpdateMessage(true, "masked accession of " + matchedPepshellProtein.getOriginalAccession() + " with " + matchedPepshellProtein.getVisibleAccession(), false));
-            }
-        }
+        maskingSet.stream()
+                .filter(maskingPepshellProtein -> pepshellProteinList.contains(maskingPepshellProtein))
+                .forEach(maskingPepshellProtein -> {
+            PepshellProtein matchedPepshellProtein = pepshellProteinList.get(pepshellProteinList.indexOf(maskingPepshellProtein));
+            matchedPepshellProtein.setVisibleAccession(maskingPepshellProtein.getVisibleAccession());
+            this.setChanged();
+            this.notifyObservers(new UpdateMessage(true, "masked accession of " + matchedPepshellProtein.getOriginalAccession() + " with " + matchedPepshellProtein.getVisibleAccession(), false));
+        });
         return Collections.unmodifiableList(pepshellProteinList);
     }
 

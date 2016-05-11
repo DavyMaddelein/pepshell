@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.ViewPreparation;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionConverting;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddDomains;
 import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AddPdbInfo;
@@ -24,7 +23,7 @@ import com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.CPD
 import com.compomics.pepshell.model.DataModes.DataRetrievalInterface;
 import com.compomics.pepshell.model.DataModes.DataRetrievalStep;
 import com.compomics.pepshell.model.Experiment;
-import com.compomics.pepshell.model.UpdateMessage;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 
 import java.awt.Color;
@@ -71,7 +70,7 @@ public interface AbstractDataRetrieval<T extends Experiment> extends Observer, D
      * @param referenceExperiment the experiment to add data to
      * @return the experiment that was passed along
      */
-    default T retrieveData(T referenceExperiment) {
+    default T retrieveData(T referenceExperiment) throws DataRetrievalException {
         progressMonitorPanel.setBackground(Color.white);
         progressMonitorPanel.setOpaque(true);
         skipButton.setText("skip current retrieval step");
@@ -84,20 +83,17 @@ public interface AbstractDataRetrieval<T extends Experiment> extends Observer, D
      * @param referenceExperiment the experiment to add the information to
      * @return the experiment passed to the method
      */
-    T retrievePrimaryData(T referenceExperiment);
+    T retrievePrimaryData(T referenceExperiment) throws DataRetrievalException;
 
     /**
      * retrieve any secondary data steps set for retrieval
      *
      * @param experiment the experiment to retrieve the secondary data for
      */
-    default void retrieveSecondaryData(T experiment) {
-        try {
+    default void retrieveSecondaryData(T experiment) throws DataRetrievalException{
             new runRetrievalSteps(experiment, getDataRetrievalSteps(), this).execute();
-        } catch (Exception ex) {
-            FaultBarrier.getInstance().handleException(ex);
         }
-    }
+
 
     @Override
     default void setDataRetrievalSteps(LinkedList<DataRetrievalStep> retrievalStepsToSet) {

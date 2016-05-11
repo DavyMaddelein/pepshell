@@ -23,7 +23,9 @@ package com.compomics.pepshell.controllers.dataimport.databasehandlers;
 
 import com.compomics.pepshell.model.DataModes.DataHandlerInterface;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ public class DatabaseDataImportHandler<T extends Connection> implements DataHand
     }
 
     @Override
-    public boolean canHandle(final T objectToHandle) {
+    public boolean canHandle(final T objectToHandle) throws IOException {
         boolean iCanHandleIt = false;
         try {
             if (objectToHandle != null && objectToHandle.isValid(100)) {
@@ -62,8 +64,12 @@ public class DatabaseDataImportHandler<T extends Connection> implements DataHand
                         primaryHandler = iter.previousIndex() + 1;
                         ((Runnable) () -> {
                             while (iter.hasNext()) {
-                                if (iter.next().canHandle(objectToHandle)) {
-                                    secondaryHandlers.add(iter.previousIndex() + 1);
+                                try {
+                                    if (iter.next().canHandle(objectToHandle)) {
+                                        secondaryHandlers.add(iter.previousIndex() + 1);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }).run();
@@ -72,13 +78,15 @@ public class DatabaseDataImportHandler<T extends Connection> implements DataHand
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            IOException ex = new IOException("there was a problem with the database");
+            ex.addSuppressed(e);
+            throw ex;
         }
         return iCanHandleIt;
     }
 
     @Override
-    public Experiment addData(Experiment anExperiment) {
+    public Experiment addData(Experiment anExperiment) throws DataRetrievalException {
         if (primaryHandler > 0 && primaryHandler < concreteDatabaseHandlers.size()) {
             concreteDatabaseHandlers.get(primaryHandler).addData(anExperiment);
         }

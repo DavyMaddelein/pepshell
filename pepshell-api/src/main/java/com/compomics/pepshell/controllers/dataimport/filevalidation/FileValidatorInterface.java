@@ -32,7 +32,7 @@ public interface  FileValidatorInterface {
      * @return a boolean, true if validated, false otherwise
      * @throws com.compomics.pepshell.model.exceptions.CannotValidateException if the validation cannot be executed for any reason
      */
-    public boolean validateFile(File aFile) throws CannotValidateException;
+    boolean validateFile(File aFile) throws CannotValidateException;
 
     /**
      * checks if a file is a valid input given the extra annotations on how to parse the file
@@ -41,10 +41,10 @@ public interface  FileValidatorInterface {
      * @throws com.compomics.pepshell.model.exceptions.CannotValidateException if the validation cannot be executed for any reason
      */
 
-    public boolean validateFile(AnnotatedFile annotatedFile) throws CannotValidateException;
+    boolean validateFile(AnnotatedFile annotatedFile) throws CannotValidateException;
 
-    public boolean canValidateFile(File aFile);
+    boolean canValidateFile(File aFile);
 
-    public boolean canValidateFile(AnnotatedFile annotatedFile);
+    boolean canValidateFile(AnnotatedFile annotatedFile);
 
 }

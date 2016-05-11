@@ -20,6 +20,7 @@ import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProte
 import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
@@ -78,11 +79,8 @@ public class PDBDAOTest {
         System.out.println("getPDBInfoForProtein");
         PepshellProtein pepshellProtein = new PepshellProtein("P04637");
         PDBDAO instance = PDBDAO.getInstance();
-        Set<PdbInfo> expResult = null;
         Set<PdbInfo> result = instance.getPDBInfoForProtein(pepshellProtein);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertThat(143, is(equalTo((result.size()))));
     }
 
     @Test
@@ -100,7 +98,7 @@ public class PDBDAOTest {
     @Test
     public void testGetPdbFile() throws Exception {
         System.out.println("getPdbFile");
-        String aPdbAccession = "P04637";
+        String aPdbAccession = "5aba";
         File expResult = null;
         File result = PDBDAO.getPdbFile(aPdbAccession);
         assertEquals(expResult, result);
@@ -114,7 +112,7 @@ public class PDBDAOTest {
     @Test
     public void testGetPdbFileInMem() throws Exception {
         System.out.println("getPdbFileInMem");
-        String aPdbAccession = "";
+        String aPdbAccession = "5aba";
         String expResult = "";
         String result = PDBDAO.getPdbFileInMem(aPdbAccession);
         assertEquals(expResult, result);

@@ -28,7 +28,7 @@ public enum ExportPropertyEnum implements PropertyEnum {
     private String key;
     private String defaultValue;
 
-    private ExportPropertyEnum(String key, String defaultValue) {
+    ExportPropertyEnum(String key, String defaultValue) {
         this.key = key;
         this.defaultValue = defaultValue;
     }

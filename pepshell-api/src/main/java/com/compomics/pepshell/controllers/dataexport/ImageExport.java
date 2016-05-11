@@ -26,7 +26,7 @@ import java.io.File;
  */
 abstract class ImageExport {
 
-    private File exportFolder;
+    File exportFolder;
 
     public void setExportFolder(File aFolder) {
         this.exportFolder = aFolder;

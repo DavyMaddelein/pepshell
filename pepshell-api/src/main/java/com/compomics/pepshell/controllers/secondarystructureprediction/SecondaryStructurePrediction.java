@@ -16,9 +16,6 @@
 
 package com.compomics.pepshell.controllers.secondarystructureprediction;
 
-import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.model.UpdateMessage;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,7 +45,7 @@ abstract class SecondaryStructurePrediction {
         try {
             secStructProps.load(new FileInputStream(new File(ClassLoader.getSystemClassLoader().getResource("secondary_structures.properties").getPath())));
         } catch (NullPointerException | IOException e) {
-            FaultBarrier.getInstance().handleException(e, new UpdateMessage(false, "could not load definitions for secondary structures", true));
+            //FaultBarrier.getInstance().handleException(e, new UpdateMessage(false, "could not load definitions for secondary structures", true));
         }
         if (secStructProps.isEmpty()) {
             for (Map.Entry<String, String> anEntry : secStructMap.entrySet()) {

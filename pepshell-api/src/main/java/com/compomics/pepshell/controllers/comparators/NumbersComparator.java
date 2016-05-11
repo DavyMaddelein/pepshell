@@ -37,6 +37,13 @@ public class NumbersComparator implements Comparator<Number> {
 
     }
 
+    /**
+     * compares two {@link Number}s
+     * @param firstNumber first number to compare
+     * @param secondNumber second number to compare
+     * @Throws UnsupportedOperationException when the passed numbers are not of the type integer,double,float,short or byte
+     * @return positive if firstNumber is greater than secondNumber, 0 if both are equal, negative if secondNumber is greater than firstNumber
+     */
     public int compare(Number firstNumber, Number secondNumber) {
 
         Double d1 = (firstNumber == null) ? Double.POSITIVE_INFINITY : firstNumber

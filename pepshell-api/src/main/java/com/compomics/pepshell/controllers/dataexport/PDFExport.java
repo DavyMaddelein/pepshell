@@ -16,8 +16,6 @@
 
 package com.compomics.pepshell.controllers.dataexport;
 
-import com.compomics.pepshell.FaultBarrier;
-import com.compomics.pepshell.ProgramVariables;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
@@ -36,31 +34,23 @@ import javax.imageio.ImageIO;
  */
 public class PDFExport extends ImageExport {
 
-    private boolean append = false;
-
     @Override
     public void exportImage(BufferedImage imageToExport, String filename) {
-        File exportFile = new File(ProgramVariables.EXPORTFOLDER, filename + ".pdf");
-        if (append && exportFile.exists()) {
+        File exportFile = new File(exportFolder, filename + ".pdf");
 
-        } else {
             File exportImageFile = new File(System.getProperty("file.temp"), filename);
             try {
                 ImageIO.write(imageToExport, "png", new FileOutputStream(exportImageFile));
                 Image pdfImage = Image.getInstance(exportImageFile.getAbsolutePath());
                 Document document = new Document(new Rectangle(pdfImage.absoluteX(), pdfImage.absoluteY()));
-                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(exportFile));
+                PdfWriter.getInstance(document, new FileOutputStream(exportFile));
                 document.open();
                 document.newPage();
                 document.add(pdfImage);
                 document.close();
-            } catch (    DocumentException | IOException ex) {
-             FaultBarrier.getInstance().handleException(ex);}
-        }
-    }
-
-    public void setAppendMode(boolean toAppend) {
-        append = toAppend;
+            } catch (DocumentException | IOException ex) {
+             //FaultBarrier.getInstance().handleException(ex);
+            }
     }
 
     @Override

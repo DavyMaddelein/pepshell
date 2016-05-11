@@ -1,9 +1,9 @@
-/target/
-/pepshell-program/src/test/java/
-/pepshell-program/target/
-/pepshell-wrapper/target/
-/pepshell-api/target/
-/pepshell-model/target/
+target/**
+pepshell-program/src/test/java/
+pepshell-program/target/**
+pepshell-wrapper/target/**
+pepshell-api/target/**
+pepshell-model/target/**
 .*iml
 /.idea/workspace.xml
 nbactions.xml
@@ -12,6 +12,8 @@ pepshell.iml
 pepshell-api/nb-configuration.xml
 *.iml
 *.jar
-pepshell-mslims-connector/target/
-pepshell-colims-connector/target/classes/com/compomics/pepshellcolimsconnector/ColimsExperimentDatabase.class
-pepshell-colims-connector/target/maven-archiver/pom.properties
+pepshell-mslims-connector/target/**
+pepshell-api/src/main/resources/CPDT.exe
+pepshell-api/src/main/resources/pepshelltestdbs.zip
+pepshell-api/src/main/resources/vcredist_x86.exe
+pepshell-startup-wrapper/target/**

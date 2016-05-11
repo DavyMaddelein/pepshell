@@ -16,8 +16,8 @@
 
 package com.compomics.pepshell.model.DataModes;
 
-import com.compomics.pepshell.model.AnalysisGroup;
 import com.compomics.pepshell.model.Experiment;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 
 import javax.swing.*;
@@ -49,7 +49,7 @@ public interface DataRetrievalInterface<T extends Experiment> {
      * @param referenceExperiment the experiment to add data to
      * @return the experiment that was passed along
      */
-    default T retrieveData(T referenceExperiment) {
+    default T retrieveData(T referenceExperiment) throws DataRetrievalException {
         progressMonitorPanel.setBackground(Color.white);
         progressMonitorPanel.setOpaque(true);
         skipButton.setText("skip current retrieval step");
@@ -62,18 +62,18 @@ public interface DataRetrievalInterface<T extends Experiment> {
      * @param referenceExperiment the experiment to add the information to
      * @return the experiment passed to the method
      */
-    T retrievePrimaryData(T referenceExperiment);
+    T retrievePrimaryData(T referenceExperiment) throws DataRetrievalException;
 
     /**
      * retrieve any secondary data steps set for retrieval
      *
      * @param experiment the experiment to retrieve the secondary data for
      */
-    default void retrieveSecondaryData(T experiment) {
+    default void retrieveSecondaryData(T experiment) throws DataRetrievalException {
         new runRetrievalSteps(experiment,getDataRetrievalSteps());
     }
 
-    default void retrieveSecondaryData(T experiment,Observer observerToNotify){
+    default void retrieveSecondaryData(T experiment,Observer observerToNotify) throws DataRetrievalException {
         new runRetrievalSteps(experiment,getDataRetrievalSteps(),observerToNotify).execute();
     }
 

@@ -16,12 +16,22 @@
 
 package com.compomics.pepshell.controllers.datamanagment.cachesandstores.caches;
 
+import java.util.List;
+
 /**
  * Created by Davy Maddelein on 22/02/2015.
  */
 public interface CacheManagerInterface<T> {
 
-    T getFromCache();
+    T getFromCache(T cachedReference);
 
-    boolean addToCache(T objectToCache);
+    T getRandomFromCache();
+
+    T getLastFromCache();
+
+    boolean pushToCache(T objectToCache);
+
+    T popFromCache();
+
+    List<T> popBatchFromCache(int amountToGet);
 }

@@ -16,15 +16,15 @@
 package com.compomics.pepshell.controllers.ViewPreparation;
 
 import com.compomics.pepshell.DataModeController;
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.FastaDAO;
 import com.compomics.pepshell.controllers.objectcontrollers.PeptideGroupUtilities;
 import com.compomics.pepshell.model.DataModes.DataRetrievalStep;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.UpdateMessage;
-import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -55,7 +55,7 @@ public class DataRetrievalForFasta<T extends Experiment> extends Observable impl
     }
 
     @Override
-    public T retrieveData(T referenceExperiment) {
+    public T retrieveData(T referenceExperiment) throws DataRetrievalException {
         return AbstractDataRetrieval.super.retrieveData(referenceExperiment);
     }
 
@@ -63,7 +63,7 @@ public class DataRetrievalForFasta<T extends Experiment> extends Observable impl
      * {@inheritDoc}
      */
     @Override
-    public T retrievePrimaryData(T experiment) {
+    public T retrievePrimaryData(T experiment) throws DataRetrievalException {
         try {
             DataModeController.fetchDataToVisualize(experiment);
             if (!addFastaAfterParsing) {
@@ -73,22 +73,22 @@ public class DataRetrievalForFasta<T extends Experiment> extends Observable impl
             experiment.getProteins().forEach(PeptideGroupUtilities::mapPeptideGroupsToProtein);
             setIntensityValuesForExperiment(experiment);
             retrieveSecondaryData(experiment);
-        } catch (FastaCouldNotBeReadException ex) {
-            FaultBarrier.getInstance().handleException(ex, false);
-        } catch (Exception ex) {
-            FaultBarrier.getInstance().handleException(ex);
+        } catch (DataRetrievalException | IOException e) {
+            DataRetrievalException ex = new DataRetrievalException("could not retrieve data");
+            ex.addSuppressed(e);
+            throw ex;
         }
         return experiment;
     }
 
     @Override
-    public void retrieveSecondaryData(T experiment) {
+    public void retrieveSecondaryData(T experiment) throws DataRetrievalException {
         AbstractDataRetrieval.super.retrieveSecondaryData(experiment);
 
     }
 
     @Override
-    public void retrieveSecondaryData(T experiment, Observer observerToNotify) {
+    public void retrieveSecondaryData(T experiment, Observer observerToNotify) throws DataRetrievalException {
         this.addObserver(observerToNotify);
         this.retrieveSecondaryData(experiment);
     }

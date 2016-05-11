@@ -57,7 +57,10 @@ public class AbstractProteinStoreStrategy<T, U extends ProteinInterface> impleme
      */
     @Override
     public U retrieve(T accession) throws NoSuchElementException {
-        return backingStructure.stream().filter(e -> e.getVisibleAccession().equals(accession)).findFirst().get();
+        return backingStructure.stream()
+                .filter(e -> e.getVisibleAccession().equals(accession))
+                .findFirst()
+                .get();
     }
 
     /**
@@ -73,7 +76,9 @@ public class AbstractProteinStoreStrategy<T, U extends ProteinInterface> impleme
      */
     @Override
     public Collection<? extends U> retrieveSubSet(Collection<? extends T> accessions) {
-        return backingStructure.stream().filter(e -> accessions.contains(e.getVisibleAccession())).collect(Collectors.toList());
+        return backingStructure.stream()
+                .filter(accessions::contains)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -81,7 +86,10 @@ public class AbstractProteinStoreStrategy<T, U extends ProteinInterface> impleme
      */
     @Override
     public boolean purge(T accessionToPurgeFromStore) {
-        return backingStructure.remove(backingStructure.stream().filter(e -> e.getVisibleAccession().equals(accessionToPurgeFromStore)).findFirst().get());
+        return backingStructure.remove(backingStructure.stream()
+                .filter(e -> e.getVisibleAccession().equals(accessionToPurgeFromStore))
+                .findFirst()
+                .get());
     }
 
     /**
@@ -89,7 +97,7 @@ public class AbstractProteinStoreStrategy<T, U extends ProteinInterface> impleme
      */
     @Override
     public boolean purgeSubset(Collection<? extends T> accessionsToPurgeFromStore) {
-        return backingStructure.removeAll(backingStructure.stream().filter(e -> accessionsToPurgeFromStore.contains(e.getVisibleAccession())).collect(Collectors.toList()));
+        return backingStructure.removeAll(backingStructure.stream().filter(accessionsToPurgeFromStore::contains).collect(Collectors.toList()));
     }
 
     /**

@@ -28,10 +28,11 @@ public enum ProgramPropertyEnum implements PropertyEnum {
     ACCESSION_CONVERTING("pepshell.dataretrievalstep.accession_converting", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.AccessionConverting"),
     PROTEIN_FILTERING("pepshell.dataretrievalstep.protein_filtering", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.ProteinFiltering"),
     CPDT_ANALYSIS("pepshell.dataretrievalstep.CPDTAnalysis", "com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps.CPDTAnalysis");
+
     private final String keyName;
     private final String defaultValue;
 
-    private ProgramPropertyEnum(String keyName, String defaultValue) {
+    ProgramPropertyEnum(String keyName, String defaultValue) {
         this.keyName = keyName;
         this.defaultValue = defaultValue;
     }

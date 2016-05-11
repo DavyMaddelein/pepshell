@@ -16,7 +16,6 @@
 
 package com.compomics.pepshell.controllers.ViewPreparation.dataretrievalsteps;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.DAO.DAUtils.FileUtils;
 import com.compomics.pepshell.model.DataModes.DataRetrievalStep;
 import com.compomics.pepshell.model.Peptide;
@@ -76,7 +75,7 @@ public class CPDTAnalysis extends DataRetrievalStep {
                 try {
                     FileUtils.recursivelyDeleteFilesFromDir(CPDTFolder.toPath());
                 } catch (IOException e) {
-                    FaultBarrier.getInstance().handleException(e);
+                    e.printStackTrace();
                 }
             }
         });

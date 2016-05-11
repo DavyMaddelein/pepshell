@@ -16,13 +16,13 @@
 
 package com.compomics.pepshell.controllers.ViewPreparation;
 
-import com.compomics.pepshell.FaultBarrier;
 import com.compomics.pepshell.controllers.dataimport.DbConnectionController;
 import com.compomics.pepshell.model.DataModes.DataRetrievalStep;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.QuantedExperiment;
 import com.compomics.pepshell.model.QuantedPeptide;
 import com.compomics.pepshell.model.databases.DbDAOInterface;
+import com.compomics.pepshell.model.exceptions.DataRetrievalException;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -41,24 +41,26 @@ public class PreparationForDbData<T extends Experiment> implements AbstractDataR
     }
 
     @Override
-    public T retrieveData(T referenceExperiment) {
+    public T retrieveData(T referenceExperiment) throws DataRetrievalException {
         retrievePrimaryData(referenceExperiment);
         retrieveSecondaryData(referenceExperiment);
         return referenceExperiment;
     }
 
     @Override
-    public T retrievePrimaryData(T experiment) {
+    public T retrievePrimaryData(T experiment) throws DataRetrievalException {
         try {
-            if (dbDAO.projectHasQuant(experiment, DbConnectionController.getExperimentDbConnection())){
-                experiment = (T) dbDAO.fetchPeptidesAndProteins(new QuantedExperiment(experiment),DbConnectionController.getExperimentDbConnection());
+        if (dbDAO.projectHasQuant(experiment, DbConnectionController.getExistingConnection())){
+                experiment = (T) dbDAO.fetchPeptidesAndProteins(new QuantedExperiment(experiment),DbConnectionController.getExistingConnection());
             } else {
-                dbDAO.fetchPeptidesAndProteins(experiment,DbConnectionController.getExperimentDbConnection());
+                    dbDAO.fetchPeptidesAndProteins(experiment,DbConnectionController.getExistingConnection());
             }
-            setIntensityValuesForExperiment(experiment);
-        } catch (SQLException | IOException ex) {
-            FaultBarrier.getInstance().handleException(ex);
+        } catch (SQLException | IOException e) {
+            DataRetrievalException ex = new DataRetrievalException("could not retrieve data from database");
+            ex.addSuppressed(e);
+            throw ex;
         }
+        setIntensityValuesForExperiment(experiment);
         return experiment;
     }
 

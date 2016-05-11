@@ -30,9 +30,10 @@ public class ProteinUtilities {
      * translate three letter notation of a peptide in one letter notation
      *
      * @param peptideSequence the three letter sequence of a peptide
+     * @throws StringIndexOutOfBoundsException when the sequence does not contain a valid amount of characters
      * @return the one letter sequence of a peptide
      */
-    public static String fromThreeLetterToOneLetterAminoAcids(String peptideSequence) {
+    public static String fromThreeLetterToOneLetterAminoAcids(String peptideSequence) throws StringIndexOutOfBoundsException {
         StringBuilder translatedSequence = new StringBuilder();
         if (peptideSequence.length() % 3 != 0) {
             throw new StringIndexOutOfBoundsException("not a sequence consisting of three letter amino acid codes");

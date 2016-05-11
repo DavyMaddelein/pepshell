@@ -80,7 +80,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.compomics.pepshell.StartUp</mainClass>
+                            <mainClass>com.compomics.pepshellstandalone.StartUp</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>
@@ -223,8 +223,8 @@
         </dependency>
         <dependency>
             <groupId>org.biojava</groupId>
-            <artifactId>biojava</artifactId>
-            <version>1.5</version>
+            <artifactId>biojava-alignment</artifactId>
+            <version>4.2.0</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
@@ -237,23 +237,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.14</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.3</version>
         </dependency>
 
         <dependency>
-            <groupId>org.jdesktop</groupId>
-            <artifactId>beansbinding</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>nl.jqno.equalsverifier</groupId>
-            <artifactId>equalsverifier</artifactId>
-            <version>1.6</version>
-            <scope>test</scope>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.3</version>
         </dependency>
 
         <dependency>
@@ -266,6 +260,11 @@
             <groupId>com.compomics</groupId>
             <artifactId>pepshell-mslims-connector</artifactId>
             <version>0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
         </dependency>
 
     </dependencies>

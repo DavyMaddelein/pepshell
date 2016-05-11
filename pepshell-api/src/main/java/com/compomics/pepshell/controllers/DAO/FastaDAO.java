@@ -17,13 +17,13 @@
 package com.compomics.pepshell.controllers.DAO;
 
 import com.compomics.pepshell.controllers.DAO.Iterators.FastaIterator;
-import com.compomics.pepshell.controllers.properties.ViewProperties;
+import com.compomics.pepshell.controllers.properties.DataRetrievalProperties;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.Experiment;
 import com.compomics.pepshell.model.Peptide;
+import com.compomics.pepshell.model.enums.DataRetrievalPropertyEnum;
 import com.compomics.pepshell.model.protein.Proteases;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
-import com.compomics.pepshell.model.enums.ViewPropertyEnum;
 import com.compomics.pepshell.model.exceptions.AggregateFastaReadingException;
 import com.compomics.pepshell.model.exceptions.FastaCouldNotBeReadException;
 
@@ -50,7 +50,7 @@ public class FastaDAO {
      * @throws FileNotFoundException        if the fasta file could not be found
      * @throws IOException                  if there was a problem with the file reader
      */
-    public static void setExperimentProteinsToFastaFileProteins(File fastaFile, Experiment experimentToAddProteinsTo) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
+    public static void setExperimentProteinsToFastaFileProteins(File fastaFile, Experiment experimentToAddProteinsTo) throws IOException {
         FastaIterator<PepshellProtein> iterator = new FastaIterator<>(fastaFile);
         while (iterator.hasNext()){
             experimentToAddProteinsTo.addProtein(iterator.next());
@@ -67,7 +67,7 @@ public class FastaDAO {
      * @throws FileNotFoundException if the file was not found
      * @throws IOException if there was a problem parsing the fasta file
      */
-    public static <T extends PepshellProtein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<? extends T> listOfProteinsToMap) throws FastaCouldNotBeReadException, FileNotFoundException, IOException {
+    public static <T extends PepshellProtein> void mapFastaSequencesToProteinAccessions(File fastaFile, List<? extends T> listOfProteinsToMap) throws IOException {
         FastaIterator<T> iterator = new FastaIterator<>(fastaFile);
         while (iterator.hasNext()) {
             T aParsedProtein = iterator.next();
@@ -92,7 +92,7 @@ public class FastaDAO {
     //TODO perhaps make multithreaded?
     public static void setExperimentProteinsToMultipleFastaFileProteins(List<? extends File> fastaFiles, Experiment experimentToAddProteinsTo) throws AggregateFastaReadingException {
         AggregateFastaReadingException arex = new AggregateFastaReadingException("one or more fasta files could not be read");
-        fastaFiles.iterator().forEachRemaining((aFastaFile) ->{ 
+        fastaFiles.iterator().forEachRemaining((aFastaFile) ->{
             try {
                 new FastaIterator<>(aFastaFile).forEachRemaining(experimentToAddProteinsTo::addProtein);
             } catch (FastaCouldNotBeReadException ex) {
@@ -110,7 +110,7 @@ public class FastaDAO {
      * @param sequence the sequence to digest with the preferred enzyme
      */
     private static List<PeptideGroup> digestProteinSequence(String sequence) {
-        List<String> possiblePeptides = Proteases.getProteaseMap().get(ViewProperties.getInstance().getProperty(ViewPropertyEnum.PREFERREDENZYME.getKey())).digest(sequence);
-        return possiblePeptides.stream().map((aPeptideSequence) -> new PeptideGroup(new Peptide(aPeptideSequence))).collect(Collectors.toList());
+        List<String> possiblePeptides = Proteases.getProteaseMap().get(DataRetrievalProperties.getInstance().getProperty(DataRetrievalPropertyEnum.PREFERREDENZYME.getKey())).digest(sequence);
+        return possiblePeptides.stream().parallel().map((aPeptideSequence) -> new PeptideGroup(new Peptide(aPeptideSequence))).collect(Collectors.toList());
 }
 }
