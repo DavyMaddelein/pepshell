@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * handles the extraction of data from fasta based files
  * @author Davy Maddelein
  */
 public class FastaDAO {

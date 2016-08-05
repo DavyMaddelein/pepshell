@@ -29,7 +29,7 @@ public class AbstractCache<T> implements CacheManagerInterface<T> {
 
     private List<T> cache;
     private static final Random randomgen = new Random();
-    private static boolean cacheOnlyUnique = false;
+    private boolean cacheOnlyUnique = false;
     private int cacheSize = 1000;
 
     public AbstractCache(){
@@ -83,7 +83,7 @@ public class AbstractCache<T> implements CacheManagerInterface<T> {
     }
 
     public void setCacheOnlyUnique(boolean cacheOnlyUnique) {
-        AbstractCache.cacheOnlyUnique = cacheOnlyUnique;
+        this.cacheOnlyUnique = cacheOnlyUnique;
     }
 
     public void setCacheSize(int cacheSize){

@@ -49,7 +49,7 @@ public class AccessionMasking extends DataRetrievalStep {
     @Override
     public List<PepshellProtein> call() throws Exception {
         maskingSet.stream()
-                .filter(maskingPepshellProtein -> pepshellProteinList.contains(maskingPepshellProtein))
+                .filter(pepshellProteinList::contains)
                 .forEach(maskingPepshellProtein -> {
             PepshellProtein matchedPepshellProtein = pepshellProteinList.get(pepshellProteinList.indexOf(maskingPepshellProtein));
             matchedPepshellProtein.setVisibleAccession(maskingPepshellProtein.getVisibleAccession());

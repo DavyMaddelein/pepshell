@@ -518,9 +518,7 @@ public class ExperimentSelectionFrame extends javax.swing.JFrame {
             addFastaButton.setEnabled(true);
             onlyFoundProteinsCheckBox.setEnabled(true);
             fastaFile = new File(ProgramProperties.getInstance().getProperty(ViewPropertyEnum.PROTEINFASTALOCATION.getKey()));
-            if (fastaFile != null) {
                 fastaLocationTextField.setText(fastaFile.getName());
-            }
         } else {
             addFastaButton.setEnabled(false);
             onlyFoundProteinsCheckBox.setEnabled(false);

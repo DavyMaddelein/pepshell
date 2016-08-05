@@ -94,8 +94,7 @@ public class AbstractFileValidator implements FileValidatorInterface {
             throw new CannotValidateException("no value separator was added");
         }
 
-        try {
-            LineNumberReader lineReader = new LineNumberReader(new FileReader(annotatedFile));
+        try (LineNumberReader lineReader = new LineNumberReader(new FileReader(annotatedFile))){
             String line;
             if (annotatedFile.getAnnotations().fileHasHeaders()) {
                 //we don't need headers
@@ -152,7 +151,7 @@ public class AbstractFileValidator implements FileValidatorInterface {
 
     @Override
     public boolean canValidateFile(File aFile) {
-        return aFile instanceof AnnotatedFile && ((AnnotatedFile) aFile).getAnnotations() instanceof SeparatedValueExperimentMetadata;
+        return aFile instanceof AnnotatedFile && ((AnnotatedFile) aFile).getAnnotations() != null;
     }
 
     /**
@@ -223,12 +222,12 @@ public class AbstractFileValidator implements FileValidatorInterface {
             if (experimentColumns[metaData.getPeptideStartColumn() - 1].length() == 0) {
                 validated = false;
             } else {
-                new Integer(experimentColumns[metaData.getPeptideStartColumn() - 1]);
+                Integer.valueOf(experimentColumns[metaData.getPeptideStartColumn() - 1]);
             }
             if (experimentColumns[metaData.getPeptideEndColumn() - 1].length() == 0) {
                 validated = false;
             } else {
-                new Integer(experimentColumns[metaData.getPeptideEndColumn() - 1]);
+                Integer.valueOf(experimentColumns[metaData.getPeptideEndColumn() - 1]);
             }
         }
         return validated;

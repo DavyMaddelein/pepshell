@@ -50,7 +50,9 @@ public abstract class AbstractProperties implements Observer {
                 this.propertyEnum = aPropertyEnum;
                } else {
                 if (!aPropertyFile.getParentFile().exists()) {
-                    aPropertyFile.getParentFile().mkdirs();
+                    if(!aPropertyFile.getParentFile().mkdirs()){
+                        throw new IOException("path to property file could not be created");
+                    }
                 }
                 if (!aPropertyFile.createNewFile()) {
                     setPropertiesFromEnumSet(aPropertyEnum);
@@ -67,8 +69,8 @@ public abstract class AbstractProperties implements Observer {
                 @Override
                 public void run() {
                     if (aPropertyFile != null && aPropertyFile.exists()) {
-                        try {
-                            properties.store(new FileWriter(aPropertyFile), null);
+                        try(FileWriter propertywriter = new FileWriter(aPropertyFile)) {
+                            properties.store(propertywriter, null);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

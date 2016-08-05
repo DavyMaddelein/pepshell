@@ -23,13 +23,26 @@ import com.compomics.pepshell.model.exceptions.CouldNotParseException;
 
 
 /**
+ * common interface that all file parsers in PepShell should implement
  * Created by Davy Maddelein on 02/12/2014.
  */
 public interface FileParserInterface {
 
 
+    /**
+     * parses an experiment file
+     * @param aFile file to try and parse
+     * @return the {@link Experiment} representation of the file
+     * @throws CouldNotParseException if the file could not be parsed for whatever reason
+     */
     Experiment parseExperimentFile(FileBasedExperiment aFile) throws CouldNotParseException;
 
+    /**
+     *
+     * @param annotatedFile file with annotations about its buildup
+     * @return the {@link Experiment} representation of the file
+     * @throws CouldNotParseException if the file could not be parsed for whatever reason
+     */
     Experiment parseExperimentFile(AnnotatedFile annotatedFile) throws CouldNotParseException;
 
 }

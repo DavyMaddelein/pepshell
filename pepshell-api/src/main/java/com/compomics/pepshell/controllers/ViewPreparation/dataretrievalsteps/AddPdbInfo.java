@@ -67,7 +67,7 @@ public class AddPdbInfo extends DataRetrievalStep {
         }
     }
 
-    private class AddInfoToProtein implements Consumer<PepshellProtein> {
+    private static class AddInfoToProtein implements Consumer<PepshellProtein> {
 
         /**
          * Performs this operation on the given argument.

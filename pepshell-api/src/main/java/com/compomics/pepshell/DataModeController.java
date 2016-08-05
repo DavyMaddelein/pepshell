@@ -31,13 +31,22 @@ import java.sql.SQLException;
 /**
  * @author Davy Maddelein
  */
-public class DataModeController {
+public final class DataModeController {
+
+    private static DataModeController ourInstance = new DataModeController();
+
+    public static DataModeController getInstance() {
+        return ourInstance;
+    }
+
+    private DataModeController() {
+    }
 
     private static final DatabaseDataImportHandler<Connection> databaseHandlers = new DatabaseDataImportHandler<>();
 
     public static void fetchDataToVisualize(Experiment anExperiment) throws DataRetrievalException {
         try {
-            if (DbConnectionController.getExistingConnection() != null && databaseHandlers.canHandle(DbConnectionController.getExistingConnection())) {
+            if (!DbConnectionController.getExistingConnection().isClosed() && databaseHandlers.canHandle(DbConnectionController.getExistingConnection())) {
                 SQLStatements.instantiateLinkDbStatements();
                 databaseHandlers.addData(anExperiment);
             } else if (anExperiment instanceof FileBasedExperiment) {

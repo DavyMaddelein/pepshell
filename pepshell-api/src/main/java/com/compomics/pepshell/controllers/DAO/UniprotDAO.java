@@ -54,7 +54,7 @@ public class UniprotDAO {
     }
 
 
-    public static List<String> GetDbReferenceEntriesForAccession(String accession, String dbReferenceType) throws IOException, ParserConfigurationException, SAXException {
+    public static List<String> getDbReferenceEntriesForAccession(String accession, String dbReferenceType) throws IOException, ParserConfigurationException, SAXException {
         return getDbReferencesEntriesFromUniprotXML(loadUniprotXMLIntoDOM(WebUtils.openStream("http://www/uniprot/org/uniprot/" + accession + ".xml")), dbReferenceType);
     }
 

@@ -33,7 +33,7 @@ public class PepshellProtein implements ProteinInterface {
     private ProteinInfo proteinInfo = new ProteinInfo();
     protected String extraIdentifier;
     private String sequence = "";
-    private final List<FeatureWithLocation> domainsFoundInProtein = new ArrayList<>();
+    private final List<FeatureWithLocation> featuresPresentInProtein = new ArrayList<>();
     private final List<PeptideGroup> peptideGroupsForProtein = new ArrayList<>();
     private final Set<PdbInfo> allPDBFileInfoForProtein = new TreeSet<>(new ComparePdbInfoByResolution());
     private String proteinName;
@@ -65,11 +65,11 @@ public class PepshellProtein implements ProteinInterface {
     }
 
     public List<FeatureWithLocation> getDomains() {
-        return Collections.unmodifiableList(domainsFoundInProtein);
+        return Collections.unmodifiableList(featuresPresentInProtein);
     }
 
     public void addDomains(List<FeatureWithLocation> domainsToAdd) {
-        this.domainsFoundInProtein.addAll(domainsToAdd);
+        this.featuresPresentInProtein.addAll(domainsToAdd);
     }
 
     public List<PeptideGroup> getPeptideGroups() {

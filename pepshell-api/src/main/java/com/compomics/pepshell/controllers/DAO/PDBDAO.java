@@ -54,6 +54,12 @@ public class PDBDAO {
         return instance;
     }
 
+    /**
+     * get the info of the pdb files connected to the pepshell protein passed
+     * @param pepshellProtein the protein to retrieve the information for
+     * @return the pdb info objects with the pdb accessions in
+     * @throws IOException
+     */
     public Set<PdbInfo> getPDBInfoForProtein(PepshellProtein pepshellProtein) throws IOException {
         Set<PdbInfo> pdbInfoToReturn = new HashSet<>();
         try (BufferedReader br = WebUtils.openReader("http://www.ebi.ac.uk/pdbe-apps/widgets/unipdb?tsv=1&uniprot=" + AccessionConverter.toUniprot(pepshellProtein.getVisibleAccession()))){
@@ -72,6 +78,13 @@ public class PDBDAO {
         return pdbInfoToReturn;
     }
 
+    /**
+     * fetches a pdb file and writes it to a temporary file
+     * it is marked to be deleted on program exit
+     * @param aPdbAccession the accession to retrieve fhe file for
+     * @return the downloaded pdb file on disk location
+     * @throws IOException if the file could not be downloaded or written to disk
+     */
     public static File getPdbFile(String aPdbAccession) throws IOException {
         File pdbFile = File.createTempFile(aPdbAccession, ".pdb");
         pdbFile.deleteOnExit();
@@ -82,6 +95,12 @@ public class PDBDAO {
         return pdbFile;
     }
 
+    /**
+     * get the pdb file from the pdb server and return it as a string
+     * @param aPdbAccession the pdb accession to get from the server
+     * @return the file as string
+     * @throws IOException if the file could not be retrieved
+     */
     public static String getPdbFileInMem(String aPdbAccession) throws IOException {
         StringWriter pdbFile = new StringWriter();
         if (aPdbAccession != null) {
@@ -91,6 +110,12 @@ public class PDBDAO {
         return pdbFile.toString();
     }
 
+    /**
+     * reads the pdb accessions linked to a uniprot accession, does not reset the reader
+     * @param br the reader to parse from
+     * @return the pdb accessions contained in the buffered reader
+     * @throws IOException
+     */
     private static Set<PdbInfo> startUniprotPDBParsing(BufferedReader br) throws IOException {
         Set<PdbInfo> pdbFilesToReturn = new HashSet<>();
         String pdbLine;
@@ -108,9 +133,18 @@ public class PDBDAO {
     }
 
     //TODO change this to actual xml parsing so we don't have to throw nullpointers around
-    public static PdbInfo getPdbInfoForPdbAccession(String pdbAccession) throws IOException, XMLStreamException, NullPointerException {
+
+    /**
+     * get the pdb info part from a pdb file  on the pdb webserver
+     * @param pdbAccession the accession to retrieve the info for
+     * @return a pdbInfo object
+     * @throws IOException
+     * @throws XMLStreamException
+     * @throws NullPointerException
+     */
+    public static PdbInfo getPdbHeaderForPdbAccession(String pdbAccession) throws IOException, XMLStreamException, NullPointerException {
         PdbInfo info = null;
-        BufferedReader br = WebUtils.openReader("http://www.pdb.org/pdb/rest/describePDB?structureId=" + pdbAccession);
+        try (BufferedReader br = WebUtils.openReader("http://www.pdb.org/pdb/rest/describePDB?structureId=" + pdbAccession)){
         String pbdDescription = br.readLine();
         String[] splitXML = pbdDescription.split(" ");
         for (String anXMLPart : splitXML) {
@@ -129,9 +163,15 @@ public class PDBDAO {
                 info.setMethod(anXMLPart.split("=")[1].replaceAll("\"", ""));
             }
         }
+        }
         return info;
     }
 
+    /**
+     * retrieves the protein sequence from a pdb file passed as string
+     * @param pdbFileInMem the pdb file to retrieve the sequence from
+     * @return the protein sequence
+     */
     public static String getSequenceFromPdbFile(String pdbFileInMem) {
         StringBuilder sequence = new StringBuilder();
         for (String pdbLine : pdbFileInMem.split("\n")) {
@@ -145,5 +185,7 @@ public class PDBDAO {
         return sequence.toString();
     }
 
-    //future feature, get gene ontology from http://www.pdb.org/pdb/rest/goTerms?structureId=4HHB
+    //todo get gene ontology from http://www.pdb.org/pdb/rest/goTerms?structureId=4HHB
+
+    //todo allow blasting against pdb
 }

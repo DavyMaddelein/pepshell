@@ -25,6 +25,10 @@ import com.google.common.eventbus.EventBus;
  */
 public class StartUp {
 
+    /**
+     * entry point to pepshell
+     * starts an event bus to handle exceptions thrown and then launches first dialog
+     */
     public StartUp() {
         EventBus eventBus = new EventBus("PepshellExceptionBus");
 

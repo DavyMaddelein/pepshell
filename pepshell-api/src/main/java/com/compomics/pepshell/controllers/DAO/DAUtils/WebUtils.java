@@ -28,7 +28,7 @@ import java.nio.CharBuffer;
 
 /**
  * Created with IntelliJ IDEA. User: Davy Date: 3/4/13 Time: 10:17 AM
- * aids with the accessing of websites and reducing boilerplate
+ * helps with accessing of websites and reducing boilerplate
  */
 public class WebUtils {
 

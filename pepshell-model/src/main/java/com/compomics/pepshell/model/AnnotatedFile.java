@@ -44,13 +44,13 @@ public class AnnotatedFile extends File {
     }
 
     public AnnotatedFile addAnnotationsToFile(SeparatedValueExperimentMetadata annotation) {
-            annotations = annotation;
+        annotation.getMetaDataAsMap().entrySet().stream()
+                .forEach(e -> annotations.addMetaData(e.getKey(),e.getValue()));
         return this;
     }
 
     public void setValidationState(boolean validation) {
         validationState = validation;
-
     }
 
     public SeparatedValueExperimentMetadata getAnnotations() {

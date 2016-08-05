@@ -21,7 +21,7 @@ import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProte
 import java.util.Map;
 
 /**
- * Created by pitro11a on 3/8/2016.
+ * Created by Davy Maddelein on 3/8/2016.
  */
 public interface RelativeSolventAccessibilityPredictor<T extends PepshellProtein> {
 

@@ -24,8 +24,10 @@ public class FeatureWithLocation extends ProteinFeature {
     private int endPosition = -1;
     private int startPostion = -1;
 
-    public FeatureWithLocation(String aDescription, int ProteinLocation) {
+    public FeatureWithLocation(String aDescription, int proteinLocation) {
         super(aDescription);
+        startPostion = proteinLocation;
+        endPosition = proteinLocation;
     }
 
     public FeatureWithLocation(String aDescription, int aStartPosition, int anEndPosition) {

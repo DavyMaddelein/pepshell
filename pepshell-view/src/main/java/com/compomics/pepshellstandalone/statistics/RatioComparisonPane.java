@@ -81,7 +81,7 @@ public class RatioComparisonPane extends JFreeChartPanel {
         }
 
         protein = experimentToCompareTo.getProteins().get(referenceExperiment.getProteins().indexOf(aPepshellProtein));
-        sortedCopy = protein.getPeptideGroups().stream().sorted(Comparator.comparing(e -> ((PeptideGroup) e).getRepresentativePeptide().getBeginningProteinMatch())).collect(Collectors.toList());
+        sortedCopy = protein.getPeptideGroups().stream().sorted(Comparator.comparing(e ->  e.getRepresentativePeptide().getBeginningProteinMatch())).collect(Collectors.toList());
 
         for (PeptideGroup aPeptideGroup : sortedCopy) {
             PeptideInterface aPeptide = aPeptideGroup.getRepresentativePeptide();

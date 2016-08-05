@@ -91,7 +91,7 @@ public interface AbstractDataRetrieval<T extends Experiment> extends Observer, D
      * @param experiment the experiment to retrieve the secondary data for
      */
     default void retrieveSecondaryData(T experiment) throws DataRetrievalException{
-            new runRetrievalSteps(experiment, getDataRetrievalSteps(), this).execute();
+            new RunRetrievalSteps(experiment, getDataRetrievalSteps(), this).execute();
         }
 
 
@@ -107,7 +107,7 @@ public interface AbstractDataRetrieval<T extends Experiment> extends Observer, D
     }
 
     //can be moved to separate class
-    class runRetrievalSteps extends SwingWorker<Boolean, Void> {
+    class RunRetrievalSteps extends SwingWorker<Boolean, Void> {
 
         private Observer observer;
         private Experiment experiment;
@@ -120,7 +120,7 @@ public interface AbstractDataRetrieval<T extends Experiment> extends Observer, D
          * @param anObserver     optional observer to report progress to
          * @param retrievalSteps the steps to execute
          */
-        public runRetrievalSteps(Experiment anExperiment, Collection<DataRetrievalStep> retrievalSteps, Observer anObserver) {
+        public RunRetrievalSteps(Experiment anExperiment, Collection<DataRetrievalStep> retrievalSteps, Observer anObserver) {
             observer = anObserver;
             experiment = anExperiment;
             stepsToExecute = retrievalSteps;

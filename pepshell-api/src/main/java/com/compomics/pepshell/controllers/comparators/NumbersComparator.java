@@ -16,6 +16,7 @@
 
 package com.compomics.pepshell.controllers.comparators;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashSet;
 
@@ -23,7 +24,7 @@ import java.util.HashSet;
  *
  * @author Davy Maddelein
  */
-public class NumbersComparator implements Comparator<Number> {
+public class NumbersComparator implements Comparator<Number>,Serializable {
 
     private HashSet<Class<? extends Number>> allowedTypes;
 
@@ -59,4 +60,6 @@ public class NumbersComparator implements Comparator<Number> {
         }
         return d1.compareTo(d2);
     }
+
+
 }

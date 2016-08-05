@@ -58,10 +58,10 @@ class UniprotConverter {
 
         int status = conn.getResponseCode();
         while (true) {
-            int wait = 0;
+            Long wait = 0L;
             String header = conn.getHeaderField("Retry-After");
             if (header != null) {
-                wait = Integer.valueOf(header);
+                wait = Long.parseLong(header);
             }
             if (wait == 0) {
                 break;
@@ -79,7 +79,7 @@ class UniprotConverter {
             InputStream reader = conn.getInputStream();
             URLConnection.guessContentTypeFromStream(reader);
             StringBuilder builder = new StringBuilder();
-            int a = 0;
+            int a;
             while ((a = reader.read()) != -1) {
                 builder.append((char) a);
             }

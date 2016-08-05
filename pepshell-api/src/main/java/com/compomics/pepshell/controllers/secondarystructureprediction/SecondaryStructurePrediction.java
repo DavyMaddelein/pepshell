@@ -16,9 +16,8 @@
 
 package com.compomics.pepshell.controllers.secondarystructureprediction;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,9 @@ import java.util.Properties;
  */
 abstract class SecondaryStructurePrediction {
 
+    /**
+     * map with possible secondary structure formations
+     */
     static final Map<String, String> secStructMap = new HashMap<String, String>() {
         {
             put("alpha_helix", "G");
@@ -40,12 +42,10 @@ abstract class SecondaryStructurePrediction {
         }
     };
 
-    public SecondaryStructurePrediction() {
+    public SecondaryStructurePrediction() throws IOException {
         Properties secStructProps = new Properties();
-        try {
-            secStructProps.load(new FileInputStream(new File(ClassLoader.getSystemClassLoader().getResource("secondary_structures.properties").getPath())));
-        } catch (NullPointerException | IOException e) {
-            //FaultBarrier.getInstance().handleException(e, new UpdateMessage(false, "could not load definitions for secondary structures", true));
+        try (BufferedReader propertyStream = new BufferedReader(new InputStreamReader(new FileInputStream(new File(ClassLoader.getSystemClassLoader().getResource("secondary_structures.properties").getPath())), Charset.forName("UTF-8")))){
+            secStructProps.load(propertyStream);
         }
         if (secStructProps.isEmpty()) {
             for (Map.Entry<String, String> anEntry : secStructMap.entrySet()) {

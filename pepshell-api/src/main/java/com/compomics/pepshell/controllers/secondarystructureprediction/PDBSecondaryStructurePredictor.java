@@ -27,6 +27,10 @@ import java.util.List;
  */
 public class PDBSecondaryStructurePredictor extends SecondaryStructurePrediction {
 
+    public PDBSecondaryStructurePredictor() throws IOException {
+        super();
+    }
+
     @Override
     public List<String> getPrediction(String pdbAccession) throws IOException {
         List<String> secondaryStructure = new ArrayList<>();

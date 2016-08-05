@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Level;
  */
 public class AccessionMaskDialog extends javax.swing.JDialog {
 
-    private static Map<PepshellProtein, String> maskMap = new HashMap<>();
+    private static Map<String, String> maskMap = new HashMap<>();
     private boolean accept = false;
 
     /**
@@ -249,18 +249,18 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
     private void acceptAccessionMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptAccessionMaskButtonActionPerformed
         // TODO add your handling code here:
         if (!accessionMaskTextField.getText().isEmpty()) {
-            maskMap.put(((PepshellProtein) proteinList.getSelectedValue()), accessionMaskTextField.getText());
-            ((PepshellProtein) proteinList.getSelectedValue()).setVisibleAccession(accessionMaskTextField.getText());
+            maskMap.put( proteinList.getSelectedValue().getVisibleAccession(), accessionMaskTextField.getText());
+             proteinList.getSelectedValue().setVisibleAccession(accessionMaskTextField.getText());
         } else {
             maskMap.remove(proteinList.getSelectedValue());
-            ((PepshellProtein) proteinList.getSelectedValue()).setVisibleAccession(originalAccessionTextField.getText());
+             proteinList.getSelectedValue().setVisibleAccession(originalAccessionTextField.getText());
         }
         proteinList.repaint();
     }//GEN-LAST:event_acceptAccessionMaskButtonActionPerformed
 
     private void proteinListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proteinListMouseClicked
         // TODO add your handling code here:
-        PepshellProtein selectedPepshellProtein = ((PepshellProtein) proteinList.getSelectedValue());
+        PepshellProtein selectedPepshellProtein = proteinList.getSelectedValue();
         originalAccessionTextField.setText(selectedPepshellProtein.getOriginalAccession());
         if (!selectedPepshellProtein.getOriginalAccession().equals(selectedPepshellProtein.getVisibleAccession())) {
             accessionMaskTextField.setText(selectedPepshellProtein.getVisibleAccession());
@@ -284,8 +284,8 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
         if (!accept) {
             for (int i = 0; i < proteinList.getModel().getSize(); i++) {
-                if (maskMap.containsKey(proteinList.getModel().getElementAt(i))) {
-                    ((PepshellProtein) proteinList.getModel().getElementAt(i)).setVisibleAccession(((PepshellProtein) proteinList.getModel().getElementAt(i)).getOriginalAccession());
+                if (maskMap.containsKey(proteinList.getModel().getElementAt(i).getOriginalAccession())) {
+                    proteinList.getModel().getElementAt(i).setVisibleAccession(maskMap.get(proteinList.getModel().getElementAt(i).getOriginalAccession()));
                 }
             }
         }
@@ -300,8 +300,8 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
             File saveFile = accessionMaskSaver.getSelectedFile();
             //this could be moved out of this dialog to the controller
             try (FileWriter saveWriter = new FileWriter(saveFile)) {
-                for (Entry<PepshellProtein, String> anAccessionMaskingEntry : maskMap.entrySet()) {
-                    saveWriter.append(anAccessionMaskingEntry.getKey().getOriginalAccession()).append("=").append(anAccessionMaskingEntry.getValue()).append("\n");
+                for (Entry<String, String> anAccessionMaskingEntry : maskMap.entrySet()) {
+                    saveWriter.append(anAccessionMaskingEntry.getKey()).append("=").append(anAccessionMaskingEntry.getValue()).append("\n");
                 }
             }
         } catch (IOException ex) {
@@ -319,7 +319,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
             maskMap = AccessionMaskReader.parseAccessionFile(selectedFile);
             for (int i = 0; i < proteinList.getModel().getSize(); i++) {
                 if (maskMap.containsKey(proteinList.getModel().getElementAt(i))) {
-                    ((PepshellProtein) proteinList.getModel().getElementAt(i)).setVisibleAccession(maskMap.get(proteinList.getModel().getElementAt(i)));
+                     proteinList.getModel().getElementAt(i).setVisibleAccession(maskMap.get(proteinList.getModel().getElementAt(i)));
                     proteinList.repaint();
                 }
             }
@@ -343,7 +343,7 @@ public class AccessionMaskDialog extends javax.swing.JDialog {
     private javax.swing.JLabel maskingAccessionLabel;
     private javax.swing.JLabel originalAccessionLabel;
     private javax.swing.JTextField originalAccessionTextField;
-    private javax.swing.JList proteinList;
+    private javax.swing.JList<PepshellProtein> proteinList;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

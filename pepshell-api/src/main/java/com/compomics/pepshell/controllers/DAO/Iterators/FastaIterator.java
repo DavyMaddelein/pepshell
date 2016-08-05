@@ -31,6 +31,8 @@ import java.util.NoSuchElementException;
  */
 public class FastaIterator<T extends PepshellProtein> implements Iterator<PepshellProtein> {
 
+    //could potentially be replaced by the iterator in the new commons library
+
     private BufferedReader lineReader;
     private String header = "";
 
@@ -61,7 +63,7 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
     /**
      * a fasta iterator for parsing a reader reading in stream of data in fasta format, reaching the end of the reader will close the reader
      *
-     * @param reader
+     * @param reader the reader to parse from
      */
     public FastaIterator(BufferedReader reader) {
         lineReader = reader;
@@ -69,8 +71,8 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
     }
 
     /**
-     * not the way I wanted to do it, see mark and reset in buffered readers but this works too
-     * <p/>
+     * checks if there is a next element in the iterator
+     *
      * Returns {@code true} if the iteration has more elements. (In other words,
      * returns {@code true} if {@link #next} would return an element rather than
      * throwing an exception.)
@@ -79,6 +81,9 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
      */
     @Override
     public boolean hasNext() {
+
+        //not the way I wanted to do it, see mark and reset in buffered readers but this works too
+
         boolean hasMore;
         try {
             String line = header;
@@ -103,10 +108,7 @@ public class FastaIterator<T extends PepshellProtein> implements Iterator<Pepshe
     }
 
     /**
-     * Returns the next element in the iteration.
-     *
-     * @return the next element in the iteration
-     * @throws NoSuchElementException if the iteration has no more elements
+     * {@inheritDoc}
      */
     @Override
     public T next() throws NoSuchElementException {

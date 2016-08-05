@@ -16,31 +16,33 @@
 
 package com.compomics.pepshell.controllers;
 
-import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
- *
+ * reads a file with accession masks
  * @author Davy Maddelein
  */
 public class AccessionMaskReader {
 
-    public static Map<PepshellProtein, String> parseAccessionFile(File selectedFile) throws IOException {
-        Map<PepshellProtein, String> accessionMasks = new HashMap<>();
+    /**
+     * parses an accession masking file, the layout is original accession= masking accession
+     * @param selectedFile the file to read
+     * @return map of accessions and masking accessions
+     * @throws IOException
+     */
+    public static Map<String, String> parseAccessionFile(File selectedFile) throws IOException {
+        Map<String, String> accessionMasks = new HashMap<>();
+        //this is shorter than parsing the file myself, but properties is badly implemented -.-
+        Properties props = new Properties();
         if (selectedFile != null && selectedFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
-                String line = reader.readLine();
-                while (line != null) {
-                    String[] splitLines = line.split("=");
-                    accessionMasks.put(new PepshellProtein(splitLines[0]), splitLines[1]);
-                    line = reader.readLine();
-                }
+            try (BufferedReader propertyReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(ClassLoader.getSystemClassLoader().getResource("secondary_structures.properties").getPath())), Charset.forName("UTF-8")))) {
+                props.load(propertyReader);
+                for (final String name: props.stringPropertyNames())
+                    accessionMasks.put(name, props.getProperty(name));
             }
         }
         return accessionMasks;

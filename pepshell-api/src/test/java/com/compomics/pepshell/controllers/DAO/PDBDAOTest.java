@@ -20,7 +20,6 @@ import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProte
 import com.compomics.pepshell.model.protein.proteininfo.PdbInfo;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.Set;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
@@ -121,14 +120,14 @@ public class PDBDAOTest {
     }
 
     /**
-     * Test of getPdbInfoForPdbAccession method, of class PDBDAO.
+     * Test of getPdbHeaderForPdbAccession method, of class PDBDAO.
      */
     @Test
     public void testGetPdbInfoForPdbAccession() throws Exception {
-        System.out.println("getPdbInfoForPdbAccession");
+        System.out.println("getPdbHeaderForPdbAccession");
         String pdbAccession = "";
         PdbInfo expResult = null;
-        PdbInfo result = PDBDAO.getPdbInfoForPdbAccession(pdbAccession);
+        PdbInfo result = PDBDAO.getPdbHeaderForPdbAccession(pdbAccession);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

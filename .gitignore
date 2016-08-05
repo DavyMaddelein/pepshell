@@ -17,3 +17,5 @@ pepshell-api/src/main/resources/CPDT.exe
 pepshell-api/src/main/resources/pepshelltestdbs.zip
 pepshell-api/src/main/resources/vcredist_x86.exe
 pepshell-startup-wrapper/target/**
+pepshell-view/target/
+*.class

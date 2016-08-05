@@ -114,7 +114,7 @@ public class MsLimsDbDAO extends Observable implements DbDAOInterface {
                         qpeptide.setRatio(getRatioForPeptide(rs.getInt("identificationid"), aConnection));
                         qpeptide.setStandardError(setErrorForPeptide(rs.getInt("identificationid"), aConnection));
                     }
-                    if(groups != null){
+                    if(groups.isEmpty()){
                         //this makes us lose all the non quanted peptides
                     groups.add(quantedGroup);
                     }

@@ -41,13 +41,13 @@ public class CoLimsImportHandler<T extends Connection> implements DataHandlerInt
     @Override
     public boolean canHandle(T objectToHandle) throws IOException{
         boolean iCanHandleIt = false;
-        try {
-            PreparedStatement stat = DbConnectionController.getExistingConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS);
-            ResultSet set = stat.executeQuery();
+        try (PreparedStatement stat = DbConnectionController.getExistingConnection().prepareStatement(SQLStatements.CHECKIFCOLIMS)){
+            try(ResultSet set = stat.executeQuery()){
             //returns empty
             iCanHandleIt = set.isBeforeFirst() && set.isAfterLast();
+            }
         } catch (SQLException e) {
-            IOException ex = new IOException("there was ap roblem with accessing the database");
+            IOException ex = new IOException("there was a problem with accessing the database");
             ex.addSuppressed(e);
             throw ex;
         }

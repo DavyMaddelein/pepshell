@@ -37,13 +37,13 @@ public class MsLimsImportHandler<T extends Connection> implements DataHandlerInt
     AbstractDataRetrieval<Experiment> mslimsDataRetrieval = new DataRetrievalForFasta<>();
 
     @Override
-    public boolean canHandle(T objectToHandle) throws IOException{
+    public boolean canHandle(T objectToHandle) throws IOException {
         boolean iCanHandleIt;
-        try {
-            PreparedStatement stat = objectToHandle.prepareStatement(SQLStatements.CHECKIFMSLIMS);
-            ResultSet set = stat.executeQuery();
-            //returns empty
-            iCanHandleIt = set.isBeforeFirst() && set.isAfterLast();
+        try (PreparedStatement stat = objectToHandle.prepareStatement(SQLStatements.CHECKIFMSLIMS)) {
+            try (ResultSet set = stat.executeQuery()) {
+                //returns empty
+                iCanHandleIt = set.isBeforeFirst() && set.isAfterLast();
+            }
         } catch (SQLException e) {
             IOException ex = new IOException("there was ap roblem with accessing the database");
             ex.addSuppressed(e);
@@ -55,6 +55,6 @@ public class MsLimsImportHandler<T extends Connection> implements DataHandlerInt
 
     @Override
     public Experiment addData(Experiment anExperiment) throws DataRetrievalException {
-       return mslimsDataRetrieval.retrieveData(anExperiment);
+        return mslimsDataRetrieval.retrieveData(anExperiment);
     }
 }

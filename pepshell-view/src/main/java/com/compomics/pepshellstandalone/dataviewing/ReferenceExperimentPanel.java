@@ -245,7 +245,7 @@ public class ReferenceExperimentPanel extends javax.swing.JPanel {
         //todo change the selection combobox to holding these drawing classes
         if (referenceProteinDrawPanel.getPepshellProtein() != null) {
             DrawProteinPeptidesInterface secondaryDrawMode;
-            PdbInfo pdbAccession = null;
+            PdbInfo pdbAccession = (PdbInfo) pdbSelectionComboBox.getSelectedItem();
 
             //disable PDB selection combobox
             pdbSelectionComboBox.setEnabled(false);

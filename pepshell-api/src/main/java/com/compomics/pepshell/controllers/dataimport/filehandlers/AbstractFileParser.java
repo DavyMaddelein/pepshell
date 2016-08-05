@@ -33,63 +33,83 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 
 /**
+ * generic separated value style file parser
  * Created by Davy Maddelein on 02/12/2014.
  */
 public class AbstractFileParser implements FileParserInterface {
 
     @Override
     public Experiment parseExperimentFile(FileBasedExperiment aFile) throws CouldNotParseException {
+        //we can't make any guesses about how the file is built up
         if (aFile.getExperimentFile().getAnnotations() == null) {
             throw new CouldNotParseException("annotations missing from file");
         }
+        return parseExperimentFile(aFile.getExperimentFile());
+    }
 
-        try (LineNumberReader lineReader = new LineNumberReader(new FileReader(aFile.getExperimentFile()))) {
+    @Override
+    public Experiment parseExperimentFile(AnnotatedFile annotatedFile) throws CouldNotParseException {
+
+        Experiment experiment = new Experiment(annotatedFile.getName());
+
+        try (LineNumberReader lineReader = new LineNumberReader(new FileReader(annotatedFile))) {
 
             String line;
 
-            if (aFile.getExperimentFile().getAnnotations().fileHasHeaders()) {
-                //we don't need headers
+            if (annotatedFile.getAnnotations().fileHasHeaders()) {
+                //we don't need headers, these should be defined in the annotations
+                //todo check here if file actually has headers or not
                 lineReader.readLine();
             }
+
 
             String[] columns;
             AggregatedException exceptionList = null;
             while ((line = lineReader.readLine()) != null) {
                 try {
-                    columns = line.split(aFile.getExperimentFile().getAnnotations().getValueSeparator());
+                    columns = line.split(annotatedFile.getAnnotations().getValueSeparator());
 
-                    if (columns[aFile.getExperimentFile().getAnnotations().getPeptideSequenceColumn() - 1].trim().length() == 0) {
+                    //check if we can build peptides
+                    if (columns[annotatedFile.getAnnotations().getPeptideSequenceColumn() - 1].trim().length() == 0) {
                         throw new CouldNotParseException("missing sequence value at line " + lineReader.getLineNumber());
-                    } else if (columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1].trim().length() == 0) {
+                    } else if (columns[annotatedFile.getAnnotations().getProteinAccessionColumn() - 1].trim().length() == 0) {
                         throw new CouldNotParseException("missing accession value at line " + lineReader.getLineNumber());
                     }
 
                     Peptide linePeptide;
 
-                    if (aFile.getExperimentFile().getAnnotations().experimentHasRatio()) {
-                        linePeptide = new QuantedPeptide(columns[aFile.getExperimentFile().getAnnotations().getPeptideSequenceColumn() - 1]);
-                        ((QuantedPeptide) linePeptide).setRatio(Double.parseDouble(columns[aFile.getExperimentFile().getAnnotations().getRatioColumn() - 1]));
+                    //check if file has quants
+                    if (annotatedFile.getAnnotations().experimentHasRatio()) {
+                        linePeptide = new QuantedPeptide(columns[annotatedFile.getAnnotations().getPeptideSequenceColumn() - 1]);
+                        ((QuantedPeptide) linePeptide).setRatio(Double.parseDouble(columns[annotatedFile.getAnnotations().getRatioColumn() - 1]));
                     } else {
-                        linePeptide = new Peptide(columns[aFile.getExperimentFile().getAnnotations().getPeptideSequenceColumn() - 1]);
+                        linePeptide = new Peptide(columns[annotatedFile.getAnnotations().getPeptideSequenceColumn() - 1]);
                     }
 
-                    if (aFile.getExperimentFile().getAnnotations().experimentHasPeptideLocationValues()) {
-                        linePeptide.setBeginningProteinMatch(Integer.parseInt(columns[aFile.getExperimentFile().getAnnotations().getPeptideStartColumn() - 1]));
-                        linePeptide.setEndProteinMatch(Integer.parseInt(columns[aFile.getExperimentFile().getAnnotations().getPeptideEndColumn() - 1]));
+                    //add locations on protein to peptide
+                    if (annotatedFile.getAnnotations().experimentHasPeptideLocationValues()) {
+                        linePeptide.setBeginningProteinMatch(Integer.parseInt(columns[annotatedFile.getAnnotations().getPeptideStartColumn() - 1]));
+                        linePeptide.setEndProteinMatch(Integer.parseInt(columns[annotatedFile.getAnnotations().getPeptideEndColumn() - 1]));
                     }
 
-                    if (aFile.getExperimentFile().getAnnotations().experimentHasIntensityValues()) {
-                        Double intensityValue = Double.parseDouble(columns[aFile.getExperimentFile().getAnnotations().getIntensityColumn() - 1]);
+                    //add intentisities
+                    if (annotatedFile.getAnnotations().experimentHasIntensityValues()) {
+                        Double intensityValue = Double.parseDouble(columns[annotatedFile.getAnnotations().getIntensityColumn() - 1]);
                         linePeptide.addTotalSpectrumIntensity(intensityValue);
 
                     }
+                    //create groups and push to a storage
                     PeptideGroup peptideGroup = (new PeptideGroup(linePeptide));
-                    PepshellProtein proteinToAdd = new PepshellProtein(columns[aFile.getExperimentFile().getAnnotations().getProteinAccessionColumn() - 1]);
+                    PepshellProtein proteinToAdd = new PepshellProtein(columns[annotatedFile.getAnnotations().getProteinAccessionColumn() - 1]);
+
                     ProteinStoreManager.getInstance().addToStore(proteinToAdd);
                     proteinToAdd = new FlyweightProtein(proteinToAdd.getOriginalAccession(), proteinToAdd.getExtraIdentifier());
                     proteinToAdd.addPeptideGroup(peptideGroup);
-                    aFile.addProtein(proteinToAdd);
+                    // TODO: 5/23/2016 check if this needs to be chanced with the storage
+                    experiment.addProtein(proteinToAdd);
+
                 } catch (Exception ex) {
+                    //todo replace with correct exceptions
                     if (exceptionList == null) {
                         exceptionList = new AggregatedException("could not parse certain lines");
                     }
@@ -102,11 +122,6 @@ public class AbstractFileParser implements FileParserInterface {
             ex.initCause(e);
             throw ex;
         }
-        return aFile;
-    }
-
-    @Override
-    public Experiment parseExperimentFile(AnnotatedFile annotatedFile) throws CouldNotParseException {
-        return null;
+        return experiment;
     }
 }

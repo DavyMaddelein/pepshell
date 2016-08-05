@@ -37,7 +37,7 @@ public class DbConnectionController {
             if (url.contains(":")) {
                 String[] urlAndPort = url.split(":");
                 dbSource.setServerName(urlAndPort[0]);
-                dbSource.setPortNumber(Integer.valueOf(urlAndPort[1]));
+                dbSource.setPortNumber(Integer.parseInt(urlAndPort[1]));
             } else {
                 dbSource.setServerName(url);
             }

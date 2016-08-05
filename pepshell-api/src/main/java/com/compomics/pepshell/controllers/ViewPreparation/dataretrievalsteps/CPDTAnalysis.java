@@ -22,6 +22,7 @@ import com.compomics.pepshell.model.Peptide;
 import com.compomics.pepshell.model.PeptideGroup;
 import com.compomics.pepshell.model.protein.proteinimplementations.PepshellProtein;
 import com.compomics.pepshell.model.UpdateMessage;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -33,7 +34,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
  * @author Davy Maddelein
  */
 public class CPDTAnalysis extends DataRetrievalStep {
@@ -98,23 +98,24 @@ public class CPDTAnalysis extends DataRetrievalStep {
 
     private List<PeptideGroup> parseCPDTOutput(File CPDTFile, PepshellProtein aPepshellProtein) throws FileNotFoundException, IOException {
         List<PeptideGroup> CPDTPeptideGroups = new ArrayList<>();
-        LineNumberReader reader = new LineNumberReader(new FileReader(CPDTFile));
-        String line;
-        int previousCut = 0;
-        while ((line = reader.readLine()) != null) {
-            if (line.equalsIgnoreCase("cut position information")) {
-                reader.readLine();
-                while ((line = reader.readLine()) != null && line.contains("cut position")) {
-                    //string is of format cut position = 866;     probability = 0.881353
-                    //could be replaced with a split on = and then [2] and [4] for better readability if needed
-                    String[] cutData = line.split(";");
-                    Peptide cutPeptide = new Peptide(aPepshellProtein.getProteinSequence().substring(previousCut, Integer.parseInt(cutData[0].split("=")[1].trim())), Double.parseDouble(cutData[1].split("=")[1].trim()));
-                    cutPeptide.setBeginningProteinMatch(Integer.parseInt(cutData[0].split("=")[1].trim()));
-                    cutPeptide.setProbability(Double.parseDouble(cutData[1].split("=")[1].trim()));
-                    previousCut = cutPeptide.getBeginningProteinMatch();
-                    PeptideGroup CPDTPeptideGroup = new PeptideGroup(cutPeptide);
-                    CPDTPeptideGroup.setShortestPeptideIndex(0);
-                    CPDTPeptideGroups.add(CPDTPeptideGroup);
+        try (LineNumberReader reader = new LineNumberReader(new FileReader(CPDTFile))) {
+            String line;
+            int previousCut = 0;
+            while ((line = reader.readLine()) != null) {
+                if (line.equalsIgnoreCase("cut position information")) {
+                    reader.readLine();
+                    while ((line = reader.readLine()) != null && line.contains("cut position")) {
+                        //string is of format cut position = 866;     probability = 0.881353
+                        //could be replaced with a split on = and then [2] and [4] for better readability if needed
+                        String[] cutData = line.split(";");
+                        Peptide cutPeptide = new Peptide(aPepshellProtein.getProteinSequence().substring(previousCut, Integer.parseInt(cutData[0].split("=")[1].trim())), Double.parseDouble(cutData[1].split("=")[1].trim()));
+                        cutPeptide.setBeginningProteinMatch(Integer.parseInt(cutData[0].split("=")[1].trim()));
+                        cutPeptide.setProbability(Double.parseDouble(cutData[1].split("=")[1].trim()));
+                        previousCut = cutPeptide.getBeginningProteinMatch();
+                        PeptideGroup CPDTPeptideGroup = new PeptideGroup(cutPeptide);
+                        CPDTPeptideGroup.setShortestPeptideIndex(0);
+                        CPDTPeptideGroups.add(CPDTPeptideGroup);
+                    }
                 }
             }
         }

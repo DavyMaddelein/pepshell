@@ -51,11 +51,4 @@ public class AnalysisGroup {
         groupedExperiments.add(anExperiment);
     }
 
-    public Experiment getAnalysisGroupProteins() {
-        Experiment allAnalysisGroupProteins = new Experiment(-1, "combined experiments of analysisgroup " + this.analysisName);
-        for (Experiment experiment : groupedExperiments) {
-            experiment.getProteins().forEach(allAnalysisGroupProteins::addProtein);
-        }
-        return allAnalysisGroupProteins;
-    }
 }

@@ -99,7 +99,7 @@ public class UniprotDAOTest {
 
     @Test
     public void testGetDbReferencesForAccession() throws ParserConfigurationException, SAXException, IOException {
-        List<String> identifiers = UniprotDAO.GetDbReferenceEntriesForAccession(testAccession,"PDB");
+        List<String> identifiers = UniprotDAO.getDbReferenceEntriesForAccession(testAccession,"PDB");
         assertThat(identifiers.size(),is(20));
         assertThat(identifiers.get(5),is("X145"));
     }

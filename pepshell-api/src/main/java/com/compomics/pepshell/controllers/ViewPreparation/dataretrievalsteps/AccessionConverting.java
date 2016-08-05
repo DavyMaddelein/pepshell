@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * converts one style accession to another
  * @author Davy Maddelein
  */
 public class AccessionConverting extends DataRetrievalStep {
@@ -40,6 +40,9 @@ public class AccessionConverting extends DataRetrievalStep {
         this.pepshellProteinList = aPepshellProteinList;
     }
 
+    /**
+     *@InheritDoc
+     */
     @Override
     public List<PepshellProtein> call() throws Exception {
         //List<PepshellProtein> failedProteins = new ArrayList<>();
@@ -53,6 +56,9 @@ public class AccessionConverting extends DataRetrievalStep {
         return Collections.unmodifiableList(pepshellProteinList);
     }
 
+    /**
+    *{@InheritDoc}
+     */
     @Override
     public DataRetrievalStep getInstance(List<PepshellProtein> aPepshellProteinList) {
         return new AccessionConverting(aPepshellProteinList);

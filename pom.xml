@@ -56,7 +56,8 @@
                     </exclusion>
                     <exclusion>
                         <groupId>asm</groupId>
-                        <artifactId>asm-commons</artifactId></exclusion>
+                        <artifactId>asm-commons</artifactId>
+                    </exclusion>
                     <exclusion>
                         <groupId>javax.mail</groupId>
                         <artifactId>mail</artifactId>
@@ -107,4 +108,29 @@
             <layout>default</layout>
         </repository>
     </repositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.6.201602180812</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>archiva.compomics_maven_2</id>
+            <name>Internal Release Repository</name>
+            <url>http://genesis.ugent.be/archiva/repository/compomics_maven_2</url>
+        </repository>
+        <snapshotRepository>
+            <id>archiva.snapshots</id>
+            <name>Internal Snapshot Repository</name>
+            <url>http://genesis.ugent.be/archiva/repository/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
