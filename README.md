@@ -24,10 +24,10 @@ PepShell is a peptide centric tool that allows the visualization, analysis, and 
 
 | Download | Version |
 | :--: |:--:|
-| [![download](http://genesis.ugent.be/uvpublicdata/pepshell/downloadpepshellbutton.png)](http://genesis.ugent.be/downloadredirect.php?toolname=pepshell) | *0.9 - All platforms* |
+| [![download](http://genesis.ugent.be/uvpublicdata/pepshell/downloadpepshellbutton.png)](http://genesis.ugent.be/uvpublicdata/pepshell/pepshell-0.9.zip) | *0.9 - All platforms* |
 
 ### Example Datasets
-Test files can be found [here](http://genesis.ugent.be/pepshell/testfiles).
+Test files can be found [here](http://genesis.ugent.be/uvpublicdata/pepshell/testfiles).
 
 [Go to top of page](#pepshell)
 
